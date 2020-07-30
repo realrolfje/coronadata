@@ -6,6 +6,7 @@
 #
 
 import urllib.request, json 
+import sys
 from datetime import datetime
 
 # -------------------- Get data from RIVM -----------------
@@ -88,5 +89,10 @@ with open(csvfile,'w') as file:
             str(metenisweten[datum]['geweest_op_ic']) + '\t' +
             str(metenisweten[datum]['nu_op_ic']) + '\n'
         )
+
+print('Printing to stdout for easier copy-pasting.')
+with open(csvfile,'r') as file: 
+    for line in file:
+        sys.stdout.write(line)
 
 print('Done.')
