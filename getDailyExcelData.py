@@ -90,6 +90,15 @@ with open(csvfile,'w') as file:
             str(metenisweten[datum]['nu_op_ic']) + '\n'
         )
 
+
+with open('data/runs.csv','a') as file:
+    file.write(
+        datetime.now().strftime('%Y-%m-%d') + '\t' +
+        str(totaal_positief) + '\t' +
+        str(totaal_opgenomen) + '\t' +
+        str(totaal_overleden) + '\n'
+    )
+
 print('Printing to stdout for easier copy-pasting.')
 with open(csvfile,'r') as file: 
     for line in file:
