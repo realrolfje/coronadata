@@ -30,6 +30,7 @@ for datum in metenisweten:
     avg = (avg * (avgsize-1) /avgsize) + (metenisweten[datum]['positief'] / avgsize)
     a.append(avg)
 
+plt.figure(figsize=(10,5))
 plt.plot(x,y,label='positief getest')
 
 ax = a[int(avgsize/2):]
