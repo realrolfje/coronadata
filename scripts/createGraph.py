@@ -34,8 +34,13 @@ for datum in metenisweten:
 
 plt.figure(figsize=(10,5))
 plt.grid(which='both', axis='both', linestyle='--', color='gray', linewidth=1, alpha=0.5)
+
+# Plot cases per dag
 plt.plot(x,y,label='positief getest')
 
+plt.plot([parser.parse("2020-06-06")], 100, marker=11)
+
+# Plot average per dag
 ax = a[int(avgsize/2):]
 xx = x[:len(ax)]
 plt.plot(xx,ax,label=str(avgsize)+' daags gemiddelde, -'+str(int(avgsize/2)))
