@@ -60,7 +60,7 @@ anotate(plt, metenisweten, "2020-07-01", 'Maatregelen afgezwakt\nAlleen nog 1,5 
 # Plot average per dag
 ax = a[int(avgsize/2):]
 xx = x[:len(ax)]
-plt.plot(xx,ax,label=str(avgsize)+' daags gemiddelde, -'+str(int(avgsize/2)))
+plt.plot(xx,ax,label=str(avgsize)+' daags gemiddelde, t-'+str(int(avgsize/2)))
 
 plt.xlabel("Datum")
 plt.ylabel("Positief getest per dag")
