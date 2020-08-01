@@ -5,7 +5,8 @@
 # worden in excel.
 #
 
-import urllib.request, json 
+import urllib.request
+import json 
 import sys
 from datetime import datetime
 import modules.brondata as brondata
