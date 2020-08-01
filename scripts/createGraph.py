@@ -7,6 +7,8 @@ from dateutil import parser
 import datetime
 import json 
 
+print("Generating graphs.")
+
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     metenisweten = { }
