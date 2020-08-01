@@ -27,15 +27,19 @@ avgsize = 14
 for datum in metenisweten:
     x.append(parser.parse(datum))
     y.append(metenisweten[datum]['positief'])
+
     avg = (avg * (avgsize-1) /avgsize) + (metenisweten[datum]['positief'] / avgsize)
     a.append(avg)
 
+
 plt.figure(figsize=(10,5))
+plt.grid(which='both', axis='both', linestyle='--', color='gray', linewidth=1, alpha=0.5)
 plt.plot(x,y,label='positief getest')
 
 ax = a[int(avgsize/2):]
 xx = x[:len(ax)]
 plt.plot(xx,ax,label=str(avgsize)+' daags gemiddelde, -'+str(int(avgsize/2)))
+
 plt.xlabel("Datum")
 plt.ylabel("Positief getest per dag")
 plt.title('COVID-19 besmettingen, '+filedate)
