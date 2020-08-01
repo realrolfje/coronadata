@@ -32,13 +32,30 @@ for datum in metenisweten:
     a.append(avg)
 
 
+def anotate(plt, metenisweten, datum, tekst, x, y):
+    plt.annotate(
+        tekst, 
+        xy=(parser.parse(datum), metenisweten[datum]['positief']),
+        xytext=(parser.parse(x), y),
+        bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
+        arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0')
+    )
+
+
+
 plt.figure(figsize=(10,5))
 plt.grid(which='both', axis='both', linestyle='--', color='gray', linewidth=1, alpha=0.5)
 
 # Plot cases per dag
 plt.plot(x,y,label='positief getest')
 
-plt.plot([parser.parse("2020-06-06")], 100, marker=11)
+anotate(plt, metenisweten, "2020-03-09", 'Brabant geen\nhanden schudden', "2020-01-20", 300)
+anotate(plt, metenisweten, "2020-03-15", 'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-02-01", 800)
+anotate(plt, metenisweten, "2020-03-23", '1,5 meter, €400 boete', "2020-01-15", 1150)
+anotate(plt, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-30", 700)
+anotate(plt, metenisweten, "2020-05-11", 'Scholen, kapers,\ntandarts open', "2020-05-11", 450)
+anotate(plt, metenisweten, "2020-06-01", 'Terassen open', "2020-05-25", 300)
+anotate(plt, metenisweten, "2020-07-01", 'Maatregelen afgezwakt\nAlleen nog 1,5 meter\nmondkapje in OV', "2020-06-25", 450)
 
 # Plot average per dag
 ax = a[int(avgsize/2):]
