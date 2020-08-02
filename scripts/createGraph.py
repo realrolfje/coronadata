@@ -49,6 +49,26 @@ i = []
 # exit
 
 for datum in metenisweten:
+    try:
+        mindatum
+    except NameError:
+        mindatum = parser.parse(datum)
+
+    try:
+        maxdatum
+    except NameError:
+        maxdatum = parser.parse(datum)
+
+    mindatum = min(mindatum, parser.parse(datum))
+    maxdatum = max(maxdatum, parser.parse(datum))
+
+date_range = [mindatum + datetime.timedelta(days=x) for x in range(0, (maxdatum-mindatum).days+30)]    
+
+for d in date_range:
+    datum = d.strftime("%Y-%m-%d")
+    if datum not in metenisweten:
+        continue
+
     x.append(parser.parse(datum))
     y.append(metenisweten[datum]['positief'])
     i.append(metenisweten[datum]['nu_op_ic']*10)
@@ -105,6 +125,10 @@ ax2.set_ylabel("Aantal zieken")
 
 ax1.set_ylim([0, 1400])
 ax2.set_ylim([0, 14000])
+
+# ax1.set_yscale('log')
+# ax2.set_yscale('log')
+
 
 plt.title('COVID-19 besmettingen, '+filedate)
 ax1.legend(loc="upper left")
