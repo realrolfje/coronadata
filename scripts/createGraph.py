@@ -16,9 +16,20 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
         if (record['Date_statistics'] not in metenisweten):
             metenisweten[record['Date_statistics']] = {
                 'positief': 0,
+                'nu_op_ic': 0
             }
         metenisweten[record['Date_statistics']]['positief'] += 1
         filedate = record['Date_file']
+
+with open('../cache/NICE-intake-count.json', 'r') as json_file:
+    data = json.load(json_file)
+    for measurement in data:
+        if (measurement['date'] not in metenisweten):
+            metenisweten[measurement['date']] = {
+                'positief': 0,
+                'nu_op_ic': 0
+            }
+        metenisweten[measurement['date']]['nu_op_ic'] += measurement['value']
 
 x = []
 y = []
@@ -31,6 +42,8 @@ z = []
 ziek = 0
 ziekteduur = 14
 
+i = []
+
 # print("2020-01-30")
 # print((parser.parse("2020-01-30") - datetime.timedelta(days=ziekteduur)).strftime("%Y-%m-%d"))
 # exit
@@ -38,6 +51,7 @@ ziekteduur = 14
 for datum in metenisweten:
     x.append(parser.parse(datum))
     y.append(metenisweten[datum]['positief'])
+    i.append(metenisweten[datum]['nu_op_ic']*10)
    
     avg = (avg * (avgsize-1) /avgsize) + (metenisweten[datum]['positief'] / avgsize)
     a.append(avg)
@@ -47,6 +61,7 @@ for datum in metenisweten:
     if beterdag in metenisweten:
         ziek = ziek - metenisweten[beterdag]['positief']
     z.append(ziek)
+
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -79,16 +94,17 @@ anotate(ax1, metenisweten, "2020-07-01", 'Maatregelen afgezwakt\nAlleen nog 1,5 
 # Plot average per dag
 ax = a[int(avgsize/2):]
 xx = x[:len(ax)]
-ax1.plot(xx,ax,color='cyan', label=str(avgsize)+' daags gemiddelde, t-'+str(int(avgsize/2)))
+ax1.plot(xx,ax,color='cyan', linestyle=':', label=str(avgsize)+' daags gemiddelde, t-'+str(int(avgsize/2)))
 
-ax2.plot(x,z,color='orange', label='aantal getest ziek')
+ax2.plot(x,z,color='orange', linestyle=':', label='aantal getest ziek')
+ax2.plot(x,i,color='red', label='aantal nu op IC (*10)')
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Positief getest per dag")
 ax2.set_ylabel("Aantal zieken")
 
-ax1.set_ylim([0, 1500])
-ax2.set_ylim([0, 15000])
+ax1.set_ylim([0, 1400])
+ax2.set_ylim([0, 14000])
 
 plt.title('COVID-19 besmettingen, '+filedate)
 ax1.legend(loc="upper left")
