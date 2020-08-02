@@ -70,7 +70,11 @@ ziek = {
     'ziekteduur' : 14
 }
 
-i = []
+ic = {
+    'x' : [],
+    'y' : [],
+    'scale' : 10
+}
 
 # print("2020-01-30")
 # print((parser.parse("2020-01-30") - datetime.timedelta(days=ziekteduur)).strftime("%Y-%m-%d"))
@@ -86,15 +90,16 @@ for d in date_range:
 
     positief['x'].append(parser.parse(datum))
     positief['y'].append(metenisweten[datum]['positief'])
-    i.append(metenisweten[datum]['nu_op_ic']*10)
+
+    ic['x'].append(parser.parse(datum))
+    ic['y'].append(metenisweten[datum]['nu_op_ic'] * ic['scale'])  # <-------------- Let op! Scaled!
 
     avg = mean(positief['y'][len(positief['y'])-11:])
     positief_gemiddeld['x'].append(parser.parse(
         datum) - datetime.timedelta(days=positief_gemiddeld['avgsize']/2))
     positief_gemiddeld['y'].append(avg)
 
-    beterdag = (parser.parse(datum) -
-                datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
+    beterdag = (parser.parse(datum) - datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
 
     try:
         nuziek = nuziek + metenisweten[datum]['positief']
@@ -151,7 +156,7 @@ ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linesty
 
 ax2.plot(ziek['x'], ziek['y'], color='orange',
          linestyle=':', label='aantal getest ziek')
-ax2.plot(positief['x'], i, color='red', label='aantal nu op IC (*10)')
+ax2.plot(ic['x'], ic['y'], color='red', label='aantal nu op IC (*'+str(ic['scale'])+')')
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Positief getest per dag")
