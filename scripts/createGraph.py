@@ -22,16 +22,31 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
 
 x = []
 y = []
+
 a = []
 avg = 0
 avgsize = 14
 
+z = []
+ziek = 0
+ziekteduur = 14
+
+# print("2020-01-30")
+# print((parser.parse("2020-01-30") - datetime.timedelta(days=ziekteduur)).strftime("%Y-%m-%d"))
+# exit
+
 for datum in metenisweten:
     x.append(parser.parse(datum))
     y.append(metenisweten[datum]['positief'])
-
+   
     avg = (avg * (avgsize-1) /avgsize) + (metenisweten[datum]['positief'] / avgsize)
     a.append(avg)
+
+    beterdag = (parser.parse(datum) - datetime.timedelta(days=ziekteduur)).strftime("%Y-%m-%d")
+    ziek = ziek + metenisweten[datum]['positief']
+    if beterdag in metenisweten:
+        ziek = ziek - metenisweten[beterdag]['positief']
+    z.append(ziek)
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -43,30 +58,40 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
         arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0')
     )
 
+fig, ax1 = plt.subplots(figsize=(10,5))
+ax2 = plt.twinx()
 
-
-plt.figure(figsize=(10,5))
-plt.grid(which='both', axis='both', linestyle='--', color='gray', linewidth=1, alpha=0.5)
+#plt.figure(figsize =(10,5))
+ax1.grid(which='both', axis='both', linestyle='-.', color='gray', linewidth=1, alpha=0.3)
+ax2.grid(which='both', axis='both', linestyle='-.', color='gray', linewidth=1, alpha=0.3)
 
 # Plot cases per dag
-plt.plot(x,y,label='positief getest')
+ax1.plot(x,y,label='positief getest')
 
-anotate(plt, metenisweten, "2020-03-09", 'Brabant geen\nhanden schudden', "2020-01-20", 300)
-anotate(plt, metenisweten, "2020-03-15", 'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-02-01", 800)
-anotate(plt, metenisweten, "2020-03-23", '1,5 meter, €400 boete', "2020-01-15", 1150)
-anotate(plt, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-30", 700)
-anotate(plt, metenisweten, "2020-05-11", 'Scholen, kapers,\ntandarts open', "2020-05-11", 450)
-anotate(plt, metenisweten, "2020-06-01", 'Terassen open', "2020-05-25", 300)
-anotate(plt, metenisweten, "2020-07-01", 'Maatregelen afgezwakt\nAlleen nog 1,5 meter\nmondkapje in OV', "2020-06-25", 450)
+anotate(ax1, metenisweten, "2020-03-09", 'Brabant geen\nhanden schudden', "2020-01-20", 300)
+anotate(ax1, metenisweten, "2020-03-15", 'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-02-01", 600)
+anotate(ax1, metenisweten, "2020-03-23", '1,5 meter, €400 boete', "2020-01-15", 1000)
+anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-25", 900)
+anotate(ax1, metenisweten, "2020-05-11", 'Scholen, kapers,\ntandarts open', "2020-05-08", 500)
+anotate(ax1, metenisweten, "2020-06-01", 'Terassen open', "2020-05-25", 310)
+anotate(ax1, metenisweten, "2020-07-01", 'Maatregelen afgezwakt\nAlleen nog 1,5 meter\nmondkapje in OV', "2020-06-20", 550)
 
 # Plot average per dag
 ax = a[int(avgsize/2):]
 xx = x[:len(ax)]
-plt.plot(xx,ax,label=str(avgsize)+' daags gemiddelde, t-'+str(int(avgsize/2)))
+ax1.plot(xx,ax,color='cyan', label=str(avgsize)+' daags gemiddelde, t-'+str(int(avgsize/2)))
 
-plt.xlabel("Datum")
-plt.ylabel("Positief getest per dag")
+ax2.plot(x,z,color='orange', label='aantal getest ziek')
+
+ax1.set_xlabel("Datum")
+ax1.set_ylabel("Positief getest per dag")
+ax2.set_ylabel("Aantal zieken")
+
+ax1.set_ylim([0, 1500])
+ax2.set_ylim([0, 15000])
+
 plt.title('COVID-19 besmettingen, '+filedate)
-plt.legend()
+ax1.legend(loc="upper left")
+ax2.legend(loc="upper right")
 plt.savefig("../graphs/besmettingen.png")
 #plt.show()
