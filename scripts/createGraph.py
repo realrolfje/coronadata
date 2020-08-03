@@ -161,12 +161,12 @@ anotate(ax1, metenisweten, "2020-03-15",
         'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-02-01", 600)
 anotate(ax1, metenisweten, "2020-03-23",
         '1,5 meter, €400 boete', "2020-01-15", 1000)
-anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-25", 900)
+anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-25", 1100)
 anotate(ax1, metenisweten, "2020-05-11",
-        'Scholen, kappers,\ntandarts open', "2020-05-08", 500)
-anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open', "2020-05-25", 310)
+        'Scholen, kappers,\ntandarts open', "2020-05-08", 600)
+anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open', "2020-05-25", 400)
 anotate(ax1, metenisweten, "2020-07-01",
-        'Maatregelen afgezwakt\nAlleen nog 1,5 meter\nmondkapje in OV', "2020-06-20", 550)
+        'Maatregelen afgezwakt\nAlleen nog 1,5 meter\nmondkapje in OV', "2020-06-20", 800)
 
 # Plot average per dag
 ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
