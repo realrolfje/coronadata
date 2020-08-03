@@ -76,6 +76,11 @@ ic = {
     'scale' : 10
 }
 
+besmettingsgraad = {
+    'x' : [],
+    'y' : []    
+}
+
 # print("2020-01-30")
 # print((parser.parse("2020-01-30") - datetime.timedelta(days=ziekteduur)).strftime("%Y-%m-%d"))
 # exit
@@ -85,32 +90,47 @@ date_range = getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
-    if datum not in metenisweten:
-        continue
+    if datum in metenisweten:
+        positief['x'].append(parser.parse(datum))
+        positief['y'].append(metenisweten[datum]['positief'])
 
-    positief['x'].append(parser.parse(datum))
-    positief['y'].append(metenisweten[datum]['positief'])
+        ic['x'].append(parser.parse(datum))
+        ic['y'].append(metenisweten[datum]['nu_op_ic'] * ic['scale'])  # <-------------- Let op! Scaled!
 
-    ic['x'].append(parser.parse(datum))
-    ic['y'].append(metenisweten[datum]['nu_op_ic'] * ic['scale'])  # <-------------- Let op! Scaled!
-
-    avg = mean(positief['y'][len(positief['y'])-11:])
-    positief_gemiddeld['x'].append(parser.parse(
-        datum) - datetime.timedelta(days=positief_gemiddeld['avgsize']/2))
+    if datum in metenisweten:
+        avg = mean(positief['y'][len(positief['y'])-11:])
+    else:
+        avg = mean(positief_gemiddeld['y'][len(positief_gemiddeld['y'])-11:])
+    positief_gemiddeld['x'].append(parser.parse(datum) - datetime.timedelta(days=positief_gemiddeld['avgsize']/2))
     positief_gemiddeld['y'].append(avg)
 
     beterdag = (parser.parse(datum) - datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
-
-    try:
-        nuziek = nuziek + metenisweten[datum]['positief']
-    except NameError:
-        nuziek = metenisweten[datum]['positief']
+    
+    if datum in metenisweten:
+        ziekgeworden = metenisweten[datum]['positief']
+    else :
+        ziekgeworden = avg
 
     if beterdag in metenisweten:
-        nuziek = nuziek - metenisweten[beterdag]['positief']
+        betergeworden = metenisweten[beterdag]['positief']
+    else:
+        try:
+            betergeworden = positief_gemiddeld['y'][len(positief_gemiddeld['y']) - ziek['ziekteduur']]
+        except IndexError:
+            betergeworden = avg
+    
+    try:
+        nuziek = nuziek + ziekgeworden
+    except NameError:
+        nuziek = ziekgeworden
+
+    if beterdag in metenisweten:
+        nuziek = nuziek - betergeworden
 
     ziek['x'].append(parser.parse(datum))
     ziek['y'].append(nuziek)
+
+    
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -173,4 +193,4 @@ plt.title('COVID-19 besmettingen, '+filedate)
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 plt.savefig("../graphs/besmettingen.png")
-# plt.show()
+plt.show()
