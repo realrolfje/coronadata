@@ -25,7 +25,7 @@ def getDateRange(metenisweten):
         maxdatum = max(maxdatum, parser.parse(datum))
 
     date_range = [mindatum + datetime.timedelta(days=x)
-                  for x in range(0, (maxdatum-mindatum).days+30)]
+                  for x in range(0, (maxdatum-mindatum).days+14)]
     return date_range
 
 
@@ -73,7 +73,7 @@ ziek = {
 ic = {
     'x' : [],
     'y' : [],
-    'scale' : 10
+    'scale' : 1
 }
 
 besmettingsgraad = {
@@ -156,11 +156,11 @@ ax2.grid(which='both', axis='both', linestyle='-.',
 ax1.plot(positief['x'], positief['y'], label='positief getest')
 
 anotate(ax1, metenisweten, "2020-03-09",
-        'Brabant geen\nhanden schudden', "2020-01-20", 300)
+        'Brabant geen\nhanden schudden', "2020-01-01", 300)
 anotate(ax1, metenisweten, "2020-03-15",
-        'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-02-01", 600)
+        'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-01-01", 600)
 anotate(ax1, metenisweten, "2020-03-23",
-        '1,5 meter, €400 boete', "2020-01-15", 1000)
+        '1,5 meter, €400 boete', "2020-01-01", 1000)
 anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-25", 1100)
 anotate(ax1, metenisweten, "2020-05-11",
         'Scholen, kappers,\ntandarts open', "2020-05-08", 600)
@@ -174,9 +174,10 @@ ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linesty
          str(int(positief_gemiddeld['avgsize']/2))
          )
 
+ax1.plot(ic['x'], ic['y'], color='red', label='aantal nu op IC')
+
 ax2.plot(ziek['x'], ziek['y'], color='orange',
          linestyle=':', label='aantal getest ziek')
-ax2.plot(ic['x'], ic['y'], color='red', label='aantal nu op IC (*'+str(ic['scale'])+')')
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Positief getest per dag")
