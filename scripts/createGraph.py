@@ -174,7 +174,7 @@ ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linesty
          str(int(positief_gemiddeld['avgsize']/2))
          )
 
-ax1.plot(ic['x'], ic['y'], color='red', label='aantal nu op IC')
+ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu:'+str(ic['y'][-1])+')')
 
 ax2.plot(ziek['x'], ziek['y'], color='orange',
          linestyle=':', label='aantal getest ziek')
