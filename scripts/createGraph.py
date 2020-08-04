@@ -138,8 +138,8 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
         tekst,
         xy=(parser.parse(datum), metenisweten[datum]['positief']),
         xytext=(parser.parse(x), y),
-        bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
-        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0')
+        bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
     )
 
 
@@ -158,15 +158,15 @@ ax1.plot(positief['x'], positief['y'], label='positief getest')
 anotate(ax1, metenisweten, "2020-03-09",
         'Brabant geen\nhanden schudden', "2020-01-01", 300)
 anotate(ax1, metenisweten, "2020-03-15",
-        'Onderwijs\nverpleeghuis\nhoreca\ndicht', "2020-01-01", 600)
+        'Onderwijs,\nverpleeghuis,\nhoreca\ndicht', "2020-01-01", 600)
 anotate(ax1, metenisweten, "2020-03-23",
         '1,5 meter, €400 boete', "2020-01-01", 1000)
 anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-25", 1100)
 anotate(ax1, metenisweten, "2020-05-11",
-        'Scholen, kappers,\ntandarts open', "2020-05-08", 600)
-anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open', "2020-05-25", 400)
+        'Scholen,\nkappers,\ntandarts\nopen', "2020-03-28", 50)
+anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-15", 700)
 anotate(ax1, metenisweten, "2020-07-01",
-        'Maatregelen afgezwakt\nAlleen nog 1,5 meter\nmondkapje in OV', "2020-06-20", 800)
+        'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-08", 400)
 
 # Plot average per dag
 ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
