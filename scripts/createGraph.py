@@ -25,7 +25,7 @@ def getDateRange(metenisweten):
         maxdatum = max(maxdatum, parser.parse(datum))
 
     date_range = [mindatum + datetime.timedelta(days=x)
-                  for x in range(0, (maxdatum-mindatum).days+14)]
+                  for x in range(0, (maxdatum-mindatum).days+7)]
     return date_range
 
 
@@ -64,6 +64,12 @@ positief_gemiddeld = {
     'avgsize': 14
 }
 
+positief_voorspeld = {
+    'x': [],
+    'y': [],
+    'avgsize': 5
+}
+
 ziek = {
     'x' : [],
     'y' : [],
@@ -90,6 +96,7 @@ date_range = getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
+    # --------------------------------- Normale grafieken
     if datum in metenisweten:
         positief['x'].append(parser.parse(datum))
         positief['y'].append(metenisweten[datum]['positief'])
@@ -97,6 +104,7 @@ for d in date_range:
         ic['x'].append(parser.parse(datum))
         ic['y'].append(metenisweten[datum]['nu_op_ic'] * ic['scale'])  # <-------------- Let op! Scaled!
 
+    # --------------------------------- Gemiddeld positief getest
     if datum in metenisweten:
         avg = mean(positief['y'][len(positief['y'])-11:])
     else:
@@ -104,18 +112,40 @@ for d in date_range:
     positief_gemiddeld['x'].append(parser.parse(datum) - datetime.timedelta(days=positief_gemiddeld['avgsize']/2))
     positief_gemiddeld['y'].append(avg)
 
+    # ---------------------- Voorspelling positief getst obv gemiddelde richtingscoefficient positief getest.
+    if datum in metenisweten and len(positief['y']) > 2 and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=7)):
+        rc = positief['y'][-1]-positief['y'][-2]
+    elif len(positief_voorspeld['y']) > 2: 
+        rc = positief_voorspeld['y'][-1]-positief_voorspeld['y'][-2]
+    else :
+        rc = 0
+    
+    try:
+        rc_avg = rc_avg * (positief_voorspeld['avgsize'] - 1) / positief_voorspeld['avgsize'] + rc / positief_voorspeld['avgsize']
+    except NameError:
+        rc_avg = 0
+
+    try:
+        voorspeld_huidig = voorspeld_huidig + rc_avg
+    except NameError:
+        voorspeld_huidig = 0
+
+    positief_voorspeld['x'].append(parser.parse(datum) - datetime.timedelta(days=positief_voorspeld['avgsize']/2))
+    positief_voorspeld['y'].append(voorspeld_huidig)    
+
+    # --------------------------------- Positief getest, en nu ziek (beter na x dagen)
     beterdag = (parser.parse(datum) - datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
     
-    if datum in metenisweten:
+    if datum in metenisweten and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=7)):
         ziekgeworden = metenisweten[datum]['positief']
     else :
-        ziekgeworden = avg
+        ziekgeworden = positief_voorspeld['y'][-1]
 
-    if beterdag in metenisweten:
+    if beterdag in metenisweten and parser.parse(beterdag) < (datetime.datetime.now() - datetime.timedelta(days=7)):
         betergeworden = metenisweten[beterdag]['positief']
     else:
         try:
-            betergeworden = positief_gemiddeld['y'][len(positief_gemiddeld['y']) - ziek['ziekteduur']]
+            betergeworden = positief_voorspeld['y'][len(positief_voorspeld['y']) - ziek['ziekteduur']]
         except IndexError:
             betergeworden = avg
     
@@ -129,8 +159,6 @@ for d in date_range:
 
     ziek['x'].append(parser.parse(datum))
     ziek['y'].append(nuziek)
-
-    
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -169,10 +197,13 @@ anotate(ax1, metenisweten, "2020-07-01",
         'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-08", 400)
 
 # Plot average per dag
-ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
-         label=str(positief_gemiddeld['avgsize'])+' daags gemiddelde, t-' +
-         str(int(positief_gemiddeld['avgsize']/2))
-         )
+# ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
+#          label=str(positief_gemiddeld['avgsize'])+' daags gemiddelde, t-' +
+#          str(int(positief_gemiddeld['avgsize']/2))
+#          )
+
+ax1.plot(positief_voorspeld['x'], positief_voorspeld['y'], color='cyan', linestyle=':',
+         label='Voorspeld obv gem. RC.')
 
 ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+str(ic['y'][-1])+')')
 
