@@ -102,8 +102,8 @@ date_range = getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
-    # --------------------------------- Normale grafieken
-    if datum in metenisweten:
+    # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
+    if datum in metenisweten and parser.parse(datum).date() < datetime.date.today():
         positief['x'].append(parser.parse(datum))
         positief['y'].append(metenisweten[datum]['positief'])
 
