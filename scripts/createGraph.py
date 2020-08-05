@@ -157,8 +157,10 @@ for d in date_range:
     if beterdag in metenisweten:
         nuziek = nuziek - betergeworden
 
-    ziek['x'].append(parser.parse(datum))
-    ziek['y'].append(nuziek)
+    # --- Ziekte niet verder voorspellen dan de besmetting voorspelling
+    if parser.parse(datum) < (date_range[-1] - datetime.timedelta(days=positief_voorspeld['avgsize']/2)):
+        ziek['x'].append(parser.parse(datum))
+        ziek['y'].append(nuziek)
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -181,7 +183,8 @@ ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 # Plot cases per dag
-ax1.plot(positief['x'], positief['y'], label='positief getest')
+ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest')
+ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', alpha=0.2)
 
 anotate(ax1, metenisweten, "2020-03-09",
         'Brabant geen\nhanden schudden', "2020-01-01", 300)
@@ -202,12 +205,12 @@ anotate(ax1, metenisweten, "2020-07-01",
 #          str(int(positief_gemiddeld['avgsize']/2))
 #          )
 
-ax1.plot(positief_voorspeld['x'], positief_voorspeld['y'], color='cyan', linestyle=':',
-         label='Voorspeld obv gem. RC.')
+ax1.plot(positief_voorspeld['x'], positief_voorspeld['y'], 
+         color='slateblue', linestyle=':', label='Voorspeld obv gem. RC.')
 
 ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+str(ic['y'][-1])+')')
 
-ax2.plot(ziek['x'], ziek['y'], color='orange',
+ax2.plot(ziek['x'], ziek['y'], color='darkorange',
          linestyle=':', label='aantal getest ziek')
 
 ax1.set_xlabel("Datum")
