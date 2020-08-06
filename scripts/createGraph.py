@@ -67,7 +67,7 @@ positief_gemiddeld = {
 positief_voorspeld = {
     'x': [],
     'y': [],
-    'avgsize': 5
+    'avgsize': 12
 }
 
 ziek = {
@@ -187,6 +187,7 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
         tekst,
         xy=(parser.parse(datum), metenisweten[datum]['positief']),
         xytext=(parser.parse(x), y),
+        fontsize=8,
         bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
         arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
     )
@@ -206,17 +207,19 @@ ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='pos
 ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.2)
 
 anotate(ax1, metenisweten, "2020-03-09",
-        'Brabant geen\nhanden schudden', "2020-01-01", 300)
+        'Brabant geen\nhanden schudden', "2020-02-05", 300)
 anotate(ax1, metenisweten, "2020-03-15",
-        'Onderwijs,\nverpleeghuis,\nhoreca\ndicht', "2020-01-01", 600)
+        'Onderwijs,\nverpleeghuis,\nhoreca\ndicht', "2020-02-05", 600)
 anotate(ax1, metenisweten, "2020-03-23",
-        '1,5 meter, €400 boete', "2020-01-01", 1000)
-anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-04-25", 1100)
+        '1,5 meter, €400 boete', "2020-02-05", 1000)
+anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-05-05", 800)
 anotate(ax1, metenisweten, "2020-05-11",
         'Scholen,\nkappers,\ntandarts\nopen', "2020-03-28", 50)
-anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-15", 700)
+anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-20", 380)
 anotate(ax1, metenisweten, "2020-07-01",
-        'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-08", 400)
+        'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-01", 600)
+anotate(ax1, metenisweten, "2020-07-04",
+        'Begin\nschoolvakanties', "2020-06-29", 350)
 
 # Plot average per dag
 # ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
@@ -239,6 +242,8 @@ ax2.set_ylabel("Aantal zieken")
 
 ax1.set_ylim([0, 1400])
 ax2.set_ylim([0, 14000])
+
+plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
 # ax1.set_yscale('log')
 # ax2.set_yscale('log')
