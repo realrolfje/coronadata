@@ -214,12 +214,26 @@ anotate(ax1, metenisweten, "2020-03-23",
         '1,5 meter, €400 boete', "2020-02-05", 1000)
 anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-05-05", 800)
 anotate(ax1, metenisweten, "2020-05-11",
-        'Scholen,\nkappers,\ntandarts\nopen', "2020-03-28", 50)
+        'Scholen,\nkappers,\ntandarts\nopen', "2020-04-10", 50)
 anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-20", 380)
 anotate(ax1, metenisweten, "2020-07-01",
         'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-01", 600)
 anotate(ax1, metenisweten, "2020-07-04",
-        'Begin\nschoolvakanties', "2020-06-29", 350)
+        'Begin\nschoolvakanties', "2020-06-25", 350)
+anotate(ax1, metenisweten, "2020-08-06",
+        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-10", 500)
+
+ax1.text(parser.parse("2020-05-20"), 1020, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge")
+
+# Herrinnering aan afstand en handen wassen
+# vermijd drukke plekken in Amsterdam
+# Gemeentes mogen mondkapjesplicht invoeren en mensen weren op plekken
+
+# landelijk:
+# 1. Introductieweken studenten zoveel mogelijk online, geen ontgroening.
+# 2. Naam en contactgegevens afgeven bij restaurant voor bron en contactonderzoek. Restaurant 2 weken dicht bij meerdere besmettingen.
+# De jonge heeft nu opeens blijkbaar zicht op clusters?
+
 
 # Plot average per dag
 # ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
