@@ -194,6 +194,8 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
 
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
+fig.subplots_adjust(top=0.92, bottom=0.13)
+
 ax2 = plt.twinx()
 
 #plt.figure(figsize =(10,5))
@@ -263,7 +265,17 @@ plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 # ax2.set_yscale('log')
 
 
-plt.title('COVID-19 besmettingen, '+filedate)
+gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+plt.title('COVID-19 besmettingen, '+gegenereerd_op)
+
+footerleft="Gegenereerd op "+gegenereerd_op+". Publicatiedatum RIVM "+filedate+"."
+plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8)
+
+footerright="Bronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
+plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8)
+
+
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 plt.savefig("../graphs/besmettingen.png")
