@@ -31,6 +31,8 @@ def getDateRange(metenisweten):
 
 print("Generating graphs.")
 
+totaal_positief=0
+
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     metenisweten = {}
@@ -42,6 +44,7 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
             }
         metenisweten[record['Date_statistics']]['positief'] += 1
         filedate = record['Date_file']
+        totaal_positief += 1
 
 with open('../cache/NICE-intake-count.json', 'r') as json_file:
     data = json.load(json_file)
@@ -205,8 +208,8 @@ ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 # Plot cases per dag
-ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest')
-ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.2)
+ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+"{:,}".format(totaal_positief).replace(',','.')+")")
+ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3)
 
 anotate(ax1, metenisweten, "2020-03-09",
         'Brabant geen\nhanden schudden', "2020-02-05", 300)
@@ -256,8 +259,8 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Positief getest per dag")
 ax2.set_ylabel("Aantal zieken")
 
-ax1.set_ylim([0, 1400])
-ax2.set_ylim([0, 14000])
+ax1.set_ylim([0, 1500])
+ax2.set_ylim([0, 15000])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
