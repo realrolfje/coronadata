@@ -209,7 +209,7 @@ ax2.grid(which='both', axis='both', linestyle='-.',
 
 # Plot cases per dag
 ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+"{:,}".format(totaal_positief).replace(',','.')+")")
-ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3)
+ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 
 anotate(ax1, metenisweten, "2020-03-09",
         'Brabant geen\nhanden schudden', "2020-02-05", 300)
@@ -230,16 +230,6 @@ anotate(ax1, metenisweten, "2020-08-06",
 
 ax1.text(parser.parse("2020-05-20"), 1020, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
 
-# Herrinnering aan afstand en handen wassen
-# vermijd drukke plekken in Amsterdam
-# Gemeentes mogen mondkapjesplicht invoeren en mensen weren op plekken
-
-# landelijk:
-# 1. Introductieweken studenten zoveel mogelijk online, geen ontgroening.
-# 2. Naam en contactgegevens afgeven bij restaurant voor bron en contactonderzoek. Restaurant 2 weken dicht bij meerdere besmettingen.
-# De jonge heeft nu opeens blijkbaar zicht op clusters?
-
-
 # Plot average per dag
 # ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
 #          label=str(positief_gemiddeld['avgsize'])+' daags gemiddelde, t-' +
@@ -247,7 +237,7 @@ ax1.text(parser.parse("2020-05-20"), 1020, "\"Misschien ben jij klaar met het vi
 #          )
 
 ax1.plot(positief_voorspeld['x'][-15:], positief_voorspeld['y'][-15:], 
-         color='steelblue', linestyle=':')
+         color='steelblue', linestyle=':', label='voorspeld')
 
 ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+str(ic['y'][-1])+')')
 ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
@@ -259,8 +249,8 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Positief getest per dag")
 ax2.set_ylabel("Aantal zieken")
 
-ax1.set_ylim([0, 1500])
-ax2.set_ylim([0, 15000])
+ax1.set_ylim([0, 1600])
+ax2.set_ylim([0, 16000])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
