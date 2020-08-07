@@ -225,7 +225,7 @@ anotate(ax1, metenisweten, "2020-07-04",
 anotate(ax1, metenisweten, "2020-08-06",
         'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-10", 500)
 
-ax1.text(parser.parse("2020-05-20"), 1020, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge")
+ax1.text(parser.parse("2020-05-20"), 1020, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
 
 # Herrinnering aan afstand en handen wassen
 # vermijd drukke plekken in Amsterdam
