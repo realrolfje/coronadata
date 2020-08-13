@@ -55,7 +55,7 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
         filedate = record['Date_file']
         totaal_positief += 1
 
-        testpunt = record['Date_statistics']]['Municipal_health_service']
+        testpunt = record['Date_statistics']['Municipal_health_service']
         if testpunt not in testpunten:
             testpunten[testpunt] = 1
         else 
