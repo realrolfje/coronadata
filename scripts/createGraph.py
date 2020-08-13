@@ -127,25 +127,21 @@ for d in date_range:
     positief_gemiddeld['y'].append(avg)
 
     # ---------------------- Voorspelling positief getst obv gemiddelde richtingscoefficient positief getest.
-    if datum in metenisweten and len(positief['y']) > 2 and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=7)):
-        rc = positief['y'][-1]-positief['y'][-2]
-    elif len(positief_voorspeld['y']) > 2: 
-        rc = positief_voorspeld['y'][-1]-positief_voorspeld['y'][-2]
-    else :
-        rc = 0
-    
-    try:
-        rc_avg = rc_avg * (positief_voorspeld['avgsize'] - 1) / positief_voorspeld['avgsize'] + rc / positief_voorspeld['avgsize']
-    except NameError:
-        rc_avg = 0
+    if datum in metenisweten and len(positief['y']) > positief_voorspeld['avgsize'] and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
+        # Voorspel morgen op basis van metingen
+        rc = (positief['y'][-1]-positief['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
+        positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
+        positief_voorspeld['y'].append(positief['y'][-1] + rc)
+    elif len(positief_voorspeld['y']) > positief_voorspeld['avgsize']:
+        # Voorspel morgen op basis van schatting gisteren
+        rc = (positief_voorspeld['y'][-1]-positief_voorspeld['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
+        positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
+        positief_voorspeld['y'].append(positief_voorspeld['y'][-1] + rc)
+    else:
+        # If all else fails neem waarde van vorige positief
+        positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
+        positief_voorspeld['y'].append(positief['y'][-1])
 
-    try:
-        voorspeld_huidig = voorspeld_huidig + rc_avg
-    except NameError:
-        voorspeld_huidig = 0
-
-    positief_voorspeld['x'].append(parser.parse(datum) - datetime.timedelta(days=positief_voorspeld['avgsize']/2))
-    positief_voorspeld['y'].append(voorspeld_huidig)   
 
     # ---------------------- Voorspelling op IC obv gemiddelde richtingscoefficient positief getest.
     if len(ic['x']) > 10 and parser.parse(datum) > ic['x'][-1]:
@@ -179,10 +175,8 @@ for d in date_range:
     if beterdag in metenisweten:
         nuziek = nuziek - betergeworden
 
-    # --- Ziekte niet verder voorspellen dan de besmetting voorspelling
-    if parser.parse(datum) < (date_range[-1] - datetime.timedelta(days=positief_voorspeld['avgsize']/2)):
-        ziek['x'].append(parser.parse(datum))
-        ziek['y'].append(nuziek)
+    ziek['x'].append(parser.parse(datum))
+    ziek['y'].append(nuziek)
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -226,9 +220,9 @@ anotate(ax1, metenisweten, "2020-07-01",
 anotate(ax1, metenisweten, "2020-07-04",
         'Begin\nschoolvakanties', "2020-06-25", 350)
 anotate(ax1, metenisweten, "2020-08-06",
-        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-10", 650)
+        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-10", 800)
 
-ax1.text(parser.parse("2020-05-20"), 1020, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
+ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
 
 # Plot average per dag
 # ax1.plot(positief_gemiddeld['x'], positief_gemiddeld['y'], color='cyan', linestyle=':',
