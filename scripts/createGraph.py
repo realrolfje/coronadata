@@ -55,11 +55,16 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
         filedate = record['Date_file']
         totaal_positief += 1
 
-        testpunt = record['Date_statistics']['Municipal_health_service']
+        testpunt = record['Municipal_health_service']
         if testpunt not in testpunten:
             testpunten[testpunt] = 1
         else:
             testpunten[testpunt] += 1
+
+
+print('Totaal positieve tests per locatie:')
+for testpunt in testpunten:
+    print(testpunt.ljust(40), str(testpunten[testpunt]).rjust(5)) 
 
 with open('../cache/NICE-intake-count.json', 'r') as json_file:
     data = json.load(json_file)
@@ -312,3 +317,4 @@ ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 plt.savefig("../graphs/besmettingen.png")
 #plt.show()
+
