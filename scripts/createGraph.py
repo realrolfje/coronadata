@@ -32,6 +32,8 @@ def getDateRange(metenisweten):
 print("Generating graphs.")
 
 totaal_positief=0
+totaal_opgenomen=0
+geschat_besmettelijk=0
 
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
@@ -40,9 +42,15 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
         if (record['Date_statistics'] not in metenisweten):
             metenisweten[record['Date_statistics']] = {
                 'positief': 0,
-                'nu_op_ic': 0
+                'nu_op_ic': 0,
+                'opgenomen' : 0
             }
         metenisweten[record['Date_statistics']]['positief'] += 1
+
+        if (record['Hospital_admission'] == "Yes"):
+            metenisweten[record['Date_statistics']]['opgenomen'] += 1
+            totaal_opgenomen += 1
+
         filedate = record['Date_file']
         totaal_positief += 1
 
@@ -52,11 +60,17 @@ with open('../cache/NICE-intake-count.json', 'r') as json_file:
         if (measurement['date'] not in metenisweten):
             metenisweten[measurement['date']] = {
                 'positief': 0,
-                'nu_op_ic': 0
+                'nu_op_ic': 0,
+                'opgenomen' : 0
             }
         metenisweten[measurement['date']]['nu_op_ic'] += measurement['value']
 
 positief = {
+    'x': [],
+    'y': []
+}
+
+opgenomen = {
     'x': [],
     'y': []
 }
@@ -76,7 +90,7 @@ positief_voorspeld = {
 ziek = {
     'x' : [],
     'y' : [],
-    'ziekteduur' : 14
+    'ziekteduur' : 10 # Ziek is 14, maar besmettelijk is 10 voor RIVM (zie onder)
 }
 
 ic = {
@@ -112,6 +126,9 @@ for d in date_range:
 
         ic['x'].append(parser.parse(datum))
         ic['y'].append(metenisweten[datum]['nu_op_ic'])
+
+        opgenomen['x'].append(parser.parse(datum))
+        opgenomen['y'].append(metenisweten[datum]['opgenomen'])
 
         if len(ic['y'])>1:
             ic['rc'].append(ic['y'][-1] - ic['y'][-2])
@@ -175,8 +192,22 @@ for d in date_range:
     if beterdag in metenisweten:
         nuziek = nuziek - betergeworden
 
+    # Grafiek aangepast naar "geschat besmettelijk". De
+    # correctiefactor ligt tussen de "nuziek" berekening en
+    # de schattingen van het RIVM. Hierdoor kunnen we deze lijn
+    # doortrekken obv de voorspelde besmettingen, en geeft een getal
+    # dat meer overeenkomt met het RIVM.
+    correctiefactor = 5.5
+    besmettelijk = nuziek * correctiefactor
     ziek['x'].append(parser.parse(datum))
-    ziek['y'].append(nuziek)
+    ziek['y'].append(besmettelijk)
+
+    if (parser.parse(datum) <= datetime.datetime.now()):
+        geschat_besmettelijk=round(besmettelijk)
+
+
+def decimalstring(number):
+    return "{:,}".format(number).replace(',','.')
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
@@ -202,7 +233,7 @@ ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 # Plot cases per dag
-ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+"{:,}".format(totaal_positief).replace(',','.')+")")
+ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
 ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 
 anotate(ax1, metenisweten, "2020-03-09",
@@ -218,9 +249,9 @@ anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen'
 anotate(ax1, metenisweten, "2020-07-01",
         'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-01", 600)
 anotate(ax1, metenisweten, "2020-07-04",
-        'Begin\nschoolvakanties', "2020-06-25", 350)
+        'Begin\nschoolvakanties', "2020-06-28", 350)
 anotate(ax1, metenisweten, "2020-08-06",
-        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-10", 800)
+        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-01", 820)
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
 
@@ -236,15 +267,21 @@ ax1.plot(positief_voorspeld['x'][-15:], positief_voorspeld['y'][-15:],
 ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+str(ic['y'][-1])+')')
 ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
+# ax1.plot(opgenomen['x'], opgenomen['y'], color='green',
+#          linestyle='-', label='opgenomen (totaal: '+decimalstring(totaal_opgenomen)+')')
+
+
 ax2.plot(ziek['x'], ziek['y'], color='darkorange',
-         linestyle=':', label='aantal getest ziek')
+         linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
+
+
 
 ax1.set_xlabel("Datum")
-ax1.set_ylabel("Positief getest per dag")
-ax2.set_ylabel("Aantal zieken")
+ax1.set_ylabel("Aantal positief / op IC")
+ax2.set_ylabel("Geschat besmettelijk")
 
 ax1.set_ylim([0, 1600])
-ax2.set_ylim([0, 16000])
+ax2.set_ylim([0, 1600 * 50])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
