@@ -38,6 +38,7 @@ geschat_besmettelijk=0
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     metenisweten = {}
+    testpunten = {}
     for record in data:
         if (record['Date_statistics'] not in metenisweten):
             metenisweten[record['Date_statistics']] = {
@@ -53,6 +54,12 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
 
         filedate = record['Date_file']
         totaal_positief += 1
+
+        testpunt = record['Date_statistics']]['Municipal_health_service']
+        if testpunt not in testpunten:
+            testpunten[testpunt] = 1
+        else 
+            testpunten[testpunt] += 1
 
 with open('../cache/NICE-intake-count.json', 'r') as json_file:
     data = json.load(json_file)
