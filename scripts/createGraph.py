@@ -274,6 +274,7 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 ax2.plot(ziek['x'], ziek['y'], color='darkorange',
          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
+ax2.axvline(positief['x'][-1])
 
 
 ax1.set_xlabel("Datum")
