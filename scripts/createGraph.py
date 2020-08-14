@@ -286,7 +286,11 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 ax2.plot(ziek['x'], ziek['y'], color='darkorange',
          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
+# laat huidige datum zien met vertikale lijn
 ax2.axvline(positief['x'][-1], color='teal', linewidth=0.15)
+
+# Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
+ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
 
 
 ax1.set_xlabel("Datum")
