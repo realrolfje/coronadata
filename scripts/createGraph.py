@@ -183,16 +183,16 @@ for d in date_range:
     # --------------------------------- Positief getest, en nu ziek (beter na x dagen)
     beterdag = (parser.parse(datum) - datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
     
-    if datum in metenisweten and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=7)):
+    if datum in metenisweten and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=10)):
         ziekgeworden = metenisweten[datum]['positief']
     else :
-        ziekgeworden = positief_voorspeld['y'][-1]
+        ziekgeworden = positief_voorspeld['y'][-2]
 
     if beterdag in metenisweten and parser.parse(beterdag) < (datetime.datetime.now() - datetime.timedelta(days=7)):
         betergeworden = metenisweten[beterdag]['positief']
     else:
         try:
-            betergeworden = positief_voorspeld['y'][len(positief_voorspeld['y']) - ziek['ziekteduur']]
+            betergeworden = positief_voorspeld['y'][len(positief_voorspeld['y']) - ziek['ziekteduur']-1]
         except IndexError:
             betergeworden = avg
     
@@ -273,7 +273,7 @@ ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het vi
 #          str(int(positief_gemiddeld['avgsize']/2))
 #          )
 
-ax1.plot(positief_voorspeld['x'][-15:], positief_voorspeld['y'][-15:], 
+ax1.plot(positief_voorspeld['x'][-20:], positief_voorspeld['y'][-20:], 
          color='steelblue', linestyle=':', label='voorspeld')
 
 ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+str(ic['y'][-1])+')')
