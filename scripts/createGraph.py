@@ -310,10 +310,10 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 plt.title('COVID-19 besmettingen, '+gegenereerd_op)
 
-footerleft="Gegenereerd op "+gegenereerd_op+". Publicatiedatum RIVM "+filedate+"."
+footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
-footerright="Bronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
+footerright="Publicatiedatum RIVM "+filedate+".\nBronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 
