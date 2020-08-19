@@ -39,7 +39,7 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 plt.figure(figsize=(10,5))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
-plt.hist2d(x, y, bins=[50,10])
+plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]])
 plt.ylabel('leeftijd')
 plt.xlabel('dagen sinds 2020-01-01') 
 
@@ -49,10 +49,12 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Publicatiedatum RIVM "+filedate+".\nBronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
+plt.grid(which='both', axis='both', color='gray', linewidth=1, alpha=0.5)
+
 plt.savefig("../graphs/besmettingen-leeftijd.png", format="png")
 plt.savefig("../graphs/besmettingen-leeftijd.svg", format="svg")
 
-#plt.show()
+# plt.show()
 
 
 
