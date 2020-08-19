@@ -52,7 +52,7 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 plt.savefig("../graphs/besmettingen-leeftijd.png", format="png")
 plt.savefig("../graphs/besmettingen-leeftijd.svg", format="svg")
 
-plt.show()
+#plt.show()
 
 
 
