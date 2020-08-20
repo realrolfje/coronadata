@@ -17,6 +17,8 @@ y = []
 
 startdate = parser.parse('2020-02-01')
 
+weightsmap={}
+
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     for record in data:
@@ -29,9 +31,19 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
             xlabels.append(labelx)
             x.append(datax)
             y.append(datay)
+
+            if datax not in weightsmap:
+                weightsmap[datax] = 1
+            else:
+                weightsmap[datax] = weightsmap[datax] + 1
+
         except ValueError:
             # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
             pass
+
+weights=[]
+for d in x:
+    weights.append(1./weightsmap[d])
 
 
 def decimalstring(number):
@@ -41,7 +53,13 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 plt.figure(figsize=(10,5))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
-plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]])
+
+# Gewogen:
+#plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]], cmap='inferno', weights=weights)
+
+# Ongewogen:
+plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]], cmap='inferno')
+
 plt.ylabel('leeftijd')
 plt.xlabel('dagen sinds 2020-02-01') 
 
