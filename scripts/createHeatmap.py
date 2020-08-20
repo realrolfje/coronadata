@@ -59,7 +59,7 @@ plt.subplots_adjust(bottom=0.2)
 #plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
 
 # Ongewogen:
-plt.hist2d(x, y, bins=[200,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno')
+plt.hist2d(x, y, bins=[200,10], range=[[0,x[-1]+7],[0,100]], cmap='Oranges') # inferno is also a good one
 
 plt.ylabel('leeftijd')
 plt.xlabel('dagen sinds 2020-02-01') 
