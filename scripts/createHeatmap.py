@@ -14,7 +14,7 @@ print("Generating date/age heatmap.")
 x = []
 y = []
 
-startdate = parser.parse('2020-01-01')
+startdate = parser.parse('2020-02-01')
 
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
@@ -41,7 +41,7 @@ plt.figure(figsize=(10,5))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
 plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]])
 plt.ylabel('leeftijd')
-plt.xlabel('dagen sinds 2020-01-01') 
+plt.xlabel('dagen sinds 2020-02-01') 
 
 footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")

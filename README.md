@@ -1,4 +1,12 @@
-# Coronadata obv RIVM en NICE
+# Coronadata zonder gedoe
+
+Je hebt geen flitsend dashboard en ingewikkelde toespraken nodig om te doen wat je al wist:
+**Houd afstand, werk thuis, was je handen.**
+
+![Besmettingen en IC opnames](graphs/besmettingen.svg)
+![Besmettingen per leeftijdsgroep](graphs/besmettingen-leeftijd.svg)
+
+## Coronadata obv RIVM en NICE
 
 De gegegevens in deze repository zijn voornamelijk gebaseerd op RIVM 
 [Covid-19 karakteristieken per casus, landelijk](https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/2c4357c8-76e4-4662-9574-1deb8a73f724).
