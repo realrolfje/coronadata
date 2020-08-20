@@ -1,7 +1,7 @@
 # Coronadata zonder gedoe
 
-Je hebt geen flitsend dashboard en ingewikkelde toespraken nodig om te doen wat je al wist:
-**Houd afstand, werk thuis, was je handen.**
+Je hebt geen flitsend dashboard en ingewikkelde toespraken nodig om te doen wat je in april, mei en juni ook al wist:
+**Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.**
 
 ![Besmettingen en IC opnames](graphs/besmettingen.svg)
 ![Besmettingen per leeftijdsgroep](graphs/besmettingen-leeftijd.svg)
@@ -67,4 +67,3 @@ Beschrijving van de velden in dit bestand:
 | Week of Death | Week van overlijden. YYYYMM volgens ISO-week notatie (start op maandag t/m zondag) |
 | Municipal_health_service |  GGD die de melding heeft gedaan. |
 
-Corona data from RIVM and NICE (Dutch)
