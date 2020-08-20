@@ -1,6 +1,6 @@
 # Coronadata zonder gedoe
 
-Je hebt geen flitsend dashboard en ingewikkelde toespraken nodig om te doen wat je in april, mei en juni ook al wist:
+Geen smoesjes, je weet het best:
 **Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.**
 
 ![Besmettingen en IC opnames](graphs/besmettingen.svg)
