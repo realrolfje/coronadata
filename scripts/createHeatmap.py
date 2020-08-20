@@ -51,14 +51,15 @@ def decimalstring(number):
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-plt.figure(figsize=(10,5))
+plt.figure(figsize=(10,3))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
+plt.subplots_adjust(bottom=0.2)
 
 # Gewogen:
 #plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
 
 # Ongewogen:
-plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno')
+plt.hist2d(x, y, bins=[200,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno')
 
 plt.ylabel('leeftijd')
 plt.xlabel('dagen sinds 2020-02-01') 
