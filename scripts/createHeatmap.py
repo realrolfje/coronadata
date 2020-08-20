@@ -55,10 +55,10 @@ plt.figure(figsize=(10,5))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
 
 # Gewogen:
-#plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]], cmap='inferno', weights=weights)
+#plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
 
 # Ongewogen:
-plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]], cmap='inferno')
+plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno')
 
 plt.ylabel('leeftijd')
 plt.xlabel('dagen sinds 2020-02-01') 
