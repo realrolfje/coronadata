@@ -41,7 +41,7 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 plt.figure(figsize=(10,5))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
-plt.hist2d(x, y, bins=[50,10], range=[[x[0],x[-1]],[0,100]])
+plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]],[0,100]])
 plt.ylabel('leeftijd')
 plt.xlabel('dagen sinds 2020-02-01') 
 
