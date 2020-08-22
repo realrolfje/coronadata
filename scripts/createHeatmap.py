@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from dateutil import parser
 from statistics import mean
+from dateutil.relativedelta import relativedelta
 import datetime
 import json
 
@@ -61,12 +62,20 @@ plt.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 # Ongewogen:
 plt.hist2d(x, y, bins=[200,10], range=[[0,x[-1]+7],[0,100]], cmap='Oranges') # inferno is also a good one
 
-plt.ylabel('leeftijd')
-plt.xlabel('dagen sinds 2020-02-01') 
+plt.ylabel('Leeftijd')
+plt.xlabel('Datum') 
 
-# Figure out how to get dates on the x axes
-# (fig, ax) = plt.subplots()
-# ax.set_xlabels(xlabels)
+# Dirty stuff to get x labels (needs cleanup)
+xlabeldates = [startdate + relativedelta(months=x) for x in range(xlabels[-1].month - startdate.month + 1)]
+xlabels = []
+xlocs = []
+for label in xlabeldates:
+    xlabels.append(label.strftime("%Y-%m"))
+    xlocs.append((label - startdate).days)
+locs, labels = plt.xticks(xlocs, xlabels)
+
+# laat huidige datum zien met vertikale lijn
+plt.axvline(x[-1], color='teal', linewidth=0.15)
 
 footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
