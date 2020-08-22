@@ -83,7 +83,11 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-plt.grid(which='both', axis='both', color='gray', linewidth=1, alpha=0.5)
+plt.grid(which='both', axis='both', linestyle='-.',
+         color='gray', linewidth=1, alpha=0.3)
+
+
+
 
 plt.savefig("../graphs/besmettingen-leeftijd.png", format="png")
 plt.savefig("../graphs/besmettingen-leeftijd.svg", format="svg")
