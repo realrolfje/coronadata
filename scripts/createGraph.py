@@ -211,14 +211,15 @@ def decimalstring(number):
 
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
-    plt.annotate(
-        tekst,
-        xy=(parser.parse(datum), metenisweten[datum]['positief']),
-        xytext=(parser.parse(x), y),
-        fontsize=8,
-        bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-    )
+    if datum in metenisweten:
+        plt.annotate(
+            tekst,
+            xy=(parser.parse(datum), metenisweten[datum]['positief']),
+            xytext=(parser.parse(x), y),
+            fontsize=8,
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+        )
 
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
@@ -252,8 +253,8 @@ anotate(ax1, metenisweten, "2020-07-04",
         'Begin\nschoolvakanties', "2020-06-28", 350)
 anotate(ax1, metenisweten, "2020-08-06",
         'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-01", 820)
-# anotate(ax1, metenisweten, "2020-08-24",
-#         'Einde\nschoolvakanties', "2020-08-15", 700)
+anotate(ax1, metenisweten, "2020-08-24",
+        'Einde\nschoolvakanties', "2020-08-15", 700)
 
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
