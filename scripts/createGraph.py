@@ -38,7 +38,6 @@ geschat_besmettelijk=0
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     metenisweten = {}
-    testpunten = {}
     for record in data:
         if (record['Date_statistics'] not in metenisweten):
             metenisweten[record['Date_statistics']] = {
@@ -54,17 +53,6 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
 
         filedate = record['Date_file']
         totaal_positief += 1
-
-        testpunt = record['Municipal_health_service']
-        if testpunt not in testpunten:
-            testpunten[testpunt] = 1
-        else:
-            testpunten[testpunt] += 1
-
-
-print('Totaal positieve tests per locatie:')
-for testpunt in testpunten:
-    print(testpunt.ljust(40), str(testpunten[testpunt]).rjust(5)) 
 
 with open('../cache/NICE-intake-count.json', 'r') as json_file:
     data = json.load(json_file)
@@ -132,7 +120,7 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
-    if datum in metenisweten and parser.parse(datum).date() < datetime.date.today():
+    if datum in metenisweten and parser.parse(datum).date() <= datetime.date.today():
         positief['x'].append(parser.parse(datum))
         positief['y'].append(metenisweten[datum]['positief'])
 
@@ -183,12 +171,12 @@ for d in date_range:
     # --------------------------------- Positief getest, en nu ziek (beter na x dagen)
     beterdag = (parser.parse(datum) - datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
     
-    if datum in metenisweten and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=10)):
+    if datum in metenisweten and parser.parse(datum).date() < (datetime.date.today() - datetime.timedelta(days=10)):
         ziekgeworden = metenisweten[datum]['positief']
     else :
         ziekgeworden = positief_voorspeld['y'][-2]
 
-    if beterdag in metenisweten and parser.parse(beterdag) < (datetime.datetime.now() - datetime.timedelta(days=7)):
+    if beterdag in metenisweten and parser.parse(beterdag).date() < (datetime.date.today() - datetime.timedelta(days=7)):
         betergeworden = metenisweten[beterdag]['positief']
     else:
         try:
@@ -214,7 +202,7 @@ for d in date_range:
     ziek['x'].append(parser.parse(datum))
     ziek['y'].append(besmettelijk)
 
-    if (parser.parse(datum) <= datetime.datetime.now()):
+    if (parser.parse(datum).date() <= datetime.date.today()):
         geschat_besmettelijk=round(besmettelijk)
 
 
@@ -234,7 +222,7 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
 
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
-fig.subplots_adjust(top=0.92, bottom=0.13)
+fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 
 ax2 = plt.twinx()
 
@@ -264,6 +252,9 @@ anotate(ax1, metenisweten, "2020-07-04",
         'Begin\nschoolvakanties', "2020-06-28", 350)
 anotate(ax1, metenisweten, "2020-08-06",
         'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-01", 820)
+# anotate(ax1, metenisweten, "2020-08-24",
+#         'Einde\nschoolvakanties', "2020-08-15", 700)
+
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
 

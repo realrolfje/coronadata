@@ -18,6 +18,8 @@ print('Loading data from RIVM...')
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     metenisweten = { }
+    testpunten = {}
+
     for record in data:
         if (record['Date_statistics'] not in metenisweten):
             metenisweten[record['Date_statistics']] = {
@@ -32,6 +34,13 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
                 metenisweten[record['Date_statistics']]['opgenomen'] += 1
         if (record['Deceased'] == 'Yes'):
                 metenisweten[record['Date_statistics']]['overleden'] += 1
+
+        testpunt = record['Municipal_health_service']
+        if testpunt not in testpunten:
+            testpunten[testpunt] = 1
+        else:
+            testpunten[testpunt] += 1
+
 
 # -------------------- Get geweest op IC van NICE -----------------------
 print('Loading data 1/2 from NICE...')
@@ -80,9 +89,9 @@ for datum in metenisweten:
 
 # ----------------------- Generate CSV output -----------------------------
 
-csvfile='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.csv"
-print('Writing '+csvfile)
-with open(csvfile,'w') as file: 
+filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.csv"
+print('Writing '+filename)
+with open(filename,'w') as file: 
     file.write('"Datum"\t"Positief getest werkelijk"\t"Opgenomen (geweest) in ziekenhuis"\t"Overleden"\t"Opgenomen (geweest) op IC"\t"Op dit moment op IC"\n')
     for datum in metenisweten:
         file.write(
@@ -94,7 +103,6 @@ with open(csvfile,'w') as file:
             str(metenisweten[datum]['nu_op_ic']) + '\n'
         )
 
-
 with open('../data/runs.csv','a') as file:
     file.write(
         datetime.now().strftime('%Y-%m-%d') + '\t' +
@@ -103,9 +111,29 @@ with open('../data/runs.csv','a') as file:
         str(totaal_overleden) + '\n'
     )
 
-print('Printing to stdout for easier copy-pasting.')
-with open(csvfile,'r') as file: 
-    for line in file:
-        sys.stdout.write(line)
+# --------------------- Generate markdown versions
+
+filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.md"
+print('Writing '+filename)
+with open(filename,'w') as file: 
+    file.write('| Datum | Positief getest werkelijk | Opgenomen (geweest) in ziekenhuis | Overleden | Opgenomen (geweest) op IC | Op dit moment op IC |\n')
+    file.write('|-------|---------------------------|-----------------------------------|-----------|---------------------------|---------------------|\n')
+    for datum in metenisweten:
+        file.write('| ' + 
+            datum + ' | ' +
+            str(metenisweten[datum]['totaal_positief']) + ' | ' +
+            str(metenisweten[datum]['totaal_opgenomen']) + ' | ' +    
+            str(metenisweten[datum]['totaal_overleden']) + ' | ' +
+            str(metenisweten[datum]['geweest_op_ic']) + ' | ' +
+            str(metenisweten[datum]['nu_op_ic']) + ' |\n'
+        )
+
+filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-testlocaties.md"
+print('Writing '+filename)
+with open(filename,'w') as file: 
+    file.write('| Locatie | Positieve tests |\n')
+    file.write('|---------|-----------------|\n')
+    for testpunt in testpunten:
+        file.write('| ' + testpunt.ljust(40) + ' | ' + str(testpunten[testpunt]).rjust(5) + ' |\n') 
 
 print('Done.')

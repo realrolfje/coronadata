@@ -53,7 +53,7 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 plt.figure(figsize=(10,3))
 plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
-plt.subplots_adjust(bottom=0.2)
+plt.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 
 # Gewogen:
 #plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
