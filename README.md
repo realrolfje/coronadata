@@ -6,12 +6,17 @@ Geen smoesjes, je weet het best:
 ![Besmettingen en IC opnames](graphs/besmettingen.svg)
 ![Besmettingen per leeftijdsgroep](graphs/besmettingen-leeftijd.svg)
 
-## Coronadata obv RIVM en NICE
+Data in deze grafieken is afkomstig van het 
+[RIVM (Rijksinstituut voor Volksgezondheid en Millieu)](https://www.rivm.nl/) en 
+[NICE (Stichting Nationale Intensive Care Evaluatie)](https://www.stichting-nice.nl/index.jsp).
+Deze gegevens worden gedownload en lokaal gecached door [brondata.py](scripts/modules/brondata.py).
+Het downloaden van nieuwe gegevens, genereren van alle grafieken en bestanden en publiceren van 
+deze gegevens in deze repository wordt geregeld door het [update.sh](update.sh) bash script.
 
-De gegegevens in deze repository zijn voornamelijk gebaseerd op RIVM 
-[Covid-19 karakteristieken per casus, landelijk](https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/2c4357c8-76e4-4662-9574-1deb8a73f724).
 
-De data in dit uitgebreide bestand ziet er als volgt uit (twee voorbeeld
+## RIVM Covid-19 gegevens
+
+Het grootste deel van de gegevens in deze grafieken zijn afkomstig van het RIVM bestand [Covid-19 karakteristieken per casus, landelijk](https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/2c4357c8-76e4-4662-9574-1deb8a73f724) dat dagelijks wordt bijgewerkt. De data in dit uitgebreide bestand ziet er als volgt uit (twee voorbeeld
 records uit het werkelijke bestand):
 
 ```json
@@ -43,9 +48,7 @@ records uit het werkelijke bestand):
 ]
 ```
 
-Beschrijving van de velden in dit bestand:
-
-
+### Beschrijving van de velden in het RIVM bestand:
 
 | Veld | Beschrijving |
 |------|--------------|
@@ -67,3 +70,23 @@ Beschrijving van de velden in dit bestand:
 | Week of Death | Week van overlijden. YYYYMM volgens ISO-week notatie (start op maandag t/m zondag) |
 | Municipal_health_service |  GGD die de melding heeft gedaan. |
 
+
+## Stichting NICE Intensive care gegevens
+
+Van de Stichting NICE worden de volgende bestanden gebruikt:
+- [intake-cumulative](https://www.stichting-nice.nl/covid-19/public/intake-cumulative/), het aantal mensen dat ooit met COVID-19 gerelateerde klachten opgenomen is geweest (cumulatief).
+- [intake-count](https://www.stichting-nice.nl/covid-19/public/intake-count/), het aantal mensen dat met COVID-19 gerelateerde klachten aanwezig is op de IC.
+
+Deze bestanden zijn iets eenvoudiger van structuur en zien er als volgt uit:
+
+```json
+[
+ ...
+ {"date":"2020-08-07","value":36},
+ {"date":"2020-08-08","value":37},
+ {"date":"2020-08-09","value":42},
+ ...
+]
+```
+
+Hierbij is het veld `date` de datum waarop de telling is gedaan, en `value` de waarde van de telling (cumulatieve opnames of aantal patienten op de IC, respectievelijk).
