@@ -60,7 +60,7 @@ plt.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 #plt.hist2d(x, y, bins=[50,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
 
 # Ongewogen:
-plt.hist2d(x, y, bins=[200,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Oranges') # inferno is also a good one
+plt.hist2d(x, y, bins=[200,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Blues') # inferno is also a good one
 
 plt.ylabel('Leeftijd')
 plt.xlabel('Datum') 
