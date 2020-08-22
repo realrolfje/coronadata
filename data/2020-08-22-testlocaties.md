@@ -1,5 +1,5 @@
 | Locatie | Positieve tests |
-|---------|-----------------|
+|---------|----------------:|
 | GGD Amsterdam                            |  6044 |
 | GGD Gelderland-Zuid                      |  2362 |
 | GGD Regio Twente                         |  1439 |

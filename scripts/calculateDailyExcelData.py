@@ -117,7 +117,7 @@ filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.md"
 print('Writing '+filename)
 with open(filename,'w') as file: 
     file.write('| Datum | Positief getest werkelijk | Opgenomen (geweest) in ziekenhuis | Overleden | Opgenomen (geweest) op IC | Op dit moment op IC |\n')
-    file.write('|-------|---------------------------|-----------------------------------|-----------|---------------------------|---------------------|\n')
+    file.write('|-------|--------------------------:|----------------------------------:|----------:|--------------------------:|--------------------:|\n')
     for datum in metenisweten:
         file.write('| ' + 
             datum + ' | ' +
@@ -132,7 +132,7 @@ filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-testlocaties.md"
 print('Writing '+filename)
 with open(filename,'w') as file: 
     file.write('| Locatie | Positieve tests |\n')
-    file.write('|---------|-----------------|\n')
+    file.write('|---------|----------------:|\n')
     for testpunt in testpunten:
         file.write('| ' + testpunt.ljust(40) + ' | ' + str(testpunten[testpunt]).rjust(5) + ' |\n') 
 
