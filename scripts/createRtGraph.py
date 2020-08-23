@@ -32,13 +32,29 @@ def decimalstring(number):
 
 
 plt.figure(figsize=(10,3))
-plt.subplots_adjust(bottom=0.12, left=0.09, right=0.91)
+plt.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 plt.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-plt.plot(Rt_avg['x'], Rt_avg['y'], color='darkgreen', label='Rt_avg')
+plt.plot(Rt_avg['x'], Rt_avg['y'], color='black', label='Rt_avg')
 plt.plot(Rt_up['x'], Rt_up['y'], color='gray', linestyle='--', alpha=0.3)
 plt.plot(Rt_low['x'], Rt_low['y'], color='gray', linestyle='--', alpha=0.3)
-plt.axhline(1, color='red')
+
+
+high = []
+low = []
+for val in Rt_avg['y']:
+    if val > 1:
+        high.append(True)
+        low.append(False)
+    else:
+        high.append(False)
+        low.append(True)
+
+plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=high, facecolor='red', alpha=0.3, interpolate=True)
+plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alpha=0.3, interpolate=True)
+
+# laat huidige datum zien met vertikale lijn
+plt.axvline(datetime.date.today(), color='teal', linewidth=0.15)
 
 axes = plt.gca()
 axes.set_ylim([0,3])
