@@ -246,12 +246,12 @@ ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het vi
 ax1.plot(positief_voorspeld['x'][-20:], positief_voorspeld['y'][-20:], 
          color='steelblue', linestyle=':', label='voorspeld')
 
-ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+str(ic['y'][-1])+')')
+nu_op_ic = ic['y'][-1]
+ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+decimalstring(nu_op_ic)+')')
 ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
 # ax1.plot(opgenomen['x'], opgenomen['y'], color='green',
 #          linestyle='-', label='opgenomen (totaal: '+decimalstring(totaal_opgenomen)+')')
-
 
 ax2.plot(ziek['x'], ziek['y'], color='darkorange',
          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
@@ -293,4 +293,14 @@ ax2.legend(loc="upper right")
 plt.savefig("../graphs/besmettingen.png", format="png")
 plt.savefig("../graphs/besmettingen.svg", format="svg")
 #plt.show()
+
+print(
+    '--------- Voor de tweets ----------\n'+
+    'Positief getest: '+decimalstring(totaal_positief)+' (RIVM)\n' +
+    'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE)\n' +
+    'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
+    'https://realrolfje.github.io/coronadata/\n' +
+    '#COVID19 #coronavirus\n' +
+    '-----------------------------------\n'
+)
 
