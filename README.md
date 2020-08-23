@@ -4,7 +4,8 @@ Geen smoesjes, je weet het best:
 **Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.**
 
 ![Besmettingen en IC opnames](graphs/besmettingen.svg)
-![Besmettingen per leeftijdsgroep](graphs/besmettingen-leeftijd.svg)
+
+Alle grafieken zien? Ga naar http://realrolfje.github.io/coronadata
 
 Data in deze grafieken is afkomstig van het 
 [RIVM (Rijksinstituut voor Volksgezondheid en Millieu)](https://www.rivm.nl/) en 
