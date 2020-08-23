@@ -12,80 +12,8 @@ from datetime import datetime
 import modules.brondata as brondata
 
 brondata.download()
-
-# -------------------- Get data from RIVM -----------------
-print('Loading data from RIVM...')
-with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
-    data = json.load(json_file)
-    metenisweten = { }
-    testpunten = {}
-
-    for record in data:
-        if (record['Date_statistics'] not in metenisweten):
-            metenisweten[record['Date_statistics']] = {
-                'positief': 0,
-                'opgenomen': 0,
-                'overleden': 0,
-                'geweest_op_ic': 0,
-                'nu_op_ic': 0
-            }
-        metenisweten[record['Date_statistics']]['positief'] += 1
-        if (record['Hospital_admission'] == 'Yes'):
-                metenisweten[record['Date_statistics']]['opgenomen'] += 1
-        if (record['Deceased'] == 'Yes'):
-                metenisweten[record['Date_statistics']]['overleden'] += 1
-
-        testpunt = record['Municipal_health_service']
-        if testpunt not in testpunten:
-            testpunten[testpunt] = 1
-        else:
-            testpunten[testpunt] += 1
-
-
-# -------------------- Get geweest op IC van NICE -----------------------
-print('Loading data 1/2 from NICE...')
-with open('../cache/NICE-intake-cumulative.json', 'r') as json_file:
-    data = json.load(json_file)
-    for measurement in data:
-        if (measurement['date'] not in metenisweten):
-            metenisweten[measurement['date']] = {
-                'positief': 0,
-                'opgenomen': 0,
-                'overleden': 0,
-                'geweest_op_ic': 0,
-                'nu_op_ic': 0
-            }
-        metenisweten[measurement['date']]['geweest_op_ic'] += measurement['value']
-
-# -------------------- Get nu op IC van NICE -----------------------
-print('Loading data 2/2 from NICE...')
-with open('../cache/NICE-intake-count.json', 'r') as json_file:
-    data = json.load(json_file)
-    for measurement in data:
-        if (measurement['date'] not in metenisweten):
-            metenisweten[measurement['date']] = {
-                'positief': 0,
-                'opgenomen': 0,
-                'overleden': 0,
-                'geweest_op_ic': 0,
-                'nu_op_ic': 0
-            }
-        metenisweten[measurement['date']]['nu_op_ic'] += measurement['value']
-
-
-# ---------------------- Calculate totals -----------------------------
-print('Calculating totals...')
-totaal_positief = 0
-totaal_opgenomen = 0
-totaal_overleden = 0
-for datum in metenisweten:
-    totaal_positief  += metenisweten[datum]['positief']
-    totaal_opgenomen += metenisweten[datum]['opgenomen']
-    totaal_overleden += metenisweten[datum]['overleden']
-
-    metenisweten[datum]['totaal_positief'] = totaal_positief
-    metenisweten[datum]['totaal_opgenomen'] = totaal_opgenomen
-    metenisweten[datum]['totaal_overleden'] = totaal_overleden
+testpunten = brondata.readjson('../cache/testlocaties.json')
+metenisweten = brondata.readjson('../cache/daily-stats.json')
 
 # ----------------------- Generate CSV output -----------------------------
 
@@ -93,6 +21,10 @@ filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.csv"
 print('Writing '+filename)
 with open(filename,'w') as file: 
     file.write('"Datum"\t"Positief getest werkelijk"\t"Opgenomen (geweest) in ziekenhuis"\t"Overleden"\t"Opgenomen (geweest) op IC"\t"Op dit moment op IC"\n')
+    totaal_positief = 0
+    totaal_opgenomen = 0
+    totaal_overleden = 0
+
     for datum in metenisweten:
         file.write(
             datum + '\t' +
@@ -102,6 +34,9 @@ with open(filename,'w') as file:
             str(metenisweten[datum]['geweest_op_ic']) + '\t' +
             str(metenisweten[datum]['nu_op_ic']) + '\n'
         )
+        totaal_positief = max(totaal_positief, metenisweten[datum]['totaal_positief'])
+        totaal_opgenomen = max(totaal_opgenomen, metenisweten[datum]['totaal_opgenomen'])
+        totaal_overleden = max(totaal_overleden, metenisweten[datum]['totaal_overleden'])
 
 with open('../data/runs.csv','a') as file:
     file.write(

@@ -87,15 +87,8 @@ plt.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 
-
-
 plt.savefig("../graphs/besmettingen-leeftijd.png", format="png")
 plt.savefig("../graphs/besmettingen-leeftijd.svg", format="svg")
-
-# plt.show()
-
-
-
 
 # plt.show()
 

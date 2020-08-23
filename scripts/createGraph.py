@@ -7,6 +7,7 @@ from dateutil import parser
 from statistics import mean
 import datetime
 import json
+import modules.brondata as brondata
 
 
 def getDateRange(metenisweten):
@@ -29,41 +30,11 @@ def getDateRange(metenisweten):
     return date_range
 
 
-print("Generating graphs.")
 
-totaal_positief=0
-totaal_opgenomen=0
-geschat_besmettelijk=0
 
-with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
-    data = json.load(json_file)
-    metenisweten = {}
-    for record in data:
-        if (record['Date_statistics'] not in metenisweten):
-            metenisweten[record['Date_statistics']] = {
-                'positief': 0,
-                'nu_op_ic': 0,
-                'opgenomen' : 0
-            }
-        metenisweten[record['Date_statistics']]['positief'] += 1
+metenisweten = brondata.readjson('../cache/daily-stats.json')
 
-        if (record['Hospital_admission'] == "Yes"):
-            metenisweten[record['Date_statistics']]['opgenomen'] += 1
-            totaal_opgenomen += 1
-
-        filedate = record['Date_file']
-        totaal_positief += 1
-
-with open('../cache/NICE-intake-count.json', 'r') as json_file:
-    data = json.load(json_file)
-    for measurement in data:
-        if (measurement['date'] not in metenisweten):
-            metenisweten[measurement['date']] = {
-                'positief': 0,
-                'nu_op_ic': 0,
-                'opgenomen' : 0
-            }
-        metenisweten[measurement['date']]['nu_op_ic'] += measurement['value']
+print("Calculating predictions...")
 
 positief = {
     'x': [],
@@ -129,6 +100,11 @@ for d in date_range:
 
         opgenomen['x'].append(parser.parse(datum))
         opgenomen['y'].append(metenisweten[datum]['opgenomen'])
+
+        totaal_positief = metenisweten[datum]['totaal_positief']
+
+        if metenisweten[datum]['rivm-datum']:
+            filedate = metenisweten[datum]['rivm-datum']
 
         if len(ic['y'])>1:
             ic['rc'].append(ic['y'][-1] - ic['y'][-2])
@@ -221,6 +197,8 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
         )
 
+print("Plotting graphs...")
+
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
@@ -304,6 +282,7 @@ plt.title('COVID-19 besmettingen, '+gegenereerd_op)
 
 footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
+
 
 footerright="Publicatiedatum RIVM "+filedate+".\nBronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
