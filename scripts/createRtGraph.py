@@ -31,7 +31,7 @@ def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
 
 
-plt.figure(figsize=(10,5))
+plt.figure(figsize=(10,3))
 plt.subplots_adjust(bottom=0.12, left=0.09, right=0.91)
 plt.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
@@ -42,7 +42,7 @@ plt.axhline(1, color='red')
 
 axes = plt.gca()
 axes.set_ylim([0,3])
-axes.set_xlim([parser.parse("2020-02-01"),Rt_low['x'][-1]])
+axes.set_xlim([parser.parse("2020-02-01"),datetime.date.today() + datetime.timedelta(days=7)])
 axes.set_xlabel("Datum")
 axes.set_ylabel("Reproductiegetal")
 

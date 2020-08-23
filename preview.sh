@@ -2,6 +2,6 @@ cd scripts
 ./calculateDailyExcelData.py
 ./createGraph.py
 ./createHeatmap.py
+./createRtGraph.py
 cd ..
-open graphs/besmettingen.png
-open graphs/besmettingen-leeftijd.png
+open graphs
