@@ -29,9 +29,7 @@ def getDateRange(metenisweten):
                   for x in range(0, (maxdatum-mindatum).days+7)]
     return date_range
 
-
-
-
+brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
 print("Calculating predictions...")
@@ -197,8 +195,7 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
         )
 
-print("Plotting graphs...")
-
+print('Generating daily positive tests graph...')
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)

@@ -1,7 +1,8 @@
 cd scripts
-./calculateDailyExcelData.py
-./createGraph.py
 ./createHeatmap.py
 ./createRtGraph.py
+./createRNAGraph.py
+./calculateDailyExcelData.py
+./createGraph.py
 cd ..
 open graphs

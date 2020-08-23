@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
-# Haalt COVID-19 testresultaten op bij RIVM
+# Haalt COVID-19 testresultaten op bij RIVM en NICE
+#
 #
 
 import urllib.request
@@ -45,10 +46,16 @@ def download():
         'https://www.stichting-nice.nl/covid-19/public/intake-count/'
     ) or freshdata
     
-    #https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/ed0699d1-c9d5-4436-8517-27eb993eab6e?tab=relations
+    # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/ed0699d1-c9d5-4436-8517-27eb993eab6e?tab=relations
     freshdata = downloadIfStale(
         '../cache/COVID-19_reproductiegetal.json',
         'https://data.rivm.nl/covid-19/COVID-19_reproductiegetal.json'
+    ) or freshdata
+
+    # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/a2960b68-9d3f-4dc3-9485-600570cd52b9
+    freshdata = downloadIfStale(
+        '../cache/COVID-19_rioolwaterdata.json',
+        'https://data.rivm.nl/covid-19/COVID-19_rioolwaterdata.json'
     ) or freshdata
 
     return freshdata
@@ -56,19 +63,22 @@ def download():
 def initrecord(date, metenisweten):
     if (date not in metenisweten):
         metenisweten[date] = {
-            'positief'         : 0,
-            'totaal_positief'  : 0,
-            'nu_op_ic'         : 0,
-            'geweest_op_ic'    : 0,
-            'opgenomen'        : 0,
-            'totaal_opgenomen' : 0,
-            'overleden'        : 0,
-            'totaal_overleden' : 0,
-            'rivm-datum'       : None,
-            'Rt_avg'           : None,
-            'Rt_low'           : None,
-            'Rt_up'            : None,
-            'Rt_population'    : None
+            'positief'            : 0,
+            'totaal_positief'     : 0,
+            'nu_op_ic'            : 0,
+            'geweest_op_ic'       : 0,
+            'opgenomen'           : 0,
+            'totaal_opgenomen'    : 0,
+            'overleden'           : 0,
+            'totaal_overleden'    : 0,
+            'rivm-datum'          : None,
+            'Rt_avg'              : None,
+            'Rt_low'              : None,
+            'Rt_up'               : None,
+            'Rt_population'       : None,
+            'totaal_RNA_per_ml'   : 0,
+            'totaal_RNA_metingen' : 0,
+            'RNA_per_ml_avg'      : 0
         }    
 
 # Not used yet, maybe handy to graph more stuff based on a single json
@@ -123,6 +133,14 @@ def builddaily():
             if 'population' in record:
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
+    with open('../cache/COVID-19_rioolwaterdata.json') as json_file:
+        data = json.load(json_file)
+        for record in data:
+            initrecord(record['Date_measurement'], metenisweten)
+            metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[record['Date_measurement']]['totaal_RNA_metingen'] += 1 
+            metenisweten[record['Date_measurement']]['RNA_per_ml_avg'] = metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] / metenisweten[record['Date_measurement']]['totaal_RNA_metingen'] 
+
     totaal_positief = 0
     totaal_opgenomen = 0
     totaal_overleden = 0
@@ -138,6 +156,9 @@ def builddaily():
     writejson('../cache/daily-stats.json', metenisweten)
     writejson('../cache/testlocaties.json', testpunten)
 
-if __name__ == "__main__":
+def freshdata():
     if download():
         builddaily()
+
+if __name__ == "__main__":
+    freshdata()

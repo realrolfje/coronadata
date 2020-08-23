@@ -9,6 +9,9 @@ from statistics import mean
 from dateutil.relativedelta import relativedelta
 import datetime
 import json
+import modules.brondata as brondata
+
+brondata.freshdata()
 
 print("Generating date/age heatmap.")
 

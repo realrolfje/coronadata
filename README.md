@@ -81,12 +81,67 @@ Deze bestanden zijn iets eenvoudiger van structuur en zien er als volgt uit:
 
 ```json
 [
- ...
- {"date":"2020-08-07","value":36},
- {"date":"2020-08-08","value":37},
- {"date":"2020-08-09","value":42},
- ...
+    ...
+    {"date":"2020-08-07","value":36},
+    {"date":"2020-08-08","value":37},
+    {"date":"2020-08-09","value":42},
+    ...
 ]
 ```
 
 Hierbij is het veld `date` de datum waarop de telling is gedaan, en `value` de waarde van de telling (cumulatieve opnames of aantal patienten op de IC, respectievelijk).
+
+## Rioolwaterzuiverings gegevens
+
+Voor rioolwatergegevens wordt de [Covid-19 Nationale SARS-CoV-2 Afvalwatersurveillance](https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/a2960b68-9d3f-4dc3-9485-600570cd52b9) gebruikt. Dit bestand bevat per bemonsterde afval-/rioolwaterzuiveringsinstallatie (AWZI/RWZI) in Nederland het gehalte SARS-CoV-2 RNA per milliliter.
+
+De data in dit bestand ziet er als volgt uit:
+
+```json
+[
+    ...
+    {
+        "Date_measurement": "2020-08-13",
+        "RWZI_AWZI_code": 8022,
+        "RWZI_AWZI_name": "Apeldoorn",
+        "X_coordinate": 194895,
+        "Y_coordinate": 472607,
+        "Postal_code": "7317AX",
+        "Security_region_code": "VR06",
+        "Security_region_name": "Noord- en Oost-Gelderland",
+        "Percentage_in_security_region": "1",
+        "RNA_per_ml": 479,
+        "Representative_measurement": true
+    },
+    {
+        "Date_measurement": "2020-08-13",
+        "RWZI_AWZI_code": 12022,
+        "RWZI_AWZI_name": "Beverwijk",
+        "X_coordinate": 106373,
+        "Y_coordinate": 498868,
+        "Postal_code": "1948NS",
+        "Security_region_code": "VR12",
+        "Security_region_name": "Kennemerland",
+        "Percentage_in_security_region": "0,435961337",
+        "RNA_per_ml": 243,
+        "Representative_measurement": true
+    }
+    ...
+]
+```
+
+### Beschrijving van de velden in het Afvalwatersurveillance bestand:
+
+| Veld                          | Beschrijving |
+|-------------------------------|--------------|
+| Date_measurement              | Datum waarop de monstername van het 24-uurs influent (ongezuiverd afval-/rioolwater) monster is gestart (formaat: jjjj-mm-dd). |
+| RWZI_AWZI_code                |  Code van rioolwaterzuiveringsinstallatie (RWZI) of afvalwaterzuiveringsinstallatie (AWZI). |
+| RWZI_AWZI_name                | Naam van rioolwaterzuiveringsinstallatie (RWZI) of afvalwaterzuiveringsinstallatie (AWZI). |
+| X_coordinate                  | Rijksdriehoeksmeting (RD) x-coördinaat van locatie van RWZI of AWZI.  |
+| Y_coordinate                  | Rijksdriehoeksmeting (RD) y-coördinaat van locatie van RWZI of AWZI.  |
+| Postal_code                   | Postcode van locatie van RWZI of AWZI. |
+| Security_region_code          | Code voor de betreffende [veiligheidsregio](https://www.cbs.nl/nl-nl/cijfers/detail/84721NED?q=Veiligheid). |
+| Security_region_name          | Veiligheidsregio waarin het verzorgingsgebied van de RWZI zich bevindt. Dit kan meer dan één veiligheidsregio betreffen en dan wordt vermeld welke AWZI/RWZI binnen de betreffende veiligheidsregio vallen. |
+| Percentage_in_security_region | Inschatting RIVM met hoeveel procent het verzorgingsgebied van de RWZI zich in de betreffende veiligheidsregio bevindt. Let op: het betreft hier een schatting van het RIVM gebaseerd op CBS data. |
+| RNA_per_ml                    | De gemiddelde concentratie SARS-CoV-2 RNA per mL ongezuiverd afval-/rioolwater (influent). |
+| Representative_measurement    | Tijdsbestek monstername. True = 24-uurs bemonstering van het influent, False = steekmonster (op een moment genomen) van het influent. |

@@ -11,9 +11,11 @@ import sys
 from datetime import datetime
 import modules.brondata as brondata
 
-brondata.download()
+brondata.freshdata()
 testpunten = brondata.readjson('../cache/testlocaties.json')
 metenisweten = brondata.readjson('../cache/daily-stats.json')
+
+print('Generating excel csv data')
 
 # ----------------------- Generate CSV output -----------------------------
 

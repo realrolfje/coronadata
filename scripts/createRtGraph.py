@@ -9,7 +9,11 @@ import datetime
 import json
 import modules.brondata as brondata
 
+brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
+
+print('Generating Rt graph...')
+
 
 Rt_avg = {    'x':[],    'y':[]}
 Rt_low = {    'x':[],    'y':[]}
