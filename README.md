@@ -14,6 +14,8 @@ Deze gegevens worden gedownload en lokaal gecached door [brondata.py](scripts/mo
 Het downloaden van nieuwe gegevens, genereren van alle grafieken en bestanden en publiceren van 
 deze gegevens in deze repository wordt geregeld door het [update.sh](update.sh) bash script.
 
+Zie de [Covid dataset](https://data.rivm.nl/covid-19/) 
+
 
 ## RIVM Covid-19 gegevens
 
