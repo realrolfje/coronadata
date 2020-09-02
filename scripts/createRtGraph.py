@@ -60,6 +60,15 @@ plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alp
 # laat huidige datum zien met vertikale lijn
 plt.axvline(datetime.date.today(), color='teal', linewidth=0.15)
 
+plt.annotate(
+    str(Rt_avg['y'][-1]),
+    xy=(Rt_avg['x'][-1], Rt_avg['y'][-1]),
+    xytext=(Rt_avg['x'][-1], Rt_avg['y'][-1]+0.5),
+    fontsize=8,
+    bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+    arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+)
+
 axes = plt.gca()
 axes.set_ylim([0,3])
 axes.set_xlim([parser.parse("2020-02-01"),datetime.date.today() + datetime.timedelta(days=7)])
