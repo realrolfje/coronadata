@@ -1,3 +1,4 @@
+mkdir -p cache
 cd scripts
 ./createHeatmap.py
 ./createRtGraph.py

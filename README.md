@@ -149,11 +149,11 @@ De data in dit bestand ziet er als volgt uit:
 | RNA_per_ml                    | De gemiddelde concentratie SARS-CoV-2 RNA per mL ongezuiverd afval-/rioolwater (influent). |
 | Representative_measurement    | Tijdsbestek monstername. True = 24-uurs bemonstering van het influent, False = steekmonster (op een moment genomen) van het influent. |
 
-## Installatie van python requirements op MacOS
+## Installatie van vereiste python libraries op MacOS
 
 ```
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo python get-pip.py
-sudo pip install numpy
-
+sudo python3 get-pip.py
+pip install numpy
+pip install matplotlib
 ```
