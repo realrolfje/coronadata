@@ -1,3 +1,4 @@
+git pull
 mkdir -p cache
 cd scripts
 ./createHeatmap.py
