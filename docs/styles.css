@@ -1,0 +1,7 @@
+html {
+    -webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
+}
+body, table {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 1em;
+}
