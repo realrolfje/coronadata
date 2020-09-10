@@ -10,25 +10,6 @@ import json
 import modules.brondata as brondata
 
 
-def getDateRange(metenisweten):
-    for datum in metenisweten:
-        try:
-            mindatum
-        except NameError:
-            mindatum = parser.parse(datum)
-
-        try:
-            maxdatum
-        except NameError:
-            maxdatum = parser.parse(datum)
-
-        mindatum = min(mindatum, parser.parse(datum))
-        maxdatum = max(maxdatum, parser.parse(datum))
-
-    date_range = [mindatum + datetime.timedelta(days=x)
-                  for x in range(0, (maxdatum-mindatum).days+7)]
-    return date_range
-
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
@@ -83,7 +64,7 @@ besmettingsgraad = {
 # print((parser.parse("2020-01-30") - datetime.timedelta(days=ziekteduur)).strftime("%Y-%m-%d"))
 # exit
 
-date_range = getDateRange(metenisweten)
+date_range = brondata.getDateRange(metenisweten)
 
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")

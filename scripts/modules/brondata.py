@@ -6,8 +6,11 @@
 
 import urllib.request
 import os.path
+import datetime
 import time
 import json
+from dateutil import parser
+
 
 def readjson(filename):
     print('Reading '+filename)
@@ -112,15 +115,16 @@ def builddaily():
                     metenisweten[record['Date_statistics']]['besmettingleeftijd'][age] = 1
                 else: 
                     metenisweten[record['Date_statistics']]['besmettingleeftijd'][age] += 1
-
-                testpunt = record['Municipal_health_service']
-                if testpunt not in testpunten:
-                    testpunten[testpunt] = 1
-                else:
-                    testpunten[testpunt] += 1
             except ValueError:
                 # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
                 pass
+
+            testpunt = record['Municipal_health_service']
+            if testpunt not in testpunten:
+                testpunten[testpunt] = 1
+            else:
+                testpunten[testpunt] += 1
+
 
     with open('../cache/NICE-intake-count.json', 'r') as json_file:
         data = json.load(json_file)
@@ -174,6 +178,26 @@ def freshdata():
     if download():
         builddaily()
     builddaily()
+
+
+def getDateRange(metenisweten):
+    for datum in metenisweten:
+        try:
+            mindatum
+        except NameError:
+            mindatum = parser.parse(datum)
+
+        try:
+            maxdatum
+        except NameError:
+            maxdatum = parser.parse(datum)
+
+        mindatum = min(mindatum, parser.parse(datum))
+        maxdatum = max(maxdatum, parser.parse(datum))
+
+    date_range = [mindatum + datetime.timedelta(days=x)
+                  for x in range(0, (maxdatum-mindatum).days+7)]
+    return date_range
 
 if __name__ == "__main__":
     freshdata()
