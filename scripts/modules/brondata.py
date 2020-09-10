@@ -78,7 +78,11 @@ def initrecord(date, metenisweten):
             'Rt_population'       : None,
             'totaal_RNA_per_ml'   : 0,
             'totaal_RNA_metingen' : 0,
-            'RNA_per_ml_avg'      : 0
+            'RNA_per_ml_avg'      : 0,
+            'besmettingleeftijd'  : {
+                # key = leeftijdscategorie
+                # value = aantal besmettingen
+            }
         }    
 
 # Not used yet, maybe handy to graph more stuff based on a single json
@@ -101,12 +105,22 @@ def builddaily():
             if (record['Deceased'] == 'Yes'):
                 metenisweten[record['Date_statistics']]['overleden'] += 1
 
-            testpunt = record['Municipal_health_service']
-            if testpunt not in testpunten:
-                testpunten[testpunt] = 1
-            else:
-                testpunten[testpunt] += 1
+            try:
+                # Age groups are 0-10, 10-20, 30-40 etc, we make that 5, 15, 25, 35.
+                age = int(record['Agegroup'].split('-')[0].split('+')[0])+5
+                if age not in metenisweten[record['Date_statistics']]['besmettingleeftijd']:
+                    metenisweten[record['Date_statistics']]['besmettingleeftijd'][age] = 1
+                else: 
+                    metenisweten[record['Date_statistics']]['besmettingleeftijd'][age] += 1
 
+                testpunt = record['Municipal_health_service']
+                if testpunt not in testpunten:
+                    testpunten[testpunt] = 1
+                else:
+                    testpunten[testpunt] += 1
+            except ValueError:
+                # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
+                pass
 
     with open('../cache/NICE-intake-count.json', 'r') as json_file:
         data = json.load(json_file)
@@ -159,6 +173,7 @@ def builddaily():
 def freshdata():
     if download():
         builddaily()
+    builddaily()
 
 if __name__ == "__main__":
     freshdata()
