@@ -60,15 +60,17 @@ date_range = brondata.getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
     if datum in metenisweten:
-        gemiddeldeleeftijd['x'].append(datum)
 
         positief = 0
         som = 0
         for age in metenisweten[datum]['besmettingleeftijd']:
             som += metenisweten[datum]['besmettingleeftijd'][age] * int(age)
             positief += metenisweten[datum]['besmettingleeftijd'][age]
-        gemiddeld = som/positief
-        gemiddeldeleeftijd['y'].append(gemiddeld)
+
+        if positief > 0:
+            gemiddeld = som/positief
+            gemiddeldeleeftijd['x'].append(datum)
+            gemiddeldeleeftijd['y'].append(gemiddeld)
 
 def decimalstring(number):
     return "{:,}".format(number).replace(',', '.')
