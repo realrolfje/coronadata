@@ -177,7 +177,6 @@ def builddaily():
 def freshdata():
     if download():
         builddaily()
-    builddaily()
 
 
 def getDateRange(metenisweten):
