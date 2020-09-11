@@ -256,7 +256,7 @@ plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-plt.title('COVID-19 besmettingen, '+gegenereerd_op)
+plt.title('Positieve COVID-19 tests, '+gegenereerd_op)
 
 footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")

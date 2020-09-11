@@ -79,7 +79,7 @@ fig, heatmap = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 averages = plt.twinx()
 
-plt.title('Besmettingen per leeftijdsgroep, '+gegenereerd_op)
+plt.title('Positieve tests per leeftijdsgroep, '+gegenereerd_op)
 
 
 # Gewogen:
