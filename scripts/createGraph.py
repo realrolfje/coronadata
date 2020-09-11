@@ -199,7 +199,7 @@ anotate(ax1, metenisweten, "2020-03-15",
         'Onderwijs,\nverpleeghuis,\nhoreca\ndicht', "2020-02-05", 600)
 anotate(ax1, metenisweten, "2020-03-23",
         '1,5 meter, €400 boete', "2020-02-05", 1000)
-anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-05-05", 800)
+anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-05-05", 900)
 anotate(ax1, metenisweten, "2020-05-11",
         'Scholen,\nkappers,\ntandarts\nopen', "2020-04-10", 50)
 anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-20", 380)
@@ -208,9 +208,9 @@ anotate(ax1, metenisweten, "2020-07-01",
 anotate(ax1, metenisweten, "2020-07-04",
         'Begin\nschoolvakanties', "2020-06-28", 350)
 anotate(ax1, metenisweten, "2020-08-06",
-        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-01", 820)
+        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-20", 820)
 anotate(ax1, metenisweten, "2020-08-24",
-        'Einde\nschoolvakanties', "2020-07-30", 120)
+        'Einde\nschoolvakanties', "2020-08-10", 240)
 
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
