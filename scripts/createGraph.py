@@ -212,7 +212,7 @@ anotate(ax1, metenisweten, "2020-08-06",
 anotate(ax1, metenisweten, "2020-08-24",
         'Einde\nschoolvakanties', "2020-08-10", 240)
 anotate(ax1, metenisweten, "2020-09-01",
-        'Opheft bruiloft\nGrapperhaus', "2020-08-20", 1100)
+        'Ophef bruiloft\nGrapperhaus', "2020-08-20", 1100)
 
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
