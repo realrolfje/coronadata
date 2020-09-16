@@ -199,10 +199,10 @@ anotate(ax1, metenisweten, "2020-03-15",
         'Onderwijs,\nverpleeghuis,\nhoreca\ndicht', "2020-02-05", 600)
 anotate(ax1, metenisweten, "2020-03-23",
         '1,5 meter, €400 boete', "2020-02-05", 1000)
-anotate(ax1, metenisweten, "2020-04-22", 'Scholen 50% open', "2020-05-05", 900)
-anotate(ax1, metenisweten, "2020-05-11",
-        'Scholen,\nkappers,\ntandarts\nopen', "2020-04-10", 50)
-anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-20", 380)
+anotate(ax1, metenisweten, "2020-05-11", 'Scholen 50% open,\nkappers open', "2020-03-25", 100)
+anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen', "2020-05-02", 800)
+anotate(ax1, metenisweten, "2020-06-08",
+        'Scholen\nopen', "2020-06-01", 350)
 anotate(ax1, metenisweten, "2020-07-01",
         'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-01", 600)
 anotate(ax1, metenisweten, "2020-07-04",
@@ -212,7 +212,7 @@ anotate(ax1, metenisweten, "2020-08-06",
 anotate(ax1, metenisweten, "2020-08-24",
         'Einde\nschoolvakanties', "2020-08-10", 240)
 anotate(ax1, metenisweten, "2020-09-01",
-        'Ophef bruiloft\nGrapperhaus', "2020-08-20", 1100)
+        'Ophef bruiloft\nGrapperhaus', "2020-08-10", 1150)
 
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")

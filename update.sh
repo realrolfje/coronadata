@@ -9,5 +9,5 @@ cd scripts
 cd ..
 echo "<!-- updated $(date) -->" >> docs/index.html
 git add .
-git commit -m 'Ran getDailyExcelData'
+git commit -m 'Ran update script'
 git push
