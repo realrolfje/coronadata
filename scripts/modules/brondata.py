@@ -171,9 +171,10 @@ def builddaily():
     dates = []
     rna = []
     for date in metenisweten:
-        dates.append(date)
-        rna.append(metenisweten[date]['RNA_per_ml_avg'])
-    rna_avg = [x*66 for x in uniform_filter1d(rna, size=20)]
+        if metenisweten[date]['RNA_per_ml_avg']:
+            dates.append(date)
+            rna.append(metenisweten[date]['RNA_per_ml_avg'])
+    rna_avg = [x*37 for x in uniform_filter1d(rna, size=20)]
 
     for i in range(len(dates)):
         date = dates[i]

@@ -163,7 +163,7 @@ for d in date_range:
     ziek['x'].append(parser.parse(datum))
     ziek['y'].append(besmettelijk)
 
-    if datum in metenisweten and 'besmettelijk_obv_rna' in metenisweten[datum]:
+    if datum in metenisweten and metenisweten[datum]['besmettelijk_obv_rna']:
         ziek_rna['x'].append(parser.parse(datum))
         ziek_rna['y'].append(metenisweten[datum]['besmettelijk_obv_rna'])
 
@@ -243,19 +243,18 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 # ax1.plot(opgenomen['x'], opgenomen['y'], color='green',
 #          linestyle='-', label='opgenomen (totaal: '+decimalstring(totaal_opgenomen)+')')
 
-ax2.plot(ziek['x'], ziek['y'], color='darkorange',
-         linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
+# ax2.plot(ziek['x'], ziek['y'], color='darkorange',
+#          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
 # Test for plotting besmettelijk op basis van rna
-# ax2.plot(ziek_rna['x'], ziek_rna['y'], color='purple',
-#          linestyle='-', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
+ax2.plot(ziek_rna['x'], ziek_rna['y'], color='darkorange',
+         linestyle=':', label='geschat besmettelijk obv RNA in riool (nu: '+decimalstring(round(ziek_rna['y'][-1]))+')')
 
 # laat huidige datum zien met vertikale lijn
 ax2.axvline(positief['x'][-1], color='teal', linewidth=0.15)
 
 # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
 ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
-
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief / op IC")
