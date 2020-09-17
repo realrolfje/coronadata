@@ -268,7 +268,6 @@ plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 # ax1.set_yscale('log')
 # ax2.set_yscale('log')
 
-
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 plt.title('Positieve COVID-19 tests, '+gegenereerd_op)
@@ -292,7 +291,8 @@ with open("../docs/tweet.txt", 'w') as file:
     file.write(
         'Positief getest: '+decimalstring(totaal_positief)+' (RIVM)\n' +
         'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE)\n' +
-        'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
+#        'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
+        'Besmettelijk: '+decimalstring(round(ziek_rna['y'][-1]))+' (geschat o.b.v. RNA in riool)\n' +
         'https://realrolfje.github.io/coronadata/\n' +
         '#COVID19 #coronavirus'
     )
