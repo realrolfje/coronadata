@@ -43,6 +43,12 @@ ziek = {
     'ziekteduur' : 10 # Ziek is 14, maar besmettelijk is 10 voor RIVM (zie onder)
 }
 
+ziek_rna = {
+    'x' : [],
+    'y' : [],
+}
+
+
 ic = {
     'x' : [],
     'y' : [],
@@ -157,6 +163,10 @@ for d in date_range:
     ziek['x'].append(parser.parse(datum))
     ziek['y'].append(besmettelijk)
 
+    if datum in metenisweten and 'besmettelijk_obv_rna' in metenisweten[datum]:
+        ziek_rna['x'].append(parser.parse(datum))
+        ziek_rna['y'].append(metenisweten[datum]['besmettelijk_obv_rna'])
+
     if (parser.parse(datum).date() <= datetime.date.today()):
         geschat_besmettelijk=round(besmettelijk)
 
@@ -235,6 +245,10 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
 ax2.plot(ziek['x'], ziek['y'], color='darkorange',
          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
+
+# Test for plotting besmettelijk op basis van rna
+# ax2.plot(ziek_rna['x'], ziek_rna['y'], color='purple',
+#          linestyle='-', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
 # laat huidige datum zien met vertikale lijn
 ax2.axvline(positief['x'][-1], color='teal', linewidth=0.15)

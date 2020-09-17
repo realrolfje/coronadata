@@ -10,7 +10,7 @@ import datetime
 import time
 import json
 from dateutil import parser
-
+from scipy.ndimage.filters import uniform_filter1d
 
 def readjson(filename):
     print('Reading '+filename)
@@ -21,6 +21,9 @@ def writejson(filename, adict):
     print('Writing '+filename)
     with open(filename, 'w') as file:
         file.write(json.dumps(adict))
+
+def isnewer(file1, file2):
+    return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime 
 
 def downloadIfStale(filename, url):
     if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):
@@ -66,23 +69,24 @@ def download():
 def initrecord(date, metenisweten):
     if (date not in metenisweten):
         metenisweten[date] = {
-            'positief'            : 0,
-            'totaal_positief'     : 0,
-            'nu_op_ic'            : 0,
-            'geweest_op_ic'       : 0,
-            'opgenomen'           : 0,
-            'totaal_opgenomen'    : 0,
-            'overleden'           : 0,
-            'totaal_overleden'    : 0,
-            'rivm-datum'          : None,
-            'Rt_avg'              : None,
-            'Rt_low'              : None,
-            'Rt_up'               : None,
-            'Rt_population'       : None,
-            'totaal_RNA_per_ml'   : 0,
-            'totaal_RNA_metingen' : 0,
-            'RNA_per_ml_avg'      : 0,
-            'besmettingleeftijd'  : {
+            'positief'             : 0,
+            'totaal_positief'      : 0,
+            'nu_op_ic'             : 0,
+            'geweest_op_ic'        : 0,
+            'opgenomen'            : 0,
+            'totaal_opgenomen'     : 0,
+            'overleden'            : 0,
+            'totaal_overleden'     : 0,
+            'rivm-datum'           : None,
+            'Rt_avg'               : None,
+            'Rt_low'               : None,
+            'Rt_up'                : None,
+            'Rt_population'        : None,
+            'totaal_RNA_per_ml'    : 0,
+            'totaal_RNA_metingen'  : 0,
+            'RNA_per_ml_avg'       : 0,
+            'besmettelijk_obv_rna' : None, # Aantal besmettelijke mensen op basis van RNA_avg
+            'besmettingleeftijd'   : {
                 # key = leeftijdscategorie
                 # value = aantal besmettingen
             }
@@ -93,6 +97,7 @@ def builddaily():
     metenisweten = {}
     testpunten = {}
 
+    # Transform per-case data to daily totals
     with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
         data = json.load(json_file)
         for record in data:
@@ -126,6 +131,7 @@ def builddaily():
                 testpunten[testpunt] += 1
 
 
+    # Add intensive care data
     with open('../cache/NICE-intake-count.json', 'r') as json_file:
         data = json.load(json_file)
         for record in data:
@@ -138,6 +144,7 @@ def builddaily():
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['geweest_op_ic'] += record['value']
 
+    # Add R numbers
     with open('../cache/COVID-19_reproductiegetal.json') as json_file:
         data = json.load(json_file)
         for record in data:
@@ -151,14 +158,29 @@ def builddaily():
             if 'population' in record:
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
+    # Add RNA sewege data
     with open('../cache/COVID-19_rioolwaterdata.json') as json_file:
         data = json.load(json_file)
         for record in data:
             initrecord(record['Date_measurement'], metenisweten)
             metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
             metenisweten[record['Date_measurement']]['totaal_RNA_metingen'] += 1 
-            metenisweten[record['Date_measurement']]['RNA_per_ml_avg'] = metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] / metenisweten[record['Date_measurement']]['totaal_RNA_metingen'] 
+            metenisweten[record['Date_measurement']]['RNA_per_ml_avg'] = metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] / metenisweten[record['Date_measurement']]['totaal_RNA_metingen']
 
+    # Calculate average number of ill people based on Rna measurements
+    dates = []
+    rna = []
+    for date in metenisweten:
+        dates.append(date)
+        rna.append(metenisweten[date]['RNA_per_ml_avg'])
+    rna_avg = [x*66 for x in uniform_filter1d(rna, size=20)]
+
+    for i in range(len(dates)):
+        date = dates[i]
+        besmettelijk = rna_avg[i]
+        metenisweten[date]['besmettelijk_obv_rna'] = besmettelijk
+
+    # Calculate totals
     totaal_positief = 0
     totaal_opgenomen = 0
     totaal_overleden = 0
@@ -175,7 +197,7 @@ def builddaily():
     writejson('../cache/testlocaties.json', testpunten)
 
 def freshdata():
-    if download():
+    if download() or isnewer(__file__, '../cache/daily-stats.json'):
         builddaily()
 
 

@@ -8,7 +8,7 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
-#from scipy.ndimage.filters import uniform_filter1d
+from scipy.ndimage.filters import uniform_filter1d
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -37,8 +37,8 @@ plt.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['y'], color='green', label='RNA per mL rioolwater (gemiddeld)')
 
-#RNA_per_ml_avg['besmettelijk'] = uniform_filter1d(RNA_per_ml_avg['y'], size=10)
-#plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
+# RNA_per_ml_avg['besmettelijk'] = uniform_filter1d(RNA_per_ml_avg['y'], size=20)
+# plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
 
 plt.fill_between(RNA_per_ml_avg['x'], 0, RNA_per_ml_avg['y'],facecolor='green', alpha=0.3, interpolate=True)
 
