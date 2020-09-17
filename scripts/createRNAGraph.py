@@ -8,18 +8,25 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
+#from scipy.ndimage.filters import uniform_filter1d
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
 print('Generating RNA graph...')
 
-RNA_per_ml_avg = {    'x':[],    'y':[]}
+RNA_per_ml_avg = {
+    'x':[],
+    'y':[],
+    'besmettelijk':[]
+}
 
 for datum in metenisweten:
     if metenisweten[datum]['totaal_RNA_metingen'] > 0:
         RNA_per_ml_avg['x'].append(parser.parse(datum))
         RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA_per_ml_avg'])
+
+
 
 def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
@@ -29,6 +36,10 @@ plt.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 plt.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['y'], color='green', label='RNA per mL rioolwater (gemiddeld)')
+
+#RNA_per_ml_avg['besmettelijk'] = uniform_filter1d(RNA_per_ml_avg['y'], size=10)
+#plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
+
 plt.fill_between(RNA_per_ml_avg['x'], 0, RNA_per_ml_avg['y'],facecolor='green', alpha=0.3, interpolate=True)
 
 # laat huidige datum zien met vertikale lijn
