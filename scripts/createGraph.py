@@ -37,17 +37,12 @@ positief_voorspeld = {
     'avgsize': 12
 }
 
-ziek = {
-    'x' : [],
-    'y' : [],
-    'ziekteduur' : 10 # Ziek is 14, maar besmettelijk is 10 voor RIVM (zie onder)
+geschat_ziek = {
+    'x'   : [],
+    'y'   : [],
+    'min' : [],
+    'max' : []
 }
-
-ziek_rna = {
-    'x' : [],
-    'y' : [],
-}
-
 
 ic = {
     'x' : [],
@@ -128,48 +123,11 @@ for d in date_range:
         ic_voorspeld['x'].append(parser.parse(datum))
         ic_voorspeld['y'].append(ic['y'][-1] + ic_rc * (parser.parse(datum) - ic['x'][-1]).days )
 
-
-    # --------------------------------- Positief getest, en nu ziek (beter na x dagen)
-    beterdag = (parser.parse(datum) - datetime.timedelta(days=ziek['ziekteduur'])).strftime("%Y-%m-%d")
-    
-    if datum in metenisweten and parser.parse(datum).date() < (datetime.date.today() - datetime.timedelta(days=10)):
-        ziekgeworden = metenisweten[datum]['positief']
-    else :
-        ziekgeworden = positief_voorspeld['y'][-2]
-
-    if beterdag in metenisweten and parser.parse(beterdag).date() < (datetime.date.today() - datetime.timedelta(days=7)):
-        betergeworden = metenisweten[beterdag]['positief']
-    else:
-        try:
-            betergeworden = positief_voorspeld['y'][len(positief_voorspeld['y']) - ziek['ziekteduur']-1]
-        except IndexError:
-            betergeworden = avg
-    
-    try:
-        nuziek = nuziek + ziekgeworden
-    except NameError:
-        nuziek = ziekgeworden
-
-    if beterdag in metenisweten:
-        nuziek = nuziek - betergeworden
-
-    # Grafiek aangepast naar "geschat besmettelijk". De
-    # correctiefactor ligt tussen de "nuziek" berekening en
-    # de schattingen van het RIVM. Hierdoor kunnen we deze lijn
-    # doortrekken obv de voorspelde besmettingen, en geeft een getal
-    # dat meer overeenkomt met het RIVM.
-    correctiefactor = 5.5
-    besmettelijk = nuziek * correctiefactor
-    ziek['x'].append(parser.parse(datum))
-    ziek['y'].append(besmettelijk)
-
-    if datum in metenisweten and metenisweten[datum]['besmettelijk_obv_rna']:
-        ziek_rna['x'].append(parser.parse(datum))
-        ziek_rna['y'].append(metenisweten[datum]['besmettelijk_obv_rna'])
-
-    if (parser.parse(datum).date() <= datetime.date.today()):
-        geschat_besmettelijk=round(besmettelijk)
-
+    if datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
+        geschat_ziek['x'].append(parser.parse(datum))
+        geschat_ziek['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
+        geschat_ziek['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
+        geschat_ziek['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
 
 def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
@@ -220,7 +178,7 @@ anotate(ax1, metenisweten, "2020-07-04",
 anotate(ax1, metenisweten, "2020-08-06",
         'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-01", 820)
 anotate(ax1, metenisweten, "2020-08-24",
-        'Einde\nschoolvakanties', "2020-08-10", 240)
+        'Einde\nschoolvakanties', "2020-08-2", 250)
 anotate(ax1, metenisweten, "2020-09-01",
         'Ophef bruiloft\nGrapperhaus', "2020-08-10", 1150)
 anotate(ax1, metenisweten, "2020-09-20",
@@ -249,8 +207,11 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 #          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
 # Test for plotting besmettelijk op basis van rna
-ax2.plot(ziek_rna['x'], ziek_rna['y'], color='darkorange',
-         linestyle=':', label='geschat besmettelijk obv RNA in riool (nu: '+decimalstring(round(ziek_rna['y'][-1]))+')')
+ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='darkorange',
+         linestyle=':', label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek['y'][-1]))+')')
+ax2.fill_between(geschat_ziek['x'], geschat_ziek['min'], geschat_ziek['max'],facecolor='darkorange', alpha=0.1, interpolate=True)
+
+
 
 # laat huidige datum zien met vertikale lijn
 ax2.axvline(positief['x'][-1], color='teal', linewidth=0.15)
@@ -263,7 +224,7 @@ ax1.set_ylabel("Aantal positief / op IC")
 ax2.set_ylabel("Geschat besmettelijk")
 
 ax1.set_ylim([0, 1600])
-ax2.set_ylim([0, 1600 * 50])
+ax2.set_ylim([0, 1600 * 250])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
@@ -294,7 +255,7 @@ with open("../docs/tweet.txt", 'w') as file:
         'Positief getest: '+decimalstring(totaal_positief)+' (RIVM)\n' +
         'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE)\n' +
 #        'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
-        'Besmettelijk: '+decimalstring(round(ziek_rna['y'][-1]))+' (geschat o.b.v. RNA in riool)\n' +
+        'Geschat ziek: '+decimalstring(round(geschat_ziek['y'][-1]))+' (RIVM schatting)\n' +
         'https://realrolfje.github.io/coronadata/\n' +
         '#COVID19 #coronavirus'
     )
