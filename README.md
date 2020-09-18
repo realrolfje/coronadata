@@ -16,6 +16,13 @@ deze gegevens in deze repository wordt geregeld door het [update.sh](update.sh) 
 
 Zie de [Covid dataset](https://data.rivm.nl/covid-19/) 
 
+Voor informatie over hoe RIVM berekenigen maakt en hoe ze data gebruiken, staan veel 
+antwoorden op [deze faq pagina](https://www.rivm.nl/coronavirus-covid-19/hoe-berekeningen-bijdragen-aan-bestrijding-van-virus).
+
+Data die niet (direct) bij RIVM beschikbaar is kan vaak in csv of json formaat worden
+gevonden bij de [CoronaWatchNL github pagina van Jonathan de Bruin](https://github.com/J535D165/CoronaWatchNL).
+Net als hij probeer ik het liefst zo dicht mogelijk bij de bron data te halen dus waar ik dat kan
+doe ik dat, om vervuiling en "correcties" uit te sluiten.
 
 ## RIVM Covid-19 gegevens
 
