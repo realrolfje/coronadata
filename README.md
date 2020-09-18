@@ -155,3 +155,38 @@ De data in dit bestand ziet er als volgt uit:
 python3 -m ensurepip --default-pip
 pip3 install numpy matplotlib scipy
 ```
+
+## Credits
+
+Deze repository is ontstaan uit een soort weddenschap die in maart ontstond waarbij we
+probeerden te voorspellen "hoeveel word het morgen?". Die uitlatingen moesten natuurlijk
+steeds nauwkeuriger en steeds professioneler, er ontstond een COVID-19 groep op Telegram
+met meer data nerds, en er werden (simpele) modellen gemaakt in Excel die steeds grotere
+vormen aannamen.
+
+Bij het werken aan deze sheets was het natuurlijk belangrijk om verse data en kennis te
+hebben, want voor ieder model geldt: Garbage in is garbage out. Gelukkig maakt het RIVM
+deze data beschikbaar, eerst in HTML/Tweet vorm, maar al snel in json en csv files. Het
+kopieren naar excel werd steeds lastiger (steeds grotere datasets), en daarom ben ik zelf
+overgestapt naar python, matplotlib, numpy en een server die dat 3x daags allemaal update.
+
+Een speciale vermelding gaat toch wel naar Jaap van Dissel, die in de informatiesessies
+van soms meer dan 2 uur geduldig aan de ministers in de collegezaal en ons als publiek
+uitlegt hoe alles inelkaar zit, en wat de nieuwe inzichten zijn. Hartelijk dank voor de
+uren college en prachtige rustige antwoorden op vragen waar ik zelf het geduld niet voor
+zou hebben gehad.
+
+In Augustus en September heb ik via Twitter veel informatie en pointers gekregen van
+het RIVM, en het ministerie van Volksgezondheid. Daarvoor speciale dank aan Eveline, die
+mijn vragen doorgaf aan de onderzoekers, en mij wees op nieuwe datasets en info.
+
+Ondanks alle input en moeite is deze repository natuurlijk ook maar gewoon een weergave van
+beschikbare data, met wat amateuristische berekeningen van mijn hand. Ik heb geprobeerd
+duidelijk aan te geven wat "echte data" is, en wat "berekend" is, ik hoop dat jullie er
+iets aan hebben.
+
+Van Open Source wordt iedereen beter, en als je ergens over moppert, moet je er ook iets
+aan proberen te doen.
+
+Have fun,
+Rolf
