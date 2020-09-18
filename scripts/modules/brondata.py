@@ -9,6 +9,7 @@ import os.path
 import datetime
 import time
 import json
+import csv
 from dateutil import parser
 from scipy.ndimage.filters import uniform_filter1d
 
@@ -64,6 +65,11 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_rioolwaterdata.json'
     ) or freshdata
 
+    freshdata = downloadIfStale(
+        '../cache/J535D165-RIVM_NL_contagious_estimate.csv',
+        'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-dashboard/data-contagious/RIVM_NL_contagious_estimate.csv'
+    ) or freshdata
+
     return freshdata
 
 def initrecord(date, metenisweten):
@@ -86,6 +92,11 @@ def initrecord(date, metenisweten):
             'totaal_RNA_metingen'  : 0,
             'RNA_per_ml_avg'       : 0,
             'besmettelijk_obv_rna' : None, # Aantal besmettelijke mensen op basis van RNA_avg
+            'rivm_schatting_besmettelijk' : {
+                'min'   : None, # Minimaal personen besmettelijk
+                'value' : None, # Geschat personen besmettelijk
+                'max'   : None  # Maximaal personen besmettelijk
+            },
             'besmettingleeftijd'   : {
                 # key = leeftijdscategorie
                 # value = aantal besmettingen
@@ -166,6 +177,35 @@ def builddaily():
             metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
             metenisweten[record['Date_measurement']]['totaal_RNA_metingen'] += 1 
             metenisweten[record['Date_measurement']]['RNA_per_ml_avg'] = metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] / metenisweten[record['Date_measurement']]['totaal_RNA_metingen']
+
+    # Add estimated ill based on CoronawatchNL data
+    with open('../cache/J535D165-RIVM_NL_contagious_estimate.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:        
+            if line_count == 0:
+                print(f'Column names are {", ".join(row)}')
+            else:
+                datum = row[0]
+                metingtype = row[1]
+                waarde = row[2]
+
+                initrecord(datum, metenisweten)
+
+                try:
+                    if metingtype == 'Minimum':
+                        metenisweten[datum]['rivm_schatting_besmettelijk']['min'] = int(waarde)
+                    elif metingtype == 'Maximum':
+                        metenisweten[datum]['rivm_schatting_besmettelijk']['max'] = int(waarde)
+                    elif metingtype == 'Geschat aantal besmettelijke mensen':
+                        metenisweten[datum]['rivm_schatting_besmettelijk']['value'] = int(waarde)
+                    else:
+                        print('onbekend metingtype in J535D165-RIVM_NL_contagious_estimate.csv: '+metingtype)
+                except ValueError:
+                    pass
+
+            line_count += 1
+
 
     # Calculate average number of ill people based on Rna measurements
     dates = []
