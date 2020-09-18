@@ -152,9 +152,6 @@ De data in dit bestand ziet er als volgt uit:
 ## Installatie van vereiste python libraries op MacOS
 
 ```
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo python3 get-pip.py
-pip install numpy
-pip install matplotlib
-pip install scipy
+python3 -m ensurepip --default-pip
+pip3 install numpy matplotlib scipy
 ```
