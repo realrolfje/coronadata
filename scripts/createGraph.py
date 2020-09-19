@@ -123,11 +123,21 @@ for d in date_range:
         ic_voorspeld['x'].append(parser.parse(datum))
         ic_voorspeld['y'].append(ic['y'][-1] + ic_rc * (parser.parse(datum) - ic['x'][-1]).days )
 
+    # ----------------------- Trek "geschat ziek" op basis van RC nog even door.
+    deltadagen = 15
     if datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
         geschat_ziek['x'].append(parser.parse(datum))
         geschat_ziek['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
         geschat_ziek['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
         geschat_ziek['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
+        geschat_ziek_nu = metenisweten[datum]['rivm_schatting_besmettelijk']['value']
+    elif len(geschat_ziek['y']) > deltadagen:
+        vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
+        vorig_y = geschat_ziek['y'][-deltadagen]
+        nieuw_y = geschat_ziek['y'][-1] + (geschat_ziek['y'][-1] - vorig_y)/deltadagen
+        geschat_ziek['x'].append(parser.parse(datum))
+        geschat_ziek['y'].append(nieuw_y)
+
 
 def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
@@ -172,13 +182,13 @@ anotate(ax1, metenisweten, "2020-06-01", 'Terrassen open,\ntests voor\niedereen'
 anotate(ax1, metenisweten, "2020-06-08",
         'Scholen\nopen', "2020-06-01", 350)
 anotate(ax1, metenisweten, "2020-07-01",
-        'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-06-01", 600)
+        'Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV', "2020-05-25", 550)
 anotate(ax1, metenisweten, "2020-07-04",
-        'Begin\nschoolvakanties', "2020-06-28", 350)
+        'Begin\nschoolvakanties', "2020-06-25", 350)
 anotate(ax1, metenisweten, "2020-08-06",
-        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-01", 820)
+        'Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.', "2020-07-05", 820)
 anotate(ax1, metenisweten, "2020-08-24",
-        'Einde\nschoolvakanties', "2020-08-2", 250)
+        'Einde\nschoolvakanties', "2020-08-10", 320)
 anotate(ax1, metenisweten, "2020-09-01",
         'Ophef bruiloft\nGrapperhaus', "2020-08-10", 1150)
 anotate(ax1, metenisweten, "2020-09-20",
@@ -208,9 +218,8 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
 # Test for plotting besmettelijk op basis van rna
 ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='darkorange',
-         linestyle=':', label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek['y'][-1]))+')')
-ax2.fill_between(geschat_ziek['x'], geschat_ziek['min'], geschat_ziek['max'],facecolor='darkorange', alpha=0.1, interpolate=True)
-
+         linestyle=':', label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')')
+ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='darkorange', alpha=0.1, interpolate=True)
 
 
 # laat huidige datum zien met vertikale lijn
@@ -255,7 +264,7 @@ with open("../docs/tweet.txt", 'w') as file:
         'Positief getest: '+decimalstring(totaal_positief)+' (RIVM)\n' +
         'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE)\n' +
 #        'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
-        'Geschat ziek: '+decimalstring(round(geschat_ziek['y'][-1]))+' (RIVM schatting)\n' +
+        'Geschat ziek: '+decimalstring(round(geschat_ziek_nu))+' (RIVM schatting)\n' +
         'https://realrolfje.github.io/coronadata/\n' +
         '#COVID19 #coronavirus'
     )
