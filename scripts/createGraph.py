@@ -192,7 +192,7 @@ anotate(ax1, metenisweten, "2020-08-24",
 anotate(ax1, metenisweten, "2020-09-01",
         'Ophef bruiloft\nGrapperhaus', "2020-08-10", 1150)
 anotate(ax1, metenisweten, "2020-09-20",
-        'Kroegen sluiten om 00:00,\nlokale maatregelen\nWest NL', "2020-08-12", 720)
+        'www.ballonvossenjacht.nl\nKroegen sluiten om 00:00,\nlokale maatregelen\nWest NL', "2020-08-12", 720)
 
 
 ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
