@@ -232,8 +232,8 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief / op IC")
 ax2.set_ylabel("Geschat besmettelijk")
 
-ax1.set_ylim([0, 1600])
-ax2.set_ylim([0, 1600 * 250])
+ax1.set_ylim([0, 2500])
+ax2.set_ylim([0, 2500 * 250])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
