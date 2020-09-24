@@ -203,7 +203,7 @@ ax1.text(parser.parse("2020-05-20"), 1215, "\"Misschien ben jij klaar met het vi
 #          str(int(positief_gemiddeld['avgsize']/2))
 #          )
 
-ax1.plot(positief_voorspeld['x'][-20:], positief_voorspeld['y'][-20:], 
+ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
          color='steelblue', linestyle=':', label='voorspeld')
 
 nu_op_ic = ic['y'][-1]
