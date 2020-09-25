@@ -6,5 +6,6 @@ cd scripts
 ./createRNAGraph.py
 ./calculateDailyExcelData.py
 ./createZiekGraph.py
+./createTweet.py
 cd ..
 open graphs

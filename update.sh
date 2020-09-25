@@ -6,6 +6,7 @@ cd scripts
 ./createRNAGraph.py
 ./calculateDailyExcelData.py
 ./createZiekGraph.py
+./createTweet.py
 cd ..
 echo "<!-- updated $(date) -->" >> docs/index.html
 git add .
