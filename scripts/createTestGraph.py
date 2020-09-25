@@ -9,7 +9,6 @@ import datetime
 import json
 import modules.brondata as brondata
 
-
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
