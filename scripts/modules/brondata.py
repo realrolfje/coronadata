@@ -70,6 +70,11 @@ def download():
         'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-dashboard/data-contagious/RIVM_NL_contagious_estimate.csv'
     ) or freshdata
 
+    freshdata = downloadIfStale(
+        '../cache/NICE-zkh-intake-count.json',
+        'https://www.stichting-nice.nl//covid-19/public/zkh/intake-count/'
+    ) or freshdata
+
     return freshdata
 
 def initrecord(date, metenisweten):
@@ -80,6 +85,7 @@ def initrecord(date, metenisweten):
             'nu_op_ic'             : 0,
             'geweest_op_ic'        : 0,
             'opgenomen'            : 0,
+            'nu_opgenomen'         : 0,
             'totaal_opgenomen'     : 0,
             'overleden'            : 0,
             'totaal_overleden'     : 0,
@@ -155,6 +161,12 @@ def builddaily():
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['geweest_op_ic'] += record['value']
 
+    with open('../cache/NICE-zkh-intake-count.json', 'r') as json_file:
+        data = json.load(json_file)
+        for record in data:
+            initrecord(record['date'], metenisweten)
+            metenisweten[record['date']]['nu_opgenomen'] += record['value']
+
     # Add R numbers
     with open('../cache/COVID-19_reproductiegetal.json') as json_file:
         data = json.load(json_file)
@@ -183,9 +195,7 @@ def builddaily():
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:        
-            if line_count == 0:
-                print(f'Column names are {", ".join(row)}')
-            else:
+            if line_count > 0:
                 datum = row[0]
                 metingtype = row[1]
                 waarde = row[2]

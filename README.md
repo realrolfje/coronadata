@@ -86,6 +86,8 @@ records uit het werkelijke bestand):
 Van de Stichting NICE worden de volgende bestanden gebruikt:
 - [intake-cumulative](https://www.stichting-nice.nl/covid-19/public/intake-cumulative/), het aantal mensen dat ooit met COVID-19 gerelateerde klachten opgenomen is geweest (cumulatief).
 - [intake-count](https://www.stichting-nice.nl/covid-19/public/intake-count/), het aantal mensen dat met COVID-19 gerelateerde klachten aanwezig is op de IC.
+- [zkh-intake-count](https://www.stichting-nice.nl//covid-19/public/zkh/intake-count/), het totaal aantal mensen op verpleegafdelingen met verdachte of bewezen covid:
+
 
 Deze bestanden zijn iets eenvoudiger van structuur en zien er als volgt uit:
 
