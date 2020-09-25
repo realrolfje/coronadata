@@ -77,7 +77,7 @@ def decimalstring(number):
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-fig, heatmap = plt.subplots(figsize=(10, 5))
+fig, heatmap = plt.subplots(figsize=(10, 3))
 fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 averages = plt.twinx()
 
