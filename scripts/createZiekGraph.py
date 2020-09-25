@@ -9,12 +9,11 @@ import datetime
 import json
 import modules.brondata as brondata
 
-
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
 
-print("Calculating predictions...")
+print("Calculating ziek graph...")
 
 opgenomen = {
     'x': [],
@@ -210,15 +209,3 @@ ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 plt.savefig("../graphs/zieken.png", format="png")
 plt.savefig("../graphs/zieken.svg", format="svg")
-#plt.show()
-
-print('Write text for tweet update in ../docs/tweet.txt')
-with open("../docs/tweet.txt", 'w') as file:
-    file.write(
-        'Positief getest: '+decimalstring(totaal_positief)+' (RIVM)\n' +
-        'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE)\n' +
-#        'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
-        'Geschat ziek: '+decimalstring(round(geschat_ziek_nu))+' (RIVM schatting)\n' +
-        'https://realrolfje.github.io/coronadata/\n' +
-        '#COVID19 #coronavirus'
-    )
