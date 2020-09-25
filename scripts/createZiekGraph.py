@@ -152,7 +152,6 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-ax1.text(parser.parse("2020-05-20"), 2600, "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", color="gray")
 
 
 nu_opgenomen = opgenomen['y'][-1]
@@ -190,6 +189,13 @@ ax1.set_ylim([0, 3250])
 ax2.set_ylim([0, 325000])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
+
+plt.figtext(0.38,0.7, 
+         "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
+         color="gray",
+         bbox=dict(facecolor='white', alpha=1.0, 
+         edgecolor='white'),
+         zorder=10)
 
 # ax1.set_yscale('log')
 # ax2.set_yscale('log')

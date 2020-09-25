@@ -5,6 +5,7 @@ cd scripts
 ./createRtGraph.py
 ./createRNAGraph.py
 ./calculateDailyExcelData.py
+./createCovidTestsGraph.py
 ./createZiekGraph.py
 ./createTweet.py
 cd ..

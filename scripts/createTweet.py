@@ -1,17 +1,10 @@
 #!/usr/bin/env python3
 #
-# pip3 install matplotlib
 
-from matplotlib import pyplot as plt
-from dateutil import parser
-from statistics import mean
-import datetime
-import json
 import modules.brondata as brondata
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
-
 
 for date in metenisweten:
     totaal_positief = metenisweten[date]['totaal_positief']
