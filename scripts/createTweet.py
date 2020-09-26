@@ -18,10 +18,9 @@ def decimalstring(number):
 print('Write text for tweet update in ../docs/tweet.txt')
 with open("../docs/tweet.txt", 'w') as file:
     file.write(
-        'Positief getest: '+decimalstring(totaal_positief)+' (RIVM)\n' +
-        'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE)\n' +
-#        'Besmettelijk: '+decimalstring(geschat_besmettelijk)+' (geschat)\n' +
-        'Geschat ziek: '+decimalstring(round(geschat_ziek_nu))+' (RIVM schatting)\n' +
+        'Positief getest: '+decimalstring(totaal_positief)+' (RIVM).\n' +
+        'Nu op IC: '+decimalstring(nu_op_ic)+' (NICE).\n' +
+        '1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is nu ziek/besmettelijk.'
         'https://realrolfje.github.io/coronadata/\n' +
         '#COVID19 #coronavirus'
     )
