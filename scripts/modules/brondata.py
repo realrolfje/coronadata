@@ -71,6 +71,16 @@ def download():
     ) or freshdata
 
     freshdata = downloadIfStale(
+        '../cache/J535D165-RIVM_NL_contagious_estimate.csv',
+        'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-dashboard/data-contagious/RIVM_NL_contagious_estimate.csv'
+    ) or freshdata
+
+    freshdata = downloadIfStale(
+        '../cache/J535D165-RIVM_NL_test_latest.csv',
+        'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-misc/data-test/RIVM_NL_test_latest.csv'
+    ) or freshdata
+
+    freshdata = downloadIfStale(
         '../cache/NICE-zkh-intake-count.json',
         'https://www.stichting-nice.nl//covid-19/public/zkh/intake-count/'
     ) or freshdata
@@ -98,6 +108,7 @@ def initrecord(date, metenisweten):
             'totaal_RNA_metingen'  : 0,
             'RNA_per_ml_avg'       : 0,
             'besmettelijk_obv_rna' : None, # Aantal besmettelijke mensen op basis van RNA_avg
+            'rivm_totaal_tests'    : None,
             'rivm_schatting_besmettelijk' : {
                 'min'   : None, # Minimaal personen besmettelijk
                 'value' : None, # Geschat personen besmettelijk
@@ -216,6 +227,26 @@ def builddaily():
 
             line_count += 1
 
+    # Add total tests
+    with open('../cache/J535D165-RIVM_NL_test_latest.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:        
+            if line_count > 0:
+                datum = row[0]
+                startdatum = row[1]
+                einddatum = row[2]
+                aantal_labs = row[3]
+                valtype = row[4]
+                aantal = row[5]
+
+                if valtype == 'Totaal':
+                    for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
+                        weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
+                        weekdatumstr = weekdatum.strftime("%Y-%m-%d")
+                        metenisweten[datum]['rivm_totaal_tests'] = aantal/7
+
+            line_count += 1
 
     # Calculate average number of ill people based on Rna measurements
     dates = []
