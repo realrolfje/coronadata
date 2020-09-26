@@ -20,6 +20,11 @@ positief = {
     'y': []
 }
 
+totaaltests = {
+    'x': [],
+    'y': []
+}
+
 opgenomen = {
     'x': [],
     'y': []
@@ -80,6 +85,9 @@ for d in date_range:
 
         opgenomen['x'].append(parser.parse(datum))
         opgenomen['y'].append(metenisweten[datum]['opgenomen'])
+
+        totaaltests['x'].append(parser.parse(datum))
+        totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
 
         totaal_positief = metenisweten[datum]['totaal_positief']
 
@@ -176,6 +184,10 @@ ax1.text(parser.parse("2020-05-20"), 1215, "Geen smoesjes, je weet het best.\nAl
 
 ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
          color='steelblue', linestyle=':', label='voorspeld')
+
+ax1.plot(totaaltests['x'][-17:], totaaltests['y'][-17:], 
+         color='green', linestyle='-', label='Totaal afgenomen tests')
+
 
 # laat huidige datum zien met vertikale lijn
 ax1.axvline(positief['x'][-1], color='teal', linewidth=0.15)
