@@ -189,7 +189,7 @@ ax2.grid(which='both', axis='both', linestyle='-.',
 ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
 ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 
-ax1.text(parser.parse("2020-05-20"), 1215, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
+ax1.text(parser.parse("2020-05-01"), 20000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
 
 ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
          color='steelblue', linestyle=':', label='voorspeld')
