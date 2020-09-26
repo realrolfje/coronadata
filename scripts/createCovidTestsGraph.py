@@ -25,6 +25,12 @@ totaaltests = {
     'y': []
 }
 
+positief_percentage = {
+    'x': [],
+    'y': []
+}
+
+
 opgenomen = {
     'x': [],
     'y': []
@@ -86,8 +92,13 @@ for d in date_range:
         opgenomen['x'].append(parser.parse(datum))
         opgenomen['y'].append(metenisweten[datum]['opgenomen'])
 
-        totaaltests['x'].append(parser.parse(datum))
-        totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
+        if metenisweten[datum]['rivm_totaal_tests']:
+            totaaltests['x'].append(parser.parse(datum))
+            totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
+
+        if metenisweten[datum]['rivm_totaal_tests'] and metenisweten[datum]['positief']:
+            positief_percentage['x'].append(parser.parse(datum))
+            positief_percentage['y'].append(100 * metenisweten[datum]['positief'] / metenisweten[datum]['rivm_totaal_tests'])
 
         totaal_positief = metenisweten[datum]['totaal_positief']
 
@@ -164,17 +175,15 @@ def anotate(plt, metenisweten, datum, tekst, x, y):
 
 print('Generating daily positive tests graph...')
 
-fig, ax1 = plt.subplots(figsize=(10, 3))
-#fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
+fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 
-# ax2 = plt.twinx()
+ax2 = plt.twinx()
 
-#plt.figure(figsize =(10,5))
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-# ax2.grid(which='both', axis='both', linestyle='-.',
-#          color='gray', linewidth=1, alpha=0.3)
+ax2.grid(which='both', axis='both', linestyle='-.',
+         color='gray', linewidth=1, alpha=0.3)
 
 # Plot cases per dag
 ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
@@ -185,24 +194,25 @@ ax1.text(parser.parse("2020-05-20"), 1215, "Geen smoesjes, je weet het best.\nAl
 ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
          color='steelblue', linestyle=':', label='voorspeld')
 
-ax1.plot(totaaltests['x'][-17:], totaaltests['y'][-17:], 
-         color='green', linestyle='-', label='Totaal afgenomen tests')
+ax1.plot(totaaltests['x'], totaaltests['y'], 
+         color='lightgreen', linestyle='-', label='Totaal afgenomen tests')
 
+huidigpercentage = decimalstring(round(positief_percentage['y'][-1],1))
+ax2.plot(positief_percentage['x'], positief_percentage['y'], 
+         color='red', linestyle='-', label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
+         
 
 # laat huidige datum zien met vertikale lijn
 ax1.axvline(positief['x'][-1], color='teal', linewidth=0.15)
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief")
-# ax2.set_ylabel("Geschat besmettelijk")
+ax2.set_ylabel("Percentage positief getest")
 
-ax1.set_ylim([0, 2500])
-# ax2.set_ylim([0, 2500 * 250])
+ax1.set_ylim([0, 40000])
+ax2.set_ylim([0, 40])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
-
-# ax1.set_yscale('log')
-# ax2.set_yscale('log')
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -216,6 +226,6 @@ footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covi
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
-# ax2.legend(loc="upper right")
+ax2.legend(loc="upper right")
 plt.savefig("../graphs/covidtests.png", format="png")
 plt.savefig("../graphs/covidtests.svg", format="svg")
