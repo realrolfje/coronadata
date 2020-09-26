@@ -233,18 +233,20 @@ def builddaily():
         line_count = 0
         for row in csv_reader:        
             if line_count > 0:
-                datum = row[0]
-                startdatum = row[1]
-                einddatum = row[2]
-                aantal_labs = row[3]
-                valtype = row[4]
-                aantal = row[5]
+                #Jaar,Week,BeginDatum,EindDatum,AantalLaboratoria,Type,Aantal
+                year = row[0]
+                week = row[1]
+                startdatum = row[2]
+                einddatum = row[3]
+                aantal_labs = row[4]
+                valtype = row[5]
+                aantal = int(row[6])
 
                 if valtype == 'Totaal':
                     for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
                         weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
-                        metenisweten[datum]['rivm_totaal_tests'] = aantal/7
+                        metenisweten[weekdatumstr]['rivm_totaal_tests'] = aantal/7
 
             line_count += 1
 
