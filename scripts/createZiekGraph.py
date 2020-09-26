@@ -171,7 +171,9 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
 # Test for plotting besmettelijk op basis van rna
 ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='steelblue',
-         linestyle=':', label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')')
+         linestyle=':', 
+         label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')\n'
+                 +'→ 1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is ziek/besmettelijk')
 ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='steelblue', alpha=0.1, interpolate=True)
 
 
