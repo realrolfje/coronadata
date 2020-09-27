@@ -42,7 +42,7 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
-    if datum in metenisweten and parser.parse(datum).date() <= datetime.date.today():
+    if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
         positief['x'].append(parser.parse(datum))
         positief['y'].append(metenisweten[datum]['positief'])
 
@@ -102,8 +102,8 @@ ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 # Plot cases per dag
-ax1.plot(positief['x'][:-10], positief['y'][:-10], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
-ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
+ax1.plot(positief['x'], positief['y'], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
+# ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 
 ax1.text(parser.parse("2020-05-01"), 21000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
 
@@ -111,11 +111,11 @@ ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:],
          color='steelblue', linestyle=':', label='voorspeld')
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
-         color='lightgreen', linestyle='-', label='Totaal afgenomen tests')
+         color='lightblue', linestyle='-', label='Totaal afgenomen tests')
 
 huidigpercentage = decimalstring(round(positief_percentage['y'][-1],1))
 ax2.plot(positief_percentage['x'], positief_percentage['y'], 
-         color='red', linestyle='-', label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
+         color='gold', linestyle='-', label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
          
 
 # laat huidige datum zien met vertikale lijn
