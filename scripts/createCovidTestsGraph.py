@@ -12,6 +12,8 @@ import modules.brondata as brondata
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
+events = brondata.readjson('../data/measures-events.json')
+
 
 print("Calculating predictions...")
 
@@ -42,7 +44,7 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
-    if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
+    if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today()):
         positief['x'].append(parser.parse(datum))
         positief['y'].append(metenisweten[datum]['positief'])
 
@@ -50,7 +52,7 @@ for d in date_range:
             totaaltests['x'].append(parser.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
 
-        if metenisweten[datum]['rivm_totaal_tests'] and metenisweten[datum]['positief']:
+        if metenisweten[datum]['rivm_totaal_tests'] and metenisweten[datum]['positief'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
             positief_percentage['x'].append(parser.parse(datum))
             positief_percentage['y'].append(100 * metenisweten[datum]['positief'] / metenisweten[datum]['rivm_totaal_tests'])
 
@@ -79,14 +81,15 @@ def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
-    if datum in metenisweten:
+    if datum in metenisweten and metenisweten[datum]['rivm_totaal_tests']:
         plt.annotate(
             tekst,
-            xy=(parser.parse(datum), metenisweten[datum]['positief']),
+            xy=(parser.parse(datum), metenisweten[datum]['rivm_totaal_tests']),
             xytext=(parser.parse(x), y),
             fontsize=8,
             bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1',
+            zorder=10)
         )
 
 print('Generating daily positive tests graph...')
@@ -101,11 +104,20 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
+for event in events:
+    if 'testsloc' in event:
+        anotate(
+            ax1, metenisweten, 
+            event['date'], event['event'], 
+            event['testsloc'][0], 
+            event['testsloc'][1]
+        )
+
 # Plot cases per dag
-ax1.plot(positief['x'], positief['y'], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
+ax1.plot(positief['x'][:-11], positief['y'][:-11], color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
 # ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 
-ax1.text(parser.parse("2020-05-01"), 21000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
+ax1.text(parser.parse("2020-05-01"), 26000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
 
 ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
          color='steelblue', linestyle=':', label='voorspeld')
@@ -115,8 +127,9 @@ ax1.plot(totaaltests['x'], totaaltests['y'],
 
 huidigpercentage = decimalstring(round(positief_percentage['y'][-1],1))
 ax2.plot(positief_percentage['x'], positief_percentage['y'], 
-         color='gold', linestyle='-', label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
-         
+         color='gold', linestyle='-', 
+         label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
+
 
 # laat huidige datum zien met vertikale lijn
 ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)

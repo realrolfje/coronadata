@@ -2,10 +2,6 @@
     {
         "date": "2020-03-09",
         "event": "Brabant geen\nhanden schudden",
-        "testsloc": [
-            "2020-02-05",
-            300
-        ],
         "ziekloc": [
             "2020-02-05",
             125000
@@ -16,7 +12,7 @@
         "event": "Onderwijs,\nverpleeghuis,\nhoreca\ndicht",
         "testsloc": [
             "2020-02-05",
-            600
+            6000
         ],
         "ziekloc": [
             "2020-02-05",
@@ -27,8 +23,8 @@
         "date": "2020-03-23",
         "event": "1,5 meter, €400 boete",
         "testsloc": [
-            "2020-02-05",
-            1000
+            "2020-02-25",
+            13000
         ],
         "ziekloc": [
             "2020-02-05",
@@ -38,10 +34,6 @@
     {
         "date": "2020-05-11",
         "event": "Scholen 50% open,\nkappers open",
-        "testsloc": [
-            "2020-03-25",
-            100
-        ],
         "ziekloc": [
             "2020-03-25",
             25000
@@ -51,8 +43,8 @@
         "date": "2020-06-01",
         "event": "Terrassen open,\ntests voor\niedereen",
         "testsloc": [
-            "2020-05-02",
-            800
+            "2020-05-01",
+            15000
         ],
         "ziekloc": [
             "2020-05-02",
@@ -62,10 +54,6 @@
     {
         "date": "2020-06-08",
         "event": "Scholen\nopen",
-        "testsloc": [
-            "2020-06-01",
-            350
-        ],
         "ziekloc": [
             "2020-06-01",
             50000
@@ -75,12 +63,12 @@
         "date": "2020-07-01",
         "event": "Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV",
         "testsloc": [
-            "2020-05-25",
-            550
+            "2020-06-02",
+            15500
         ],
         "ziekloc": [
-            "2020-05-25",
-            110000
+            "2020-05-22",
+            120000
         ]
     },
     {
@@ -88,7 +76,7 @@
         "event": "Begin\nschoolvakanties",
         "testsloc": [
             "2020-06-25",
-            350
+            3500
         ],
         "ziekloc": [
             "2020-06-25",
@@ -99,12 +87,12 @@
         "date": "2020-08-06",
         "event": "Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.",
         "testsloc": [
-            "2020-07-01",
-            820
+            "2020-08-01",
+            8000
         ],
         "ziekloc": [
-            "2020-06-28",
-            150000
+            "2020-06-24",
+            170000
         ]
     },
     {
@@ -112,7 +100,7 @@
         "event": "Einde\nschoolvakanties",
         "testsloc": [
             "2020-08-10",
-            320
+            30000
         ],
         "ziekloc": [
             "2020-08-01",
@@ -123,24 +111,29 @@
         "date": "2020-09-01",
         "event": "Ophef bruiloft\nGrapperhaus",
         "testsloc": [
-            "2020-08-10",
-            1150
-        ],
-        "ziekloc": [
-            "2020-08-19",
-            110000
+            "2020-09-01",
+            20000
         ]
     },
     {
         "date": "2020-09-20",
-        "event": "www.ballonvossenjacht.nl\nKroegen sluiten om 00:00,\nlokale maatregelen\nWest NL",
+        "event": "www.ballonvossenjacht.nl\nHoreca sluit 00:00,\nlokale maatregelen\nWest NL",
+        "ziekloc": [
+            "2020-07-28",
+            115000
+        ]
+    },
+    {
+        "date": "2020-09-28",
+        "event": "Bezoek thuis max 3 pers.\nHoreca sluit 22:00\nSportkantines dicht\nDeurbeleid winkels\nSport zonder publiek",
         "testsloc": [
             "2020-08-12",
             650
         ],
         "ziekloc": [
-            "2020-08-12",
-            150000
+            "2020-08-18",
+            170000
         ]
     }
+
 ]
