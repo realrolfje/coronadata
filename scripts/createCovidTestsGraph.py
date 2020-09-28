@@ -119,7 +119,7 @@ ax2.plot(positief_percentage['x'], positief_percentage['y'],
          
 
 # laat huidige datum zien met vertikale lijn
-ax1.axvline(positief['x'][-1], color='teal', linewidth=0.15)
+ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief")
