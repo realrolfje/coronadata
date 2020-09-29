@@ -4,6 +4,7 @@
         <meta http-equiv="refresh" content="500">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./styles.css">
+        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     </head>
     <body>
         <div style="float:right"><a href="index-list.html">lijst</a></div>
@@ -11,25 +12,36 @@
             Geen smoesjes, je weet het best:<br/>
             <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
         </p>
+
         <table width="100%">
             <tr>
                 <td width="50%" align="center" style="padding:10px">De belangrijkste basisregels vind je op <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a></td>
                 <td width="50%" align="center" style="padding:10px">Afgeven van je contactgegevens in de horeca is <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet verplicht</a>.</td>
             </tr>
             <tr>
-                <td valign="top">
+                <td valign="top"  align="center">
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/zieken.svg" width="100%" />
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/rna-in-rioolwater.svg" width="100%" />
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/reproductiegetal.svg" width="100%" />
                 </td>
-                <td valign="top">
+                <td valign="top" align="center">
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/covidtests.svg" width="100%" />
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/besmettingen-leeftijd.svg" width="100%" />
+
+                    <p>
+                        <pre id="tweet">-</pre>
+                        <script>
+                            $( "#tweet" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
+                                alert(response.text())
+                                if ( status == "error" ) {
+                                    alert( xhr.status + " " + xhr.statusText );
+                                }
+                            });
+                        </script>
+                    </p>
                 </td>
             </tr>
         </table>
-
-
 
         <p>
             Data in deze grafieken is afkomstig van het 
