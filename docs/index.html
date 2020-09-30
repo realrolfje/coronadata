@@ -28,23 +28,24 @@
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/covidtests.svg" width="100%" />
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/besmettingen-leeftijd.svg" width="100%" />
 
-                    <p style="background-color: #C0EDFF; text-align:left; padding:10px; margin:20px;" >
-                        <a href="https://twitter.com/rolfje"><img src="tweet.png" style="width: 20px; float: right;"/></a>
-                        <span hidden id="tmp" ></span>
-                        <span id="tweet">Loading...</span>
-                        <script>
-                            $( "#tmp" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
-                                if ( status == "error" ) {
-                                    $( "#tweet" ).html("Error loading tweet text: "+xhr.status + " " + xhr.statusText )
-                                } else {
-                                    $( "#tweet" ).html(response.replaceAll("\n","<br/>"))
-                                }
-                            });
-                        </script>
-                    </p>
                 </td>
             </tr>
         </table>
+
+        <p style="background-color: #C0EDFF; text-align:left; padding:10px; margin:20px;" >
+            <a href="https://twitter.com/rolfje"><img src="tweet.png" style="width: 20px; float: right;"/></a>
+            <span hidden id="tmp" ></span>
+            <span id="tweet">Loading...</span>
+            <script>
+                $( "#tmp" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
+                    if ( status == "error" ) {
+                        $( "#tweet" ).html("Error loading tweet text: "+xhr.status + " " + xhr.statusText )
+                    } else {
+                        $( "#tweet" ).html(response.replaceAll("\n","<br/>"))
+                    }
+                });
+            </script>
+        </p>
 
         <p>
             Data in deze grafieken is afkomstig van het 
@@ -63,3 +64,4 @@
 <!-- updated Wed Sep 30 11:16:00 CEST 2020 -->
 <!-- updated Wed Sep 30 16:13:31 CEST 2020 -->
 <!-- updated Wed Sep 30 17:15:58 CEST 2020 -->
+<!-- updated Wed Sep 30 18:02:26 CEST 2020 -->
