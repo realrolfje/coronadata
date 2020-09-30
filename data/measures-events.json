@@ -61,7 +61,7 @@
     },
     {
         "date": "2020-07-01",
-        "event": "Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkapje in OV",
+        "event": "Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkap in OV",
         "testsloc": [
             "2020-06-02",
             15500
@@ -127,12 +127,24 @@
         "date": "2020-09-28",
         "event": "Bezoek thuis max 3 pers.\nHoreca sluit 22:00\nSportkantines dicht\nDeurbeleid winkels\nSport zonder publiek",
         "testsloc": [
-            "2020-08-12",
-            650
+            "2020-09-01",
+            35000
         ],
         "ziekloc": [
             "2020-08-18",
-            170000
+            225000
+        ]
+    },
+    {
+        "date": "2020-09-30",
+        "event": "Landelijk\nmondkapadvies",
+        "testsloc": [
+            "2020-09-15",
+            3000
+        ],
+        "ziekloc": [
+            "2020-09-20",
+            115000
         ]
     }
 
