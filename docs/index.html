@@ -28,13 +28,16 @@
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/covidtests.svg" width="100%" />
                     <img src="https://raw.githubusercontent.com/realrolfje/coronadata/master/graphs/besmettingen-leeftijd.svg" width="100%" />
 
-                    <p>
-                        <pre id="tweet">-</pre>
+                    <p style="background-color: #C0EDFF; text-align:left; padding:10px; margin:20px;" >
+                        <a href="https://twitter.com/rolfje"><img src="tweet.png" style="width: 20px; float: right;"/></a>
+                        <span hidden id="tmp" ></span>
+                        <span id="tweet">Loading...</span>
                         <script>
-                            $( "#tweet" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
-                                alert(response.text())
+                            $( "#tmp" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
                                 if ( status == "error" ) {
-                                    alert( xhr.status + " " + xhr.statusText );
+                                    $( "#tweet" ).html("Error loading tweet text: "+xhr.status + " " + xhr.statusText )
+                                } else {
+                                    $( "#tweet" ).html(response.replaceAll("\n","<br/>"))
                                 }
                             });
                         </script>
