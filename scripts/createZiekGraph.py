@@ -178,7 +178,7 @@ ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min
 
 
 # laat huidige datum zien met vertikale lijn
-ax2.axvline(ic['x'][-1], color='teal', linewidth=0.15)
+ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
 
 # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
 ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
