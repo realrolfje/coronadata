@@ -98,7 +98,7 @@ heatmap.set_ylim([0, 100])
 averages.set_ylim([0,100])
 
 # Dirty stuff to get x labels (needs cleanup)
-xlabeldates = [startdate + relativedelta(months=x) for x in range(xlabels[-1].month - startdate.month + 2)]
+xlabeldates = [startdate + relativedelta(months=x) for x in range(xlabels[-1].month - startdate.month + 1)]
 xlabels = []
 xlocs = []
 for label in xlabeldates:
@@ -111,7 +111,7 @@ heatmap.set_xlabel("Datum")
 heatmap.set_ylabel("Leeftijd")
 
 # laat huidige datum zien met vertikale lijn
-plt.axvline(x[-1], color='teal', linewidth=0.15)
+plt.axvline(str(datetime.date.today()), color='teal', linewidth=0.15)
 
 footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
