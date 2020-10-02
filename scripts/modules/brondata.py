@@ -87,6 +87,15 @@ def download():
 
     return freshdata
 
+def isvaliddate(datestring, filename):
+    parseddate = parser.parse(datestring).date()
+    if parseddate >= datetime.date.fromisoformat('2020-01-01') and parseddate <= datetime.date.today():
+        return True
+    elif filename:
+        print('Ignoring invalid date '+datestring+' in '+filename+'.')
+    return False
+
+
 def initrecord(date, metenisweten):
     if (date not in metenisweten):
         metenisweten[date] = {
@@ -126,9 +135,13 @@ def builddaily():
     testpunten = {}
 
     # Transform per-case data to daily totals
-    with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
+    filename = '../cache/COVID-19_casus_landelijk.json'
+    with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for record in data:
+            if not isvaliddate(record['Date_statistics'], filename):
+                continue
+
             initrecord(record['Date_statistics'], metenisweten)
             metenisweten[record['Date_statistics']]['positief'] += 1
 
@@ -160,28 +173,40 @@ def builddaily():
 
 
     # Add intensive care data
-    with open('../cache/NICE-intake-count.json', 'r') as json_file:
+    filename = '../cache/NICE-intake-count.json' 
+    with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for record in data:
+            if not isvaliddate(record['date'], filename):
+                continue
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['nu_op_ic'] += record['value']
 
-    with open('../cache/NICE-intake-cumulative.json', 'r') as json_file:
+    filename = '../cache/NICE-intake-cumulative.json'
+    with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for record in data:
+            if not isvaliddate(record['date'], filename):
+                continue
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['geweest_op_ic'] += record['value']
 
-    with open('../cache/NICE-zkh-intake-count.json', 'r') as json_file:
+    filename = '../cache/NICE-zkh-intake-count.json'
+    with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for record in data:
+            if not isvaliddate(record['date'], filename):
+                continue
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['nu_opgenomen'] += record['value']
 
     # Add R numbers
-    with open('../cache/COVID-19_reproductiegetal.json') as json_file:
+    filename = '../cache/COVID-19_reproductiegetal.json' 
+    with open(filename , 'r') as json_file:
         data = json.load(json_file)
         for record in data:
+            if not isvaliddate(record['Date'], filename):
+                continue
             initrecord(record['Date'], metenisweten)
             if 'Rt_avg' in record:
                 metenisweten[record['Date']]['Rt_avg'] = record['Rt_avg']
@@ -193,16 +218,27 @@ def builddaily():
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
     # Add RNA sewege data
-    with open('../cache/COVID-19_rioolwaterdata.json') as json_file:
+    filename = '../cache/COVID-19_rioolwaterdata.json' 
+    with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for record in data:
-            initrecord(record['Date_measurement'], metenisweten)
-            metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
-            metenisweten[record['Date_measurement']]['totaal_RNA_metingen'] += 1 
-            metenisweten[record['Date_measurement']]['RNA_per_ml_avg'] = metenisweten[record['Date_measurement']]['totaal_RNA_per_ml'] / metenisweten[record['Date_measurement']]['totaal_RNA_metingen']
+
+            # Fix rioolwaterdate.
+            stringdate = record['Date_measurement']
+            if stringdate.endswith('-2020'):
+                stringdate = datetime.datetime.strptime(stringdate,"%d-%m-%Y").strftime("%Y-%m-%d")
+
+            if not isvaliddate(stringdate, filename):
+                continue
+
+            initrecord(stringdate, metenisweten)
+            metenisweten[stringdate]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[stringdate]['totaal_RNA_metingen'] += 1 
+            metenisweten[stringdate]['RNA_per_ml_avg'] = metenisweten[stringdate]['totaal_RNA_per_ml'] / metenisweten[stringdate]['totaal_RNA_metingen']
 
     # Add estimated ill based on CoronawatchNL data
-    with open('../cache/J535D165-RIVM_NL_contagious_estimate.csv') as csv_file:
+    filename = '../cache/J535D165-RIVM_NL_contagious_estimate.csv'
+    with open(filename, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:        
@@ -211,6 +247,8 @@ def builddaily():
                 metingtype = row[1]
                 waarde = row[2]
 
+                if not isvaliddate(datum, filename):
+                    continue
                 initrecord(datum, metenisweten)
 
                 try:
@@ -228,7 +266,8 @@ def builddaily():
             line_count += 1
 
     # Add total tests
-    with open('../cache/J535D165-RIVM_NL_test_latest.csv') as csv_file:
+    filename ='../cache/J535D165-RIVM_NL_test_latest.csv'
+    with open(filename, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:        
@@ -241,6 +280,12 @@ def builddaily():
                 aantal_labs = row[4]
                 valtype = row[5]
                 aantal = int(row[6])
+
+                if not isvaliddate(startdatum, filename):
+                    continue
+
+                if not isvaliddate(einddatum, filename):
+                    continue
 
                 if valtype == 'Totaal':
                     for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
