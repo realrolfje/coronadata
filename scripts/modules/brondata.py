@@ -118,6 +118,7 @@ def initrecord(date, metenisweten):
             'RNA_per_ml_avg'       : 0,
             'besmettelijk_obv_rna' : None, # Aantal besmettelijke mensen op basis van RNA_avg
             'rivm_totaal_tests'    : None,
+            'rivm_aantal_testlabs' : None,
             'rivm_schatting_besmettelijk' : {
                 'min'   : None, # Minimaal personen besmettelijk
                 'value' : None, # Geschat personen besmettelijk
@@ -291,7 +292,9 @@ def builddaily():
                     for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
                         weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
+                        initrecord(weekdatumstr, metenisweten)
                         metenisweten[weekdatumstr]['rivm_totaal_tests'] = aantal/7
+                        metenisweten[weekdatumstr]['rivm_aantal_testlabs'] = aantal_labs
 
             line_count += 1
 
