@@ -10,6 +10,7 @@ import datetime
 import time
 import json
 import csv
+import re
 from dateutil import parser
 from scipy.ndimage.filters import uniform_filter1d
 
@@ -224,9 +225,9 @@ def builddaily():
         data = json.load(json_file)
         for record in data:
 
-            # Fix rioolwaterdate.
+            # Fix rioolwaterdate. Non-ISO date 01-02-2020 will become ISO date 2020-02-01
             stringdate = record['Date_measurement']
-            if stringdate.endswith('-2020'):
+            if re.search('-\d{4}$',stringdate):
                 stringdate = datetime.datetime.strptime(stringdate,"%d-%m-%Y").strftime("%Y-%m-%d")
 
             if not isvaliddate(stringdate, filename):
