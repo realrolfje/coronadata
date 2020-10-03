@@ -24,6 +24,19 @@ gevonden bij de [CoronaWatchNL github pagina van Jonathan de Bruin](https://gith
 Net als hij probeer ik het liefst zo dicht mogelijk bij de bron data te halen dus waar ik dat kan
 doe ik dat, om vervuiling en "correcties" uit te sluiten.
 
+Vaak wordt in artikelen het woord "leading indicators" gebruikt. Zonder context is die term
+zinloos. Hieronder wordt weergegeven hoe een besmetting verloopt in de tijdlijn (als je
+op de intensive care zou komen), en in welke grafieken die data terecht komt. Je kunt hier
+bijvoorbeeld zien dat RNA in Rioolwater een "leading indicator" is voor het aantal positieve
+tests, en dat positieve tests een "leading indicator" is voor het aantal mensen dat in
+het ziekenhuis terecht komt.
+
+![tijdlijn grafieken](docs/coronadata-charts.png)
+
+In dit overzicht ontbreekt de "Rt grafiek". Deze grafiek wekelijks door het RIVM berekend op
+basis van een combinatie van datasets en is sowieso pas achteraf beschikbaar omdat we nu
+eenmaal niet van tevoren kunnen vaststellen wie je gaat besmetten.
+
 ## RIVM Covid-19 gegevens
 
 Het grootste deel van de gegevens in deze grafieken zijn afkomstig van het RIVM bestand [Covid-19 karakteristieken per casus, landelijk](https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/2c4357c8-76e4-4662-9574-1deb8a73f724) dat dagelijks wordt bijgewerkt. De data in dit uitgebreide bestand ziet er als volgt uit (twee voorbeeld
@@ -157,6 +170,7 @@ De data in dit bestand ziet er als volgt uit:
 | Percentage_in_security_region | Inschatting RIVM met hoeveel procent het verzorgingsgebied van de RWZI zich in de betreffende veiligheidsregio bevindt. Let op: het betreft hier een schatting van het RIVM gebaseerd op CBS data. |
 | RNA_per_ml                    | De gemiddelde concentratie SARS-CoV-2 RNA per mL ongezuiverd afval-/rioolwater (influent). |
 | Representative_measurement    | Tijdsbestek monstername. True = 24-uurs bemonstering van het influent, False = steekmonster (op een moment genomen) van het influent. |
+
 
 ## Installatie van vereiste python libraries op MacOS
 
