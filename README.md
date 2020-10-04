@@ -176,7 +176,7 @@ De data in dit bestand ziet er als volgt uit:
 
 ```
 python3 -m ensurepip --default-pip
-pip3 install numpy matplotlib scipy
+pip3 install -r requirements.txt
 ```
 
 ## Credits
