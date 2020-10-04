@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 #
 from string import Template
-import re
-print(re.search('-\d{4}$','01-02-0003'))
+from os import listdir
+from os.path import isfile, join
 
-# Simple templating
 d = dict(who='rolf')
-print(Template('Give $who $$100').substitute(d))
 
+templates = [f for f in listdir('.') if (f.endswith('.template') and isfile(join('.', f)))]
 
-# This does not work
-e = {
-    'who' : 'rolf',
-    'what' : {
-        'currency' : 'eur'
-    }
-}
-print(Template('Give $who $$100 in ${what.currency}').substitute(e))
+for tin in templates:
+    tout = tin[:-9]
+    with open(tin, 'r') as templatefile:
+        template = templatefile.read()
+        
+    with open(tout, 'w') as outputfile:
+        outputfile.write(Template(template).substitute(d))
