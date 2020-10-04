@@ -122,8 +122,7 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 heatmap.grid(which='both', axis='both', linestyle='-.',
             color='gray', linewidth=1, alpha=0.3)
 
-plt.savefig("../graphs/besmettingen-leeftijd.png", format="png")
-plt.savefig("../graphs/besmettingen-leeftijd.svg", format="svg")
+plt.savefig("../docs/graphs/besmettingen-leeftijd.svg", format="svg")
 
 # plt.show()
 

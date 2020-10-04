@@ -158,5 +158,4 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
-plt.savefig("../graphs/covidtests.png", format="png")
-plt.savefig("../graphs/covidtests.svg", format="svg")
+plt.savefig("../docs/graphs/covidtests.svg", format="svg")
