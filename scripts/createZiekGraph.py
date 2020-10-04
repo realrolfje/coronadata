@@ -215,5 +215,5 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
-plt.savefig("../graphs/zieken.png", format="png")
-plt.savefig("../graphs/zieken.svg", format="svg")
+
+plt.savefig("../docs/graphs/zieken.svg", format="svg")

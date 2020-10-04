@@ -72,7 +72,6 @@ plt.title('Testplot')
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
-plt.savefig("../graphs/testplot.png", format="png")
-plt.savefig("../graphs/testplot.svg", format="svg")
+plt.savefig("../docs/graphs/testplot.svg", format="svg")
 #plt.show()
 

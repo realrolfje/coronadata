@@ -60,7 +60,6 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Bron: https://data.rivm.nl/covid-19"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-plt.savefig("../graphs/rna-in-rioolwater.png", format="png")
-plt.savefig("../graphs/rna-in-rioolwater.svg", format="svg")
+plt.savefig("../docs/graphs/rna-in-rioolwater.svg", format="svg")
 
 

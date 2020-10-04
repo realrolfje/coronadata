@@ -9,4 +9,4 @@ cd scripts
 ./createZiekGraph.py
 ./createTweet.py
 cd ..
-open graphs
+open docs/index.html
