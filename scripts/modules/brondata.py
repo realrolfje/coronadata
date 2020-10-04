@@ -44,16 +44,6 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.json'
     ) or freshdata
 
-    freshdata = downloadIfStale(
-        '../cache/NICE-intake-cumulative.json',
-        'https://www.stichting-nice.nl/covid-19/public/intake-cumulative/'
-    ) or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/NICE-intake-count.json',
-        'https://www.stichting-nice.nl/covid-19/public/intake-count/'
-    ) or freshdata
-    
     # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/ed0699d1-c9d5-4436-8517-27eb993eab6e?tab=relations
     freshdata = downloadIfStale(
         '../cache/COVID-19_reproductiegetal.json',
@@ -67,8 +57,18 @@ def download():
     ) or freshdata
 
     freshdata = downloadIfStale(
-        '../cache/J535D165-RIVM_NL_contagious_estimate.csv',
-        'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-dashboard/data-contagious/RIVM_NL_contagious_estimate.csv'
+        '../cache/NICE-intake-cumulative.json',
+        'https://www.stichting-nice.nl/covid-19/public/intake-cumulative/'
+    ) or freshdata
+
+    freshdata = downloadIfStale(
+        '../cache/NICE-intake-count.json',
+        'https://www.stichting-nice.nl/covid-19/public/intake-count/'
+    ) or freshdata
+    
+    freshdata = downloadIfStale(
+        '../cache/NICE-zkh-intake-count.json',
+        'https://www.stichting-nice.nl//covid-19/public/zkh/intake-count/'
     ) or freshdata
 
     freshdata = downloadIfStale(
@@ -82,8 +82,8 @@ def download():
     ) or freshdata
 
     freshdata = downloadIfStale(
-        '../cache/NICE-zkh-intake-count.json',
-        'https://www.stichting-nice.nl//covid-19/public/zkh/intake-count/'
+        '../cache/rijskoverheid-coronadashboard-NL.json',
+        'https://coronadashboard.rijksoverheid.nl/json/NL.json'
     ) or freshdata
 
     return freshdata
