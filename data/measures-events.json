@@ -62,10 +62,6 @@
     {
         "date": "2020-07-01",
         "event": "Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkap in OV",
-        "testsloc": [
-            "2020-06-02",
-            15500
-        ],
         "ziekloc": [
             "2020-05-22",
             120000
@@ -75,8 +71,8 @@
         "date": "2020-07-04",
         "event": "Begin\nschoolvakanties",
         "testsloc": [
-            "2020-06-25",
-            3500
+            "2020-06-15",
+            15100
         ],
         "ziekloc": [
             "2020-06-25",
@@ -86,10 +82,6 @@
     {
         "date": "2020-08-06",
         "event": "Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.",
-        "testsloc": [
-            "2020-08-01",
-            8000
-        ],
         "ziekloc": [
             "2020-06-24",
             170000
@@ -99,8 +91,8 @@
         "date": "2020-08-24",
         "event": "Einde\nschoolvakanties",
         "testsloc": [
-            "2020-08-10",
-            30000
+            "2020-07-20",
+            31000
         ],
         "ziekloc": [
             "2020-08-01",
@@ -111,8 +103,8 @@
         "date": "2020-09-01",
         "event": "Ophef bruiloft\nGrapperhaus",
         "testsloc": [
-            "2020-09-01",
-            20000
+            "2020-08-30",
+            33000
         ]
     },
     {
@@ -126,10 +118,6 @@
     {
         "date": "2020-09-28",
         "event": "Bezoek thuis max 3 pers.\nHoreca sluit 22:00\nSportkantines dicht\nDeurbeleid winkels\nSport zonder publiek",
-        "testsloc": [
-            "2020-09-01",
-            35000
-        ],
         "ziekloc": [
             "2020-08-18",
             225000
@@ -137,11 +125,16 @@
     },
     {
         "date": "2020-09-30",
-        "event": "Landelijk\nmondkapadvies",
+        "event": "Testmateriaal naar\nAbu-Dhabi",
+        "link" : "https://www.rtlnieuws.nl/nieuws/nederland/artikel/5185647/nederlandse-coronatests-onderzocht-abu-dhabi",
         "testsloc": [
-            "2020-09-15",
-            3000
-        ],
+            "2020-09-08",
+            21000
+        ]
+    },
+    {
+        "date": "2020-09-30",
+        "event": "Landelijk\nmondkapadvies",
         "ziekloc": [
             "2020-09-20",
             115000
