@@ -1,21 +1,86 @@
 <html>
+<head>
+    <title>Corona data ${who}</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .container {
+            text-align: center;
+            overflow: hidden;
+            border: 4px;
+            border-color: black;
+        }
+        .button {
+            display: inline-block;
+            vertical-align: top;
+            text-align: center;
+            border-radius: 5px; 
+            -moz-border-radius: 5px; 
+            padding:3px; 
+            padding-left: 10px;
+            padding-right: 10px;
+            margin:3px;
+            cursor: default;
+        }
+        .nametext {
+            font-size: smaller;
+            color: white;
+        }
+        .valuetext {
+            font-size: larger;
+            font-weight: bold;
+            color: white;
+            margin: 3px;
+        }
+        .red {
+            background-color: darkred;
+        }
+        .yellow {
+            background-color: goldenrod;
+        }
+        .green {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
 <body>
-Test template door $who
-
-<div style="width:100%; text-align: center;background-color: lightyellow;">
-    test
-    <div style ="float:inline-start; max-width: 650px; background-color: lightgreen;">
-        left
-        <img src="graphs/zieken.svg" width="100%" />
-        <img src="graphs/rna-in-rioolwater.svg" width="100%" />
-        <img src="graphs/reproductiegetal.svg" width="100%" />
+    <div class="container">
+        <div class="button red">
+            <div class="nametext">mensen ziek</div>
+            <div class="valuetext">1:120</div>
+        </div>
+        <div class="button yellow">
+            <div class="nametext">reproductiegetal</div>
+            <div class="valuetext">1.17</div>
+        </div>
+        <div class="button green">
+            <div class="nametext">Intensive Care</div>
+            <div class="valuetext">275</div>
+        </div>
+        <div class="button green">
+            <div class="nametext">Opgenomen</div>
+            <div class="valuetext">922</div>
+        </div>
+        <div class="button green">
+            <div class="nametext">Positief getest</div>
+            <div class="valuetext">10.2%</div>
+        </div>
+        <div class="button green" title="some explanation">
+            <div class="nametext">Gemiddelde leeftijd</div>
+            <div class="valuetext">29</div>
+        </div>
     </div>
-    <div style ="float: inline-end; max-width: 650px; background-color: lightgreen;">
-        right
-        <img src="graphs/covidtests.svg" width="100%" />
-        <img src="graphs/besmettingen-leeftijd.svg" width="100%" />
+    <div class=".container">
+        <div style ="display: inline-block; vertical-align: top; max-width: 650px;">
+            <img src="graphs/zieken.svg" width="100%" />
+            <img src="graphs/rna-in-rioolwater.svg" width="100%" />
+            <img src="graphs/reproductiegetal.svg" width="100%" />
+        </div>
+        <div style ="display:inline-block; vertical-align: top;max-width: 650px;">
+            <img src="graphs/covidtests.svg" width="100%" />
+            <img src="graphs/besmettingen-leeftijd.svg" width="100%" />
+        </div>
     </div>
-</div>
-
 </body>
 </html>
