@@ -23,6 +23,11 @@
             margin-bottom: inherit;
         }
 
+        .footer {
+            display: inline-block;
+            max-width: 850;
+        }
+
         .basisregels {
             text-align: center;
             display: inline-block;
@@ -71,6 +76,7 @@
         }
 
         .buttonlink {
+            color: inherit;
             text-decoration: none;
             cursor: pointer;
         }
@@ -171,25 +177,27 @@
         </div>
     </div>
     <div class="container center">
-        <div class="tweet">
-            <a href="https://twitter.com/rolfje">
+        <a class="buttonlink" href="https://twitter.com/rolfje">
+            <div class="tweet">
                 <img src="tweet-icon.svg" style="width:20px; float: right; padding-left:10px" />
-            </a>
             1 op 120 mensen is nu ziek/besmettelijk.<br />
             Positief getest: 168.280 (RIVM).<br />
             Nu op IC: 250 (NICE).<br />
             https://realrolfje.github.io/coronadata/<br />
             #COVID19 #coronavirus
         </div>
-    </div>
-    <div class="container">
-        <p>
-            Data in deze grafieken is afkomstig van het
-            <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
-            <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>.
-            Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
-            <a href="https://github.com/realrolfje/coronadata">broncode</a>.
-        </p>
+    </a>
+</div>
+    <div class="container center">
+        <div class="footer">
+            <p>
+                Data in deze grafieken is afkomstig van het
+                <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
+                <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>.
+                Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
+                <a href="https://github.com/realrolfje/coronadata">broncode</a>.
+            </p>
+        </div>
     </div>
 </body>
 
