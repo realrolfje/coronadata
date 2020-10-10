@@ -1,14 +1,17 @@
 <html>
+
 <head>
     <title>Corona data landelijk</title>
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1"> 
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
+
         p {
             padding: 8px;
         }
+
         .basisregels {
             text-align: center;
             display: inline-block;
@@ -19,74 +22,90 @@
             margin-top: 1px;
             margin-bottom: 10px;
         }
+
         .container {
             width: 100%;
             overflow: hidden;
         }
+
         .center {
             align-content: center;
             text-align: center;
         }
+
         .tweet {
             display: inline-block;
             background-color: #C0EDFF;
             text-align: left;
             max-width: 400px;
-            padding:10px;
-            margin:20px;
+            padding: 10px;
+            margin: 20px;
         }
+
         .graphcontainer {
             display: inline-block;
             vertical-align: top;
             max-width: 850px;
         }
+
         .button {
             display: inline-block;
             vertical-align: top;
             text-align: center;
-            border-radius: 5px; 
-            -moz-border-radius: 5px; 
-            padding:3px; 
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            padding: 3px;
             padding-left: 10px;
             padding-right: 10px;
-            margin:3px;
+            margin: 3px;
             cursor: default;
         }
+
         .nametext {
             font-size: smaller;
             color: white;
         }
+
         .valuetext {
             font-size: larger;
             font-weight: bold;
             color: white;
             margin: 3px;
         }
+
         .highlight {
             background-color: yellow;
         }
+
         .red {
             background-color: darkred;
         }
+
         .yellow {
             background-color: goldenrod;
         }
+
         .green {
             background-color: darkgreen;
         }
     </style>
 </head>
+
 <body>
     <p class="highlight center">
-        Geen smoesjes, je weet het best:<br/>
+        Geen smoesjes, je weet het best:<br />
         <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
     </p>
     <div class="container center">
         <p class="basisregels">
-            De belangrijkste basisregels vind je op <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a>.
-            Het installeren van de coronamelder app, dragen van een masker en/of afgeven van je contactgegevens in de horeca is <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet verplicht</a>.
+            De belangrijkste basisregels vind je op <a
+                href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a>.
+            Het installeren van de coronamelder app, dragen van een masker en/of afgeven van je contactgegevens in de
+            horeca is <a
+                href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet
+                verplicht</a>.
         </p>
-        </div>
+    </div>
     <div class="container center">
         <div class="button red">
             <div class="nametext">mensen ziek</div>
@@ -114,7 +133,7 @@
         </div>
     </div>
     <div class="container center">
-        <div class ="graphcontainer">
+        <div class="graphcontainer">
             <img src="graphs/zieken.svg" width="100%" />
             <img src="graphs/rna-in-rioolwater.svg" width="100%" />
             <img src="graphs/reproductiegetal.svg" width="100%" />
@@ -127,23 +146,24 @@
     <div class="container center">
         <div class="tweet">
             <a href="https://twitter.com/rolfje">
-                <img src="tweet-icon.png" style="float: right; padding-left:10px"/>
+                <img src="tweet-icon.svg" style="width:20px; float: right; padding-left:10px" />
             </a>
-            1 op 120 mensen is nu ziek/besmettelijk.<br/>
-            Positief getest: 161.781 (RIVM).</br>
-            Nu op IC: 266 (NICE).</br>
-            https://realrolfje.github.io/coronadata/<br/>
+            1 op 120 mensen is nu ziek/besmettelijk.<br />
+            Positief getest: 161.781 (RIVM).<br />
+            Nu op IC: 266 (NICE).<br />
+            https://realrolfje.github.io/coronadata/<br />
             #COVID19 #coronavirus
         </div>
     </div>
     <div class="container">
         <p>
-            Data in deze grafieken is afkomstig van het 
-            <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en 
+            Data in deze grafieken is afkomstig van het
+            <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
             <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>.
             Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
             <a href="https://github.com/realrolfje/coronadata">broncode</a>.
         </p>
     </div>
 </body>
+
 </html>
