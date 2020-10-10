@@ -1,80 +1,9 @@
 <html>
+<head>
     <title>Corona data landelijk</title>
-    <head>
-        <meta http-equiv="refresh" content="500">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./styles.css">
-        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    </head>
-    <body>
-        <div style="float:right"><a href="index.html">kolommen</a></div>
-        <p align="center">
-            Geen smoesjes, je weet het best:<br/>
-            <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
-        </p>
-        <table width="100%">
-            <tr>
-                <td width="50%" align="center" style="padding:10px">De belangrijkste basisregels vind je op <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a></td>
-                <td width="50%" align="center" style="padding:10px">Afgeven van je contactgegevens in de horeca is <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet verplicht</a>.</td>
-            </tr>
-        </table>
-
-        <img src="graphs/zieken.svg" width="100%" />
-        <img src="graphs/reproductiegetal.svg" width="100%" />
-        <img src="graphs/covidtests.svg" width="100%" />
-        <img src="graphs/besmettingen-leeftijd.svg" width="100%" />
-        <img src="graphs/rna-in-rioolwater.svg" width="100%" />
-
-        <p style="background-color: #C0EDFF; text-align:left; padding:10px; margin:20px;" >
-            <a href="https://twitter.com/rolfje"><img src="tweet-icon.png" style="float: right;"/></a>
-            <span hidden id="tmp" ></span>
-            <span id="tweet">Loading...</span>
-            <script>
-                $( "#tmp" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
-                    if ( status == "error" ) {
-                        $( "#tweet" ).html("Error loading tweet text: "+xhr.status + " " + xhr.statusText )
-                    } else {
-                        $( "#tweet" ).html(response.replaceAll("\n","<br/>"))
-                    }
-                });
-            </script>
-        </p>
-
-        <p style="padding:10px; margin:20px;" >
-            Data in deze grafieken is afkomstig van het 
-            <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en 
-            <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>.
-            Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
-            <a href="https://github.com/realrolfje/coronadata">broncode</a>.
-        </p>
-    </body>
+    <meta http-equiv="refresh" content="0; url=index.html" />
+</head>
+<body>
+    <a href="index.html">Content moved. Loading...</a>
+</body>
 </html>
-<!-- updated Thu Sep 24 23:15:35 CEST 2020 -->
-<!-- updated Fri Sep 25 11:15:50 CEST 2020 -->
-<!-- updated Fri Sep 25 17:15:52 CEST 2020 -->
-<!-- updated Fri Sep 25 21:21:06 CEST 2020 -->
-<!-- updated Fri Sep 25 21:57:10 CEST 2020 -->
-<!-- updated Fri Sep 25 22:00:45 CEST 2020 -->
-<!-- updated Fri Sep 25 23:15:54 CEST 2020 -->
-<!-- updated Sat Sep 26 11:11:32 CEST 2020 -->
-<!-- updated Sat Sep 26 11:15:38 CEST 2020 -->
-<!-- updated za 26 sep 2020 11:19:38 CEST -->
-<!-- updated Sat Sep 26 17:17:23 CEST 2020 -->
-<!-- updated Sat Sep 26 23:15:38 CEST 2020 -->
-<!-- updated Sun Sep 27 00:19:39 CEST 2020 -->
-<!-- updated Sun Sep 27 00:22:17 CEST 2020 -->
-<!-- updated Sun Sep 27 00:38:51 CEST 2020 -->
-<!-- updated Sun Sep 27 00:42:05 CEST 2020 -->
-<!-- updated Sun Sep 27 10:02:42 CEST 2020 -->
-<!-- updated Sun Sep 27 11:15:57 CEST 2020 -->
-<!-- updated Sun Sep 27 17:16:18 CEST 2020 -->
-<!-- updated Sun Sep 27 23:16:14 CEST 2020 -->
-<!-- updated Mon Sep 28 11:15:45 CEST 2020 -->
-<!-- updated Mon Sep 28 16:24:52 CEST 2020 -->
-<!-- updated Mon Sep 28 16:58:28 CEST 2020 -->
-<!-- updated Mon Sep 28 17:15:41 CEST 2020 -->
-<!-- updated Mon Sep 28 22:25:51 CEST 2020 -->
-<!-- updated Mon Sep 28 22:33:59 CEST 2020 -->
-<!-- updated Mon Sep 28 23:15:41 CEST 2020 -->
-<!-- updated Tue Sep 29 11:15:59 CEST 2020 -->
-<!-- updated Tue Sep 29 17:15:59 CEST 2020 -->
