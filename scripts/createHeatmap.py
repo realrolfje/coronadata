@@ -59,18 +59,9 @@ metenisweten = brondata.readjson('../cache/daily-stats.json')
 date_range = brondata.getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
-    if datum in metenisweten:
-
-        positief = 0
-        som = 0
-        for age in metenisweten[datum]['besmettingleeftijd']:
-            som += metenisweten[datum]['besmettingleeftijd'][age] * int(age)
-            positief += metenisweten[datum]['besmettingleeftijd'][age]
-
-        if positief > 0:
-            gemiddeld = som/positief
-            gemiddeldeleeftijd['x'].append(datum)
-            gemiddeldeleeftijd['y'].append(gemiddeld)
+    if datum in metenisweten and metenisweten[datum]['besmettingleeftijd_gemiddeld'] is not None:
+        gemiddeldeleeftijd['x'].append(datum)
+        gemiddeldeleeftijd['y'].append(metenisweten[datum]['besmettingleeftijd_gemiddeld'])
 
 gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 

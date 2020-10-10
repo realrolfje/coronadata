@@ -125,6 +125,7 @@ def initrecord(date, metenisweten):
                 'value' : None, # Geschat personen besmettelijk
                 'max'   : None  # Maximaal personen besmettelijk
             },
+            'besmettingleeftijd_gemiddeld' : None,
             'besmettingleeftijd'   : {
                 # key = leeftijdscategorie
                 # value = aantal besmettingen
@@ -299,6 +300,7 @@ def builddaily():
 
             line_count += 1
 
+    # NEEDS WORK:
     # Calculate average number of ill people based on Rna measurements
     dates = []
     rna = []
@@ -312,6 +314,18 @@ def builddaily():
         date = dates[i]
         besmettelijk = rna_avg[i]
         metenisweten[date]['besmettelijk_obv_rna'] = besmettelijk
+
+    # Calculate average age of positive tested people
+    for datum in metenisweten:
+        positief = 0
+        som = 0
+        for age in metenisweten[datum]['besmettingleeftijd']:
+            som += metenisweten[datum]['besmettingleeftijd'][age] * int(age)
+            positief += metenisweten[datum]['besmettingleeftijd'][age]
+
+        if positief > 0:
+            gemiddeld = som/positief
+            metenisweten[datum]['besmettingleeftijd_gemiddeld'] = gemiddeld
 
     # Calculate totals
     totaal_positief = 0
