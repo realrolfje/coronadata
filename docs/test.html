@@ -6,10 +6,21 @@
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         p {
             padding: 8px;
+            margin: 3px;
+        }
+
+        img {
+            margin: 5px;
+        }
+
+        .header {
+            margin-bottom: inherit;
         }
 
         .basisregels {
@@ -17,10 +28,6 @@
             display: inline-block;
             max-width: 850;
             vertical-align: top;
-            padding-top: 1px;
-            padding-bottom: 1px;
-            margin-top: 1px;
-            margin-bottom: 10px;
         }
 
         .container {
@@ -39,7 +46,10 @@
             text-align: left;
             max-width: 400px;
             padding: 10px;
-            margin: 20px;
+            margin: 3px;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+
         }
 
         .graphcontainer {
@@ -58,7 +68,11 @@
             padding-left: 10px;
             padding-right: 10px;
             margin: 3px;
-            cursor: default;
+        }
+
+        .buttonlink {
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .nametext {
@@ -95,7 +109,7 @@
 </head>
 
 <body>
-    <p class="highlight center">
+    <p class="highlight header center">
         Geen smoesjes, je weet het best:<br />
         <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
     </p>
@@ -110,40 +124,50 @@
         </p>
     </div>
     <div class="container center">
-        <div class="button red">
-            <div class="nametext">mensen ziek</div>
-            <div class="valuetext">1:120</div>
-        </div>
-        <div class="button red">
-            <div class="nametext">reproductiegetal</div>
-            <div class="valuetext">1.17</div>
-        </div>
-        <div class="button red">
-            <div class="nametext">Intensive Care</div>
-            <div class="valuetext">250</div>
-        </div>
-        <div class="button yellow">
-            <div class="nametext">Opgenomen</div>
-            <div class="valuetext">973</div>
-        </div>
-        <div class="button yellow">
-            <div class="nametext">Positief getest</div>
-            <div class="valuetext">14.5%</div>
-        </div>
-        <div class="button blue" title="some explanation">
+        <a class="buttonlink" href="#zieken">
+            <div class="button red">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:120</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#reproductiegetal">
+            <div class="button red">
+                <div class="nametext">reproductiegetal</div>
+                <div class="valuetext">1.17</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button red">
+                <div class="nametext">Intensive Care</div>
+                <div class="valuetext">250</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button yellow">
+                <div class="nametext">Opgenomen</div>
+                <div class="valuetext">970</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#covidtests">
+            <div class="button yellow">
+                <div class="nametext">Positief getest</div>
+                <div class="valuetext">15.0%</div>
+            </div>
+        </a>
+        <!-- div class="button blue" title="some explanation">
             <div class="nametext">Gemiddelde leeftijd</div>
             <div class="valuetext">??</div>
-        </div>
+        </div -->
     </div>
     <div class="container center">
         <div class="graphcontainer">
-            <img src="graphs/zieken.svg" width="100%" />
-            <img src="graphs/rna-in-rioolwater.svg" width="100%" />
-            <img src="graphs/reproductiegetal.svg" width="100%" />
+            <img id="zieken" src="graphs/zieken.svg" width="100%" />
+            <img id="rioolwater" src="graphs/rna-in-rioolwater.svg" width="100%" />
+            <img id="reproductiegetal" src="graphs/reproductiegetal.svg" width="100%" />
         </div>
         <div class="graphcontainer">
-            <img src="graphs/covidtests.svg" width="100%" />
-            <img src="graphs/besmettingen-leeftijd.svg" width="100%" />
+            <img id="covidtests" src="graphs/covidtests.svg" width="100%" />
+            <img id="besmetleeftijd" src="graphs/besmettingen-leeftijd.svg" width="100%" />
         </div>
     </div>
     <div class="container center">
@@ -152,8 +176,8 @@
                 <img src="tweet-icon.svg" style="width:20px; float: right; padding-left:10px" />
             </a>
             1 op 120 mensen is nu ziek/besmettelijk.<br />
-            Positief getest: 161.781 (RIVM).<br />
-            Nu op IC: 266 (NICE).<br />
+            Positief getest: 168.280 (RIVM).<br />
+            Nu op IC: 250 (NICE).<br />
             https://realrolfje.github.io/coronadata/<br />
             #COVID19 #coronavirus
         </div>
