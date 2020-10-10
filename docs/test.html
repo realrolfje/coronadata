@@ -1,15 +1,34 @@
 <html>
 <head>
-    <title>Corona data rolf</title>
+    <title>Corona data landelijk</title>
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1"> 
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
+        p {
+            padding: 8px;
+        }
         .container {
-            text-align: center;
+            width: 100%;
             overflow: hidden;
-            border: 4px;
-            border-color: black;
+        }
+        .center {
+            align-content: center;
+            text-align: center;
+        }
+        .tweet {
+            display: inline-block;
+            background-color: #C0EDFF;
+            text-align: left;
+            max-width: 400px;
+            padding:10px;
+            margin:20px;
+        }
+        .graphcontainer {
+            display: inline-block;
+            vertical-align: top;
+            max-width: 850px;
         }
         .button {
             display: inline-block;
@@ -33,6 +52,9 @@
             color: white;
             margin: 3px;
         }
+        .highlight {
+            background-color: yellow;
+        }
         .red {
             background-color: darkred;
         }
@@ -45,7 +67,11 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <p class="highlight center">
+        Geen smoesjes, je weet het best:<br/>
+        <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    </p>
+    <div class="container center">
         <div class="button red">
             <div class="nametext">mensen ziek</div>
             <div class="valuetext">1:120</div>
@@ -71,16 +97,37 @@
             <div class="valuetext">29</div>
         </div>
     </div>
-    <div class=".container">
-        <div style ="display: inline-block; vertical-align: top; max-width: 650px;">
+    <div class="container center">
+        <div class ="graphcontainer">
             <img src="graphs/zieken.svg" width="100%" />
             <img src="graphs/rna-in-rioolwater.svg" width="100%" />
             <img src="graphs/reproductiegetal.svg" width="100%" />
         </div>
-        <div style ="display:inline-block; vertical-align: top;max-width: 650px;">
+        <div class="graphcontainer">
             <img src="graphs/covidtests.svg" width="100%" />
             <img src="graphs/besmettingen-leeftijd.svg" width="100%" />
         </div>
+    </div>
+    <div class="container center">
+        <div class="tweet">
+            <a href="https://twitter.com/rolfje">
+                <img src="tweet-icon.png" style="float: right; padding-left:10px"/>
+            </a>
+            1 op 120 mensen is nu ziek/besmettelijk.<br/>
+            Positief getest: 161.781 (RIVM).</br>
+            Nu op IC: 266 (NICE).</br>
+            https://realrolfje.github.io/coronadata/<br/>
+            #COVID19 #coronavirus
+        </div>
+    </div>
+    <div class="container">
+        <p>
+            Data in deze grafieken is afkomstig van het 
+            <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en 
+            <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>.
+            Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
+            <a href="https://github.com/realrolfje/coronadata">broncode</a>.
+        </p>
     </div>
 </body>
 </html>
