@@ -38,7 +38,7 @@ eenopXziek = round(17500000/geschat_ziek_nu)
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
 
-    'ziekverhouding' : '1:'+str(eenopXziek),
+    'ziekverhouding' : str(eenopXziek),
     'ziekverhouding_color' : 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
 
     'nu_opgenomen' : decimalstring(nu_opgenomen),
