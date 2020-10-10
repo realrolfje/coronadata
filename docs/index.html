@@ -1,108 +1,207 @@
 <html>
+
+<head>
     <title>Corona data landelijk</title>
-    <head>
-        <meta http-equiv="refresh" content="500">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./styles.css">
-        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    </head>
-    <body>
-        <div style="float:right"><a href="index-list.html">lijst</a></div>
-        <p align="center">
-            Geen smoesjes, je weet het best:<br/>
-            <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    <meta http-equiv="refresh" content="500">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            padding: 8px;
+            margin: 3px;
+        }
+
+        img {
+            margin: 5px;
+        }
+
+        .header {
+            margin-bottom: inherit;
+        }
+
+        .footer {
+            display: inline-block;
+            max-width: 850;
+        }
+
+        .basisregels {
+            text-align: center;
+            display: inline-block;
+            max-width: 850;
+            vertical-align: top;
+        }
+
+        .container {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .center {
+            align-content: center;
+            text-align: center;
+        }
+
+        .tweet {
+            display: inline-block;
+            background-color: #C0EDFF;
+            text-align: left;
+            max-width: 400px;
+            padding: 10px;
+            margin: 3px;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+
+        }
+
+        .graphcontainer {
+            display: inline-block;
+            vertical-align: top;
+            max-width: 850px;
+        }
+
+        .button {
+            display: inline-block;
+            vertical-align: top;
+            text-align: center;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            padding: 3px;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin: 3px;
+        }
+
+        .buttonlink {
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nametext {
+            font-size: smaller;
+            color: white;
+        }
+
+        .valuetext {
+            font-size: larger;
+            font-weight: bold;
+            color: white;
+            margin: 3px;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+        .red {
+            background-color: darkred;
+        }
+
+        .yellow {
+            background-color: goldenrod;
+        }
+
+        .green {
+            background-color: darkgreen;
+        }
+
+        .blue {
+            background-color: royalblue;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="highlight header center">
+        Geen smoesjes, je weet het best:<br />
+        <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    </p>
+    <div class="container center">
+        <p class="basisregels">
+            De belangrijkste basisregels vind je op <a
+                href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a>.
+            Het installeren van de coronamelder app, dragen van een masker en/of afgeven van je contactgegevens in de
+            horeca is <a
+                href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet
+                verplicht</a>.
         </p>
+    </div>
+    <div class="container center">
+        <a class="buttonlink" href="#zieken">
+            <div class="button red">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:120</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#reproductiegetal">
+            <div class="button red">
+                <div class="nametext">reproductiegetal</div>
+                <div class="valuetext">1.17</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button red">
+                <div class="nametext">Intensive Care</div>
+                <div class="valuetext">250</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button yellow">
+                <div class="nametext">Opgenomen</div>
+                <div class="valuetext">970</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#covidtests">
+            <div class="button yellow">
+                <div class="nametext">Positief getest</div>
+                <div class="valuetext">15.0%</div>
+            </div>
+        </a>
+        <!-- div class="button blue" title="some explanation">
+            <div class="nametext">Gemiddelde leeftijd</div>
+            <div class="valuetext">??</div>
+        </div -->
+    </div>
+    <div class="container center">
+        <div class="graphcontainer">
+            <img id="zieken" src="graphs/zieken.svg" width="100%" />
+            <img id="rioolwater" src="graphs/rna-in-rioolwater.svg" width="100%" />
+            <img id="reproductiegetal" src="graphs/reproductiegetal.svg" width="100%" />
+        </div>
+        <div class="graphcontainer">
+            <img id="covidtests" src="graphs/covidtests.svg" width="100%" />
+            <img id="besmetleeftijd" src="graphs/besmettingen-leeftijd.svg" width="100%" />
+        </div>
+    </div>
+    <div class="container center">
+        <a class="buttonlink" href="https://twitter.com/rolfje">
+            <div class="tweet">
+                <img src="tweet-icon.svg" style="width:20px; float: right; padding-left:10px" />
+                1 op 120 mensen is nu ziek/besmettelijk.<br />
+                Positief getest: 168.280 (RIVM).<br />
+                Nu op IC: 250 (NICE).<br />
+                https://realrolfje.github.io/coronadata/<br />
+                #COVID19 #coronavirus
+            </div>
+        </a>
+    </div>
+    <div class="container center">
+        <div class="footer">
+            <p>
+                Data in deze grafieken is afkomstig van het
+                <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
+                <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care
+                    Evaluatie)</a>.
+                Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
+                <a href="https://github.com/realrolfje/coronadata">broncode</a>.
+            </p>
+        </div>
+    </div>
+</body>
 
-        <table width="100%">
-            <tr>
-                <td width="50%" align="center" style="padding:10px">De belangrijkste basisregels vind je op <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a></td>
-                <td width="50%" align="center" style="padding:10px">Afgeven van je contactgegevens in de horeca is <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet verplicht</a>.</td>
-            </tr>
-            <tr>
-                <td valign="top"  align="center">
-                    <img src="graphs/zieken.svg" width="100%" />
-                    <img src="graphs/rna-in-rioolwater.svg" width="100%" />
-                    <img src="graphs/reproductiegetal.svg" width="100%" />
-                </td>
-                <td valign="top" align="center">
-                    <img src="graphs/covidtests.svg" width="100%" />
-                    <img src="graphs/besmettingen-leeftijd.svg" width="100%" />
-
-                </td>
-            </tr>
-        </table>
-
-        <p style="background-color: #C0EDFF; text-align:left; padding:10px; margin:20px;" >
-            <a href="https://twitter.com/rolfje"><img src="tweet-icon.png" style="float: right;"/></a>
-            <span hidden id="tmp" ></span>
-            <span id="tweet">Loading...</span>
-            <script>
-                $( "#tmp" ).load( "https://realrolfje.github.io/coronadata/tweet.txt" , function(response, status, xhr) {
-                    if ( status == "error" ) {
-                        $( "#tweet" ).html("Error loading tweet text: "+xhr.status + " " + xhr.statusText )
-                    } else {
-                        $( "#tweet" ).html(response.replaceAll("\n","<br/>"))
-                    }
-                });
-            </script>
-        </p>
-
-        <p style="padding:10px; margin:20px;" >
-            Data in deze grafieken is afkomstig van het 
-            <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en 
-            <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>.
-            Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
-            <a href="https://github.com/realrolfje/coronadata">broncode</a>.
-        </p>
-    </body>
 </html>
-<!-- updated Thu Sep 24 23:15:35 CEST 2020 -->
-<!-- updated Fri Sep 25 11:15:50 CEST 2020 -->
-<!-- updated Fri Sep 25 17:15:52 CEST 2020 -->
-<!-- updated Fri Sep 25 21:21:06 CEST 2020 -->
-<!-- updated Wed Sep 30 00:13:50 CEST 2020 -->
-<!-- updated Wed Sep 30 11:16:00 CEST 2020 -->
-<!-- updated Wed Sep 30 16:13:31 CEST 2020 -->
-<!-- updated Wed Sep 30 17:15:58 CEST 2020 -->
-<!-- updated Wed Sep 30 18:02:26 CEST 2020 -->
-<!-- updated Wed Sep 30 18:33:35 CEST 2020 -->
-<!-- updated Wed Sep 30 23:16:02 CEST 2020 -->
-<!-- updated Thu Oct  1 11:15:43 CEST 2020 -->
-<!-- updated Thu Oct  1 17:15:53 CEST 2020 -->
-<!-- updated Thu Oct  1 18:59:55 CEST 2020 -->
-<!-- updated Thu Oct  1 23:15:47 CEST 2020 -->
-<!-- updated Fri Oct  2 11:15:45 CEST 2020 -->
-<!-- updated Fri Oct  2 17:15:44 CEST 2020 -->
-<!-- updated Fri Oct  2 19:52:15 CEST 2020 -->
-<!-- updated Fri Oct  2 22:20:13 CEST 2020 -->
-<!-- updated Fri Oct  2 23:15:55 CEST 2020 -->
-<!-- updated Sat Oct  3 11:15:55 CEST 2020 -->
-<!-- updated Sat Oct  3 13:36:14 CEST 2020 -->
-<!-- updated Sat Oct  3 17:16:02 CEST 2020 -->
-<!-- updated Sat Oct  3 23:15:56 CEST 2020 -->
-<!-- updated Sun Oct  4 11:15:57 CEST 2020 -->
-<!-- updated Sun Oct  4 16:46:31 CEST 2020 -->
-<!-- updated Sun Oct  4 17:15:57 CEST 2020 -->
-<!-- updated Sun Oct  4 23:15:56 CEST 2020 -->
-<!-- updated Mon Oct  5 11:16:18 CEST 2020 -->
-<!-- updated Mon Oct  5 17:15:56 CEST 2020 -->
-<!-- updated Mon Oct  5 23:15:57 CEST 2020 -->
-<!-- updated Tue Oct  6 11:15:58 CEST 2020 -->
-<!-- updated Tue Oct  6 14:59:22 CEST 2020 -->
-<!-- updated Tue Oct  6 17:15:57 CEST 2020 -->
-<!-- updated Tue Oct  6 23:15:58 CEST 2020 -->
-<!-- updated Wed Oct  7 11:16:01 CEST 2020 -->
-<!-- updated Wed Oct  7 15:17:11 CEST 2020 -->
-<!-- updated Wed Oct  7 17:16:03 CEST 2020 -->
-<!-- updated Wed Oct  7 21:51:01 CEST 2020 -->
-<!-- updated Wed Oct  7 23:16:01 CEST 2020 -->
-<!-- updated Thu Oct  8 11:16:22 CEST 2020 -->
-<!-- updated Thu Oct  8 16:45:08 CEST 2020 -->
-<!-- updated Thu Oct  8 17:16:34 CEST 2020 -->
-<!-- updated Thu Oct  8 23:16:25 CEST 2020 -->
-<!-- updated Fri Oct  9 11:16:28 CEST 2020 -->
-<!-- updated Fri Oct  9 17:16:29 CEST 2020 -->
-<!-- updated Fri Oct  9 23:16:26 CEST 2020 -->
-<!-- updated Fri Oct  9 23:19:56 CEST 2020 -->
-<!-- updated Sat Oct 10 11:16:32 CEST 2020 -->
-<!-- updated Sat Oct 10 14:49:55 CEST 2020 -->
