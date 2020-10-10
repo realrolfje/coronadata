@@ -25,10 +25,10 @@ for date in metenisweten:
         Rt = metenisweten[date]['Rt_avg']
     if metenisweten[date]['rivm_totaal_tests'] and metenisweten[date]['positief'] and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
         positief_percentage = 100 * metenisweten[date]['positief'] / metenisweten[date]['rivm_totaal_tests']
+    if metenisweten[date]['besmettingleeftijd_gemiddeld']:
+        gemiddeldeleeftijdarray.append(metenisweten[date]['besmettingleeftijd_gemiddeld'])
 
-#    gemiddeldeleeftijdarray.append(gemiddeld)
-
-
+gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 
 def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
@@ -51,7 +51,9 @@ substitutes = {
     'Rt_color': 'green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red',
 
     'positief_percentage' : decimalstring(round(positief_percentage,1))+'%',
-    'positief_percentage_color' : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red'   
+    'positief_percentage_color' : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+
+    'positief_leeftijd' : str(gemiddeldeleeftijdweek)
 }
 
 def getTemplates(templatedir):

@@ -133,39 +133,46 @@
     </div>
     <div class="container center">
         <a class="buttonlink" href="#zieken">
-            <div class="button ${ziekverhouding_color}">
+            <div class="button ${ziekverhouding_color}"
+                title="Het aantal geschat zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding} mensen is nu mogelijk besmettelijk of ziek.">
                 <div class="nametext">mensen ziek</div>
                 <div class="valuetext">1:${ziekverhouding}</div>
             </div>
         </a>
+        <a class="buttonlink" href="#covidtests">
+            <div class="button ${positief_percentage_color}"
+                title="Tests met een positieve uitslag ten opzichte van het totaal afgenomen tests, dagelijks, met vertraging.">
+                <div class="nametext">positief getest</div>
+                <div class="valuetext">${positief_percentage}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${nu_opgenomen_color}"
+                title="Het aantal mensen dat op dit moment is opgenomen in het ziekenuis met, of als gevolg van, COVID-19.">
+                <div class="nametext">opgenomen</div>
+                <div class="valuetext">${nu_opgenomen}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${nu_op_ic_color}"
+                title="Het aantal mensen dat op dit moment op intensive care ligt met, of als gevolg van, COVID-19.">
+                <div class="nametext">intensive care</div>
+                <div class="valuetext">${nu_op_ic}</div>
+            </div>
+        </a>
         <a class="buttonlink" href="#reproductiegetal">
-            <div class="button ${Rt_color}">
+            <div class="button ${Rt_color}"
+                title="Het berekende reproductiegetal Rt over de afgelopen periode, met vertraging.">
                 <div class="nametext">reproductiegetal</div>
                 <div class="valuetext">${Rt}</div>
             </div>
         </a>
-        <a class="buttonlink" href="#zieken">
-            <div class="button ${nu_op_ic_color}">
-                <div class="nametext">Intensive Care</div>
-                <div class="valuetext">${nu_op_ic}</div>
+        <a class="buttonlink" href="#besmetleeftijd">
+            <div class="button blue" title="Gemiddelde leeftijd van positief geteste mensen.">
+                <div class="nametext">leeftijd positief</div>
+                <div class="valuetext">${positief_leeftijd}</div>
             </div>
         </a>
-        <a class="buttonlink" href="#zieken">
-            <div class="button ${nu_opgenomen_color}">
-                <div class="nametext">Opgenomen</div>
-                <div class="valuetext">${nu_opgenomen}</div>
-            </div>
-        </a>
-        <a class="buttonlink" href="#covidtests">
-            <div class="button ${positief_percentage_color}">
-                <div class="nametext">Positief getest</div>
-                <div class="valuetext">${positief_percentage}</div>
-            </div>
-        </a>
-        <!-- div class="button blue" title="some explanation">
-            <div class="nametext">Gemiddelde leeftijd</div>
-            <div class="valuetext">??</div>
-        </div -->
     </div>
     <div class="container center">
         <div class="graphcontainer">
