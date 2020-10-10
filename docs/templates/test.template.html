@@ -88,6 +88,9 @@
         .green {
             background-color: darkgreen;
         }
+        .blue {
+            background-color: royalblue;
+        }
     </style>
 </head>
 
@@ -107,29 +110,29 @@
         </p>
     </div>
     <div class="container center">
-        <div class="button red">
+        <div class="button ${ziekverhouding_color}">
             <div class="nametext">mensen ziek</div>
-            <div class="valuetext">1:120</div>
+            <div class="valuetext">${ziekverhouding}</div>
         </div>
-        <div class="button yellow">
+        <div class="button ${Rt_color}">
             <div class="nametext">reproductiegetal</div>
-            <div class="valuetext">1.17</div>
+            <div class="valuetext">${Rt}</div>
         </div>
-        <div class="button green">
+        <div class="button ${nu_op_ic_color}">
             <div class="nametext">Intensive Care</div>
-            <div class="valuetext">275</div>
+            <div class="valuetext">${nu_op_ic}</div>
         </div>
-        <div class="button green">
+        <div class="button ${nu_opgenomen_color}">
             <div class="nametext">Opgenomen</div>
-            <div class="valuetext">922</div>
+            <div class="valuetext">${nu_opgenomen}</div>
         </div>
-        <div class="button green">
+        <div class="button ${positief_percentage_color}">
             <div class="nametext">Positief getest</div>
-            <div class="valuetext">10.2%</div>
+            <div class="valuetext">${positief_percentage}</div>
         </div>
-        <div class="button green" title="some explanation">
+        <div class="button blue" title="some explanation">
             <div class="nametext">Gemiddelde leeftijd</div>
-            <div class="valuetext">29</div>
+            <div class="valuetext">??</div>
         </div>
     </div>
     <div class="container center">
