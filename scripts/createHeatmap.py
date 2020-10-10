@@ -72,6 +72,8 @@ for d in date_range:
             gemiddeldeleeftijd['x'].append(datum)
             gemiddeldeleeftijd['y'].append(gemiddeld)
 
+gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
+
 def decimalstring(number):
     return "{:,}".format(number).replace(',', '.')
 
@@ -90,7 +92,7 @@ plt.title('Positieve tests per leeftijdsgroep, '+gegenereerd_op)
 # Ongewogen:
 heatmap.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Blues') # inferno is also a good one
 
-averages.plot(gemiddeldeleeftijd['x'], gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (nu: '+str(int(gemiddeldeleeftijd['y'][-1]))+')')
+averages.plot(gemiddeldeleeftijd['x'], gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (nu: '+str(gemiddeldlaatsteweek)+')')
 
 averages.legend(loc="upper right")
 
