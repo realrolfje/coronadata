@@ -8,5 +8,6 @@ cd scripts
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
 ./createTweet.py
+./processTemplates.py
 cd ..
 open docs/index.html

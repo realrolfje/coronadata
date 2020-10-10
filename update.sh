@@ -8,6 +8,7 @@ cd scripts
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
 ./createTweet.py
+./processTemplates.py
 cd ..
 echo "<!-- updated $(date) -->" >> docs/index.html
 git add .
