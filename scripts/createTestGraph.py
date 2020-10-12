@@ -32,17 +32,13 @@ for datum in metenisweten:
     #     alpha['x'].append(parser.parse(datum))
     #     alpha['y'].append(metenisweten[datum]['RNA_per_ml_avg'])
 
-    if metenisweten[datum]['nu_op_ic']:
-        alpha['x'].append(parser.parse(datum))
-        alpha['y'].append(metenisweten[datum]['nu_op_ic'])
-
     if metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
-        beta['x'].append(parser.parse(datum))
-        beta['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
+        alpha['x'].append(parser.parse(datum))
+        alpha['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
 
-    if metenisweten[datum]['opgenomen']:
-        gamma['x'].append(parser.parse(datum))
-        gamma['y'].append(metenisweten[datum]['opgenomen'])
+    if metenisweten[datum]['RNA']['besmettelijk']:
+        beta['x'].append(parser.parse(datum))
+        beta['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
 
 print('Generating test graph...')
 
@@ -62,9 +58,7 @@ ax1.plot(alpha['x'], alpha['y'], color='red', label='alpha')
 # ax1.plot(beta['x'], beta['y'], color='steelblue', label='beta')
 
 # ax2.plot(alpha['x'], alpha['y'], c olor='steelblue', label='alpha')
-ax2.plot(beta['x'], beta['y'], color='green', label='beta')
-
-ax1.plot(gamma['x'], gamma['y'], color='orange', label='gamma')
+ax1.plot(beta['x'], beta['y'], color='green', label='beta')
 
 
 ax1.set_xlabel("Datum")

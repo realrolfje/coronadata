@@ -13,6 +13,8 @@ import csv
 import re
 from dateutil import parser
 from scipy.ndimage.filters import uniform_filter1d
+from scipy.signal import savgol_filter
+import numpy as np
 
 def readjson(filename):
     print('Reading '+filename)
@@ -118,15 +120,19 @@ def initrecord(date, metenisweten):
                 'totaal_RNA_per_ml'    : 0,
                 'totaal_RNA_metingen'  : 0,
                 'RNA_per_ml_avg'       : 0,
-
-                # This record will also contain data per veiligheidsregio:
-                'VR01' : {
-                    'totaal_RNA_per_ml'    : 0,
-                    'totaal_RNA_metingen'  : 0,
-                    'RNA_per_ml_avg'       : 0
+                'besmettelijk'         : None, # Aantal besmettelijke mensen op basis van RNA_avg
+                'besmettelijk_error'   : None,
+                'regio' : {
+                    # This will contain data per veiligheidsregio:
+                    # 'VR01' : {
+                    #     'totaal_RNA_per_ml'    : 0,
+                    #     'totaal_RNA_metingen'  : 0,
+                    #     'RNA_per_ml_avg'       : 0,
+                    #     'inwoners'             : 0,
+                    #     'oppervlakte'          : 0                   
+                    # }
                 }
             },
-            'besmettelijk_obv_rna' : None, # Aantal besmettelijke mensen op basis van RNA_avg
             'rivm_totaal_tests'    : None,
             'rivm_aantal_testlabs' : None,
             'rivm_schatting_besmettelijk' : {
@@ -146,7 +152,7 @@ def builddaily():
     metenisweten = {}
     testpunten = {}
 
-    # Transform per-case data to daily totals
+    print('Transform per-case data to daily totals')
     filename = '../cache/COVID-19_casus_landelijk.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
@@ -184,7 +190,7 @@ def builddaily():
                 testpunten[testpunt] += 1
 
 
-    # Add intensive care data
+    print("Add intensive care data")
     filename = '../cache/NICE-intake-count.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
@@ -212,7 +218,7 @@ def builddaily():
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['nu_opgenomen'] += record['value']
 
-    # Add R numbers
+    print("Add R numbers")
     filename = '../cache/COVID-19_reproductiegetal.json' 
     with open(filename , 'r') as json_file:
         data = json.load(json_file)
@@ -229,12 +235,12 @@ def builddaily():
             if 'population' in record:
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
-    # # Load veiligheidsregios
-    # filename = '../data/veiligheidsregios.json'
-    # with open(filename, 'r') as json_file:
-    #     veiligheidsregios = json.load(json_file)
+    print("Load veiligheidsregios for addign to sewage data")
+    filename = '../data/veiligheidsregios.json'
+    with open(filename, 'r') as json_file:
+        veiligheidsregios = json.load(json_file)
 
-    # Add RNA sewege data
+    print("Add RNA sewege data per region")
     filename = '../cache/COVID-19_rioolwaterdata.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
@@ -255,16 +261,18 @@ def builddaily():
 
             regiocode = record['Security_region_code']
             if regiocode not in metenisweten[stringdate]['RNA']:
-                metenisweten[stringdate]['RNA'][regiocode] = {
+                metenisweten[stringdate]['RNA']['regio'][regiocode] = {
                     'totaal_RNA_per_ml'    : 0,
                     'totaal_RNA_metingen'  : 0,
-                    'RNA_per_ml_avg'       : 0
+                    'RNA_per_ml_avg'       : 0,
+                    'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
+                    'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']                   
                 }
-            metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
-            metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_metingen'] += 1 
-            metenisweten[stringdate]['RNA'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_metingen']
+            metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1 
+            metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
-    # Add estimated ill based on CoronawatchNL data
+    print("Add estimated ill based on CoronawatchNL data")
     filename = '../cache/J535D165-RIVM_NL_contagious_estimate.csv'
     with open(filename, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -293,7 +301,7 @@ def builddaily():
 
             line_count += 1
 
-    # Add total tests
+    print("Add total tests")
     filename ='../cache/J535D165-RIVM_NL_test_latest.csv'
     with open(filename, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -325,22 +333,41 @@ def builddaily():
 
             line_count += 1
 
-    # NEEDS WORK:
-    # Calculate average number of ill people based on Rna measurements
+    print("Calculate average number of ill people based on Rna measurements")
     dates = []
     rna = []
     for date in metenisweten:
-        if metenisweten[date]['RNA']['RNA_per_ml_avg']:
+        gewogenrna = 0
+        inwoners = 0
+        for regio in metenisweten[date]['RNA']['regio']:
+            regiodata = metenisweten[date]['RNA']['regio'][regio]
+            gewogenrna += (regiodata['RNA_per_ml_avg'] * regiodata['inwoners'])
+            inwoners += regiodata['inwoners']
+
+        print(date + "\t" + str(gewogenrna)+ "\t" + str(inwoners))
+
+        # Store measurement error
+        metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
+
+        if (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11))):
             dates.append(date)
-            rna.append(metenisweten[date]['RNA']['RNA_per_ml_avg'])
-    rna_avg = [x*37 for x in uniform_filter1d(rna, size=20)]
+            rna.append(gewogenrna)
+
+    def smooth(y, box_pts):
+        box = np.ones(box_pts)/box_pts
+        y_smooth = np.convolve(y, box, mode='same')
+        return y_smooth
+
+#    rna_avg = [x/32000 for x in uniform_filter1d(rna, size=20)]
+    rna_avg = [x/32000 for x in savgol_filter(rna, 35, 1)]
+#    rna_avg = [x/32000 for x in smooth(rna, 20)]
 
     for i in range(len(dates)):
         date = dates[i]
         besmettelijk = rna_avg[i]
-        metenisweten[date]['besmettelijk_obv_rna'] = besmettelijk
+        metenisweten[date]['RNA']['besmettelijk'] = besmettelijk
 
-    # Calculate average age of positive tested people
+    print("Calculate average age of positive tested people")
     for datum in metenisweten:
         positief = 0
         som = 0
@@ -352,7 +379,7 @@ def builddaily():
             gemiddeld = som/positief
             metenisweten[datum]['besmettingleeftijd_gemiddeld'] = gemiddeld
 
-    # Calculate totals
+    print("Calculate totals")
     totaal_positief = 0
     totaal_opgenomen = 0
     totaal_overleden = 0
