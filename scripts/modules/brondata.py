@@ -349,7 +349,7 @@ def builddaily():
         # Store measurement error
         metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
 
-        if (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11))):
+        if parser.parse(date).date() > parser.parse('2020-04-07').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11))):
             dates.append(date)
             rna.append(gewogenrna)
 
