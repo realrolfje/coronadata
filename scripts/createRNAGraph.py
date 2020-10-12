@@ -22,7 +22,7 @@ RNA_per_ml_avg = {
 }
 
 for datum in metenisweten:
-    if metenisweten[datum]['totaal_RNA_metingen'] > 0:
+    if metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0:
         RNA_per_ml_avg['x'].append(parser.parse(datum))
         RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_ml_avg'])
 
