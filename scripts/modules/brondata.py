@@ -114,9 +114,18 @@ def initrecord(date, metenisweten):
             'Rt_low'               : None,
             'Rt_up'                : None,
             'Rt_population'        : None,
-            'totaal_RNA_per_ml'    : 0,
-            'totaal_RNA_metingen'  : 0,
-            'RNA_per_ml_avg'       : 0,
+            'RNA' : {
+                'totaal_RNA_per_ml'    : 0,
+                'totaal_RNA_metingen'  : 0,
+                'RNA_per_ml_avg'       : 0,
+
+                # This record will also contain data per veiligheidsregio:
+                'VR01' : {
+                    'totaal_RNA_per_ml'    : 0,
+                    'totaal_RNA_metingen'  : 0,
+                    'RNA_per_ml_avg'       : 0
+                }
+            },
             'besmettelijk_obv_rna' : None, # Aantal besmettelijke mensen op basis van RNA_avg
             'rivm_totaal_tests'    : None,
             'rivm_aantal_testlabs' : None,
@@ -220,10 +229,10 @@ def builddaily():
             if 'population' in record:
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
-    # Load veiligheidsregios
-    filename = '../data/veiligheidsregios.json'
-    with open(filename, 'r') as json_file:
-        veiligheidsregios = json.load(json_file)
+    # # Load veiligheidsregios
+    # filename = '../data/veiligheidsregios.json'
+    # with open(filename, 'r') as json_file:
+    #     veiligheidsregios = json.load(json_file)
 
     # Add RNA sewege data
     filename = '../cache/COVID-19_rioolwaterdata.json' 
@@ -240,9 +249,20 @@ def builddaily():
                 continue
 
             initrecord(stringdate, metenisweten)
-            metenisweten[stringdate]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
-            metenisweten[stringdate]['totaal_RNA_metingen'] += 1 
-            metenisweten[stringdate]['RNA_per_ml_avg'] = metenisweten[stringdate]['totaal_RNA_per_ml'] / metenisweten[stringdate]['totaal_RNA_metingen']
+            metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[stringdate]['RNA']['totaal_RNA_metingen'] += 1 
+            metenisweten[stringdate]['RNA']['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['totaal_RNA_metingen']
+
+            regiocode = record['Security_region_code']
+            if regiocode not in metenisweten[stringdate]['RNA']:
+                metenisweten[stringdate]['RNA'][regiocode] = {
+                    'totaal_RNA_per_ml'    : 0,
+                    'totaal_RNA_metingen'  : 0,
+                    'RNA_per_ml_avg'       : 0
+                }
+            metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_metingen'] += 1 
+            metenisweten[stringdate]['RNA'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA'][regiocode]['totaal_RNA_metingen']
 
     # Add estimated ill based on CoronawatchNL data
     filename = '../cache/J535D165-RIVM_NL_contagious_estimate.csv'
@@ -310,9 +330,9 @@ def builddaily():
     dates = []
     rna = []
     for date in metenisweten:
-        if metenisweten[date]['RNA_per_ml_avg']:
+        if metenisweten[date]['RNA']['RNA_per_ml_avg']:
             dates.append(date)
-            rna.append(metenisweten[date]['RNA_per_ml_avg'])
+            rna.append(metenisweten[date]['RNA']['RNA_per_ml_avg'])
     rna_avg = [x*37 for x in uniform_filter1d(rna, size=20)]
 
     for i in range(len(dates)):
