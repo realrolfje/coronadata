@@ -220,6 +220,11 @@ def builddaily():
             if 'population' in record:
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
+    # Load veiligheidsregios
+    filename = '../data/veiligheidsregios.json'
+    with open(filename, 'r') as json_file:
+        veiligheidsregios = json.load(json_file)
+
     # Add RNA sewege data
     filename = '../cache/COVID-19_rioolwaterdata.json' 
     with open(filename, 'r') as json_file:
