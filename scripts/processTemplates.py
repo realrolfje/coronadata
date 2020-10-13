@@ -21,6 +21,8 @@ for date in metenisweten:
     nu_opgenomen = metenisweten[date]['nu_opgenomen']
     if metenisweten[date]['rivm_schatting_besmettelijk']['value']:
         geschat_ziek_nu = metenisweten[date]['rivm_schatting_besmettelijk']['value']
+    if metenisweten[date]['RNA']['besmettelijk']:
+        geschat_ziek_nu_rna = metenisweten[date]['RNA']['besmettelijk']
     if metenisweten[date]['Rt_avg'] is not None:
         Rt = metenisweten[date]['Rt_avg']
     if metenisweten[date]['rivm_totaal_tests'] and metenisweten[date]['positief'] and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
@@ -34,12 +36,16 @@ def decimalstring(number):
     return "{:,}".format(number).replace(',','.')
 
 eenopXziek = round(17500000/geschat_ziek_nu)
+eenopXziekRNA = round(17500000/geschat_ziek_nu_rna)
 
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
 
     'ziekverhouding' : str(eenopXziek),
     'ziekverhouding_color' : 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
+
+    'ziekverhouding_rna' : str(eenopXziekRNA),
+    'ziekverhouding_rna_color' : 'green' if eenopXziekRNA > 1000 else 'yellow' if eenopXziekRNA > 500 else 'red',
 
     'nu_opgenomen' : decimalstring(nu_opgenomen),
     'nu_opgenomen_color': 'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',

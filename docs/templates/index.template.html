@@ -142,11 +142,19 @@
         </p>
     </div>
     <div class="container center">
+        <!-- o.b.v. RIVM:
         <a class="buttonlink" href="#zieken">
             <div class="button ${ziekverhouding_color}"
-                title="Het aantal geschat zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding} mensen is nu mogelijk besmettelijk of ziek.">
+                title="Het door RIVM geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding} mensen is nu mogelijk besmettelijk of ziek.">
                 <div class="nametext">mensen ziek</div>
                 <div class="valuetext">1:${ziekverhouding}</div>
+            </div>
+        </a> -->
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_rna_color}"
+                title="Het op basis van rioolwatergegevens geschat aantalzieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rna} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding_rna}</div>
             </div>
         </a>
         <a class="buttonlink" href="#covidtests">
