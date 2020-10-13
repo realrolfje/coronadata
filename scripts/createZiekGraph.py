@@ -32,6 +32,13 @@ geschat_ziek = {
     'max' : []
 }
 
+geschat_ziek_rna = {
+    'x'   : [],
+    'y'   : [],
+    'min' : [],
+    'max' : []
+}
+
 ic = {
     'x' : [],
     'y' : [],
@@ -94,6 +101,26 @@ for d in date_range:
         geschat_ziek['x'].append(parser.parse(datum))
         geschat_ziek['y'].append(nieuw_y)
 
+    # ----------------------- Geschat op basis van RNA
+    if datum in metenisweten and metenisweten[datum]['RNA']['besmettelijk']:
+        geschat_ziek_rna['x'].append(parser.parse(datum))
+        geschat_ziek_rna['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
+
+        geschat_ziek_rna['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
+        geschat_ziek_rna['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
+        geschat_ziek_rna_nu = metenisweten[datum]['RNA']['besmettelijk']
+    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
+        geschat_ziek_rna['x'].append(parser.parse(datum))
+        geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
+        geschat_ziek_rna['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
+        geschat_ziek_rna['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
+    elif len(geschat_ziek_rna['y']) > deltadagen:
+        vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
+        vorig_y = geschat_ziek_rna['y'][-deltadagen]
+        nieuw_y = geschat_ziek_rna['y'][-1] + (geschat_ziek_rna['y'][-1] - vorig_y)/deltadagen
+        geschat_ziek_rna['x'].append(parser.parse(datum))
+        geschat_ziek_rna['y'].append(nieuw_y)
+
     # Opgenomen voorspeld
     if datum not in metenisweten and len(opgenomen['y']) > deltadagen:
         vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
@@ -116,20 +143,32 @@ def decimalstring(number):
 def anotate(plt, metenisweten, datum, tekst, x, y):
     if datum in metenisweten:
         
-        if metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
+        # Annotate on RIVM estimates
+        # if metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
+        #     yval = metenisweten[datum]['rivm_schatting_besmettelijk']['value']
+        # else:
+        #     indexfromend = len(list(metenisweten.keys())) - list(metenisweten.keys()).index(datum) +7
+        #     yval = geschat_ziek['y'][-indexfromend]
+
+        # Annotate on RNA estimates
+        if metenisweten[datum]['RNA']['besmettelijk']:
+            yval = metenisweten[datum]['RNA']['besmettelijk']
+        elif metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
             yval = metenisweten[datum]['rivm_schatting_besmettelijk']['value']
         else:
-            indexfromend = len(list(metenisweten.keys())) - list(metenisweten.keys()).index(datum) +7
-            yval = geschat_ziek['y'][-indexfromend]
+            yval = None
+            # indexfromend = len(list(metenisweten.keys())) - list(metenisweten.keys()).index(datum) +7
+            # yval = geschat_ziek_rna['y'][-indexfromend]
 
-        plt.annotate(
-            tekst,
-            xy=(parser.parse(datum), yval),
-            xytext=(parser.parse(x), y),
-            fontsize=8,
-            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-        )
+        if yval:
+            plt.annotate(
+                tekst,
+                xy=(parser.parse(datum), yval),
+                xytext=(parser.parse(x), y),
+                fontsize=8,
+                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+            )
 
 print('Generating daily positive tests graph...')
 
@@ -169,12 +208,22 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 # ax2.plot(ziek['x'], ziek['y'], color='darkorange',
 #          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
-# Test for plotting besmettelijk op basis van rna
-ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='steelblue',
+# Plot ziek based on RIVM
+# ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='steelblue',
+#          linestyle=':', 
+#          label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')\n'
+#                  +'→ 1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is ziek/besmettelijk')
+# ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='steelblue', alpha=0.1, interpolate=True)
+
+# Plot ziek based on RNA
+ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
          linestyle=':', 
-         label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')\n'
-                 +'→ 1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is ziek/besmettelijk')
-ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='steelblue', alpha=0.1, interpolate=True)
+         label='Schatting totaal ziek obv riooldata (nu: '+decimalstring(round(geschat_ziek_rna_nu))+')\n'
+                 +'→ 1 op '+str(round(17500000/geschat_ziek_rna_nu))+' mensen is ziek/besmettelijk')
+ax2.fill_between(
+    geschat_ziek_rna['x'][:len(geschat_ziek_rna['min'])], 
+    geschat_ziek_rna['min'], geschat_ziek_rna['max'],
+    facecolor='steelblue', alpha=0.1, interpolate=True)
 
 
 # laat huidige datum zien met vertikale lijn
