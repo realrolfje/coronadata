@@ -344,12 +344,11 @@ def builddaily():
             gewogenrna += (regiodata['RNA_per_ml_avg'] * regiodata['inwoners'])
             inwoners += regiodata['inwoners']
 
-        print(date + "\t" + str(gewogenrna)+ "\t" + str(inwoners))
-
         # Store measurement error
         metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
 
-        if parser.parse(date).date() > parser.parse('2020-04-07').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11))):
+        # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
+        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11))):
             dates.append(date)
             rna.append(gewogenrna)
 
@@ -359,7 +358,8 @@ def builddaily():
         return y_smooth
 
 #    rna_avg = [x/32000 for x in uniform_filter1d(rna, size=20)]
-    rna_avg = [x/32000 for x in savgol_filter(rna, 35, 1)]
+    rna_avg = [x/32000 for x in savgol_filter(rna, 13, 1)]
+    rna_avg = savgol_filter(rna_avg, 13, 1)
 #    rna_avg = [x/32000 for x in smooth(rna, 20)]
 
     for i in range(len(dates)):
