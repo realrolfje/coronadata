@@ -11,10 +11,11 @@ import time
 import json
 import csv
 import re
+import numpy as np
 from dateutil import parser
 from scipy.ndimage.filters import uniform_filter1d
 from scipy.signal import savgol_filter
-import numpy as np
+from statistics import mean
 
 def readjson(filename):
     print('Reading '+filename)
@@ -336,9 +337,14 @@ def builddaily():
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
     rna = []
+    rna_error = []
+    rivmschattingratio = []
     for date in metenisweten:
         gewogenrna = 0
         inwoners = 0
+
+        # TODO: Checken of dit ook goed gaat met meerdere RWZI's in de regio die dan vermenigvuldigd
+        # worden met de inwoners (= groter aandeel)
         for regio in metenisweten[date]['RNA']['regio']:
             regiodata = metenisweten[date]['RNA']['regio'][regio]
             gewogenrna += (regiodata['RNA_per_ml_avg'] * regiodata['inwoners'])
@@ -347,25 +353,37 @@ def builddaily():
         # Store measurement error
         metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
 
+        if inwoners < 1000000:
+            print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
+
         # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
-        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11))):
+        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11)) or inwoners > 1000000):
             dates.append(date)
             rna.append(gewogenrna)
+            rna_error.append(1 - (inwoners / 17500000))
 
-    def smooth(y, box_pts):
-        box = np.ones(box_pts)/box_pts
-        y_smooth = np.convolve(y, box, mode='same')
-        return y_smooth
+    # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
+    def double_savgol(inputArray):
+        outputArray = savgol_filter(inputArray, 13, 1)
+        outputArray = savgol_filter(outputArray, 13, 1)
+        return outputArray
 
-#    rna_avg = [x/32000 for x in uniform_filter1d(rna, size=20)]
-    rna_avg = [x/32000 for x in savgol_filter(rna, 13, 1)]
-    rna_avg = savgol_filter(rna_avg, 13, 1)
-#    rna_avg = [x/32000 for x in smooth(rna, 20)]
+    # Smooth
+    rna_avg = double_savgol(rna)
+    rna_error = double_savgol(rna_error)
+
+    # Compare to RIVM estimates and correct scale
+    for idx, date in enumerate(dates):
+        if metenisweten[date]['rivm_schatting_besmettelijk']['value'] and rna_avg[idx] > 1000:
+           rivmschattingratio.append(metenisweten[date]['rivm_schatting_besmettelijk']['value']/rna_avg[idx])
+    averageratio = mean(rivmschattingratio)
+    print(averageratio)
+    rna_avg = [x * averageratio for x in rna_avg]
 
     for i in range(len(dates)):
         date = dates[i]
-        besmettelijk = rna_avg[i]
-        metenisweten[date]['RNA']['besmettelijk'] = besmettelijk
+        metenisweten[date]['RNA']['besmettelijk'] = rna_avg[i]
+        metenisweten[date]['RNA']['besmettelijk_error'] = rna_error[i]
 
     print("Calculate average age of positive tested people")
     for datum in metenisweten:
