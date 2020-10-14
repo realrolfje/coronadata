@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
 import modules.brondata as brondata
+from modules.brondata import decimalstring
 import datetime
 from string import Template
 from dateutil import parser
@@ -31,9 +32,6 @@ for date in metenisweten:
         gemiddeldeleeftijdarray.append(metenisweten[date]['besmettingleeftijd_gemiddeld'])
 
 gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
-
-def decimalstring(number):
-    return "{:,}".format(number).replace(',','.')
 
 eenopXziek = round(17500000/geschat_ziek_nu)
 eenopXziekRNA = round(17500000/geschat_ziek_nu_rna)
