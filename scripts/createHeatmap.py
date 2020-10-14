@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 import datetime
 import json
 import modules.brondata as brondata
+from modules.brondata import decimalstring
 
 brondata.freshdata()
 
@@ -64,9 +65,6 @@ for d in date_range:
         gemiddeldeleeftijd['y'].append(metenisweten[datum]['besmettingleeftijd_gemiddeld'])
 
 gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
-
-def decimalstring(number):
-    return "{:,}".format(number).replace(',', '.')
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
