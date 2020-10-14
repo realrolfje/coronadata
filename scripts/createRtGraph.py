@@ -8,6 +8,7 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
+from modules.brondata import decimalstring
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -29,10 +30,6 @@ for datum in metenisweten:
     if metenisweten[datum]['Rt_low'] is not None:
         Rt_low['x'].append(parser.parse(datum))
         Rt_low['y'].append(metenisweten[datum]['Rt_low'])
-
-
-def decimalstring(number):
-    return "{:,}".format(number).replace(',','.')
 
 
 plt.figure(figsize=(10,3))
