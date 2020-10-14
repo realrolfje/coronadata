@@ -8,6 +8,7 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
+from modules.brondata import decimalstring
 
 
 brondata.freshdata()
@@ -77,9 +78,6 @@ for d in date_range:
         # If all else fails neem waarde van vorige positief
         positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief['y'][-1])
-
-def decimalstring(number):
-    return "{:,}".format(number).replace(',','.')
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
     if datum in metenisweten and metenisweten[datum]['rivm_totaal_tests']:
