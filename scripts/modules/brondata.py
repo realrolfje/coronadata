@@ -27,8 +27,9 @@ def writejson(filename, adict):
     with open(filename, 'w') as file:
         file.write(json.dumps(adict))
 
+# Turns US 10,000.00 into EU 10.000,00
 def decimalstring(number):
-    return "{:,}".format(number).replace(',','.')
+    return "{:,}".format(number).replace(',','x').replace('.',',').replace('x','.')
 
 def isnewer(file1, file2):
     return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime 
