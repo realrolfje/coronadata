@@ -81,7 +81,7 @@ plt.title('Positieve tests per leeftijdsgroep, '+gegenereerd_op)
 # Ongewogen:
 heatmap.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Blues') # inferno is also a good one
 
-averages.plot(gemiddeldeleeftijd['x'], gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (7 dagen gemiddeld: '+str(gemiddeldlaatsteweek)+')')
+averages.plot(gemiddeldeleeftijd['x'], gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')')
 
 averages.legend(loc="upper right")
 
