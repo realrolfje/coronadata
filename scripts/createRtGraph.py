@@ -58,7 +58,7 @@ plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alp
 plt.axvline(datetime.date.today(), color='teal', linewidth=0.15)
 
 plt.annotate(
-    str(Rt_avg['y'][-1]),
+    decimalstring(Rt_avg['y'][-1]),
     xy=(Rt_avg['x'][-1], Rt_avg['y'][-1]),
     xytext=(Rt_avg['x'][-1], Rt_avg['y'][-1]+0.5),
     fontsize=8,
