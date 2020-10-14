@@ -110,7 +110,7 @@ for d in date_range:
         geschat_ziek_rna['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
         geschat_ziek_rna['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
         geschat_ziek_rna_nu = metenisweten[datum]['RNA']['besmettelijk']
-    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
+    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=deltadagen)):
         geschat_ziek_rna['x'].append(parser.parse(datum))
         geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
         geschat_ziek_rna['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
@@ -206,21 +206,21 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 #          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
 
 # Plot ziek based on RIVM
-ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='steelblue',
-         linestyle=':', 
-         label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')\n'
-                 +'→ 1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is ziek/besmettelijk')
-ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='steelblue', alpha=0.1, interpolate=True)
+# ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='steelblue',
+#          linestyle=':', 
+#          label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')\n'
+#                  +'→ 1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is ziek/besmettelijk')
+# ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='steelblue', alpha=0.1, interpolate=True)
 
 # Plot ziek based on RNA
-# ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
-#          linestyle=':', 
-#          label='Schatting totaal ziek obv riooldata (nu: '+decimalstring(round(geschat_ziek_rna_nu))+')\n'
-#                  +'→ 1 op '+str(round(17500000/geschat_ziek_rna_nu))+' mensen is ziek/besmettelijk')
-# ax2.fill_between(
-#     geschat_ziek_rna['x'][:len(geschat_ziek_rna['min'])], 
-#     geschat_ziek_rna['min'], geschat_ziek_rna['max'],
-#     facecolor='steelblue', alpha=0.1, interpolate=True)
+ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
+         linestyle=':', 
+         label='Schatting totaal ziek obv riooldata (nu: '+decimalstring(round(geschat_ziek_rna_nu))+')\n'
+                 +'→ 1 op '+str(round(17500000/geschat_ziek_rna_nu))+' mensen is ziek/besmettelijk')
+ax2.fill_between(
+    geschat_ziek_rna['x'][:len(geschat_ziek_rna['min'])], 
+    geschat_ziek_rna['min'], geschat_ziek_rna['max'],
+    facecolor='steelblue', alpha=0.1, interpolate=True)
 
 
 # laat huidige datum zien met vertikale lijn
