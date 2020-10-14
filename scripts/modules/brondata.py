@@ -27,6 +27,9 @@ def writejson(filename, adict):
     with open(filename, 'w') as file:
         file.write(json.dumps(adict))
 
+def decimalstring(number):
+    return "{:,}".format(number).replace(',','.')
+
 def isnewer(file1, file2):
     return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime 
 
@@ -357,7 +360,7 @@ def builddaily():
             print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
 
         # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
-        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=11)) or inwoners > 1000000):
+        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=14))):
             dates.append(date)
             rna.append(gewogenrna)
             rna_error.append(1 - (inwoners / 17500000))
