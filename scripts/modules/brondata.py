@@ -361,7 +361,8 @@ def builddaily():
             print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
 
         # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
-        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=14))):
+        # if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=14)) or inwoners > 100000):
+        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=5))):
             dates.append(date)
             rna.append(gewogenrna)
             rna_error.append(1 - (inwoners / 17500000))

@@ -115,7 +115,7 @@ for event in events:
 # Plot cases per dag
 ax1.plot(positief['x'][:-11], positief['y'][:-11], 
             color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
-# ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
+ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 
 ax1.text(parser.parse("2020-05-01"), 26000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
 
