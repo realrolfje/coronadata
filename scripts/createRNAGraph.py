@@ -8,6 +8,7 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
+from modules.brondata import decimalstring
 from scipy.ndimage.filters import uniform_filter1d
 
 brondata.freshdata()
@@ -26,9 +27,6 @@ for datum in metenisweten:
         RNA_per_ml_avg['x'].append(parser.parse(datum))
         RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_ml_avg'])
 
-
-def decimalstring(number):
-    return "{:,}".format(number).replace(',','.')
 
 plt.figure(figsize=(10,3))
 plt.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
