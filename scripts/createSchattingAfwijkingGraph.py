@@ -77,13 +77,15 @@ ax1.fill_between(
     facecolor='blue', alpha=0.1, interpolate=True)
 
 
-ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Marge RNA t.o.v. RIVM schatting in %')
+ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking RNA t.o.v. RIVM schatting in %')
 
 ax1.set_ylim([0, 400000])
 ax2.set_ylim([-200, 200])
 
 ax1.set_xlabel("Datum")
-plt.title('Testplot')
+
+gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+plt.title('Afwijking schatting o.b.v. RNA t.o.v. RIVM schatting, '+gegenereerd_op)
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
