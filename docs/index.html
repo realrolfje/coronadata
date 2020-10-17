@@ -4,126 +4,7 @@
     <title>Corona data landelijk</title>
     <meta http-equiv="refresh" content="500">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        p {
-            padding: 8px;
-            margin: 3px;
-        }
-
-        img {
-            margin: 5px;
-        }
-
-        .header {
-            margin-bottom: inherit;
-        }
-
-        .footer {
-            display: inline-block;
-            max-width: 850;
-        }
-
-        .basisregels {
-            text-align: center;
-            display: inline-block;
-            max-width: 850;
-            vertical-align: top;
-        }
-
-        .container {
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .center {
-            align-content: center;
-            text-align: center;
-        }
-
-        .tweet {
-            display: inline-block;
-            background-color: #C0EDFF;
-            text-align: left;
-            max-width: 400px;
-            padding: 10px;
-            margin: 3px;
-            border-radius: 5px;
-            -moz-border-radius: 5px;
-
-        }
-
-        .graphcontainer {
-            display: inline-block;
-            vertical-align: top;
-            max-width: 850px;
-        }
-
-        .button {
-            display: inline-block;
-            vertical-align: top;
-            text-align: center;
-            border-radius: 5px;
-            -moz-border-radius: 5px;
-            padding: 3px;
-            padding-left: 10px;
-            padding-right: 10px;
-            margin: 3px;
-        }
-
-        .buttonlink {
-            color: inherit;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .nametext {
-            font-size: smaller;
-        }
-
-        .valuetext {
-            font-size: larger;
-            font-weight: bold;
-            margin: 3px;
-        }
-
-        .highlight {
-            background-color: yellow;
-        }
-
-        .red {
-            background-color: rgb(255, 198, 191);
-            border-color: rgb(189, 0, 0);
-            border-width: 2px;
-            border-style: solid;
-        }
-
-        .yellow {
-            background-color: rgb(255, 230, 0);
-            border-color: rgb(192, 163, 1);
-            border-width: 2px;
-            border-style: solid;
-        }
-
-        .green {
-            background-color: lightgreen;
-            border-color: green;
-            border-width: 2px;
-            border-style: solid;
-        }
-
-        .blue {
-            background-color: rgb(187, 233, 255);
-            border-color: rgb(71, 115, 247);
-            border-width: 2px;
-            border-style: solid;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -168,14 +49,14 @@
             <div class="button yellow"
                 title="Het aantal mensen dat op dit moment is opgenomen in het ziekenuis met, of als gevolg van, COVID-19.">
                 <div class="nametext">opgenomen</div>
-                <div class="valuetext">1293</div>
+                <div class="valuetext">1291</div>
             </div>
         </a>
         <a class="buttonlink" href="#zieken">
             <div class="button red"
                 title="Het aantal mensen dat op dit moment op intensive care ligt met, of als gevolg van, COVID-19.">
                 <div class="nametext">intensive care</div>
-                <div class="valuetext">374</div>
+                <div class="valuetext">378</div>
             </div>
         </a>
         <a class="buttonlink" href="#reproductiegetal">
@@ -194,12 +75,7 @@
     </div>
     <div class="container center">
         <div class="graphcontainer">
-            <img id="zieken" src="graphs/zieken.svg" width="100%" />
-            
-            Het geschat aantal mensen ziek/besmettelijk in bovenstaande grafiek is een schatting op basis van RNA in rioolwater
-            per veiligheidsregio. De nauwkeurigheid van deze schatting t.o.v. de achterlopende RIVM
-            schattingen is beschikbaar in een <a href="graphs/schattingafwijking.svg">losse grafiek</a>.
-
+            <a href="zieken.html" title="klik voor uitleg"><img id="zieken" src="graphs/zieken.svg" width="100%" /></a>
             <img id="rioolwater" src="graphs/rna-in-rioolwater.svg" width="100%" />
             <img id="reproductiegetal" src="graphs/reproductiegetal.svg" width="100%" />
         </div>
@@ -215,7 +91,7 @@
                 1 op 74 mensen is nu ziek/besmettelijk (RWZI).<br />
                 <!-- 1 op 138 mensen is nu ziek/besmettelijk (RIVM).<br /> -->
                 Positief getest: 220.052 (RIVM).<br />
-                Nu op IC: 374 (NICE).<br />
+                Nu op IC: 378 (NICE).<br />
                 https://realrolfje.github.io/coronadata/<br />
                 #COVID19 #coronavirus
             </div>
@@ -235,4 +111,4 @@
     </div>
 </body>
 
-</html><!-- updated Sat Oct 17 17:16:27 CEST 2020 -->
+</html>
