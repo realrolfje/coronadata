@@ -137,35 +137,20 @@ for d in date_range:
         opgenomen_voorspeld['x'].append(parser.parse(datum))
         opgenomen_voorspeld['y'].append(nieuw_y)
 
-def anotate(plt, metenisweten, datum, tekst, x, y):
-    if datum in metenisweten:
-        
-        # Annotate on RIVM estimates
-        # if metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
-        #     yval = metenisweten[datum]['rivm_schatting_besmettelijk']['value']
-        # else:
-        #     indexfromend = len(list(metenisweten.keys())) - list(metenisweten.keys()).index(datum) +7
-        #     yval = geschat_ziek['y'][-indexfromend]
 
-        # Annotate on RNA estimates
-        if metenisweten[datum]['RNA']['besmettelijk']:
-            yval = metenisweten[datum]['RNA']['besmettelijk']
-        elif metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
-            yval = metenisweten[datum]['rivm_schatting_besmettelijk']['value']
-        else:
-            yval = None
-            # indexfromend = len(list(metenisweten.keys())) - list(metenisweten.keys()).index(datum) +7
-            # yval = geschat_ziek_rna['y'][-indexfromend]
-
-        if yval:
-            plt.annotate(
-                tekst,
-                xy=(parser.parse(datum), yval),
-                xytext=(parser.parse(x), y),
-                fontsize=8,
-                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-            )
+def anotate(plt, xdata, ydata, datum, tekst, x, y):
+    xindex = xdata.index(parser.parse(datum))
+    if xindex:
+        xval = xdata[xindex]
+        yval = ydata[xindex]
+        plt.annotate(
+            tekst,
+            xy=(xval, yval),
+            xytext=(parser.parse(x), y),
+            fontsize=8,
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+        )
 
 print('Generating daily positive tests graph...')
 
@@ -177,7 +162,8 @@ ax2 = plt.twinx()
 for event in events:
     if 'ziekloc' in event:
         anotate(
-            ax2, metenisweten, 
+            ax2, 
+            geschat_ziek_rna['x'], geschat_ziek_rna['y'],
             event['date'], event['event'], 
             event['ziekloc'][0], 
             event['ziekloc'][1]
