@@ -130,6 +130,7 @@ def initrecord(date, metenisweten):
                 'RNA_per_ml_avg'       : 0,
                 'besmettelijk'         : None, # Aantal besmettelijke mensen op basis van RNA_avg
                 'besmettelijk_error'   : None,
+                'populatie_dekking'    : None,
                 'regio' : {
                     # This will contain data per veiligheidsregio:
                     # 'VR01' : {
@@ -154,6 +155,18 @@ def initrecord(date, metenisweten):
                 # value = aantal besmettingen
             }
         }    
+
+# https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
+def smooth(inputArray):
+    return double_savgol(inputArray, 2, 13, 1)
+
+# https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
+def double_savgol(inputArray, iterations, window, order):
+    outputArray = inputArray
+    while iterations > 0:
+        outputArray = savgol_filter(outputArray, window, order)
+        iterations = iterations - 1
+    return outputArray
 
 # Not used yet, maybe handy to graph more stuff based on a single json
 def builddaily():
@@ -358,6 +371,7 @@ def builddaily():
             inwoners += regiodata['inwoners']
 
         # Store measurement error
+        metenisweten[date]['RNA']['populatie_dekking'] = inwoners / 17500000
         metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
 
         if inwoners < 1000000:
@@ -370,15 +384,9 @@ def builddaily():
             rna.append(gewogenrna)
             rna_error.append(1 - (inwoners / 17500000))
 
-    # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
-    def double_savgol(inputArray):
-        outputArray = savgol_filter(inputArray, 13, 1)
-        outputArray = savgol_filter(outputArray, 13, 1)
-        return outputArray
-
     # Smooth
-    rna_avg = double_savgol(rna)
-    rna_error = double_savgol(rna_error)
+    rna_avg = double_savgol(rna, 2, 13, 1)
+    rna_error = double_savgol(rna_error, 2, 13, 1)
 
     # Compare to RIVM estimates and correct scale
     for idx, date in enumerate(dates):
