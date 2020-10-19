@@ -8,4 +8,5 @@ cd scripts
 ./createZiekGraph.py
 ./processTemplates.py
 ./createSchattingAfwijkingGraph.py
+./createLiveIcon.py
 cd ..
