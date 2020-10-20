@@ -52,11 +52,12 @@ ax = plt.gca()
 ax.axes.xaxis.set_visible(False)
 ax.axes.yaxis.set_visible(False)
 
-mx = max(max(alpha['y']),max(beta['y']))* 1.2
-ax1.set_ylim([0, mx])
+mx = max(max(alpha['y']),max(beta['y']))
+mx = mx * 1.4 + mx * 0.2
+ax1.set_ylim([-mx*0.2, mx])
 
-plt.figtext(0.5, 0.875,
-            "           CORONADATA           ",
+plt.figtext(0.5, 0.80,
+            "\n           CORONADATA           ",
             color="black",
             fontsize='xx-large',
             horizontalalignment='center',
