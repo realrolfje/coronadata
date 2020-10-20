@@ -222,17 +222,18 @@ ax2.set_ylabel("Geschat ziek")
 ax1.set_ylim([0, 3250])
 ax2.set_ylim([0, 325000])
 
+ax2.set_yticks([50000, 100000, 150000, 200000, 250000, 300000])
+ax2.set_yticklabels(['50k', '100k', '150k', '200k', '250k', '300k'])
+
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 
-plt.figtext(0.38,0.7, 
+plt.figtext(0.34,0.7, 
          "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 
          edgecolor='white'),
          zorder=10)
 
-# ax1.set_yscale('log')
-# ax2.set_yscale('log')
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
