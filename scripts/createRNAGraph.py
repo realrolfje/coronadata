@@ -60,7 +60,7 @@ ax2.plot(RNA_populatie_dekking['x'], smooth(RNA_populatie_dekking['y']), color='
 axes = plt.gca()
 axes.set_xlim([parser.parse("2020-02-01"),datetime.date.today() + datetime.timedelta(days=7)])
 
-ax1.set_ylim([0,2000])
+ax1.set_ylim([0,4000])
 ax1.set_ylabel("RNA per mL")
 ax1.set_xlabel("Datum")
 
