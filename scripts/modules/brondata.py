@@ -96,6 +96,11 @@ def download():
         'https://coronadashboard.rijksoverheid.nl/json/NL.json'
     ) or freshdata
 
+    freshdata = downloadIfStale(
+        '../cache/lcps-covid-19.csv',
+        'https://lcps.nu/wp-content/uploads/covid-19.csv'
+    ) or freshdata
+
     return freshdata
 
 def isvaliddate(datestring, filename):
