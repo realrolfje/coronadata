@@ -9,4 +9,5 @@ cd scripts
 ./processTemplates.py
 ./createSchattingAfwijkingGraph.py
 ./createLiveIcon.py
+./createTestGraph.py
 cd ..
