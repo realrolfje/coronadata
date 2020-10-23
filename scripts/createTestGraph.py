@@ -25,70 +25,47 @@ beta = {
 
 gamma = {
     'x': [],
+    'y': [],
     'min': [],
     'max': []
 }
 
 for datum in metenisweten:
-    # if metenisweten[datum]['RNA_per_ml_avg']:
-    #     alpha['x'].append(parser.parse(datum))
-    #     alpha['y'].append(metenisweten[datum]['RNA_per_ml_avg'])
 
-    if metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
+    value = metenisweten[datum]['nu_opgenomen']
+    if value:
         alpha['x'].append(parser.parse(datum))
-        alpha['y'].append(metenisweten[datum]
-                          ['rivm_schatting_besmettelijk']['value'])
+        alpha['y'].append(value)
 
-    if metenisweten[datum]['RNA']['besmettelijk']:
+    value = metenisweten[datum]['nu_opgenomen_lcps']
+    if value:
         beta['x'].append(parser.parse(datum))
-        beta['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
+        beta['y'].append(value)
 
+    value = metenisweten[datum]['nu_op_ic_noncovid_lcps']
+    if value:
         gamma['x'].append(parser.parse(datum))
-        gamma['min'].append(metenisweten[datum]['RNA']['besmettelijk']
-                            * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
-        gamma['max'].append(metenisweten[datum]['RNA']['besmettelijk']
-                            * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
+        gamma['y'].append(value)
 
 print('Generating test graph...')
 
-fig, ax1 = plt.subplots(figsize=(2, 2))
-fig.subplots_adjust(top=1, bottom=0, left=0, right=1)
-
-ax = plt.gca()
-ax.axes.xaxis.set_visible(False)
-ax.axes.yaxis.set_visible(False)
-
-
-mx = max(alpha['y']) * 1.2
-ax1.set_ylim([0, mx])
-
-
-plt.figtext(0.5, 0.88,
-            "           CORONADATA           ",
-            color="black",
-            fontsize='xx-large',
-#            fontstyle='oblique',
-            horizontalalignment='center',
-            bbox=dict(
-                facecolor='yellow', 
-                edgecolor='yellow',
-                alpha=1.0,
-            ),
-            zorder=10)
-
-
+fig, ax1 = plt.subplots(figsize=(10, 5))
 
 # ax2 = plt.twinx()
 
 #plt.figure(figsize =(10,5))
-# ax1.grid(which='both', axis='both', linestyle='-.',
-#          color='gray', linewidth=1, alpha=0.3)
+ax1.grid(which='both', axis='both', linestyle='-.',
+         color='gray', linewidth=1, alpha=0.3)
 # ax2.grid(which='both', axis='both', linestyle='-.',
 #          color='gray', linewidth=1, alpha=0.3)
 
-# Plot cases per dag
-ax1.plot(alpha['x'], alpha['y'], color='red',
-         label='alpha/schatting zieken RIVM')
+ax1.plot(alpha['x'], alpha['y'], color='red',label='covid opgenomen patiënten NICE (nu '+str(alpha['y'][-1])+')')
+ax1.plot(beta['x'], beta['y'], color='green',label='covid bezette bedden LCPS (nu '+str(beta['y'][-1])+')')
+ax1.plot(gamma['x'], gamma['y'], color='cyan',label='non-covid bezette IC bedden LCPS (nu '+str(gamma['y'][-1])+')')
+
+print("NICE: "+str(alpha['y'][-1]))
+print("LCPS: "+str(beta['y'][-1]))
+
 # ax1.plot(beta['x'], beta['y'], color='steelblue', label='beta')
 
 # ax2.plot(alpha['x'], alpha['y'], c olor='steelblue', label='alpha')
@@ -100,11 +77,11 @@ ax1.plot(alpha['x'], alpha['y'], color='red',
 #     gamma['max'],
 #     facecolor='steelblue', alpha=0.1, interpolate=True)
 
-# ax1.set_xlabel("Datum")
-# plt.title('Testplot')
+ax1.set_xlabel("Datum")
+plt.title('Testplot')
 
-# ax1.legend(loc="upper left")
-# ax2.legend(loc="upper right")
+ax1.legend(loc="upper left")
+#ax2.legend(loc="upper right")
 plt.savefig("../docs/graphs/testplot.svg", format="svg")
 # plt.savefig("../docs/graphs/testplot.png", format="png", dpi=180/2)
 # plt.show()
