@@ -118,9 +118,12 @@ def initrecord(date, metenisweten):
             'positief'             : 0,
             'totaal_positief'      : 0,
             'nu_op_ic'             : 0,
+            'nu_op_ic_lcps'        : None,
+            'nu_op_ic_noncovid_lcps':None,
             'geweest_op_ic'        : 0,
             'opgenomen'            : 0,
             'nu_opgenomen'         : 0,
+            'nu_opgenomen_lcps'    : None,
             'totaal_opgenomen'     : 0,
             'overleden'            : 0,
             'totaal_overleden'     : 0,
@@ -359,6 +362,29 @@ def builddaily():
 
             line_count += 1
 
+    print("Load LCPS data...")
+    filename ='../cache/lcps-covid-19.csv'
+    with open(filename, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:        
+            if line_count > 0:
+                #Datum,IC_Bedden_COVID,IC_Bedden_Non_COVID,Kliniek_Bedden,IC_Nieuwe_Opnames_COVID,Kliniek_Nieuwe_Opnames_COVID
+                datum = datetime.datetime.strptime(row[0],"%d-%m-%Y").strftime("%Y-%m-%d")
+                ic_bedden_covid = row[1]
+                ic_bedden_non_covid = row[2]
+                kliniek_bedden = row[3]
+                ic_nieuwe_opnames = row[4]
+                kliniek_nieuwe_opnames = row[5]
+
+                print(datum + " " + ic_bedden_covid + " " + kliniek_bedden)
+
+                initrecord(datum, metenisweten)
+                metenisweten[datum]['nu_op_ic_lcps'] = int(ic_bedden_covid)
+                metenisweten[datum]['nu_op_ic_noncovid_lcps'] = int(ic_bedden_non_covid)
+                metenisweten[datum]['nu_opgenomen_lcps'] = int(kliniek_bedden)
+            line_count = line_count + 1
+
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
     rna = []
@@ -379,8 +405,8 @@ def builddaily():
         metenisweten[date]['RNA']['populatie_dekking'] = inwoners / 17500000
         metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
 
-        if inwoners < 1000000:
-            print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
+        # if inwoners < 1000000:
+        #     print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
 
         # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
         # if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=14)) or inwoners > 100000):
@@ -398,7 +424,7 @@ def builddaily():
         if metenisweten[date]['rivm_schatting_besmettelijk']['value'] and rna_avg[idx] > 1000:
            rivmschattingratio.append(metenisweten[date]['rivm_schatting_besmettelijk']['value']/rna_avg[idx])
     averageratio = mean(rivmschattingratio)
-    print(averageratio)
+    print("Average ratio between RIVM estimates and RNA data: " + str(round(averageratio,5)))
     rna_avg = [x * averageratio for x in rna_avg]
 
     for i in range(len(dates)):
