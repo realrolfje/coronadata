@@ -30,6 +30,12 @@ gamma = {
     'max': []
 }
 
+delta = {
+    'x': [],
+    'y': []
+}
+
+
 for datum in metenisweten:
 
     value = metenisweten[datum]['nu_opgenomen']
@@ -47,6 +53,12 @@ for datum in metenisweten:
         gamma['x'].append(parser.parse(datum))
         gamma['y'].append(value)
 
+    value = metenisweten[datum]['nu_op_ic_lcps']
+    if value:
+        delta['x'].append(parser.parse(datum))
+        delta['y'].append(value)
+        
+
 print('Generating test graph...')
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
@@ -60,8 +72,9 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 #          color='gray', linewidth=1, alpha=0.3)
 
 ax1.plot(alpha['x'], alpha['y'], color='red',label='covid opgenomen patiënten NICE (nu '+str(alpha['y'][-1])+')')
-ax1.plot(beta['x'], beta['y'], color='green',label='covid bezette bedden LCPS (nu '+str(beta['y'][-1])+')')
-ax1.plot(gamma['x'], gamma['y'], color='cyan',label='non-covid bezette IC bedden LCPS (nu '+str(gamma['y'][-1])+')')
+ax1.plot(beta['x'], beta['y'], color='orange',label='covid bezette bedden LCPS (nu '+str(beta['y'][-1])+')')
+ax1.plot(gamma['x'], gamma['y'], color='blue', label='non-covid bezette IC bedden LCPS (nu '+str(gamma['y'][-1])+')')
+ax1.plot(delta['x'], delta['y'], color='cyan', label='covid bezette IC bedden LCPS (nu '+str(delta['y'][-1])+')')
 
 print("NICE: "+str(alpha['y'][-1]))
 print("LCPS: "+str(beta['y'][-1]))
