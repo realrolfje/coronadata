@@ -377,7 +377,7 @@ def builddaily():
                 ic_nieuwe_opnames = row[4]
                 kliniek_nieuwe_opnames = row[5]
 
-                print(datum + " " + ic_bedden_covid + " " + kliniek_bedden)
+                # print("LCPS bedden " + datum + " " + ic_bedden_covid + " " + kliniek_bedden)
 
                 initrecord(datum, metenisweten)
                 metenisweten[datum]['nu_op_ic_lcps'] = int(ic_bedden_covid)
@@ -390,10 +390,13 @@ def builddaily():
     rna = []
     rna_error = []
     rivmschattingratio = []
+
+    # Record the newest date with more than 30 RNA measurements, which
+    # is the last date we will use for estimates.
     for date in metenisweten:
         # Record last valid RNA date
-        if metenisweten[date]['RNA']['totaal_RNA_metingen'] > 50:
-            print('rna metingen '+date+' '+str(metenisweten[date]['RNA']['totaal_RNA_metingen']))
+        # print('RNA metingen '+date+' '+str(metenisweten[date]['RNA']['totaal_RNA_metingen']))
+        if metenisweten[date]['RNA']['totaal_RNA_metingen'] > 30:
             lastrnadate = date
 
     for date in metenisweten:
@@ -416,8 +419,6 @@ def builddaily():
 
         # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
         # Also don't use too recent RNA data
-        # if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=14)) or inwoners > 100000):
-        # if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date() - datetime.timedelta(days=5)):
         if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date()):
             dates.append(date)
             rna.append(gewogenrna)
