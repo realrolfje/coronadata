@@ -269,7 +269,7 @@ def builddaily():
     with open(filename, 'r') as json_file:
         veiligheidsregios = json.load(json_file)
 
-    print("Add RNA sewege data per region")
+    print("Add RNA sewage data per region")
     filename = '../cache/COVID-19_rioolwaterdata.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
@@ -391,6 +391,12 @@ def builddaily():
     rna_error = []
     rivmschattingratio = []
     for date in metenisweten:
+        # Record last valid RNA date
+        if metenisweten[date]['RNA']['totaal_RNA_metingen'] > 50:
+            print('rna metingen '+date+' '+str(metenisweten[date]['RNA']['totaal_RNA_metingen']))
+            lastrnadate = date
+
+    for date in metenisweten:
         gewogenrna = 0
         inwoners = 0
 
@@ -409,8 +415,10 @@ def builddaily():
         #     print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
 
         # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
+        # Also don't use too recent RNA data
         # if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=14)) or inwoners > 100000):
-        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=5))):
+        # if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date() - datetime.timedelta(days=5)):
+        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date()):
             dates.append(date)
             rna.append(gewogenrna)
             rna_error.append(1 - (inwoners / 17500000))
