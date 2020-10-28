@@ -106,7 +106,6 @@ def download():
         'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
     ) or freshdata
 
-
     yesterday = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
     freshdata = downloadIfStale(
         '../cache/Apple_Global_Mobility_Report.csv',
