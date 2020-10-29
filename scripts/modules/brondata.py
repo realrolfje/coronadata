@@ -46,6 +46,25 @@ def downloadIfStale(filename, url):
         urllib.request.urlretrieve(url, filename)
         return True
 
+def downloadMostRecentAppleMobilityReport(filename):
+    if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):
+        # print(filename+" exists.")
+        return False
+    else:
+        print("Downloading fresh data to "+filename)
+        for i in range(10):
+            theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2019HotfixDev22/v3/en-us/applemobilitytrends-'+theday+'.csv'
+
+            try:
+                print("Trying "+url, end="...")
+                urllib.request.urlretrieve(url, filename)
+                print("done.")
+                return True
+            except (urllib.error.HTTPError, urllib.error.HTTPError) as err:
+                print("Error "+str(err))
+        raise Exception("Sorry, no Apple mobility data found.") 
+
 def download():
     freshdata = False
 
@@ -101,17 +120,14 @@ def download():
         'https://lcps.nu/wp-content/uploads/covid-19.csv'
     ) or freshdata
 
-    # freshdata = downloadIfStale(
-    #     '../cache/Google_Global_Mobility_Report.csv',
-    #     'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
-    # ) or freshdata
+    freshdata = downloadIfStale(
+        '../cache/Google_Global_Mobility_Report.csv',
+        'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
+    ) or freshdata
 
-    # Temporarily out, dates do not always work
-    # yesterday = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
-    # freshdata = downloadIfStale(
-    #     '../cache/Apple_Global_Mobility_Report.csv',
-    #     'https://covid19-static.cdn-apple.com/covid19-mobility-data/2019HotfixDev22/v3/en-us/applemobilitytrends-'+yesterday+'.csv'
-    # ) or freshdata
+    freshdata = downloadMostRecentAppleMobilityReport(
+        '../cache/Apple_Global_Mobility_Report.csv'
+    ) or freshdata
 
     return freshdata
 
