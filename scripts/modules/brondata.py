@@ -16,6 +16,8 @@ from dateutil import parser
 from scipy.ndimage.filters import uniform_filter1d
 from scipy.signal import savgol_filter
 from statistics import mean
+from operator import itemgetter
+
 
 def readjson(filename):
     print('Reading '+filename)
@@ -36,6 +38,9 @@ def decimalstring(number):
 
 def isnewer(file1, file2):
     return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime 
+
+def sortDictOnKey(dictionary):
+    return dict(sorted(dictionary.items(), key=itemgetter(0)))
 
 def downloadIfStale(filename, url):
     if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):
@@ -189,6 +194,11 @@ def initrecord(date, metenisweten):
             'besmettingleeftijd'   : {
                 # key = leeftijdscategorie
                 # value = aantal besmettingen
+            },
+            'mobiliteit' : {
+                'lopen' : None,
+                'ov' : None,
+                'rijden' : None
             }
         }    
 
@@ -204,7 +214,6 @@ def double_savgol(inputArray, iterations, window, order):
         iterations = iterations - 1
     return outputArray
 
-# Not used yet, maybe handy to graph more stuff based on a single json
 def builddaily():
     metenisweten = {}
     testpunten = {}
@@ -413,6 +422,24 @@ def builddaily():
                 metenisweten[datum]['nu_opgenomen_lcps'] = int(kliniek_bedden)
             line_count = line_count + 1
 
+    print("Load Apple Mobility Data")
+    filename ='../cache/Apple_Global_Mobility_Report.csv'
+    with open(filename, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        translate = {'walking': 'lopen', 'transit': 'OV', 'driving': 'rijden'}
+        for row in csv_reader:
+            if line_count == 0:
+                headers = row
+            elif row[0] == 'country/region' and row[1] == 'Netherlands':
+                for idx,datum in enumerate(headers[6:]):                
+                    vervoertype = translate[row[2]]
+                    percentagestr = row[idx+6]
+                    if percentagestr:
+                        initrecord(datum, metenisweten)
+                        metenisweten[datum]['mobiliteit'][vervoertype] = float(percentagestr)
+            line_count = line_count + 1
+
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
     rna = []
@@ -494,7 +521,8 @@ def builddaily():
         metenisweten[datum]['totaal_opgenomen'] = totaal_opgenomen
         metenisweten[datum]['totaal_overleden'] = totaal_overleden
 
-    writejson('../cache/daily-stats.json', metenisweten)
+    # Write sorted data
+    writejson('../cache/daily-stats.json',  sortDictOnKey(metenisweten))
     writejson('../cache/testlocaties.json', testpunten)
 
 def freshdata():

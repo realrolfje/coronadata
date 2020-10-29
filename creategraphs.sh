@@ -10,4 +10,5 @@ cd scripts
 ./createSchattingAfwijkingGraph.py
 ./createLiveIcon.py
 ./createTestGraph.py
+./createMobilityGraph.py
 cd ..
