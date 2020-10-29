@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 #
-from string import Template
-from os import listdir
-from os.path import isfile, join, basename
-from modules.brondata import decimalstring
+from matplotlib import pyplot as plt
+from dateutil import parser
+from statistics import mean
+import datetime
+import csv
+import json
+import modules.brondata as brondata
+from modules.brondata import decimalstring, smooth
+from scipy.ndimage.filters import uniform_filter1d
+from operator import itemgetter
 
-d = dict(who='rolf')
+#brondata.freshdata()
+metenisweten = brondata.readjson('../cache/daily-stats.json')
 
-print(listdir())
+def sortDictOnKey(dictionary):
+    return dict(sorted(metenisweten.items(), key=itemgetter(0)))
 
-print(decimalstring(1000))
-print(decimalstring(10000))
-print(decimalstring(10.2))
-print(decimalstring(10000.2))
+print(str(sortDictOnKey(metenisweten)))
