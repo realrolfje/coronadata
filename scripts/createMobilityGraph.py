@@ -64,6 +64,8 @@ ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
+ax1.set_ylim([30,170])
+
 
 ax1.plot(rijden['x'], rijden['y'], color='coral',label='Rijden (Apple, gemiddeld)')
 #ax1.plot(ov['x'], ov['y'], color='orange',label='OV')
