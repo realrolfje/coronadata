@@ -101,16 +101,17 @@ def download():
         'https://lcps.nu/wp-content/uploads/covid-19.csv'
     ) or freshdata
 
-    freshdata = downloadIfStale(
-        '../cache/Google_Global_Mobility_Report.csv',
-        'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
-    ) or freshdata
+    # freshdata = downloadIfStale(
+    #     '../cache/Google_Global_Mobility_Report.csv',
+    #     'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
+    # ) or freshdata
 
-    yesterday = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
-    freshdata = downloadIfStale(
-        '../cache/Apple_Global_Mobility_Report.csv',
-        'https://covid19-static.cdn-apple.com/covid19-mobility-data/2019HotfixDev22/v3/en-us/applemobilitytrends-'+yesterday+'.csv'
-    ) or freshdata
+    # Temporarily out, dates do not always work
+    # yesterday = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
+    # freshdata = downloadIfStale(
+    #     '../cache/Apple_Global_Mobility_Report.csv',
+    #     'https://covid19-static.cdn-apple.com/covid19-mobility-data/2019HotfixDev22/v3/en-us/applemobilitytrends-'+yesterday+'.csv'
+    # ) or freshdata
 
     return freshdata
 
