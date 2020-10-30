@@ -219,11 +219,11 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal in ziekenhuis / op IC")
 ax2.set_ylabel("Geschat ziek")
 
-ax1.set_ylim([0, 3250])
-ax2.set_ylim([0, 325000])
+ax1.set_ylim([0, 5000])
+ax2.set_ylim([0, 500000])
 
-ax2.set_yticks([50000, 100000, 150000, 200000, 250000, 300000])
-ax2.set_yticklabels(['50k', '100k', '150k', '200k', '250k', '300k'])
+ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000])
+ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
 

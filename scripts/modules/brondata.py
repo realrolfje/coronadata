@@ -485,8 +485,9 @@ def builddaily():
 
     # Compare to RIVM estimates and correct scale
     for idx, date in enumerate(dates):
-        if metenisweten[date]['rivm_schatting_besmettelijk']['value'] and rna_avg[idx] > 1000:
-           rivmschattingratio.append(metenisweten[date]['rivm_schatting_besmettelijk']['value']/rna_avg[idx])
+        rivmschatting = metenisweten[date]['rivm_schatting_besmettelijk']['value']
+        if rivmschatting and rivmschatting > 5000 and rna_avg[idx] > 1000:
+           rivmschattingratio.append(rivmschatting/rna_avg[idx])
     averageratio = mean(rivmschattingratio)
     print("Average ratio between RIVM estimates and RNA data: " + str(round(averageratio,5)))
     rna_avg = [x * averageratio for x in rna_avg]

@@ -12,6 +12,7 @@ import modules.brondata as brondata
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
+events = brondata.readjson('../data/measures-events.json')
 
 rijden = {
     'x': [],
@@ -64,12 +65,43 @@ ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
-ax1.set_ylim([30,170])
+ax1.set_ylim([20,190])
+
+ax1.axhline(100, color='black', linestyle='-', linewidth=0.4)
+
+ax1.set_yticks      ([20,  40,60,  80, 100, 120, 140, 160, 180])
+#ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
+
 
 
 ax1.plot(rijden['x'], rijden['y'], color='coral',label='Rijden (Apple, gemiddeld)')
 #ax1.plot(ov['x'], ov['y'], color='orange',label='OV')
 ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemiddeld)')
+
+def anotate(plt, xdata, ydata, datum, tekst, x, y):
+    xindex = xdata.index(parser.parse(datum))
+    if xindex:
+        xval = xdata[xindex]
+        yval = ydata[xindex]
+        plt.annotate(
+            tekst,
+            xy=(xval, yval),
+            xytext=(parser.parse(x), y),
+            fontsize=8,
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+        )
+
+
+for event in events:
+    if 'mobiliteit' in event:
+        anotate(
+            ax1, 
+            rijden['x'], rijden['y'],
+            event['date'], event['event'], 
+            event['mobiliteit'][0], 
+            event['mobiliteit'][1]
+        )
 
 # laat huidige datum zien met vertikale lijn
 ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
