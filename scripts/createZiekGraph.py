@@ -18,7 +18,8 @@ print("Calculating ziek graph...")
 
 opgenomen = {
     'x': [],
-    'y': []
+    'y': [],
+    'rc': []
 }
 
 opgenomen_voorspeld = {
@@ -62,30 +63,47 @@ date_range = brondata.getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
-    # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
+    # ------------ Totaal positief en laatste meetdatum
     if datum in metenisweten and parser.parse(datum).date() <= datetime.date.today():
+        totaal_positief = metenisweten[datum]['totaal_positief']
+
+        if metenisweten[datum]['rivm-datum']:
+            filedate = metenisweten[datum]['rivm-datum']
+
+
+    # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
+    if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
         ic['x'].append(parser.parse(datum))
         ic['y'].append(metenisweten[datum]['nu_op_ic'])
 
         opgenomen['x'].append(parser.parse(datum))
         opgenomen['y'].append(metenisweten[datum]['nu_opgenomen'])
 
-        totaal_positief = metenisweten[datum]['totaal_positief']
-
-        if metenisweten[datum]['rivm-datum']:
-            filedate = metenisweten[datum]['rivm-datum']
-
         if len(ic['y'])>1:
             ic['rc'].append(ic['y'][-1] - ic['y'][-2])
         else:
             ic['rc'].append(0)
 
-    # ---------------------- Voorspelling op IC obv gemiddelde richtingscoefficient positief getest.
+        if len(opgenomen['y'])>1:
+            opgenomen['rc'].append(opgenomen['y'][-1] - opgenomen['y'][-2])
+        else:
+            opgenomen['rc'].append(0)
+
+
+    # ---------------------- Voorspelling op IC obv gemiddelde richtingscoefficient
     if len(ic['x']) > 10 and parser.parse(datum) > ic['x'][-1]:
         ic_rc = mean(ic['rc'][-5:])
 
         ic_voorspeld['x'].append(parser.parse(datum))
         ic_voorspeld['y'].append(ic['y'][-1] + ic_rc * (parser.parse(datum) - ic['x'][-1]).days )
+
+
+    # ---------------- Voorspelling opgenomen obv gemiddelde richtingscoefficient
+    if len(opgenomen['x']) > 10 and parser.parse(datum) > opgenomen['x'][-1]:
+        opgenomen_rc = mean(opgenomen['rc'][-5:])
+
+        opgenomen_voorspeld['x'].append(parser.parse(datum))
+        opgenomen_voorspeld['y'].append(opgenomen['y'][-1] + opgenomen_rc * (parser.parse(datum) - opgenomen['x'][-1]).days )
 
     # ----------------------- Trek "geschat ziek" op basis van RC nog even door.
     deltadagen = 15
@@ -121,21 +139,6 @@ for d in date_range:
         nieuw_y = geschat_ziek_rna['y'][-1] + (geschat_ziek_rna['y'][-1] - vorig_y)/deltadagen
         geschat_ziek_rna['x'].append(parser.parse(datum))
         geschat_ziek_rna['y'].append(nieuw_y)
-
-    # Opgenomen voorspeld
-    if datum not in metenisweten and len(opgenomen['y']) > deltadagen:
-        vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
-        vorig_y = opgenomen['y'][-deltadagen]
-        
-        if 'laatste_y' not in locals():
-            laatste_y = opgenomen['y'][-1]
-        else:
-            laatste_y = opgenomen_voorspeld['y'][-1]
-
-        nieuw_y = laatste_y + (laatste_y - vorig_y)/deltadagen
-
-        opgenomen_voorspeld['x'].append(parser.parse(datum))
-        opgenomen_voorspeld['y'].append(nieuw_y)
 
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
