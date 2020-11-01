@@ -9,6 +9,7 @@ import datetime
 import json
 import modules.brondata as brondata
 from modules.brondata import decimalstring
+from modules.datautil import anotate
 
 
 brondata.freshdata()
@@ -88,17 +89,13 @@ for d in date_range:
         positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief['y'][-1])
 
-def anotate(plt, metenisweten, datum, tekst, x, y):
-    if datum in metenisweten and metenisweten[datum]['rivm_totaal_personen_getest']:
-        plt.annotate(
-            tekst,
-            xy=(parser.parse(datum), metenisweten[datum]['rivm_totaal_personen_getest']),
-            xytext=(parser.parse(x), y),
-            fontsize=8,
-            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1',
-            zorder=10)
-        )
+
+
+# totaaltests['y'] = brondata.double_savgol(totaaltests['y'], 1, 13, 1)
+# personen_positief['y'] = brondata.double_savgol(personen_positief['y'], 1, 13, 1)
+# positief_percentage['y'] = brondata.double_savgol(positief_percentage['y'], 1, 13, 1)
+
+
 
 print('Generating daily positive tests graph...')
 
@@ -112,36 +109,40 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-for event in events:
-    if 'testsloc' in event:
-        anotate(
-            ax1, metenisweten, 
-            event['date'], event['event'], 
-            event['testsloc'][0], 
-            event['testsloc'][1]
-        )
-
-# Plot cases per dag
-ax1.plot(positief['x'][:-11], positief['y'][:-11], 
-            color='steelblue', label='positief getest (totaal '+decimalstring(totaal_positief)+")")
-#ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
-
 ax1.text(parser.parse("2020-05-01"), 26000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
 
-ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
-         color='steelblue', linestyle=':', label='voorspeld')
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
-         color='lightblue', linestyle='-', label='Totaal afgenomen tests')
+         color='darkblue', linestyle='-', label='Personen getest')
+
+ax1.plot(personen_positief['x'], personen_positief['y'], 
+         color='dodgerblue', linestyle='-', label='Personen positief')
 
 huidigpercentage = decimalstring(round(positief_percentage['y'][-1],1))
 ax2.plot(positief_percentage['x'], positief_percentage['y'], 
          color='gold', linestyle='-', 
-         label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
+         label='Percentage geteste personen positief (nu: ' + huidigpercentage + "%).")
 
+# Plot cases per dag
+ax1.plot(positief['x'][:-11], positief['y'][:-11], 
+            color='fuchsia', label='Tests positief (totaal '+decimalstring(totaal_positief)+")")
+#ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
+ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
+         color='fuchsia', linestyle=':')
 
 # laat huidige datum zien met vertikale lijn
 ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
+
+for event in events:
+    if 'testsloc' in event:
+        anotate(
+            ax1, 
+            totaaltests['x'],
+            totaaltests['y'],
+            event['date'], event['event'], 
+            event['testsloc'][0], 
+            event['testsloc'][1]
+        )
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief")
