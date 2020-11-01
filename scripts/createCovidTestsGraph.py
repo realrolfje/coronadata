@@ -89,14 +89,6 @@ for d in date_range:
         positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief['y'][-1])
 
-
-
-# totaaltests['y'] = brondata.double_savgol(totaaltests['y'], 1, 13, 1)
-# personen_positief['y'] = brondata.double_savgol(personen_positief['y'], 1, 13, 1)
-# positief_percentage['y'] = brondata.double_savgol(positief_percentage['y'], 1, 13, 1)
-
-
-
 print('Generating daily positive tests graph...')
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
