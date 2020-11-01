@@ -9,6 +9,7 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
+from modules.datautil import anotate
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -73,24 +74,9 @@ ax1.set_yticks      ([20,  40,60,  80, 100, 120, 140, 160, 180])
 #ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
 
-
 ax1.plot(rijden['x'], rijden['y'], color='coral',label='Rijden (Apple, gemiddeld)')
 #ax1.plot(ov['x'], ov['y'], color='orange',label='OV')
 ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemiddeld)')
-
-def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    xindex = xdata.index(parser.parse(datum))
-    if xindex:
-        xval = xdata[xindex]
-        yval = ydata[xindex]
-        plt.annotate(
-            tekst,
-            xy=(xval, yval),
-            xytext=(parser.parse(x), y),
-            fontsize=8,
-            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-        )
 
 
 for event in events:
