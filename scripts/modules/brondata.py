@@ -183,8 +183,9 @@ def initrecord(date, metenisweten):
                     # }
                 }
             },
-            'rivm_totaal_tests'    : None,
-            'rivm_aantal_testlabs' : None,
+            'rivm_totaal_personen_getest'      : None,
+            'rivm_totaal_personen_positief'    : None,
+            'rivm_aantal_testlabs' : None,            
             'rivm_schatting_besmettelijk' : {
                 'min'   : None, # Minimaal personen besmettelijk
                 'value' : None, # Geschat personen besmettelijk
@@ -394,8 +395,17 @@ def builddaily():
                         weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
                         initrecord(weekdatumstr, metenisweten)
-                        metenisweten[weekdatumstr]['rivm_totaal_tests'] = aantal/7
+                        metenisweten[weekdatumstr]['rivm_totaal_personen_getest'] = aantal/7
                         metenisweten[weekdatumstr]['rivm_aantal_testlabs'] = aantal_labs
+
+                        print(weekdatumstr+' '+str(aantal)+' /7= '+str(metenisweten[weekdatumstr]['rivm_totaal_personen_getest'])+' totaal personen getest per dag.')
+
+                if valtype == 'Positief':
+                    for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
+                        weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
+                        weekdatumstr = weekdatum.strftime("%Y-%m-%d")
+                        initrecord(weekdatumstr, metenisweten)
+                        metenisweten[weekdatumstr]['rivm_totaal_personen_positief'] = aantal/7
 
             line_count += 1
 

@@ -18,6 +18,11 @@ events = brondata.readjson('../data/measures-events.json')
 
 print("Calculating predictions...")
 
+personen_positief = {
+    'x': [],
+    'y': []
+}
+
 positief = {
     'x': [],
     'y': []
@@ -49,13 +54,17 @@ for d in date_range:
         positief['x'].append(parser.parse(datum))
         positief['y'].append(metenisweten[datum]['positief'])
 
-        if metenisweten[datum]['rivm_totaal_tests']:
-            totaaltests['x'].append(parser.parse(datum))
-            totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
+        if metenisweten[datum]['rivm_totaal_personen_positief']:
+            personen_positief['x'].append(parser.parse(datum))
+            personen_positief['y'].append(metenisweten[datum]['rivm_totaal_personen_positief'])
 
-        if metenisweten[datum]['rivm_totaal_tests'] and metenisweten[datum]['positief'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
+        if metenisweten[datum]['rivm_totaal_personen_getest']:
+            totaaltests['x'].append(parser.parse(datum))
+            totaaltests['y'].append(metenisweten[datum]['rivm_totaal_personen_getest'])
+
+        if metenisweten[datum]['rivm_totaal_personen_getest'] and metenisweten[datum]['rivm_totaal_personen_positief'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
             positief_percentage['x'].append(parser.parse(datum))
-            positief_percentage['y'].append(100 * metenisweten[datum]['positief'] / metenisweten[datum]['rivm_totaal_tests'])
+            positief_percentage['y'].append(100 * metenisweten[datum]['rivm_totaal_personen_positief'] / metenisweten[datum]['rivm_totaal_personen_getest'])
 
     if datum in metenisweten:
         totaal_positief = metenisweten[datum]['totaal_positief']
@@ -80,10 +89,10 @@ for d in date_range:
         positief_voorspeld['y'].append(positief['y'][-1])
 
 def anotate(plt, metenisweten, datum, tekst, x, y):
-    if datum in metenisweten and metenisweten[datum]['rivm_totaal_tests']:
+    if datum in metenisweten and metenisweten[datum]['rivm_totaal_personen_getest']:
         plt.annotate(
             tekst,
-            xy=(parser.parse(datum), metenisweten[datum]['rivm_totaal_tests']),
+            xy=(parser.parse(datum), metenisweten[datum]['rivm_totaal_personen_getest']),
             xytext=(parser.parse(x), y),
             fontsize=8,
             bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
