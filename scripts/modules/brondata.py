@@ -57,7 +57,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         return False
     else:
         print("Downloading fresh data to "+filename)
-        for i in range(10):
+        for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
             url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2019HotfixDev22/v3/en-us/applemobilitytrends-'+theday+'.csv'
 
@@ -321,6 +321,10 @@ def builddaily():
             if not isvaliddate(stringdate, filename):
                 continue
 
+            if not record['RNA_per_ml']:
+                print(stringdate+' no rna per ml')
+                continue
+
             initrecord(stringdate, metenisweten)
             metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
             metenisweten[stringdate]['RNA']['totaal_RNA_metingen'] += 1 
@@ -375,14 +379,17 @@ def builddaily():
         line_count = 0
         for row in csv_reader:        
             if line_count > 0:
+                #Jaar,Week,BeginDatum,EindDatum,Bron,AantalLaboratoria,Type,Aantal
+
                 #Jaar,Week,BeginDatum,EindDatum,AantalLaboratoria,Type,Aantal
                 year = row[0]
                 week = row[1]
                 startdatum = row[2]
                 einddatum = row[3]
-                aantal_labs = row[4]
-                valtype = row[5]
-                aantal = int(row[6])
+                bron = row[4]
+                aantal_labs = row[5]
+                valtype = row[6]
+                aantal = int(row[7])
 
                 if not isvaliddate(startdatum, filename):
                     continue

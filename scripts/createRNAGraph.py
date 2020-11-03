@@ -71,6 +71,13 @@ ax2.set_yticks([0,25,50,75,100])
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 
+plt.figtext(0.40,0.6, 
+         "\"Je plee liegt niet\" - Rolf",
+         color="gray",
+         bbox=dict(facecolor='white', alpha=1.0, 
+         edgecolor='white'),
+         zorder=10)
+
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 plt.title('Concentratie SARS-CoV-2 RNA per mL rioolwater, '+gegenereerd_op)
 
