@@ -321,12 +321,15 @@ def builddaily():
             if not isvaliddate(stringdate, filename):
                 continue
 
-            if not record['RNA_per_ml']:
-                print(stringdate+' no rna per ml')
+            if record['RNA_per_ml']:
+                rnavalue = record['RNA_per_ml']
+            elif record['RNA_flow_per_100.000']:
+                rnavalue = record['RNA_flow_per_100.000'] / 30000000000
+            else:
                 continue
 
             initrecord(stringdate, metenisweten)
-            metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] += rnavalue
             metenisweten[stringdate]['RNA']['totaal_RNA_metingen'] += 1 
             metenisweten[stringdate]['RNA']['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['totaal_RNA_metingen']
 
@@ -339,7 +342,7 @@ def builddaily():
                     'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
                     'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']                   
                 }
-            metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] += record['RNA_per_ml'] 
+            metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] += rnavalue
             metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1 
             metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
@@ -405,7 +408,7 @@ def builddaily():
                         metenisweten[weekdatumstr]['rivm_totaal_personen_getest'] = aantal/7
                         metenisweten[weekdatumstr]['rivm_aantal_testlabs'] = aantal_labs
 
-                        print(weekdatumstr+' '+str(aantal)+' /7= '+str(metenisweten[weekdatumstr]['rivm_totaal_personen_getest'])+' totaal personen getest per dag.')
+                        # print(weekdatumstr+' '+str(aantal)+' /7= '+str(metenisweten[weekdatumstr]['rivm_totaal_personen_getest'])+' totaal personen getest per dag.')
 
                 if valtype == 'Positief':
                     for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
