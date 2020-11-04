@@ -63,7 +63,7 @@ for d in date_range:
             totaaltests['x'].append(parser.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_personen_getest'])
 
-        if metenisweten[datum]['rivm_totaal_personen_getest'] and metenisweten[datum]['rivm_totaal_personen_positief'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=11)):
+        if metenisweten[datum]['rivm_totaal_personen_getest'] and metenisweten[datum]['rivm_totaal_personen_positief']:
             positief_percentage['x'].append(parser.parse(datum))
             positief_percentage['y'].append(100 * metenisweten[datum]['rivm_totaal_personen_positief'] / metenisweten[datum]['rivm_totaal_personen_getest'])
 
