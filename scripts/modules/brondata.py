@@ -323,9 +323,9 @@ def builddaily():
             if 'RNA_per_ml' in record and record['RNA_per_ml']:
                 rnavalue = record['RNA_per_ml']
             elif 'RNA_flow_per_100.000' in record and record['RNA_flow_per_100.000']:
-                rnavalue = record['RNA_flow_per_100.000'] / 30000000000
+                rnavalue = record['RNA_flow_per_100.000'] / 24650163389
             elif 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
-                rnavalue = record['RNA_flow_per_100000'] / 30000000000
+                rnavalue = record['RNA_flow_per_100000'] / 24650163389
             else:
                 continue
 
