@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 #
-from matplotlib import pyplot as plt
+
+# This is a hack to get the brondata modules
+import sys
+sys.path.append('../../scripts')
+
 from dateutil import parser
-from statistics import mean
-import datetime
 import csv
 import json
 import modules.brondata as brondata
@@ -12,9 +14,9 @@ from scipy.ndimage.filters import uniform_filter1d
 from operator import itemgetter
 
 #brondata.freshdata()
-veiligheidsregios = brondata.readjson('../data/veiligheidsregios.json')
-riooldataoud = brondata.readjson('../data/COVID-19_rioolwaterdata-1-nov-2020.json')
-riooldatanieuw = brondata.readjson('../cache/COVID-19_rioolwaterdata.json')
+veiligheidsregios = brondata.readjson('../../data/veiligheidsregios.json')
+riooldataoud = brondata.readjson('COVID-19_rioolwaterdata-1-nov-2020.json')
+riooldatanieuw = brondata.readjson('COVID-19_rioolwaterdata.json')
 
 riooldatacombi = []
 
@@ -61,17 +63,3 @@ for record in riooldatacombi:
     else:
         print(end=';')
     print()
-
-
-#      {
-#    "RWZI_AWZI_code": 32002,
-#    "RWZI_AWZI_name": "Tilburg",
-#    "X_coordinate": 132554,
-#    "Y_coordinate": 401565,
-#    "Postal_code": "5048TD",
-#    "Security_region_code": "VR20",
-#    "Security_region_name": "Midden- en West-Brabant",
-#    "Percentage_in_security_region": "1",
-#    "RNA_per_ml": 1837,
-#    "Representative_measurement": true
-#  },
