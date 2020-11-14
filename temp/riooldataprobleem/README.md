@@ -40,3 +40,13 @@ In deze directory vind je:
 
 Waar ik naar op zoek ben is het antwoord op de vraag:
  **Hoe reken ik "RNA per 100.000 inwoners" om naar "RNA per ml" zodat ik een doorlopende grafiek kan maken.**
+
+
+ ---------------
+
+ De verhouding zieken (i<sub>z</sub>) en niet-zieken (i<sub>b</sub>) is direct gerelateerd aan water met RNA (w<sub>z</sub>) en water zonder RNA (w<sub>b</sub>). 
+
+![](http://www.sciweavers.org/tex2img.php?eq=%5Cfrac%7Bi_%7Bz%7D%7D%7Bi_%7Bb%7D%7D%20%3D%20%5Cfrac%7Bw_%7Bz%7D%7D%7Bw_%7Bb%7D%7D%0A%0A%20&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0)
+
+
+
