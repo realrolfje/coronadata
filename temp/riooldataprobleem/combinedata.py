@@ -44,12 +44,13 @@ for oudrecord in riooldataoud:
                     'inwoners': veiligheidsregios[oudrecord['Security_region_code']]['inwoners']
                 })
 
-print("Date_measurement;Postal_code;Security_region_code;Security_region_name;Percentage_in_security_region;inwoners;RNA_per_ml;RNA_flow_per_100000")
+print("Date_measurement;Postal_code;Security_region_code;Security_region_name;RWZI_AWZI_code;Percentage_in_security_region;inwoners;RNA_per_ml;RNA_flow_per_100000")
 for record in riooldatacombi:
     print(str(record['Date_measurement']), end =";" )
     print(str(record['Postal_code']), end =";" )
     print(str(record['Security_region_code']), end =";" )
     print(str(record['Security_region_name']), end =";" )
+    print(str(record['RWZI_AWZI_code']), end =";" )
     print(str(record['Percentage_in_security_region']), end =";" )
     print(str(record['inwoners']), end =";" )
 
