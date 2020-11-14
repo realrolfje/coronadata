@@ -42,11 +42,20 @@ Waar ik naar op zoek ben is het antwoord op de vraag:
  **Hoe reken ik "RNA per 100.000 inwoners" om naar "RNA per ml" zodat ik een doorlopende grafiek kan maken.**
 
 
- ---------------
+## HET ANTWOORD (deels)
 
- De verhouding zieken (i<sub>z</sub>) en niet-zieken (i<sub>b</sub>) is direct gerelateerd aan water met RNA (w<sub>z</sub>) en water zonder RNA (w<sub>b</sub>). 
+Mijn gedachte dat er een constante factor moest zijn, blijkt correct. De reden dat ik die niet kon vinden is dat de metingen grote onnauwkeurigheid hebben, en ik bij de steekproeven blijkbaar "ongelukkig koos" waardoor de cosntante factor altijd anders leek.
 
-![](http://www.sciweavers.org/tex2img.php?eq=%5Cfrac%7Bi_%7Bz%7D%7D%7Bi_%7Bb%7D%7D%20%3D%20%5Cfrac%7Bw_%7Bz%7D%7D%7Bw_%7Bb%7D%7D%0A%0A%20&bc=Transparent&fc=Black&im=png&fs=12&ff=arev&edit=0)
+De Excel sheet is bijgewerkt met drie tabbladen met grafiekjes waarin dit fenomeen mooi zichtbaar is. Allereerst een grafiekje dat strookt met mijn vermoeden:
 
+![](1031-groningen-rna-factor.png)
 
+Hier is de factor tussen de twee meetmethoden een vrij constante **22.807.996.196** (waarom de RWZI getallen met deze gigantische resolutie gebruikt terwijl de metingen zeer onnauwkeurig zijn is me een raadsel overigens).
 
+Echter, in de regio Amstelland zit een uitschieter waardoor die constante factor niet overal lijkt te passen:
+
+![](11006-amstelland-rna-factor.png)
+
+Op 4 Oktober heeft de nieuwe meetmethode een meting gedaan die drie ordegroottes (een factor 1000) hoger uitkomt dan de rest. Er zitten meer van dit soort meetfouten in de verschillende regio's, waardoor een constante factor moeilijk vindbaar is. Als we de "foute meting" verwijderen uit deze dataset, dan vinden we voor de regio amstelland een factor van **16.087.810.977**, deze is 75% lager dan de factor in Groningen.
+
+De volgende stap in deze "queste" is het vinden van alle factoren voor alle regio's en zien of daar grote afwijkingen in zitten. Dat zou niet zo mogen zijn, maar zo te zien zijn deze metingen vrij "grillig". Daarnaast is het opvallend dat de RWZI aanduidingen typfouten lijken te bevatten waardoor data "gemixt" zou kunnen zijn.
