@@ -33,7 +33,6 @@ In deze directory vind je:
 
 | Bestand | Omschrijving |
 |-|-|
-
 | [COVID-19_rioolwaterdata-1-nov-2020.json](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/COVID-19_rioolwaterdata-1-nov-2020.json) | De "verdwenen" RNA per ml data voor Sept en Okt                 |
 | [COVID-19_rioolwaterdata.json](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/COVID-19_rioolwaterdata.json)                       | De rioolwaterdata zoals hij nu wordt aangeleverd                |
 | [combinedata.py](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/combinedata.py)                                                   | Een script om de data te combineren, met veiligheidsregiodata   |
