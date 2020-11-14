@@ -48,14 +48,14 @@ Mijn gedachte dat er een constante factor moest zijn, blijkt correct. De reden d
 
 De Excel sheet is bijgewerkt met drie tabbladen met grafiekjes waarin dit fenomeen mooi zichtbaar is. Allereerst een grafiekje dat strookt met mijn vermoeden:
 
-![](1031-groningen-rna-factor.png)
+![](11006-amstelland-rna-factor.png)
 
 Hier is de factor tussen de twee meetmethoden een vrij constante **22.807.996.196** (waarom de RWZI getallen met deze gigantische resolutie gebruikt terwijl de metingen zeer onnauwkeurig zijn is me een raadsel overigens).
 
-Echter, in de regio Amstelland zit een uitschieter waardoor die constante factor niet overal lijkt te passen:
+Echter, in Groningen zit een uitschieter waardoor die constante factor niet overal lijkt te passen:
 
-![](11006-amstelland-rna-factor.png)
+![](1031-groningen-rna-factor.png)
 
-Op 4 Oktober heeft de nieuwe meetmethode een meting gedaan die drie ordegroottes (een factor 1000) hoger uitkomt dan de rest. Er zitten meer van dit soort meetfouten in de verschillende regio's, waardoor een constante factor moeilijk vindbaar is. Als we de "foute meting" verwijderen uit deze dataset, dan vinden we voor de regio amstelland een factor van **16.087.810.977**, deze is 75% lager dan de factor in Groningen.
+Op 4 Oktober heeft de nieuwe meetmethode een meting gedaan die drie ordegroottes (een factor 1000) hoger uitkomt dan de rest. Er zitten meer van dit soort meetfouten in de verschillende regio's, waardoor een constante factor moeilijk vindbaar is. Als we de "foute meting" verwijderen uit deze dataset, dan vinden we voor de regio Groningen een factor van **16.087.810.977**, deze is 75% lager dan de factor in Amstelland.
 
 De volgende stap in deze "queste" is het vinden van alle factoren voor alle regio's en zien of daar grote afwijkingen in zitten. Dat zou niet zo mogen zijn, maar zo te zien zijn deze metingen vrij "grillig". Daarnaast is het opvallend dat de RWZI aanduidingen typfouten lijken te bevatten waardoor data "gemixt" zou kunnen zijn.
