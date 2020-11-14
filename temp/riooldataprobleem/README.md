@@ -33,10 +33,11 @@ In deze directory vind je:
 
 | Bestand | Omschrijving |
 |-|-|
-| [COVID-19_rioolwaterdata-1-nov-2020.json](COVID-19_rioolwaterdata-1-nov-2020.json) | De "verdwenen" RNA per ml data voor Sept en Okt                 |
-| [COVID-19_rioolwaterdata.json](COVID-19_rioolwaterdata.json)                       | De rioolwaterdata zoals hij nu wordt aangeleverd                |
-| [combinedata.py](combinedata.py)                                                   | Een script om de data te combineren, met veiligheidsregiodata   |
-| [riooldata.xlsx](riooldata.xlsx)                                                   | De output van het script op 14 nov, mocht je geen python hebben |
+
+| [COVID-19_rioolwaterdata-1-nov-2020.json](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/COVID-19_rioolwaterdata-1-nov-2020.json) | De "verdwenen" RNA per ml data voor Sept en Okt                 |
+| [COVID-19_rioolwaterdata.json](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/COVID-19_rioolwaterdata.json)                       | De rioolwaterdata zoals hij nu wordt aangeleverd                |
+| [combinedata.py](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/combinedata.py)                                                   | Een script om de data te combineren, met veiligheidsregiodata   |
+| [riooldata.xlsx](https://raw.githubusercontent.com/realrolfje/coronadata/master/temp/riooldataprobleem/riooldata.xlsx)                                                   | De output van het script op 14 nov, mocht je geen python hebben |
 
 Waar ik naar op zoek ben is het antwoord op de vraag:
  **Hoe reken ik "RNA per 100.000 inwoners" om naar "RNA per ml" zodat ik een doorlopende grafiek kan maken.**
