@@ -144,7 +144,7 @@
         "event": "Bezoek thuis max 3 pers.\nHoreca sluit 22:00\nSportkantines dicht\nDeurbeleid winkels\nSport zonder publiek",
         "ziekloc": [
             "2020-08-05",
-            320000
+            310000
         ]
     },
     {
@@ -159,8 +159,8 @@
         "date": "2020-10-13",
         "event": "Kroegen dicht\nGeen sportwedstr.",
         "ziekloc": [
-            "2020-09-7",
-            410000
+            "2020-09-05",
+            405000
         ]
     },
     {
@@ -178,6 +178,18 @@
         "ziekloc": [
             "2020-10-17",
             380000
+        ]
+    },
+    {
+        "date": "2020-11-14",
+        "event": "Intocht Sinterklaas",
+        "ziekloc": [
+            "2020-09-24",
+            120000
+        ],
+        "mobiliteit": [
+            "2020-10-02",
+            40
         ]
     }
 ]

@@ -7,7 +7,11 @@
 from dateutil import parser
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    xindex = xdata.index(parser.parse(datum))
+    try:
+        xindex = xdata.index(parser.parse(datum))
+    except ValueError:
+        return
+
     if xindex:
         xval = xdata[xindex]
         yval = ydata[xindex]
