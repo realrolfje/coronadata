@@ -12,3 +12,6 @@ cd scripts
 ./createMobilityGraph.py
 ./processTemplates.py
 cd ..
+lines=$(find . -name "*.py" | xargs cat | wc -l)
+echo "Total $lines lines of python code"
+
