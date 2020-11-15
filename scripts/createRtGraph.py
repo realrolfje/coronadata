@@ -12,9 +12,9 @@ from modules.brondata import decimalstring
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
+date_range = brondata.getDateRange(metenisweten)
 
 print('Generating Rt graph...')
-
 
 Rt_avg = {    'x':[],    'y':[]}
 Rt_low = {    'x':[],    'y':[]}
@@ -55,7 +55,15 @@ plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=high, facecolor='red', alpha
 plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alpha=0.3, interpolate=True)
 
 # laat huidige datum zien met vertikale lijn
-plt.axvline(datetime.date.today(), color='teal', linewidth=0.15)
+plt.figtext(0.885,0.19, 
+         datetime.datetime.now().strftime("%d"), 
+         color="red",
+         fontsize=8,
+         bbox=dict(facecolor='white', alpha=0.9, pad=0,
+         edgecolor='white'),
+         zorder=10)
+plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+
 
 plt.annotate(
     decimalstring(Rt_avg['y'][-1]),
@@ -68,14 +76,17 @@ plt.annotate(
 
 axes = plt.gca()
 axes.set_ylim([0,3])
-axes.set_xlim([parser.parse("2020-02-01"),datetime.date.today() + datetime.timedelta(days=7)])
+axes.set_xlim([parser.parse("2020-02-01"),date_range[-1]])
 axes.set_xlabel("Datum")
 axes.set_ylabel("Reproductiegetal")
 
-gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-plt.title('Reproductiegetal, '+gegenereerd_op)
 
-footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
+gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+plt.title('Reproductiegetal')
+
+R_op=Rt_avg['x'][-1].strftime("%Y-%m-%d")
+
+footerleft="Gegenereerd op "+gegenereerd_op+", Rt berekend tot "+R_op+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 footerright="Bron: https://data.rivm.nl/covid-19"

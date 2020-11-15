@@ -188,19 +188,6 @@ nu_op_ic = ic['y'][-1]
 ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+decimalstring(nu_op_ic)+')')
 ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
-# ax1.plot(opgenomen['x'], opgenomen['y'], color='green',
-#          linestyle='-', label='opgenomen (totaal: '+decimalstring(totaal_opgenomen)+')')
-
-# ax2.plot(ziek['x'], ziek['y'], color='darkorange',
-#          linestyle=':', label='geschat besmettelijk (nu: '+decimalstring(geschat_besmettelijk)+')')
-
-# Plot ziek based on RIVM
-# ax2.plot(geschat_ziek['x'], geschat_ziek['y'], color='steelblue',
-#          linestyle=':', 
-#          label='RIVM schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_nu))+')\n'
-#                  +'→ 1 op '+str(round(17500000/geschat_ziek_nu))+' mensen is ziek/besmettelijk')
-# ax2.fill_between(geschat_ziek['x'][:len(geschat_ziek['min'])], geschat_ziek['min'], geschat_ziek['max'],facecolor='steelblue', alpha=0.1, interpolate=True)
-
 # Plot ziek based on RNA
 ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
          linestyle=':', 
@@ -213,7 +200,14 @@ ax2.fill_between(
 
 
 # laat huidige datum zien met vertikale lijn
-ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
+plt.figtext(0.885,0.125, 
+         datetime.datetime.now().strftime("%d"), 
+         color="red",
+         fontsize=8,
+         bbox=dict(facecolor='white', alpha=0.9, pad=0,
+         edgecolor='white'),
+         zorder=10)
+ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
 ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
@@ -228,7 +222,7 @@ ax2.set_ylim([0, 500000])
 ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000])
 ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
-plt.gca().set_xlim([parser.parse("2020-02-01"), ic_voorspeld['x'][-1]])
+plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
 
 plt.figtext(0.28,0.7, 
          "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
@@ -239,10 +233,11 @@ plt.figtext(0.28,0.7,
 
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+data_tot=opgenomen['x'][-1].strftime("%Y-%m-%d")
 
-plt.title('COVID-19 gerelateerd zieken, '+gegenereerd_op)
+plt.title('COVID-19 gerelateerd zieken')
 
-footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
+footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 

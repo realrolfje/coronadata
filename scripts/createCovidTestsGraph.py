@@ -101,8 +101,7 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-ax1.text(parser.parse("2020-05-01"), 26000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
-
+ax1.text(parser.parse("2020-04-15"), 26000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
          color='darkblue', linestyle='-', label='Personen getest')
@@ -123,7 +122,15 @@ ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:],
          color='fuchsia', linestyle=':')
 
 # laat huidige datum zien met vertikale lijn
-ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
+plt.figtext(0.885,0.125, 
+         datetime.datetime.now().strftime("%d"), 
+         color="red",
+         fontsize=8,
+         bbox=dict(facecolor='white', alpha=0.9, pad=0,
+         edgecolor='white'),
+         zorder=10)
+ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
+
 
 for event in events:
     if 'testsloc' in event:
@@ -143,13 +150,14 @@ ax2.set_ylabel("Percentage positief getest")
 ax1.set_ylim([0, 40000])
 ax2.set_ylim([0, 40])
 
-plt.gca().set_xlim([parser.parse("2020-02-01"), positief_voorspeld['x'][-1]])
+plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+data_tot=positief['x'][-11].strftime("%Y-%m-%d")
 
-plt.title('Positieve COVID-19 tests, '+gegenereerd_op)
+plt.title('Positieve COVID-19 tests')
 
-footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
+footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 

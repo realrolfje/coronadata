@@ -69,10 +69,10 @@ gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 fig, heatmap = plt.subplots(figsize=(10, 5))
-fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
+fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 averages = plt.twinx()
 
-plt.title('Positieve tests per leeftijdsgroep, '+gegenereerd_op)
+plt.title('Positieve tests per leeftijdsgroep')
 
 
 # Gewogen:
@@ -102,9 +102,17 @@ heatmap.set_xlabel("Datum")
 heatmap.set_ylabel("Leeftijd")
 
 # laat huidige datum zien met vertikale lijn
-plt.axvline(str(datetime.date.today()), color='teal', linewidth=0.15)
+plt.figtext(0.885,0.125, 
+         datetime.datetime.now().strftime("%d"), 
+         color="red",
+         fontsize=8,
+         bbox=dict(facecolor='white', alpha=0.9, pad=0,
+         edgecolor='white'),
+         zorder=10)
+averages.axvline(datetime.date.today().strftime("%Y-%m-%d"), color='red', linewidth=0.5)
 
-footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
+data_tot = gemiddeldeleeftijd['x'][-1]
+footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19"
