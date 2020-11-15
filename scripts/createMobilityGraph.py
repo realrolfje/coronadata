@@ -90,16 +90,24 @@ for event in events:
         )
 
 # laat huidige datum zien met vertikale lijn
-ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
+plt.figtext(0.885,0.19, 
+         datetime.datetime.now().strftime("%d"), 
+         color="red",
+         fontsize=8,
+         bbox=dict(facecolor='white', alpha=0.9, pad=0,
+         edgecolor='white'),
+         zorder=10)
+ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("% t.o.v. 13 januari")
 
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-plt.title('Mobiliteit '+gegenereerd_op)
+plt.title('Mobiliteit')
 
-footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
+data_tot=rijden['x'][-1].strftime("%Y-%m-%d")
+footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 footerright="Bron: https://covid19.apple.com/mobility"

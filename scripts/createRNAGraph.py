@@ -13,6 +13,7 @@ from scipy.ndimage.filters import uniform_filter1d
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
+date_range = brondata.getDateRange(metenisweten)
 
 print('Generating RNA graph...')
 
@@ -44,7 +45,7 @@ ax2 = plt.twinx()
 
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', label='RNA per mL rioolwater (gemiddeld)')
+ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', label='RNA per milliliter rioolwater (gemiddeld)')
 
 # RNA_per_ml_avg['besmettelijk'] = uniform_filter1d(RNA_per_ml_avg['y'], size=20)
 # plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
@@ -52,16 +53,23 @@ ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', label=
 ax1.fill_between(RNA_per_ml_avg['x'], 0, RNA_per_ml_avg['y'],facecolor='green', alpha=0.3, interpolate=True)
 
 # laat huidige datum zien met vertikale lijn
-ax1.axvline(datetime.date.today(), color='teal', linewidth=0.15)
+plt.figtext(0.885,0.19, 
+         datetime.datetime.now().strftime("%d"), 
+         color="red",
+         fontsize=8,
+         bbox=dict(facecolor='white', alpha=0.9, pad=0,
+         edgecolor='white'),
+         zorder=10)
+ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 ax2.plot(RNA_populatie_dekking['x'], smooth(RNA_populatie_dekking['y']), color='orange', label='geschatte populatie dekking %')
 
 
 axes = plt.gca()
-axes.set_xlim([parser.parse("2020-02-01"),datetime.date.today() + datetime.timedelta(days=7)])
+axes.set_xlim([parser.parse("2020-02-01"),date_range[-1]])
 
 ax1.set_ylim([0,4000])
-ax1.set_ylabel("RNA per mL")
+ax1.set_ylabel("RNA per milliliter")
 ax1.set_xlabel("Datum")
 
 ax2.set_ylim([0,100])
@@ -78,10 +86,11 @@ plt.figtext(0.40,0.6,
          edgecolor='white'),
          zorder=10)
 
+data_tot=RNA_per_ml_avg['x'][-1].strftime("%Y-%m-%d")
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-plt.title('Concentratie SARS-CoV-2 RNA per mL rioolwater, '+gegenereerd_op)
+plt.title('Concentratie SARS-CoV-2 RNA per ml rioolwater')
 
-footerleft="Gegenereerd op "+gegenereerd_op+".\nSource code: http://github.com/realrolfje/coronadata"
+footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 footerright="Bron: https://data.rivm.nl/covid-19"
