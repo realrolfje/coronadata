@@ -36,6 +36,9 @@ gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 eenopXziek = round(17500000/geschat_ziek_nu)
 eenopXziekRNA = round(17500000/geschat_ziek_nu_rna)
 
+gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
 
@@ -60,7 +63,9 @@ substitutes = {
     'positief_percentage' : decimalstring(round(positief_percentage,1))+'%',
     'positief_percentage_color' : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
 
-    'positief_leeftijd' : str(gemiddeldeleeftijdweek)
+    'positief_leeftijd' : str(gemiddeldeleeftijdweek),
+
+    'gegenereerd_op': gegenereerd_op
 }
 
 def getTemplates(templatedir):
