@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
 #
-from matplotlib import pyplot as plt
-from dateutil import parser
-from statistics import mean
-import datetime
-import csv
-import json
-import modules.brondata as brondata
-from modules.brondata import decimalstring, smooth
-from scipy.ndimage.filters import uniform_filter1d
-from operator import itemgetter
 import urllib.request
 import re 
 from datetime import datetime
@@ -20,6 +10,7 @@ with urllib.request.urlopen(url) as response:
     body = str(response.read())
     counter=re.search('>[\.,0-9]+</', body).group(0)[1:-2]
     date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    print("https://realrolfje.github.io/coronadata/ has "+counter+" total pagehits.")
 
 filename="../data/pagehits.csv"
 with open(filename, "a") as file_object:
