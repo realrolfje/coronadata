@@ -10,68 +10,11 @@ import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth
 from scipy.ndimage.filters import uniform_filter1d
 from operator import itemgetter
+import urllib.request
 
-#brondata.freshdata()
-veiligheidsregios = brondata.readjson('../data/veiligheidsregios.json')
-riooldataoud = brondata.readjson('../data/COVID-19_rioolwaterdata-1-nov-2020.json')
-riooldatanieuw = brondata.readjson('../cache/COVID-19_rioolwaterdata.json')
+url="https://hitcounter.pythonanywhere.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
+filename="counter.svg"
 
-riooldatacombi = []
-
-for oudrecord in riooldataoud:
-    if oudrecord['Date_measurement'] > '2020-09-01':
-        for nieuwrecord in riooldatanieuw:
-            if (
-                oudrecord['Date_measurement'] > '2020-09-01' and
-                oudrecord['Date_measurement'] == nieuwrecord['Date_measurement'] and
-                oudrecord['Postal_code'] == nieuwrecord['Postal_code'] and
-                oudrecord['Security_region_code'] == nieuwrecord['Security_region_code'] and
-                oudrecord['RWZI_AWZI_code'] == nieuwrecord['RWZI_AWZI_code'] and
-                'RNA_per_ml' in oudrecord and oudrecord['RNA_per_ml'] and 
-                'RNA_flow_per_100000' in nieuwrecord and nieuwrecord['RNA_flow_per_100000']
-            ):
-                riooldatacombi.append({
-                    'Date_measurement': oudrecord['Date_measurement'],
-                    'Postal_code': oudrecord['Postal_code'],
-                    'Security_region_code': oudrecord['Security_region_code'],
-                    'Security_region_name': oudrecord['Security_region_name'],
-                    'RWZI_AWZI_code': oudrecord['RWZI_AWZI_code'],
-                    'RNA_per_ml': oudrecord['RNA_per_ml'],
-                    'RNA_flow_per_100000': nieuwrecord['RNA_flow_per_100000'],
-                    'Percentage_in_security_region': oudrecord['Percentage_in_security_region'],
-                    'inwoners': veiligheidsregios[oudrecord['Security_region_code']]['inwoners']
-                })
-
-print("Date_measurement;Postal_code;Security_region_code;Security_region_name;Percentage_in_security_region;inwoners;RNA_per_ml;RNA_flow_per_100000")
-for record in riooldatacombi:
-    print(str(record['Date_measurement']), end =";" )
-    print(str(record['Postal_code']), end =";" )
-    print(str(record['Security_region_code']), end =";" )
-    print(str(record['Security_region_name']), end =";" )
-    print(str(record['Percentage_in_security_region']), end =";" )
-    print(str(record['inwoners']), end =";" )
-
-    if 'RNA_per_ml' in record and record['RNA_per_ml']:
-        print(str(record['RNA_per_ml']), end =";" )
-    else:
-        print("",end=';')
-
-    if 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
-        print(str(record['RNA_flow_per_100000']), end =";" )
-    else:
-        print(end=';')
-    print()
-
-
-#      {
-#    "RWZI_AWZI_code": 32002,
-#    "RWZI_AWZI_name": "Tilburg",
-#    "X_coordinate": 132554,
-#    "Y_coordinate": 401565,
-#    "Postal_code": "5048TD",
-#    "Security_region_code": "VR20",
-#    "Security_region_name": "Midden- en West-Brabant",
-#    "Percentage_in_security_region": "1",
-#    "RNA_per_ml": 1837,
-#    "Representative_measurement": true
-#  },
+with urllib.request.urlopen(url) as response:
+   html = str(response.read())
+   print(html)
