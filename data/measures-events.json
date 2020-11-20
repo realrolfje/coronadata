@@ -129,7 +129,7 @@
     },
     {
         "date": "2020-09-20",
-        "event": "www.ballonvossenjacht.nl\nHoreca sluit 00:00,\nlokale maatregelen\nWest NL",
+        "event": "Horeca sluit 00:00,\nlokale maatregelen\nWest NL\nwww.ballonvossenjacht.nl",
         "ziekloc": [
             "2020-07-15",
             230000
@@ -143,7 +143,7 @@
         "date": "2020-09-28",
         "event": "Bezoek thuis max 3 pers.\nHoreca sluit 22:00\nSportkantines dicht\nDeurbeleid winkels\nSport zonder publiek",
         "ziekloc": [
-            "2020-08-05",
+            "2020-08-01",
             310000
         ]
     },
@@ -152,14 +152,14 @@
         "event": "Landelijk\nmondkapadvies",
         "ziekloc": [
             "2020-09-10",
-            260000
+            225000
         ]
     },
     {
         "date": "2020-10-13",
         "event": "Kroegen dicht\nGeen sportwedstr.",
         "ziekloc": [
-            "2020-09-05",
+            "2020-08-30",
             405000
         ]
     },
@@ -174,22 +174,26 @@
     },
     {
         "date": "2020-11-04",
-        "event": "Vermijd reizen\nMax 2 pers. buiten\nPublieke gebouwen dicht",
+        "event": "Tijdelijk 2 wkn:\nVermijd reizen\nMax 2 pers. buiten\nPublieke gebouwen\ndicht",
         "ziekloc": [
-            "2020-10-17",
-            380000
+            "2020-10-09",
+            360000
         ]
     },
     {
         "date": "2020-11-14",
         "event": "Intocht Sinterklaas",
-        "ziekloc": [
-            "2020-09-24",
-            120000
-        ],
         "mobiliteit": [
             "2020-10-02",
             40
+        ]
+    },
+    {
+        "date": "2020-11-18",
+        "event": "Tijdelijke maatregelen\nopgeheven",
+        "ziekloc": [
+            "2020-10-24",
+            120000
         ]
     }
 ]
