@@ -59,7 +59,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         print("Downloading fresh data to "+filename)
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
-            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2019HotfixDev34/v3/en-us/applemobilitytrends-'+theday+'.csv'
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2021HotfixDev19/v3/en-us/applemobilitytrends-'+theday+'.csv'
             try:
                 print("Trying "+url, end="...")
                 urllib.request.urlretrieve(url, filename)
@@ -67,7 +67,7 @@ def downloadMostRecentAppleMobilityReport(filename):
                 return True
             except (urllib.error.HTTPError, urllib.error.HTTPError) as err:
                 print("Error "+str(err))
-        raise Exception("Sorry, no Apple mobility data found.") 
+        raise Exception("Sorry, no Apple mobility data found. Check https://covid19.apple.com/mobility") 
 
 def download():
     freshdata = False
