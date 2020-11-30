@@ -36,6 +36,9 @@ def decimalstring(number):
     else:
         return "{:,}".format(number).replace(',','x').replace('.',',').replace('x','.')
 
+def switchdecimals(numberstring):
+    return numberstring.replace(',','x').replace('.',',').replace('x','.')
+
 def isnewer(file1, file2):
     return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime 
 
@@ -327,6 +330,10 @@ def builddaily():
             elif 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
                 rnavalue = record['RNA_flow_per_100000'] / 24650163389
             else:
+                continue
+
+            # Ignore stations which measure less than 80% of their value from one region
+            if float(switchdecimals(record['Percentage_in_security_region'])) < 0.8:
                 continue
 
             initrecord(stringdate, metenisweten)
