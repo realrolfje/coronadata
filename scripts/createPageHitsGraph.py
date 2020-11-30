@@ -38,7 +38,7 @@ ax1.plot(pagehits['x'],
          [x * 3600 for x in pagehits['y']], 
          color='red', label='Page hits')
 
-ax1.set_ylim(0)
+ax1.set_ylim(0,500)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
