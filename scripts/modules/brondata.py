@@ -59,7 +59,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         print("Downloading fresh data to "+filename)
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
-            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2021HotfixDev19/v3/en-us/applemobilitytrends-'+theday+'.csv'
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2021HotfixDev29/v3/en-us/applemobilitytrends-'+theday+'.csv'
             try:
                 print("Trying "+url, end="...")
                 urllib.request.urlretrieve(url, filename)
@@ -515,7 +515,7 @@ def builddaily():
 
     for i in range(len(dates)):
         date = dates[i]
-        metenisweten[date]['RNA']['besmettelijk'] = rna_avg[i]
+        metenisweten[date]['RNA']['besmettelijk'] = max(1,rna_avg[i]) # Don't allow negative or 0 numbers
         metenisweten[date]['RNA']['besmettelijk_error'] = rna_error[i]
 
     print("Calculate average age of positive tested people")
