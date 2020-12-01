@@ -222,9 +222,9 @@ ax2.set_ylim([0, 500000])
 ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000])
 ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
-plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
+plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
-plt.figtext(0.28,0.7, 
+plt.figtext(0.22,0.7, 
          "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 

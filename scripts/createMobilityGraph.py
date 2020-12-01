@@ -66,7 +66,7 @@ fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
+plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 ax1.set_ylim([0,190])
 
 ax1.axhline(100, color='black', linestyle='-', linewidth=0.4)
