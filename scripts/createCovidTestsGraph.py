@@ -150,7 +150,7 @@ ax2.set_ylabel("Percentage positief getest")
 ax1.set_ylim([0, 40000])
 ax2.set_ylim([0, 40])
 
-plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
+plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 data_tot=positief['x'][-11].strftime("%Y-%m-%d")

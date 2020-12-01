@@ -76,7 +76,7 @@ plt.annotate(
 
 axes = plt.gca()
 axes.set_ylim([0,3])
-axes.set_xlim([parser.parse("2020-02-01"),date_range[-1]])
+axes.set_xlim([parser.parse("2020-03-01"),date_range[-1]])
 axes.set_xlabel("Datum")
 axes.set_ylabel("Reproductiegetal")
 

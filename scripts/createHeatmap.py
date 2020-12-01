@@ -20,35 +20,36 @@ xlabels = []
 x = []
 y = []
 
-startdate = parser.parse('2020-02-01')
+startdate = parser.parse('2020-03-01')
 
 weightsmap={}
 
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
+    print("Converting records to x/y data")
     for record in data:
-        try:
-            # datax = np.datetime64(record['Date_statistics'])
-            datax = (parser.parse(record['Date_statistics']) - startdate).days
-            labelx = parser.parse(record['Date_statistics']).date()
-            datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
-            filedate = record['Date_file']
-            xlabels.append(labelx)
-            x.append(datax)
-            y.append(datay)
+        date_statistics = parser.parse(record['Date_statistics'])
+        if date_statistics > startdate:
+            try:
+                datax = (date_statistics - startdate).days
+                datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
+                filedate = record['Date_file']
+                x.append(datax)
+                y.append(datay)
 
-            if datax not in weightsmap:
-                weightsmap[datax] = 1
-            else:
-                weightsmap[datax] = weightsmap[datax] + 1
+                # if datax not in weightsmap:
+                #     weightsmap[datax] = 1
+                # else:
+                #     weightsmap[datax] = weightsmap[datax] + 1
 
-        except ValueError:
-            # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
-            pass
+            except ValueError:
+                # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
+                pass
 
-weights=[]
-for d in x:
-    weights.append(1./weightsmap[d])
+# print("Calculating weights.")
+# weights=[]
+# for d in x:
+#     weights.append(1./weightsmap[d])
 
 # Averages
 gemiddeldeleeftijd = {
@@ -61,7 +62,7 @@ date_range = brondata.getDateRange(metenisweten)
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
     if datum in metenisweten and metenisweten[datum]['besmettingleeftijd_gemiddeld'] is not None:
-        gemiddeldeleeftijd['x'].append(datum)
+        gemiddeldeleeftijd['x'].append(d)
         gemiddeldeleeftijd['y'].append(metenisweten[datum]['besmettingleeftijd_gemiddeld'])
 
 gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
@@ -74,6 +75,7 @@ averages = plt.twinx()
 
 plt.title('Positieve tests per leeftijdsgroep')
 
+print("Plotting heatmap, "+str(len(x))+"x"+str(len(y)))
 
 # Gewogen:
 #plt.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
@@ -81,7 +83,9 @@ plt.title('Positieve tests per leeftijdsgroep')
 # Ongewogen:
 heatmap.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Blues') # inferno is also a good one
 
-averages.plot(gemiddeldeleeftijd['x'], gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')')
+
+leeftijdx = [(x-startdate).days for x in gemiddeldeleeftijd['x']]
+averages.plot(leeftijdx, gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')')
 
 averages.legend(loc="upper right")
 
@@ -89,7 +93,7 @@ heatmap.set_ylim([0, 100])
 averages.set_ylim([0,100])
 
 # Dirty stuff to get x labels (needs cleanup)
-xlabeldates = [startdate + relativedelta(months=x) for x in range(xlabels[-1].month - startdate.month + 1)]
+xlabeldates = [startdate + relativedelta(months=x) for x in range(gemiddeldeleeftijd['x'][-1].month - startdate.month + 1)]
 xlabels = []
 xlocs = []
 for label in xlabeldates:
@@ -109,9 +113,10 @@ plt.figtext(0.885,0.165,
          bbox=dict(facecolor='white', alpha=0.9, pad=0,
          edgecolor='white'),
          zorder=10)
-averages.axvline(datetime.date.today().strftime("%Y-%m-%d"), color='red', linewidth=0.5)
 
-data_tot = gemiddeldeleeftijd['x'][-1]
+averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
+
+data_tot = gemiddeldeleeftijd['x'][-1].strftime("%Y-%m-%d")
 footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
