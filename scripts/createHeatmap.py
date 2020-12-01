@@ -68,8 +68,8 @@ gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-fig, heatmap = plt.subplots(figsize=(10, 5))
-fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
+fig, heatmap = plt.subplots(figsize=(10, 4))
+fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
 averages = plt.twinx()
 
 plt.title('Positieve tests per leeftijdsgroep')
@@ -102,7 +102,7 @@ heatmap.set_xlabel("Datum")
 heatmap.set_ylabel("Leeftijd")
 
 # laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.125, 
+plt.figtext(0.885,0.165, 
          datetime.datetime.now().strftime("%d"), 
          color="red",
          fontsize=8,
