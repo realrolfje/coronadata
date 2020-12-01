@@ -76,7 +76,7 @@ ax1.set_yticks      ([0, 20,  40, 60,  80, 100, 120, 140, 160, 180])
 
 
 ax1.plot(rijden['x'], rijden['y'], color='coral',label='Rijden (Apple, gemiddeld)')
-ax1.plot(ov['x'], ov['y'], color='orange',label='OV (Apple, gemiddeld)')
+ax1.plot(ov['x'], ov['y'], color='lightgreen',label='OV (Apple, gemiddeld)')
 ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemiddeld)')
 
 
