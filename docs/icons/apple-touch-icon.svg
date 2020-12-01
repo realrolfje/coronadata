@@ -7,11 +7,11 @@
   <rdf:RDF xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2020-11-30T23:31:25.393984</dc:date>
+    <dc:date>2020-12-01T11:19:41.709909</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
-      <dc:title>Matplotlib v3.3.0, https://matplotlib.org/</dc:title>
+      <dc:title>Matplotlib v3.3.2, https://matplotlib.org/</dc:title>
      </cc:Agent>
     </dc:creator>
    </cc:Work>
@@ -39,7 +39,7 @@ z
 " style="fill:#ffffff;"/>
    </g>
    <g id="line2d_1">
-    <path clip-path="url(#p0f67565495)" d="M 6.545455 119.769603 
+    <path clip-path="url(#pc1540eb389)" d="M 6.545455 119.769603 
 L 7.938104 119.509477 
 L 9.330754 119.017219 
 L 10.259188 118.503904 
@@ -124,7 +124,7 @@ L 131.419729 93.047725
 " style="fill:none;stroke:#4682b4;stroke-linecap:square;stroke-width:1.5;"/>
    </g>
    <g id="line2d_2">
-    <path clip-path="url(#p0f67565495)" d="M 54.823985 119.175001 
+    <path clip-path="url(#pc1540eb389)" d="M 54.823985 119.175001 
 L 66.893617 119.822392 
 L 72.464217 119.813987 
 L 74.7853 119.53053 
@@ -377,7 +377,7 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="p0f67565495">
+  <clipPath id="pc1540eb389">
    <rect height="144" width="144" x="0" y="0"/>
   </clipPath>
  </defs>
