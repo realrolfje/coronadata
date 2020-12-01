@@ -151,7 +151,7 @@
         "date": "2020-09-30",
         "event": "Landelijk\nmondkapadvies",
         "ziekloc": [
-            "2020-09-10",
+            "2020-09-13",
             225000
         ]
     },
@@ -165,18 +165,18 @@
     },
     {
         "date": "2020-10-13",
-        "event": "Koning retourtje Griekenland.",
+        "event": "Koning retourtje\nGriekenland.",
         "url" : "https://nos.nl/artikel/2352625-koning-breekt-vakantie-naar-griekenland-af-na-ophef-rutte-wist-van-reis.html",
         "testsloc": [
-            "2020-09-02",
-            21000
+            "2020-10-28",
+            33000
         ]
     },
     {
         "date": "2020-11-04",
         "event": "Tijdelijk 2 wkn:\nVermijd reizen\nMax 2 pers. buiten\nPublieke gebouwen\ndicht",
         "ziekloc": [
-            "2020-10-09",
+            "2020-10-15",
             360000
         ]
     },
@@ -195,5 +195,18 @@
             "2020-11-02",
             250000
         ]
+    },
+    {
+        "date": "2020-12-01",
+        "event": "Mondkapplicht,\nGezond testen",
+        "ziekloc": [
+            "2020-10-15",
+            90000
+        ],
+        "testsloc": [
+            "2020-10-02",
+            18000
+        ]
+
     }
 ]
