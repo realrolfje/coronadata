@@ -42,10 +42,11 @@ for d in date_range:
         rijden['x'].append(parser.parse(datum))
         rijden['y'].append(value)
 
-    value = metenisweten[datum]['mobiliteit']['ov']
-    if value:
-        ov['x'].append(parser.parse(datum))
-        ov['y'].append(value)
+    if 'OV' in metenisweten[datum]['mobiliteit']:
+        value = metenisweten[datum]['mobiliteit']['OV']
+        if value:
+            ov['x'].append(parser.parse(datum))
+            ov['y'].append(value)
 
     value = metenisweten[datum]['mobiliteit']['lopen']
     if value:
@@ -59,23 +60,23 @@ lopen['y'] = brondata.double_savgol(lopen['y'], 1, 13, 1)
 
 print('Generating mobility graph...')
 
-fig, ax1 = plt.subplots(figsize=(10, 3))
-fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
+fig, ax1 = plt.subplots(figsize=(10, 4))
+fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
 
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 plt.gca().set_xlim([parser.parse("2020-02-01"), date_range[-1]])
-ax1.set_ylim([20,190])
+ax1.set_ylim([0,190])
 
 ax1.axhline(100, color='black', linestyle='-', linewidth=0.4)
 
-ax1.set_yticks      ([20,  40,60,  80, 100, 120, 140, 160, 180])
+ax1.set_yticks      ([0, 20,  40, 60,  80, 100, 120, 140, 160, 180])
 #ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
 
 ax1.plot(rijden['x'], rijden['y'], color='coral',label='Rijden (Apple, gemiddeld)')
-#ax1.plot(ov['x'], ov['y'], color='orange',label='OV')
+ax1.plot(ov['x'], ov['y'], color='orange',label='OV (Apple, gemiddeld)')
 ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemiddeld)')
 
 
@@ -90,7 +91,7 @@ for event in events:
         )
 
 # laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.19, 
+plt.figtext(0.885,0.165, 
          datetime.datetime.now().strftime("%d"), 
          color="red",
          fontsize=8,
