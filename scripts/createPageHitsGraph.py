@@ -5,6 +5,7 @@ from dateutil import parser
 import datetime
 import csv
 from datetime import datetime
+from modules.brondata import smooth, double_savgol
 
 pagehits= {
     'x': [],
@@ -30,20 +31,41 @@ with open(filename, 'r') as csv_file:
             pagehits['y'].append(deltahits)
         line_count = line_count + 1
     
+hitsperuur = [x * 3600 for x in pagehits['y']]
+
+# Take out outliers
+gem_per_uur = sum(hitsperuur)/len(hitsperuur)
+
+hitsperuur_gem = {
+    'x':[],
+    'y':[]
+}
+
+for i in range(len(hitsperuur)):
+    if (len(hitsperuur_gem['y'])==0) \
+            or (hitsperuur[i] < 100) \
+            or (hitsperuur[i] < hitsperuur_gem['y'][-1]*2):
+        hitsperuur_gem['x'].append(pagehits['x'][i])
+        hitsperuur_gem['y'].append(hitsperuur[i])
+
+# hitsperuur_gem['y'] = double_savgol(hitsperuur_gem['y'], 10, 5, 1)
+hitsperuur_gem['y'] = smooth(hitsperuur_gem['y'])
+
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-ax1.plot(pagehits['x'], 
-         [x * 3600 for x in pagehits['y']], 
-         color='red', label='Page hits')
+ax1.plot(hitsperuur_gem['x'], hitsperuur_gem['y'], color='red', label='Page hits')
+ax1.fill_between(pagehits['x'], 0, hitsperuur,facecolor='lightsalmon', alpha=0.3, interpolate=True)
+
 
 ax1.set_ylim(0,500)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+ax1.set_xlabel("Datum")
 
-plt.title('Bezoekers per uur')
+plt.title('Page hits per uur (gemiddeld ongeveer '+str(int(round(hitsperuur_gem['y'][-1])))+").")
 
 gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
 footerleft="Gegenereerd op "+gegenereerd_op+"."
