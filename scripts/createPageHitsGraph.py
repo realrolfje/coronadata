@@ -2,9 +2,9 @@
 #
 from matplotlib import pyplot as plt
 from dateutil import parser
-import datetime
 import csv
 from datetime import datetime
+from datetime import timedelta
 from modules.brondata import smooth, double_savgol
 
 pagehits= {
@@ -63,6 +63,12 @@ ax1.set_ylim(0,500)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+
+# Try to create only 7 tickmarks to prevent overlap
+step = round((pagehits['x'][-1]-pagehits['x'][0]).days/7)
+r =  [pagehits['x'][0] + timedelta(days=x*step) for x in range(7)]
+ax1.set_xticks(r)
+
 ax1.set_xlabel("Datum")
 
 plt.title('Page hits per uur (gemiddeld ongeveer '+str(int(round(hitsperuur_gem['y'][-1])))+").")
