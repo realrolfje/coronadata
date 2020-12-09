@@ -37,7 +37,8 @@ eenopXziek = round(17500000/geschat_ziek_nu)
 eenopXziekRNA = round(17500000/geschat_ziek_nu_rna)
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-
+gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
+gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
@@ -65,7 +66,9 @@ substitutes = {
 
     'positief_leeftijd' : str(gemiddeldeleeftijdweek),
 
-    'gegenereerd_op': gegenereerd_op
+    'gegenereerd_op':       gegenereerd_op,
+    'gegenereerd_op_datum': gegenereerd_datum,
+    'gegenereerd_op_tijd':  gegenereerd_tijd
 }
 
 def getTemplates(templatedir):
