@@ -62,7 +62,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         print("Downloading fresh data to "+filename)
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
-            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2022HotfixDev19/v3/en-us/applemobilitytrends-'+theday+'.csv'
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2022HotfixDev23/v3/en-us/applemobilitytrends-'+theday+'.csv'
             try:
                 print("Trying "+url, end="...")
                 urllib.request.urlretrieve(url, filename)
