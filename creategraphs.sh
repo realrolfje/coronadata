@@ -11,6 +11,7 @@ cd scripts
 ./createTestGraph.py
 ./createMobilityGraph.py
 ./processTemplates.py
+./processEventsList.py
 ./updatePageHits.py
 ./createPageHitsGraph.py
 cd ..
