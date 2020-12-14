@@ -35,6 +35,10 @@ img {
     vertical-align: top;
 }
 
+.maxwidth {
+    max-width: 850;
+}
+
 .container {
     width: 100%;
     overflow: hidden;
