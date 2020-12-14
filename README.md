@@ -3,7 +3,7 @@
 Geen smoesjes, je weet het best:
 **Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.**
 
-![Besmettingen en IC opnames](graphs/zieken.svg)
+![Besmettingen en IC opnames](docs/graphs/zieken.svg)
 
 Alle grafieken zien? Ga naar http://realrolfje.github.io/coronadata
 
