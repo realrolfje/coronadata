@@ -32,7 +32,7 @@ positief = {
 positief_voorspeld = {
     'x': [],
     'y': [],
-    'avgsize':12
+    'avgsize':7
 }
 
 totaaltests = {
@@ -115,10 +115,10 @@ ax2.plot(positief_percentage['x'], positief_percentage['y'],
          label='Percentage geteste personen positief (nu: ' + huidigpercentage + "%).")
 
 # Plot cases per dag
-ax1.plot(positief['x'][:-11], positief['y'][:-11], 
+ax1.plot(positief['x'][:-positief_voorspeld['avgsize']], positief['y'][:-positief_voorspeld['avgsize']], 
             color='fuchsia', label='Tests positief (totaal '+decimalstring(totaal_positief)+")")
 #ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
-ax1.plot(positief_voorspeld['x'][-17:], positief_voorspeld['y'][-17:], 
+ax1.plot(positief_voorspeld['x'][-positief_voorspeld['avgsize']-7:], positief_voorspeld['y'][-positief_voorspeld['avgsize']-7:], 
          color='fuchsia', linestyle=':')
 
 # laat huidige datum zien met vertikale lijn
