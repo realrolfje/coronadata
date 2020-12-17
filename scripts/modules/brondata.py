@@ -127,10 +127,10 @@ def download():
         'https://lcps.nu/wp-content/uploads/covid-19.csv'
     ) or freshdata
 
-    freshdata = downloadIfStale(
-        '../cache/Google_Global_Mobility_Report.csv',
-        'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
-    ) or freshdata
+    # freshdata = downloadIfStale(
+    #     '../cache/Google_Global_Mobility_Report.csv',
+    #     'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
+    # ) or freshdata
 
     freshdata = downloadMostRecentAppleMobilityReport(
         '../cache/Apple_Global_Mobility_Report.csv'
