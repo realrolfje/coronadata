@@ -192,8 +192,8 @@
             90000
         ],
         "testsloc": [
-            "2020-10-02",
-            18000
+            "2020-09-15",
+            22000
         ]
 
     },
@@ -202,16 +202,29 @@
         "event": "Lockdown",
         "url": "https://www.youtube.com/watch?v=LLktWm8oBMY",
         "ziekloc": [
-            "2020-11-15",
+            "2020-11-01",
             15000
         ],
         "testsloc": [
-            "2020-11-15",
-            16000
+            "2020-11-08",
+            28000
         ],
         "mobiliteit": [
             "2020-11-15",
             60
+        ]
+    },
+    {
+        "date": "2020-12-20",
+        "event": "Gemuteerd virus in NL,\ngeen vluchten VK",
+        "url": "https://www.nu.nl/coronavirus/6097754/britse-coronavariant-ook-in-nederland-vliegverbod-tegen-verspreiding.html",
+        "ziekloc": [
+            "2020-12-01",
+            15000
+        ],
+        "testsloc": [
+            "2020-11-15",
+            17000
         ]
     }
 ]
