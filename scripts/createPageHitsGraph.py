@@ -58,15 +58,15 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax1.plot(hitsperuur_gem['x'], hitsperuur_gem['y'], color='red', label='Page hits')
 ax1.fill_between(pagehits['x'], 0, hitsperuur,facecolor='lightsalmon', alpha=0.3, interpolate=True)
 
-
 ax1.set_ylim(0,1000)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 
 # Try to create only 7 tickmarks to prevent overlap
-step = round((pagehits['x'][-1]-pagehits['x'][0]).days/7)
-r =  [pagehits['x'][0] + timedelta(days=x*step) for x in range(7)]
+step = (pagehits['x'][-1]-pagehits['x'][0]).days/7
+r =  [pagehits['x'][0] + timedelta(days=x*step) for x in range(8)]
+
 ax1.set_xticks(r)
 
 ax1.set_xlabel("Datum")
