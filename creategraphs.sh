@@ -6,6 +6,7 @@ cd scripts
 ./calculateDailyExcelData.py
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
+./createZiekGraph.py sliding
 ./createSchattingAfwijkingGraph.py
 ./createLiveIcon.py
 ./createTestGraph.py
