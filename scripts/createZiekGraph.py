@@ -9,12 +9,18 @@ import datetime
 import json
 import modules.brondata as brondata
 from modules.brondata import decimalstring
+import sys
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
 
-print("Calculating ziek graph...")
+if len(sys.argv) == 2 and sys.argv[1] == "sliding":
+    graphname="zieken-sliding"
+else:
+    graphname="zieken"
+
+print("Calculating "+graphname+" graph...")
 
 opgenomen = {
     'x': [],
@@ -163,13 +169,13 @@ fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 ax2 = plt.twinx()
 
 for event in events:
-    if 'ziekloc' in event:
+    if graphname in event:
         anotate(
             ax2, 
             geschat_ziek_rna['x'], geschat_ziek_rna['y'],
             event['date'], event['event'], 
-            event['ziekloc'][0], 
-            event['ziekloc'][1]
+            event[graphname][0], 
+            event[graphname][1]
         )
 
 #plt.figure(figsize =(10,5))
@@ -222,7 +228,10 @@ ax2.set_ylim([0, 500000])
 ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000])
 ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
-plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
+if graphname == "zieken":
+    plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
+else:
+    plt.gca().set_xlim([date_range[-1] - datetime.timedelta(days=200), date_range[-1]])
 
 plt.figtext(0.22,0.7, 
          "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
@@ -247,4 +256,6 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 
-plt.savefig("../docs/graphs/zieken.svg", format="svg")
+plt.savefig("../docs/graphs/"+graphname+".svg", format="svg")
+
+ax1.set_xlim([opgenomen['x'][-100], opgenomen['x'][-1]])
