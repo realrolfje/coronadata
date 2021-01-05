@@ -153,7 +153,7 @@ def initrecord(date, metenisweten):
         metenisweten[date] = {
             'positief'             : 0,
             'totaal_positief'      : 0,
-            'nu_op_ic'             : 0,
+            'nu_op_ic'             : None,
             'nu_op_ic_lcps'        : None,
             'nu_op_ic_noncovid_lcps':None,
             'geweest_op_ic'        : 0,
