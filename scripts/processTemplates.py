@@ -18,7 +18,10 @@ gemiddeldeleeftijdarray=[]
 # Assumes last records are newest
 for date in metenisweten:
     totaal_positief = metenisweten[date]['totaal_positief']
-    nu_op_ic = metenisweten[date]['nu_op_ic']
+
+    if metenisweten[date]['nu_op_ic']:
+        nu_op_ic = metenisweten[date]['nu_op_ic']
+
     nu_opgenomen = metenisweten[date]['nu_opgenomen']
     if metenisweten[date]['rivm_schatting_besmettelijk']['value']:
         geschat_ziek_nu = metenisweten[date]['rivm_schatting_besmettelijk']['value']
