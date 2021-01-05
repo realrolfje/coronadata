@@ -23,13 +23,13 @@ Rt_up  = {    'x':[],    'y':[]}
 for datum in metenisweten:
     if metenisweten[datum]['Rt_avg'] is not None:
         Rt_avg['x'].append(parser.parse(datum))
-        Rt_avg['y'].append(metenisweten[datum]['Rt_avg'])
+        Rt_avg['y'].append(float(metenisweten[datum]['Rt_avg']))
     if metenisweten[datum]['Rt_up'] is not None:
         Rt_up['x'].append(parser.parse(datum))
-        Rt_up['y'].append(metenisweten[datum]['Rt_up'])
+        Rt_up['y'].append(float(metenisweten[datum]['Rt_up']))
     if metenisweten[datum]['Rt_low'] is not None:
         Rt_low['x'].append(parser.parse(datum))
-        Rt_low['y'].append(metenisweten[datum]['Rt_low'])
+        Rt_low['y'].append(float(metenisweten[datum]['Rt_low']))
 
 
 plt.figure(figsize=(10,3))
