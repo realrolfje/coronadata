@@ -79,21 +79,23 @@ for d in date_range:
 
     # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
     if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
-        ic['x'].append(parser.parse(datum))
-        ic['y'].append(metenisweten[datum]['nu_op_ic'])
+        if metenisweten[datum]['nu_op_ic']:
+            ic['x'].append(parser.parse(datum))
+            ic['y'].append(metenisweten[datum]['nu_op_ic'])
 
-        opgenomen['x'].append(parser.parse(datum))
-        opgenomen['y'].append(metenisweten[datum]['nu_opgenomen'])
+            if len(ic['y'])>1:
+                ic['rc'].append(ic['y'][-1] - ic['y'][-2])
+            else:
+                ic['rc'].append(0)
 
-        if len(ic['y'])>1:
-            ic['rc'].append(ic['y'][-1] - ic['y'][-2])
-        else:
-            ic['rc'].append(0)
+        if metenisweten[datum]['nu_opgenomen']:
+            opgenomen['x'].append(parser.parse(datum))
+            opgenomen['y'].append(metenisweten[datum]['nu_opgenomen'])
 
-        if len(opgenomen['y'])>1:
-            opgenomen['rc'].append(opgenomen['y'][-1] - opgenomen['y'][-2])
-        else:
-            opgenomen['rc'].append(0)
+            if len(opgenomen['y'])>1:
+                opgenomen['rc'].append(opgenomen['y'][-1] - opgenomen['y'][-2])
+            else:
+                opgenomen['rc'].append(0)
 
 
     # ---------------------- Voorspelling op IC obv gemiddelde richtingscoefficient

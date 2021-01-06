@@ -268,7 +268,7 @@ def builddaily():
             if not isvaliddate(record['date'], filename):
                 continue
             initrecord(record['date'], metenisweten)
-            metenisweten[record['date']]['nu_op_ic'] += record['value']
+            metenisweten[record['date']]['nu_op_ic'] = record['value']
 
     filename = '../cache/NICE-intake-cumulative.json'
     with open(filename, 'r') as json_file:
