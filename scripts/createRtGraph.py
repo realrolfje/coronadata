@@ -63,7 +63,7 @@ plt.figtext(0.885,0.19,
          edgecolor='white'),
          zorder=10)
 plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
-
+plt.axvline(datetime.date.today() - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
 
 plt.annotate(
     decimalstring(Rt_avg['y'][-1]),
