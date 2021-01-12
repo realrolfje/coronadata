@@ -156,7 +156,7 @@
         "date": "2020-12-01",
         "event": "Mondkapplicht,\nGezond testen",
         "zieken": [
-            "2020-11-01",
+            "2020-11-08",
             11000
         ],
         "testsloc": [
@@ -201,11 +201,11 @@
     },
     {
         "date": "2020-12-21",
-        "event": "EMA goedkeuring Pfizer vaccin",
+        "event": "EMA goedkeuring\nPfizer vaccin",
         "url": "https://twitter.com/MedicijnNL/status/1341006296255000577",
         "zieken": [
-            "2020-11-01",
-            330000
+            "2020-11-19",
+            320000
         ],
         "zieken-sliding": [
             "2020-11-15",
@@ -217,8 +217,8 @@
         "event": "Kerst",
         "url": "https://www.rtlnieuws.nl/nieuws/nederland/artikel/5205267/horecaondernemers-worstelen-met-kerstafhaalmenus-ik-heb-bestellen",
         "zieken": [
-            "2020-12-12",
-            280000
+            "2020-12-18",
+            11000
         ],
         "mobiliteit": [
             "2020-12-15",
@@ -229,5 +229,16 @@
         "date": "2021-01-05",
         "event": "Debat vertraging vaccinaties",
         "url": "https://www.youtube.com/watch?v=lxB7UhHxKj4"
-    }
+    },
+    {
+        "date": "2021-01-12",
+        "event": "Lockdown verlengd\ntot 9 Feb.",
+        "url": "https://www.youtube.com/watch?v=HJyszQXZIqA",
+        "zieken": [
+            "2020-12-16",
+            255000
+        ]
+   }
+
+
 ]
