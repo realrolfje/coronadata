@@ -19,10 +19,15 @@ gemiddeldeleeftijdarray=[]
 for date in metenisweten:
     totaal_positief = metenisweten[date]['totaal_positief']
 
-    if metenisweten[date]['nu_op_ic']:
+    if 'nu_op_ic' in metenisweten[date] and metenisweten[date]['nu_op_ic'] \
+        and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
+        print(str(date)+' '+str(metenisweten[date]['nu_op_ic']))
         nu_op_ic = metenisweten[date]['nu_op_ic']
 
-    nu_opgenomen = metenisweten[date]['nu_opgenomen']
+    if 'nu_opgenomen' in metenisweten[date] and metenisweten[date]['nu_opgenomen'] \
+        and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
+        print(str(date)+' '+str(metenisweten[date]['nu_opgenomen']))
+        nu_opgenomen = metenisweten[date]['nu_opgenomen']
     if metenisweten[date]['rivm_schatting_besmettelijk']['value']:
         geschat_ziek_nu = metenisweten[date]['rivm_schatting_besmettelijk']['value']
     if metenisweten[date]['RNA']['besmettelijk']:

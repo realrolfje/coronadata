@@ -79,7 +79,7 @@ for d in date_range:
 
     # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
     if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
-        if metenisweten[datum]['nu_op_ic']:
+        if ['nu_op_ic'] in metenisweten[datum] and metenisweten[datum]['nu_op_ic']:
             ic['x'].append(parser.parse(datum))
             ic['y'].append(metenisweten[datum]['nu_op_ic'])
 
@@ -88,7 +88,7 @@ for d in date_range:
             else:
                 ic['rc'].append(0)
 
-        if metenisweten[datum]['nu_opgenomen']:
+        if 'nu_opgenomen' in metenisweten[datum] and metenisweten[datum]['nu_opgenomen']:
             opgenomen['x'].append(parser.parse(datum))
             opgenomen['y'].append(metenisweten[datum]['nu_opgenomen'])
 
