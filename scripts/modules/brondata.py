@@ -505,7 +505,7 @@ def builddaily():
         # Also don't use too recent RNA data
         if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date()):
             dates.append(date)
-            rna.append(gewogenrna)
+            rna.append( )
             rna_error.append(1 - (inwoners / 17500000))
 
     # Smooth
