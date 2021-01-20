@@ -23,14 +23,14 @@ for date in metenisweten:
        and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3))\
        and 'nu_op_ic' in metenisweten[date] and metenisweten[date]['nu_op_ic']:
 
-        print(str(date)+' '+str(metenisweten[date]['nu_op_ic']))
+        # print(str(date)+' '+str(metenisweten[date]['nu_op_ic']))
         nu_op_ic = metenisweten[date]['nu_op_ic']
 
     if date in metenisweten \
        and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3))\
        and 'nu_opgenomen' in metenisweten[date] and metenisweten[date]['nu_opgenomen']:
 
-        print(str(date)+' '+str(metenisweten[date]['nu_opgenomen']))
+        # print(str(date)+' '+str(metenisweten[date]['nu_opgenomen']))
         nu_opgenomen = metenisweten[date]['nu_opgenomen']
 
     if metenisweten[date]['rivm_schatting_besmettelijk']['value']:
