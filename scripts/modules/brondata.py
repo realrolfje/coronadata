@@ -62,7 +62,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         print("Downloading fresh data to "+filename)
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
-            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2024HotfixDev7/v3/en-us/applemobilitytrends-'+theday+'.csv'
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2024HotfixDev21/v3/en-us/applemobilitytrends-'+theday+'.csv'
             
             try:
                 print("Trying "+url, end="...")
@@ -505,7 +505,7 @@ def builddaily():
         # Also don't use too recent RNA data
         if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date()):
             dates.append(date)
-            rna.append( )
+            rna.append(gewogenrna)
             rna_error.append(1 - (inwoners / 17500000))
 
     # Smooth
