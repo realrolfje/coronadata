@@ -93,7 +93,7 @@ heatmap.set_ylim([0, 100])
 averages.set_ylim([0,100])
 
 # Dirty stuff to get x labels (needs cleanup)
-xlabeldates = [startdate + relativedelta(months=x) for x in range(gemiddeldeleeftijd['x'][-1].month - startdate.month + 1)]
+xlabeldates = [startdate + relativedelta(months=x) for x in range(gemiddeldeleeftijd['x'][-1].month - startdate.month + ((gemiddeldeleeftijd['x'][-1].year - startdate.year) * 12) + 1)]
 xlabels = []
 xlocs = []
 for label in xlabeldates:
