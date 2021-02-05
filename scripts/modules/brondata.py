@@ -62,7 +62,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         print("Downloading fresh data to "+filename)
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
-            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2025HotfixDev14/v3/en-us/applemobilitytrends-'+theday+'.csv'
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2101HotfixDev6/v3/en-us/applemobilitytrends-'+theday+'.csv'
             
             try:
                 print("Trying "+url, end="...")
@@ -325,11 +325,11 @@ def builddaily():
                 continue
 
             if 'RNA_per_ml' in record and record['RNA_per_ml']:
-                rnavalue = record['RNA_per_ml']
+                rnavalue = int(record['RNA_per_ml'])
             elif 'RNA_flow_per_100.000' in record and record['RNA_flow_per_100.000']:
-                rnavalue = record['RNA_flow_per_100.000'] / 24650163389
+                rnavalue = int(record['RNA_flow_per_100.000']) / 24650163389
             elif 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
-                rnavalue = record['RNA_flow_per_100000'] / 24650163389
+                rnavalue = int(record['RNA_flow_per_100000']) / 24650163389
             else:
                 continue
 
