@@ -16,19 +16,22 @@ filename = '../data/pagehits.csv'
 with open(filename, 'r') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     line_count = 0
+    hits = 0
     for row in csv_reader:
         if line_count > 0:
             datum = datetime.strptime(row[0],"%Y-%m-%dT%H:%M:%S")
-            hits = int(row[1])
-            
-            if len(pagehits['x']) > 0:
-                seconds = (datum - pagehits['x'][-1]).seconds
-                deltahits = (hits - pagehits['y'][-1])/seconds
-            else:
-                deltahits = 0
 
-            pagehits['x'].append(datum)
-            pagehits['y'].append(deltahits)
+            if (len(pagehits['x']) == 0 or (datum - pagehits['x'][-1]).seconds > (4*3600)):
+                hits = int(row[1])
+                
+                if len(pagehits['x']) > 0:
+                    seconds = (datum - pagehits['x'][-1]).seconds
+                    deltahits = (hits - pagehits['y'][-1])/seconds
+                else:
+                    deltahits = 0
+
+                pagehits['x'].append(datum)
+                pagehits['y'].append(deltahits)
         line_count = line_count + 1
     
 hitsperuur = [x * 3600 for x in pagehits['y']]
@@ -42,14 +45,14 @@ hitsperuur_gem = {
 }
 
 for i in range(len(hitsperuur)):
-    if (len(hitsperuur_gem['y'])==0) \
-            or (hitsperuur[i] < 100) \
-            or (hitsperuur[i] < hitsperuur_gem['y'][-1]*2):
+    # if (len(hitsperuur_gem['y'])==0) \
+    #         or (hitsperuur[i] < 100) \
+    #         or (hitsperuur[i] < hitsperuur_gem['y'][-1]*2):
         hitsperuur_gem['x'].append(pagehits['x'][i])
         hitsperuur_gem['y'].append(hitsperuur[i])
 
-# hitsperuur_gem['y'] = double_savgol(hitsperuur_gem['y'], 10, 5, 1)
-hitsperuur_gem['y'] = smooth(hitsperuur_gem['y'])
+hitsperuur_gem['y'] = double_savgol(hitsperuur_gem['y'], 10, 5, 1)
+#hitsperuur_gem['y'] = smooth(hitsperuur_gem['y'])
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
@@ -58,7 +61,7 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax1.plot(hitsperuur_gem['x'], hitsperuur_gem['y'], color='red', label='Page hits')
 ax1.fill_between(pagehits['x'], 0, hitsperuur,facecolor='lightsalmon', alpha=0.3, interpolate=True)
 
-ax1.set_ylim(0,2000)
+ax1.set_ylim(0,2500)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
