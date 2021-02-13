@@ -259,5 +259,3 @@ ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 
 plt.savefig("../docs/graphs/"+graphname+".svg", format="svg")
-
-ax1.set_xlim([opgenomen['x'][-100], opgenomen['x'][-1]])
