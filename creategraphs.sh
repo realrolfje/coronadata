@@ -11,6 +11,7 @@ cd scripts
 ./createLiveIcon.py
 ./createTestGraph.py
 ./createMobilityGraph.py
+./createVaccinGraph.py
 ./processTemplates.py
 ./processEventsList.py
 ./updatePageHits.py
