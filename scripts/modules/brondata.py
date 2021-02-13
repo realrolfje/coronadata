@@ -200,9 +200,17 @@ def initrecord(date, metenisweten):
                 # value = aantal besmettingen
             },
             'mobiliteit' : {
-                'lopen' : None,
-                'ov' : None,
+                'lopen'  : None,
+                'ov'     : None,
                 'rijden' : None
+            },
+            'vaccinaties' : {
+                'astra_zeneca' : None,
+                'pfizer'       : None,
+                'cure_vac'     : None,
+                'janssen'      : None,
+                'moderna'      : None,
+                'sanofi'       : None
             }
         }    
 
@@ -468,6 +476,44 @@ def builddaily():
                         initrecord(datum, metenisweten)
                         metenisweten[datum]['mobiliteit'][vervoertype] = float(percentagestr)
             line_count = line_count + 1
+
+    print("Vaccinaties (let op: \"nieuwe\" rekenmethode op basis van uitgifte, niet op van gezette prikken)")
+    print("(Nog niet gebruikt in grafiek, dit lijkt over verwachte leveringen te gaan.)")
+    filename ='../cache/rijskoverheid-coronadashboard-NL.json'
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+        for record in data['vaccine_delivery']['values']:
+
+            print(\
+                datetime.datetime.utcfromtimestamp(int(record['date_start_unix'])).strftime('%Y-%m-%d')\
+                    + ' -> ' +\
+                datetime.datetime.utcfromtimestamp(int(record['date_end_unix'])).strftime('%Y-%m-%d')\
+            )
+
+            d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+            if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+                print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+                # Skip estimates from RIVM
+                continue
+
+            datum =  d.strftime('%Y-%m-%d')
+            initrecord(datum, metenisweten)
+            metenisweten[datum]['vaccinaties']['astra_zeneca'] = int(record['astra_zeneca'])
+            metenisweten[datum]['vaccinaties']['pfizer']       = int(record['pfizer'])
+            metenisweten[datum]['vaccinaties']['cure_vac']     = int(record['cure_vac'])
+            metenisweten[datum]['vaccinaties']['janssen']      = int(record['janssen'])
+            metenisweten[datum]['vaccinaties']['moderna']      = int(record['moderna'])
+            metenisweten[datum]['vaccinaties']['sanofi']       = int(record['sanofi'])
+
+        # Hardcode start of vaccination at 0
+        datum = '2021-01-06'
+        initrecord(datum, metenisweten)
+        metenisweten[datum]['vaccinaties']['astra_zeneca'] = 0
+        metenisweten[datum]['vaccinaties']['pfizer']       = 0
+        metenisweten[datum]['vaccinaties']['cure_vac']     = 0
+        metenisweten[datum]['vaccinaties']['janssen']      = 0
+        metenisweten[datum]['vaccinaties']['moderna']      = 0
+        metenisweten[datum]['vaccinaties']['sanofi']       = 0
 
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
