@@ -112,6 +112,31 @@ ax1.plot(vaccins_totaal['x'],
          color='black',
          label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
 
+def anotate(plt, xdata, ydata, datum, tekst, x, y):
+    print(tekst)
+    xval = parser.parse(datum)
+    yval = 0.001
+    plt.annotate(
+        tekst,
+        xy=(xval, yval),
+        xytext=(parser.parse(x), y/100),
+        fontsize=8,
+        bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+    )
+
+graphname='vaccins'
+for event in events:
+    if graphname in event:
+        anotate(
+            ax1, 
+            vaccins_totaal['x'], vaccins_totaal['totaal'],
+            event['date'], event['event'], 
+            event[graphname][0], 
+            event[graphname][1]
+        )
+
+
 # laat huidige datum zien met vertikale lijn
 plt.figtext(0.885,0.125, 
          datetime.now().strftime("%d"), 

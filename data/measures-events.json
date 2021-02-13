@@ -210,7 +210,12 @@
         "zieken-sliding": [
             "2020-11-15",
             330000
+        ],
+        "vaccins": [
+            "2020-11-10",
+            10
         ]
+
     },
     {
         "date": "2020-12-25",
@@ -228,7 +233,11 @@
     {
         "date": "2021-01-05",
         "event": "Debat vertraging vaccinaties",
-        "url": "https://www.youtube.com/watch?v=lxB7UhHxKj4"
+        "url": "https://www.youtube.com/watch?v=lxB7UhHxKj4",
+        "vaccins": [
+            "2021-01-05",
+            10
+        ]
     },
     {
         "date": "2021-01-12",
