@@ -161,9 +161,10 @@ ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
 plt.figtext(0.22,0.42, 
-         "Deze grafiek gaat over het totaal aantal gezette prikken, \n"+\
-         "in tegenstelling tot de \"Niewe rekenmethode\"(tm) van het RIVM.\n"+\
-         "De huidige vaccins hebben 2 prikken nodig.", 
+         "Deze grafiek gaat over het totaal aantal gezette prikken \n"+\
+         "op basis van beschikbare weekrapportages.\n"+\
+         "De huidige vaccins hebben 2 prikken nodig.\n"+\
+         "Met dit tempo zijn alle prikken in 2025 gezet.", 
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 
          edgecolor='white'),
