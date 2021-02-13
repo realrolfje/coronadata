@@ -73,13 +73,18 @@ print('Generating vaccination graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 
+ax2 = plt.twinx()
+
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-ax1.set_xlabel("Datum")
-ax1.set_ylabel("Aantal prikken")
+ax2.grid(which='both', axis='both', linestyle='-.',
+         color='gray', linewidth=1, alpha=0.3)
 
-ax1.stackplot(
+ax2.set_xlabel("Datum")
+ax2.set_ylabel("Aantal prikken")
+
+ax2.stackplot(
     vaccins_totaal['x'],
     [x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
     [x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
@@ -107,7 +112,7 @@ ax1.stackplot(
 totaal_prikken = decimalstring(vaccins_totaal['totaal'][-1])
 percentage_prikken = decimalstring(round((100*vaccins_totaal['totaal'][-1])/(totaal_inwoners*2),2))
 
-ax1.plot(vaccins_totaal['x'], 
+ax2.plot(vaccins_totaal['x'], 
          [x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']], 
          color='black',
          label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
@@ -129,7 +134,7 @@ graphname='vaccins'
 for event in events:
     if graphname in event:
         anotate(
-            ax1, 
+            ax2, 
             vaccins_totaal['x'], vaccins_totaal['totaal'],
             event['date'], event['event'], 
             event[graphname][0], 
@@ -145,10 +150,13 @@ plt.figtext(0.885,0.125,
          bbox=dict(facecolor='white', alpha=0.9, pad=0,
          edgecolor='white'),
          zorder=10)
-ax1.axvline(date.today(), color='red', linewidth=0.5)
+ax2.axvline(date.today(), color='red', linewidth=0.5)
 
 ax1.set_yticks      ([0.1,    0.2,   0.3,   0.4,   0.5,   0.6,   0.7,   0.8,  0.9,   1])
 ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
+
+ax2.set_yticks      ([0.1,    0.2,   0.3,   0.4,   0.5,   0.6,   0.7,   0.8,  0.9,   1])
+ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
@@ -175,7 +183,7 @@ footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://www.rivm.nl/covid
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 
-ax1.legend(loc="upper left")
+ax2.legend(loc="upper left")
 
 
 plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")
