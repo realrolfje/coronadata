@@ -483,13 +483,6 @@ def builddaily():
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
         for record in data['vaccine_delivery']['values']:
-
-            print(\
-                datetime.datetime.utcfromtimestamp(int(record['date_start_unix'])).strftime('%Y-%m-%d')\
-                    + ' -> ' +\
-                datetime.datetime.utcfromtimestamp(int(record['date_end_unix'])).strftime('%Y-%m-%d')\
-            )
-
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
             if (datetime.datetime.date(d) > datetime.datetime.today().date()):
                 print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
