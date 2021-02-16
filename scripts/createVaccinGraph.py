@@ -118,7 +118,6 @@ ax2.plot(vaccins_totaal['x'],
          label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    print(tekst)
     xval = parser.parse(datum)
     yval = 0.001
     plt.annotate(

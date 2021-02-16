@@ -2,7 +2,7 @@
     {
         "date": "2020-03-09",
         "event": "Brabant geen\nhanden schudden",
-        "mobiliteit":[
+        "mobiliteit": [
             "2020-03-15",
             110
         ]
@@ -130,7 +130,7 @@
     {
         "date": "2020-10-13",
         "event": "Koning retourtje\nGriekenland.",
-        "url" : "https://nos.nl/artikel/2352625-koning-breekt-vakantie-naar-griekenland-af-na-ophef-rutte-wist-van-reis.html",
+        "url": "https://nos.nl/artikel/2352625-koning-breekt-vakantie-naar-griekenland-af-na-ophef-rutte-wist-van-reis.html",
         "testsloc": [
             "2020-09-12",
             24000
@@ -163,7 +163,6 @@
             "2020-10-30",
             31000
         ]
-
     },
     {
         "date": "2020-12-14",
@@ -215,7 +214,6 @@
             "2020-11-10",
             10
         ]
-
     },
     {
         "date": "2020-12-25",
@@ -247,24 +245,41 @@
             "2020-12-16",
             255000
         ]
-   },
-   {
-    "date": "2021-01-15",
-    "event": "Kabinet valt a.g.v.\ntoeslagenaffaire.",
-    "url": "https://youtu.be/0n8wZaLlUvs?t=3138"
-   },
-   {
-    "date": "2021-01-20",
-    "event": "Persconferentie avondklok",
-    "url": "https://www.youtube.com/watch?v=6xlwTYFy9ck"
-   },
-   {
-    "date": "2021-01-23",
-    "event": "Invoering avondklok",
-    "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/avondklok",
-    "zieken": [
-        "2020-12-28",
-        14000
-    ]
-   }
+    },
+    {
+        "date": "2021-01-15",
+        "event": "Kabinet valt a.g.v.\ntoeslagenaffaire.",
+        "url": "https://youtu.be/0n8wZaLlUvs?t=3138"
+    },
+    {
+        "date": "2021-01-20",
+        "event": "Persconferentie avondklok",
+        "url": "https://www.youtube.com/watch?v=6xlwTYFy9ck"
+    },
+    {
+        "date": "2021-01-23",
+        "event": "Invoering avondklok",
+        "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/avondklok",
+        "zieken": [
+            "2020-12-28",
+            14000
+        ]
+    },
+    {
+        "date": "2021-02-16",
+        "event": "Staat moet avondklok\nlaten vallen.",
+        "url": "https://www.rechtspraak.nl/Organisatie-en-contact/Organisatie/Rechtbanken/Rechtbank-Den-Haag/Nieuws/Paginas/Staat-moet-avondklok-laten-vervallen.aspx",
+        "zieken": [
+            "2021-01-03",
+            350000
+        ],
+        "mobiliteit": [
+            "2021-01-03",
+            105
+        ],
+        "testsloc": [
+            "2021-01-03",
+            32500
+        ]
+    }
 ]
