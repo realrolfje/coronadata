@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 #brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -68,6 +68,14 @@ vaccins_totaal = {
 }
 
 totaal_inwoners=17500000
+
+gezet = vaccins_totaal['totaal'][-1] - vaccins_totaal['totaal'][-2]
+nogzetten = ((totaal_inwoners*2) - vaccins_totaal['totaal'][-1])
+intijd = (vaccins_totaal['x'][-1] - vaccins_totaal['x'][-2]).days
+vaccinsperdag = gezet/intijd
+dagentegaan = nogzetten/vaccinsperdag
+klaar = (datetime.now() + timedelta(days=dagentegaan)).strftime("%Y-%m-%d")
+
 
 print('Generating vaccination graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
@@ -163,7 +171,7 @@ plt.figtext(0.22,0.42,
          "Deze grafiek gaat over het totaal aantal gezette prikken \n"+\
          "op basis van beschikbare weekrapportages.\n"+\
          "De huidige vaccins hebben 2 prikken nodig.\n"+\
-         "Met dit tempo zijn alle prikken in 2025 gezet.", 
+         "Met het huidig tempo zijn alle prikken gezet op "+klaar+".", 
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 
          edgecolor='white'),
