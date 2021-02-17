@@ -57,14 +57,14 @@ for d in date_range:
 # https://www.rivm.nl/covid-19-vaccinatie/wekelijkse-update-deelname-covid-19-vaccinatie-in-nederland
 # zie 
 vaccins_totaal = {
-    'x':            [ parser.parse("2021-01-06"), parser.parse("2021-01-17"), parser.parse("2021-01-24"), parser.parse("2021-01-31"), parser.parse("2021-02-07")],
-    'astra_zeneca': [                        0,                          0,                          0,                          0,                          0],
-    'pfizer':       [                        0,                      77000,                     146612,                     337526,                     552626],
-    'cure_vac':     [                        0,                          0,                          0,                          0,                          0],
-    'janssen':      [                        0,                          0,                          0,                          0,                          0],
-    'moderna':      [                        0,                          0,                          0,                       6000,                      18519],
-    'sanofi':       [                        0,                          0,                          0,                          0,                          0],
-    'totaal':       [                        0,                      77000,                     146612,                     343526,                     571145]
+    'x':            [ parser.parse("2021-01-06"), parser.parse("2021-01-17"), parser.parse("2021-01-24"), parser.parse("2021-01-31"), parser.parse("2021-02-07"), parser.parse("2021-02-14")],        #'x':           
+    'astra_zeneca': [                        0,                          0,                          0,                          0,                          0,                          0],          #'astra_zeneca':
+    'pfizer':       [                        0,                      77000,                     146612,                     337526,                     552626,                     771227],          #'pfizer': (gecombineerd met AZ, rapportage maakt geen splitsing)      
+    'cure_vac':     [                        0,                          0,                          0,                          0,                          0,                          0],          #'cure_vac':    
+    'janssen':      [                        0,                          0,                          0,                          0,                          0,                          0],          #'janssen':     
+    'moderna':      [                        0,                          0,                          0,                       6000,                      18519,                      22211],          #'moderna':     
+    'sanofi':       [                        0,                          0,                          0,                          0,                          0,                          0],          #'sanofi':      
+    'totaal':       [                        0,                      77000,                     146612,                     343526,                     571145,                     793438]           #'totaal':      
 }
 
 totaal_inwoners=17500000
