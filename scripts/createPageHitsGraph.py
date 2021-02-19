@@ -61,7 +61,7 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax1.plot(hitsperuur_gem['x'], hitsperuur_gem['y'], color='red', label='Page hits')
 ax1.fill_between(pagehits['x'], 0, hitsperuur,facecolor='lightsalmon', alpha=0.3, interpolate=True)
 
-ax1.set_ylim(0,2500)
+ax1.set_ylim(0,4000)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
