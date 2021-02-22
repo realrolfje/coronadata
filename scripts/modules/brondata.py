@@ -226,6 +226,12 @@ def double_savgol(inputArray, iterations, window, order):
         iterations = iterations - 1
     return outputArray
 
+def intOrNone(input):
+    try:
+        return int(input)
+    except ValueError:
+        return None
+
 def builddaily():
     metenisweten = {}
     testpunten = {}
@@ -454,9 +460,9 @@ def builddaily():
                 # print("LCPS bedden " + datum + " " + ic_bedden_covid + " " + kliniek_bedden)
 
                 initrecord(datum, metenisweten)
-                metenisweten[datum]['nu_op_ic_lcps'] = int(ic_bedden_covid)
-                metenisweten[datum]['nu_op_ic_noncovid_lcps'] = int(ic_bedden_non_covid)
-                metenisweten[datum]['nu_opgenomen_lcps'] = int(kliniek_bedden)
+                metenisweten[datum]['nu_op_ic_lcps'] = intOrNone(ic_bedden_covid)
+                metenisweten[datum]['nu_op_ic_noncovid_lcps'] = intOrNone(ic_bedden_non_covid)
+                metenisweten[datum]['nu_opgenomen_lcps'] = intOrNone(kliniek_bedden)
             line_count = line_count + 1
 
     print("Load Apple Mobility Data")
@@ -595,7 +601,7 @@ def builddaily():
     writejson('../cache/testlocaties.json', testpunten)
 
 def freshdata():
-    if download() or isnewer(__file__, '../cache/daily-stats.json'):
+    if download() or not os.path.isfile('../cache/daily-stats.json') or isnewer(__file__, '../cache/daily-stats.json'):
         builddaily()
 
 
