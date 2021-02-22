@@ -101,7 +101,13 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-ax1.text(parser.parse("2020-04-15"), 26000, "Geen smoesjes, je weet het best.\nAls je niet ziek wordt, hoef je ook niet getest.", color="gray")
+ax1.text(
+    parser.parse("2020-04-15"), 25500, 
+    "Geen smoesjes,\nje weet het best.\nAls je niet ziek wordt,\nhoef je ook niet getest.", 
+    color="gray",
+    bbox=dict(facecolor='white', alpha=1.0, edgecolor='white'),
+    zorder=10)
+
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
          color='darkblue', linestyle='-', label='Personen getest')
