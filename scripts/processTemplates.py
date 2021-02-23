@@ -54,7 +54,8 @@ gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
 # Percentage gezette prikken, handmatig tot dataset beschikbaar is
-prikken_gezet=2.27
+prikken_gezet_perc=2.9
+prikken_gezet=1014093
 
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
@@ -80,8 +81,9 @@ substitutes = {
     'positief_percentage' : decimalstring(round(positief_percentage,1))+'%',
     'positief_percentage_color' : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
 
-    'prikken_gezet' : decimalstring(round(prikken_gezet,2))+'%',
-    'prikken_gezet_color' : 'green' if prikken_gezet > 60 else 'yellow' if prikken_gezet > 40 else 'red',
+    'prikken_gezet' : decimalstring(prikken_gezet),
+    'prikken_gezet_perc' : decimalstring(round(prikken_gezet_perc,2))+'%',
+    'prikken_gezet_color' : 'green' if prikken_gezet_perc > 60 else 'yellow' if prikken_gezet_perc > 40 else 'red',
 
     'positief_leeftijd' : str(gemiddeldeleeftijdweek),
 

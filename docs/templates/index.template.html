@@ -82,7 +82,7 @@
         <a class="buttonlink" href="#vaccinaties">
             <div class="button ${prikken_gezet_color}" title="Aantal gezette prikken met vaccin.">
                 <div class="nametext">prikvoortgang</div>
-                <div class="valuetext">${prikken_gezet}</div>
+                <div class="valuetext">${prikken_gezet_perc}</div>
             </div>
         </a>
     </div>
@@ -107,6 +107,7 @@
                 <!-- 1 op ${ziekverhouding} mensen is nu ziek/besmettelijk (RIVM).<br /> -->
                 Nu opgenomen: ${nu_opgenomen} (NICE).<br />
                 Nu op IC: ${nu_op_ic} (NICE).<br />
+                Gezette prikken: ${prikken_gezet} (${prikken_gezet_perc}).<br />
                 https://realrolfje.github.io/coronadata/<br />
                 #COVID19 #coronavirus #blijfthuis
             </div>

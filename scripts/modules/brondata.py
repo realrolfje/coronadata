@@ -483,12 +483,12 @@ def builddaily():
                         metenisweten[datum]['mobiliteit'][vervoertype] = float(percentagestr)
             line_count = line_count + 1
 
-    print("Vaccinaties (let op: \"nieuwe\" rekenmethode op basis van uitgifte, niet op van gezette prikken)")
-    print("(Nog niet gebruikt in grafiek, dit lijkt over verwachte leveringen te gaan.)")
+    print("Vaccinaties")
+    print("(Nog niet gebruikt in grafiek, data niet betrouwbaar genoeg.)")
     filename ='../cache/rijskoverheid-coronadashboard-NL.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
-        for record in data['vaccine_delivery']['values']:
+        for record in data['vaccine_administered']['values']:
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
             if (datetime.datetime.date(d) > datetime.datetime.today().date()):
                 print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
@@ -497,12 +497,13 @@ def builddaily():
 
             datum =  d.strftime('%Y-%m-%d')
             initrecord(datum, metenisweten)
-            metenisweten[datum]['vaccinaties']['astra_zeneca'] = int(record['astra_zeneca'])
-            metenisweten[datum]['vaccinaties']['pfizer']       = int(record['pfizer'])
-            metenisweten[datum]['vaccinaties']['cure_vac']     = int(record['cure_vac'])
-            metenisweten[datum]['vaccinaties']['janssen']      = int(record['janssen'])
-            metenisweten[datum]['vaccinaties']['moderna']      = int(record['moderna'])
-            metenisweten[datum]['vaccinaties']['sanofi']       = int(record['sanofi'])
+            metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(record['astra_zeneca'])
+            metenisweten[datum]['vaccinaties']['pfizer']       = intOrNone(record['pfizer'])
+            metenisweten[datum]['vaccinaties']['moderna']      = intOrNone(record['moderna'])
+
+            # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
+            # metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
+            # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
 
         # Hardcode start of vaccination at 0
         datum = '2021-01-06'
