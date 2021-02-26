@@ -19,10 +19,10 @@ events = brondata.readjson('../data/measures-events.json')
 
 print("Calculating predictions...")
 
-personen_positief = {
-    'x': [],
-    'y': []
-}
+# personen_positief = {
+#     'x': [],
+#     'y': []
+# }
 
 positief = {
     'x': [],
@@ -52,20 +52,33 @@ for d in date_range:
 
     # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
     if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today()):
-        positief['x'].append(parser.parse(datum))
-        positief['y'].append(metenisweten[datum]['positief'])
+        # positief['x'].append(parser.parse(datum))
+        # positief['y'].append(metenisweten[datum]['positief'])
 
-        if metenisweten[datum]['rivm_totaal_personen_positief']:
-            personen_positief['x'].append(parser.parse(datum))
-            personen_positief['y'].append(metenisweten[datum]['rivm_totaal_personen_positief'])
-
-        if metenisweten[datum]['rivm_totaal_personen_getest']:
+        if 'rivm_totaal_tests' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_tests']:
+            totaaltests['x'].append(parser.parse(datum))
+            totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
+        elif 'rivm_totaal_personen_getest' in metenisweten[datum]:
             totaaltests['x'].append(parser.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_personen_getest'])
+        # else:
+        #     print("no totaal for "+datum)
 
-        if metenisweten[datum]['rivm_totaal_personen_getest'] and metenisweten[datum]['rivm_totaal_personen_positief']:
+        if 'rivm_totaal_tests_positief' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_tests_positief']:
+            positief['x'].append(parser.parse(datum))
+            positief['y'].append(metenisweten[datum]['rivm_totaal_tests_positief'])
+
             positief_percentage['x'].append(parser.parse(datum))
-            positief_percentage['y'].append(100 * metenisweten[datum]['rivm_totaal_personen_positief'] / metenisweten[datum]['rivm_totaal_personen_getest'])
+            positief_percentage['y'].append(100 * positief['y'][-1] / totaaltests['y'][-1])
+
+        elif 'rivm_totaal_personen_positief' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_personen_positief']:
+            positief['x'].append(parser.parse(datum))
+            positief['y'].append(metenisweten[datum]['rivm_totaal_personen_positief'])
+
+            positief_percentage['x'].append(parser.parse(datum))
+            positief_percentage['y'].append(100 * positief['y'][-1] / totaaltests['y'][-1])
+        # else:
+        #     print("no tests for "+datum)
 
     if datum in metenisweten:
         totaal_positief = metenisweten[datum]['totaal_positief']
@@ -84,10 +97,13 @@ for d in date_range:
         rc = (positief_voorspeld['y'][-1]-positief_voorspeld['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
         positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief_voorspeld['y'][-1] + rc)
-    else:
+    elif len(positief['y']) > 0:
         # If all else fails neem waarde van vorige positief
         positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief['y'][-1])
+    # else:
+    #     print('no data to calculate RC')
+
 
 print('Generating daily positive tests graph...')
 
@@ -102,7 +118,7 @@ ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 ax1.text(
-    parser.parse("2020-04-15"), 25500, 
+    parser.parse("2020-04-15"), 45500, 
     "Geen smoesjes,\nje weet het best.\nAls je niet ziek wordt,\nhoef je ook niet getest.", 
     color="gray",
     bbox=dict(facecolor='white', alpha=1.0, edgecolor='white'),
@@ -110,15 +126,15 @@ ax1.text(
 
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
-         color='darkblue', linestyle='-', label='Personen getest')
+         color='lightblue', linestyle='-', label='Uitgevoerde tests')
 
-ax1.plot(personen_positief['x'], personen_positief['y'], 
-         color='dodgerblue', linestyle='-', label='Personen positief')
+# ax1.plot(personen_positief['x'], personen_positief['y'], 
+#          color='dodgerblue', linestyle='-', label='Personen positief')
 
 huidigpercentage = decimalstring(round(positief_percentage['y'][-1],1))
 ax2.plot(positief_percentage['x'], positief_percentage['y'], 
          color='gold', linestyle='-', 
-         label='Percentage geteste personen positief (nu: ' + huidigpercentage + "%).")
+         label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
 
 # Plot cases per dag
 ax1.plot(positief['x'][:-positief_voorspeld['avgsize']], positief['y'][:-positief_voorspeld['avgsize']], 
@@ -153,7 +169,7 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief")
 ax2.set_ylabel("Percentage positief getest")
 
-ax1.set_ylim([0, 40000])
+ax1.set_ylim([0, 80000])
 ax2.set_ylim([0, 40])
 
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
