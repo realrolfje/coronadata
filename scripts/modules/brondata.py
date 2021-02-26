@@ -113,9 +113,16 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_prevalentie.json'
     ) or freshdata
 
+    # Uitgevoerde tests van VOOR 2021, per week
     freshdata = downloadIfStale(
         '../cache/J535D165-RIVM_NL_test_latest.csv',
         'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-misc/data-test/RIVM_NL_test_latest.csv'
+    ) or freshdata
+
+    # Uitgevoerde tests in 2021, per dag van RIVM
+    freshdata = downloadIfStale(
+        '../cache/COVID-19_uitgevoerde_testen.json',
+        'https://data.rivm.nl/covid-19/COVID-19_uitgevoerde_testen.json'
     ) or freshdata
 
     freshdata = downloadIfStale(
@@ -186,6 +193,8 @@ def initrecord(date, metenisweten):
                     # }
                 }
             },
+            'rivm_totaal_tests         '       : None,
+            'rivm_totaal_tests_positief'       : None,
             'rivm_totaal_personen_getest'      : None,
             'rivm_totaal_personen_positief'    : None,
             'rivm_aantal_testlabs' : None,            
@@ -399,7 +408,7 @@ def builddaily():
                 print('Ignored: ', e)
                 pass
 
-    print("Add total tests")
+    print("Add total tests (until 2020, weekbasis)")
     filename ='../cache/J535D165-RIVM_NL_test_latest.csv'
     with open(filename, 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -442,6 +451,35 @@ def builddaily():
                         metenisweten[weekdatumstr]['rivm_totaal_personen_positief'] = aantal/7
 
             line_count += 1
+
+    print("Add total tests (from start 2021, daily basis)")
+    filename = '../cache/COVID-19_uitgevoerde_testen.json'
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+
+        temp_totaltests = {}
+        temp_positive = {}
+
+        for record in data:
+            print(record)
+
+            if record['Date_of_statistics'] not in temp_totaltests:
+                temp_totaltests[record['Date_of_statistics']] = 0
+            temp_totaltests[record['Date_of_statistics']] = temp_totaltests[record['Date_of_statistics']] + intOrZero(record['Tested_with_result'])
+
+            if record['Date_of_statistics'] not in temp_positive:
+                temp_positive[record['Date_of_statistics']] = 0
+            temp_positive[record['Date_of_statistics']] = temp_positive[record['Date_of_statistics']] + intOrZero(record['Tested_positive'])
+
+        # Overwrite total number of tests
+        for key in temp_totaltests:
+            initrecord(key, metenisweten)
+            metenisweten[key]['rivm_totaal_tests'] = temp_totaltests[key]
+
+        # Overwrite total number of positivetests
+        for key in temp_positive:
+            initrecord(key, metenisweten)
+            metenisweten[key]['rivm_totaal_tests_positief'] = temp_positive[key]
 
     print("Load LCPS data...")
     filename ='../cache/lcps-covid-19.csv'
