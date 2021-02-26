@@ -36,7 +36,7 @@
         "event": "Terrassen open,\ntests voor\niedereen",
         "testsloc": [
             "2020-05-01",
-            15000
+            22000
         ]
     },
     {
@@ -56,7 +56,7 @@
         "event": "Begin\nschoolvakanties",
         "testsloc": [
             "2020-06-15",
-            15100
+            22000
         ],
         "mobiliteit": [
             "2020-06-01",
@@ -75,7 +75,7 @@
         "date": "2020-08-24",
         "event": "Einde\nschoolvakanties",
         "testsloc": [
-            "2020-07-20",
+            "2020-07-10",
             31000
         ],
         "zieken": [
@@ -91,8 +91,8 @@
         "date": "2020-09-01",
         "event": "Ophef bruiloft\nGrapperhaus",
         "testsloc": [
-            "2020-08-30",
-            33000
+            "2020-08-15",
+            40000
         ]
     },
     {
@@ -133,7 +133,7 @@
         "url": "https://nos.nl/artikel/2352625-koning-breekt-vakantie-naar-griekenland-af-na-ophef-rutte-wist-van-reis.html",
         "testsloc": [
             "2020-09-12",
-            24000
+            52000
         ]
     },
     {
@@ -160,8 +160,8 @@
             14000
         ],
         "testsloc": [
-            "2020-10-30",
-            31000
+            "2020-10-15",
+            60000
         ]
     },
     {
@@ -178,7 +178,7 @@
         ],
         "testsloc": [
             "2020-11-06",
-            35000
+            68000
         ],
         "mobiliteit": [
             "2020-11-15",
@@ -190,8 +190,8 @@
         "event": "Gemuteerd virus in NL,\ngeen vluchten VK",
         "url": "https://www.nu.nl/coronavirus/6097754/britse-coronavariant-ook-in-nederland-vliegverbod-tegen-verspreiding.html",
         "testsloc": [
-            "2020-11-05",
-            18000
+            "2021-01-05",
+            62000
         ],
         "zieken-sliding": [
             "2020-11-01",
@@ -278,8 +278,17 @@
             105
         ],
         "testsloc": [
-            "2021-01-03",
-            32500
+            "2021-01-15",
+            51000
+        ]
+    },
+    {
+        "date": "2021-02-07",
+        "event": "Teststraten gesloten\nwegens vorst.",
+        "url": "https://112zoetermeer.nl/2021/02/06/ggd-locaties-gesloten-wegens-code-rood/",
+        "testsloc": [
+            "2020-12-10",
+            13000
         ]
     },
     {
