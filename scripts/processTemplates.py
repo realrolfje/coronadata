@@ -39,8 +39,10 @@ for date in metenisweten:
         geschat_ziek_nu_rna = metenisweten[date]['RNA']['besmettelijk']
     if metenisweten[date]['Rt_avg'] is not None:
         Rt = float(metenisweten[date]['Rt_avg'])
-    if metenisweten[date]['rivm_totaal_personen_getest'] and metenisweten[date]['rivm_totaal_personen_positief']:
-        positief_percentage = 100 * metenisweten[date]['rivm_totaal_personen_positief'] / metenisweten[date]['rivm_totaal_personen_getest']
+    # if metenisweten[date]['rivm_totaal_personen_getest'] and metenisweten[date]['rivm_totaal_personen_positief']:
+    #     positief_percentage = 100 * metenisweten[date]['rivm_totaal_personen_positief'] / metenisweten[date]['rivm_totaal_personen_getest']
+    if 'rivm_totaal_tests' in metenisweten[date] and 'rivm_totaal_tests_positief' in metenisweten[date]:
+        positief_percentage = 100 * metenisweten[date]['rivm_totaal_tests_positief'] / metenisweten[date]['rivm_totaal_tests']
     if metenisweten[date]['besmettingleeftijd_gemiddeld']:
         gemiddeldeleeftijdarray.append(metenisweten[date]['besmettingleeftijd_gemiddeld'])
 
