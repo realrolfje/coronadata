@@ -3,7 +3,7 @@
 from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
-from modules.brondata import decimalstring, smooth
+from modules.brondata import decimalstring, intOrZero
 from datetime import datetime, date, timedelta
 
 #brondata.freshdata()
@@ -24,13 +24,15 @@ vaccins_totaal = {
 date_range = brondata.getDateRange(metenisweten)
 
 def addVaccinCount(record, vaccin):
+    count = intOrZero(record[vaccin])
+
     if (len(vaccins_totaal[vaccin]) > 0):
         vaccins_totaal[vaccin].append(
-            vaccins_totaal[vaccin][-1] + record[vaccin]
+            vaccins_totaal[vaccin][-1] + count
         )
     else:
-        vaccins_totaal[vaccin].append(record[vaccin])
-    return record[vaccin]
+        vaccins_totaal[vaccin].append(count)
+    return count
 
 
 for d in date_range:

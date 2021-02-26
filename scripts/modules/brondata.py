@@ -109,8 +109,8 @@ def download():
     ) or freshdata
 
     freshdata = downloadIfStale(
-        '../cache/J535D165-RIVM_NL_contagious_estimate.csv',
-        'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-dashboard/data-contagious/RIVM_NL_contagious_estimate.csv'
+        '../cache/COVID-19_prevalentie.json',
+        'https://data.rivm.nl/covid-19/COVID-19_prevalentie.json'
     ) or freshdata
 
     freshdata = downloadIfStale(
@@ -229,8 +229,18 @@ def double_savgol(inputArray, iterations, window, order):
 def intOrNone(input):
     try:
         return int(input)
+    except TypeError:
+        return None
     except ValueError:
         return None
+
+def intOrZero(input):
+    try:
+        return int(input)
+    except TypeError:
+        return 0
+    except ValueError:
+        return 0
 
 def builddaily():
     metenisweten = {}
@@ -369,34 +379,25 @@ def builddaily():
             metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1 
             metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
-    print("Add estimated ill based on CoronawatchNL data")
-    filename = '../cache/J535D165-RIVM_NL_contagious_estimate.csv'
-    with open(filename, 'r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        line_count = 0
-        for row in csv_reader:        
-            if line_count > 0:
-                datum = row[0]
-                metingtype = row[1]
-                waarde = row[2]
+    print("Add estimated ill based on RIVM (prevalentie)")
+    filename = '../cache/COVID-19_prevalentie.json'
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+        for record in data:
+            stringdate = record['Date']
+            if not isvaliddate(stringdate, filename):
+                continue
 
-                if not isvaliddate(datum, filename):
-                    continue
-                initrecord(datum, metenisweten)
-
-                try:
-                    if metingtype == 'Minimum':
-                        metenisweten[datum]['rivm_schatting_besmettelijk']['min'] = int(waarde)
-                    elif metingtype == 'Maximum':
-                        metenisweten[datum]['rivm_schatting_besmettelijk']['max'] = int(waarde)
-                    elif metingtype == 'Geschat aantal besmettelijke mensen':
-                        metenisweten[datum]['rivm_schatting_besmettelijk']['value'] = int(waarde)
-                    else:
-                        print('onbekend metingtype in J535D165-RIVM_NL_contagious_estimate.csv: '+metingtype)
-                except ValueError:
-                    pass
-
-            line_count += 1
+            try:
+                metenisweten[stringdate]['rivm_schatting_besmettelijk']['min'] = int(record['prev_low'])
+                metenisweten[stringdate]['rivm_schatting_besmettelijk']['max'] = int(record['prev_up'])
+                metenisweten[stringdate]['rivm_schatting_besmettelijk']['value'] = int(record['prev_avg'])
+            except ValueError as e:
+                print('Ignored: ', e)
+                pass
+            except KeyError as e:
+                print('Ignored: ', e)
+                pass
 
     print("Add total tests")
     filename ='../cache/J535D165-RIVM_NL_test_latest.csv'
