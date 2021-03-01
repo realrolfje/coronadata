@@ -12,6 +12,10 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
     except ValueError:
         return
 
+    if ydata[xindex] is None:
+        print("No Y for %s, text not displayed: %s" % (datum, tekst))
+        return
+
     if xindex:
         xval = xdata[xindex]
         yval = ydata[xindex]
