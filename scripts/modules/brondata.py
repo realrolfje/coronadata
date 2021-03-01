@@ -44,8 +44,8 @@ def isnewer(file1, file2):
 
 def sortDictOnKey(dictionary):
     return dict(sorted(dictionary.items(), key=itemgetter(0)))
-
 def downloadIfStale(filename, url):
+
     if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):
         # print(filename+" exists.")
         return False
