@@ -461,7 +461,7 @@ def builddaily():
         temp_positive = {}
 
         for record in data:
-            print(record)
+            # print(record)
 
             if record['Date_of_statistics'] not in temp_totaltests:
                 temp_totaltests[record['Date_of_statistics']] = 0
