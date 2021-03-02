@@ -56,8 +56,8 @@ gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
 # Percentage gezette prikken, handmatig tot dataset beschikbaar is
-prikken_gezet_perc=2.9
-prikken_gezet=1014093
+prikken_gezet_perc=3,82
+prikken_gezet=1336398
 
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
