@@ -17,6 +17,7 @@ from scipy.ndimage.filters import uniform_filter1d
 from scipy.signal import savgol_filter
 from statistics import mean
 from operator import itemgetter
+from math import log
 
 
 def readjson(filename):
@@ -220,7 +221,9 @@ def initrecord(date, metenisweten):
                 'janssen'      : None,
                 'moderna'      : None,
                 'sanofi'       : None
-            }
+            },
+            'rolf_besmettelijk' : None, # Besmettelijke mensen op basis van gecombineerde meetwaarden
+
         }    
 
 # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
@@ -622,6 +625,29 @@ def builddaily():
         if positief > 0:
             gemiddeld = som/positief
             metenisweten[datum]['besmettingleeftijd_gemiddeld'] = gemiddeld
+
+    print("Calculate average number of ill people based on tests and rna data (magic formula)")
+    dates = []
+    ziek = []
+    for datum in metenisweten:
+        if datum in metenisweten \
+            and ('rivm_totaal_tests' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests'] != None \
+            and ('rivm_totaal_tests_positief' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests_positief'] != None \
+            and (metenisweten[datum]['RNA']['totaal_RNA_per_ml'] > 1) :
+
+            dates.append(datum)
+            ziek.append(
+                 ( \
+                    (1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests']) \
+                    + (3 * metenisweten[datum]['rivm_totaal_tests']) \
+                    + (22 * metenisweten[datum]['rivm_totaal_tests_positief']) \
+                  ) * (log(metenisweten[datum]['RNA']['totaal_RNA_per_ml'],10)/3.8) \
+                 /3)
+
+    ziek = smooth(ziek)
+    for i in range(len(dates)):
+        date = dates[i]
+        metenisweten[date]['rolf_besmettelijk'] = ziek[i]
 
     print("Calculate totals")
     totaal_positief = 0
