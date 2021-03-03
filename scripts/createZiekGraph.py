@@ -129,13 +129,31 @@ for d in date_range:
         geschat_ziek['y'].append(nieuw_y)
 
     # ----------------------- Geschat op basis van RNA
-    if datum in metenisweten and metenisweten[datum]['RNA']['besmettelijk']:
-        geschat_ziek_rna['x'].append(parser.parse(datum))
-        geschat_ziek_rna['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
+    # if datum in metenisweten and metenisweten[datum]['RNA']['besmettelijk']:
+    #     geschat_ziek_rna['x'].append(parser.parse(datum))
+    #     geschat_ziek_rna['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
+    #     geschat_ziek_rna['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
+    #     geschat_ziek_rna['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
+    #     geschat_ziek_rna_nu = metenisweten[datum]['RNA']['besmettelijk']
+    # elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=deltadagen)):
+    #     geschat_ziek_rna['x'].append(parser.parse(datum))
+    #     geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
+    #     geschat_ziek_rna['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
+    #     geschat_ziek_rna['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
+    # elif len(geschat_ziek_rna['y']) > deltadagen:
+    #     vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
+    #     vorig_y = geschat_ziek_rna['y'][-deltadagen]
+    #     nieuw_y = geschat_ziek_rna['y'][-1] + (geschat_ziek_rna['y'][-1] - vorig_y)/deltadagen
+    #     geschat_ziek_rna['x'].append(parser.parse(datum))
+    #     geschat_ziek_rna['y'].append(nieuw_y)
 
-        geschat_ziek_rna['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
-        geschat_ziek_rna['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
-        geschat_ziek_rna_nu = metenisweten[datum]['RNA']['besmettelijk']
+    # ----------------------- Geschat op basis van eigen berekening
+    if datum in metenisweten and metenisweten[datum]['rolf_besmettelijk']:
+        geschat_ziek_rna['x'].append(parser.parse(datum))
+        geschat_ziek_rna['y'].append(metenisweten[datum]['rolf_besmettelijk'])
+        geschat_ziek_rna['min'].append(metenisweten[datum]['rolf_besmettelijk'] * 0.7)
+        geschat_ziek_rna['max'].append(metenisweten[datum]['rolf_besmettelijk'] * 1.3)
+        geschat_ziek_rna_nu = geschat_ziek_rna['y'][-1]
     elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=deltadagen)):
         geschat_ziek_rna['x'].append(parser.parse(datum))
         geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
@@ -147,6 +165,8 @@ for d in date_range:
         nieuw_y = geschat_ziek_rna['y'][-1] + (geschat_ziek_rna['y'][-1] - vorig_y)/deltadagen
         geschat_ziek_rna['x'].append(parser.parse(datum))
         geschat_ziek_rna['y'].append(nieuw_y)
+
+
 
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
