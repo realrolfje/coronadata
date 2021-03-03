@@ -64,6 +64,7 @@ substitutes = {
 
     'geschat_ziek_rivm' : decimalstring(geschat_ziek_nu),
     'geschat_ziek_rna' : decimalstring(round(geschat_ziek_nu_rna)),
+    'geschat_ziek_rolf' : decimalstring(round(geschat_ziek_nu_rna)),
 
     'ziekverhouding' : str(eenopXziek),
     'ziekverhouding_color' : 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
