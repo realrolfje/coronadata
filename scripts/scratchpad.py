@@ -5,69 +5,48 @@ from dateutil import parser
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth
 from datetime import datetime, date
+from math import log
 
 #brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
 
-vaccins_totaal = {
+testgrafiek = {
     'x': [],
-    'astra_zeneca': [],
-    'pfizer': [],
-    'cure_vac': [],
-    'janssen': [],
-    'moderna': [],
-    'sanofi': [],
-    'totaal': []
+    'rivm_schatting': [],
+    'rivm_totaal_tests' :          [],
+    'rivm_totaal_tests_positief' :[],
+    'rivm_tests_perc'        :    [],
+    'rna'        :    [],
+    
 }
 
 date_range = brondata.getDateRange(metenisweten)
 
-def addVaccinCount(record, vaccin):
-    if (len(vaccins_totaal[vaccin]) > 0):
-        vaccins_totaal[vaccin].append(
-            vaccins_totaal[vaccin][-1] + record[vaccin]
-        )
-    else:
-        vaccins_totaal[vaccin].append(record[vaccin])
-    return record[vaccin]
-
-
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
-    if (datum in metenisweten and metenisweten[datum]['vaccinaties']['astra_zeneca'] != None):
-        vaccins_totaal['x'].append(datum)
+    if datum in metenisweten \
+        and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] != None \
+        and ('rivm_totaal_tests' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests'] != None \
+        and ('rivm_totaal_tests_positief' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests_positief'] != None \
+        and (metenisweten[datum]['RNA']['totaal_RNA_per_ml'] > 1) :
 
-        record = metenisweten[datum]['vaccinaties']
-        daytotal = addVaccinCount(record, 'astra_zeneca')\
-            + addVaccinCount(record, 'pfizer')\
-            + addVaccinCount(record, 'cure_vac')\
-            + addVaccinCount(record, 'janssen')\
-            + addVaccinCount(record, 'moderna')\
-            + addVaccinCount(record, 'sanofi')
 
-        if (len(vaccins_totaal['totaal']) > 0):
-            vaccins_totaal['totaal'].append(
-                vaccins_totaal['totaal'][-1] + daytotal
-            )
+        testgrafiek['x'].append(d)
+        testgrafiek['rivm_schatting'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
+        testgrafiek['rivm_totaal_tests'].append(metenisweten[datum]['rivm_totaal_tests'])
+        testgrafiek['rivm_totaal_tests_positief'].append(metenisweten[datum]['rivm_totaal_tests_positief'])
+        testgrafiek['rivm_tests_perc'].append(100*testgrafiek['rivm_totaal_tests_positief'][-1]/testgrafiek['rivm_totaal_tests'][-1])
+        if len(testgrafiek['rna']) < 2:
+            testgrafiek['rna'].append(metenisweten[datum]['RNA']['totaal_RNA_per_ml'])
         else:
-            vaccins_totaal['totaal'].append(daytotal)
+            testgrafiek['rna'].append((metenisweten[datum]['RNA']['totaal_RNA_per_ml'] + testgrafiek['rna'][-1] + testgrafiek['rna'][-2])/3)
 
-# Override tot echte data beschikbaar is. Deze data komt uit
-# https://www.rivm.nl/covid-19-vaccinatie/wekelijkse-update-deelname-covid-19-vaccinatie-in-nederland
-# zie 
-vaccins_totaal = {
-    'x':            [ parser.parse("2021-01-06"), parser.parse("2021-01-17"), parser.parse("2021-01-24"), parser.parse("2021-01-31"), parser.parse("2021-02-07")],
-    'astra_zeneca': [                        0,                          0,                          0,                          0,                          0],
-    'pfizer':       [                        0,                      77000,                     146612,                     337526,                     552626],
-    'cure_vac':     [                        0,                          0,                          0,                          0,                          0],
-    'janssen':      [                        0,                          0,                          0,                          0,                          0],
-    'moderna':      [                        0,                          0,                          0,                       6000,                      18519],
-    'sanofi':       [                        0,                          0,                          0,                          0,                          0],
-    'totaal':       [                        0,                      77000,                     146612,                     343526,                     571145]
-}
 
-totaal_inwoners=17500000
+if len(testgrafiek['x']) < 1:
+    print('no data')
+    exit(1)
+
 
 print('Generating vaccination graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
@@ -77,40 +56,21 @@ ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 ax1.set_xlabel("Datum")
-ax1.set_ylabel("Aantal prikken")
+# ax1.set_ylabel("Aantal prikken")
 
-ax1.stackplot(
-    vaccins_totaal['x'],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['janssen']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
-    labels=(
-        'COVID-19 Vaccine AstraZeneca ® ('+decimalstring(vaccins_totaal['astra_zeneca'][-1])+')',
-        'Comirnaty® (BioNTech/Pfizer) ('+decimalstring(vaccins_totaal['pfizer'][-1])+')',
-        'CVnCoV (CureVac) ('+decimalstring(vaccins_totaal['cure_vac'][-1])+')',
-        'janssen ('+decimalstring(vaccins_totaal['janssen'][-1])+')',
-        'COVID-19 Vaccine Moderna ® ('+decimalstring(vaccins_totaal['moderna'][-1])+')',
-        'Sanofi/GSK ('+decimalstring(vaccins_totaal['sanofi'][-1])+')'
-    ),
-    baseline='zero'
-)
+ax1.plot(testgrafiek['x'], testgrafiek['rivm_schatting'], color='red', label='RIVM schatting')
 
-# Let op! Mensen hebben van (de meeste) vaccins twee prikken nodig.
-# Dat betekent dat de dashboard data van RIVM ongelofelijk slecht is.
-# Omdat we niet weten hoeveel mensen 1x of 2x zijn ingeent, nemen we
-# hier even aan dat alle vaccins 2 prikken nodig hebben, EN dat
-# die dan  ook bij 1 persoon zijn gezet (dat betekent grofweg dat de data
-# van 3 weken terug beter klopt dan de data van vorige week)
-totaal_prikken = decimalstring(vaccins_totaal['totaal'][-1])
-percentage_prikken = decimalstring(round((100*vaccins_totaal['totaal'][-1])/(totaal_inwoners*2),2))
+ax1.plot(testgrafiek['x'], testgrafiek['rivm_totaal_tests'], color='blue', label='tests')
+ax1.plot(testgrafiek['x'], testgrafiek['rivm_totaal_tests_positief'], color='pink', label='positief')
+ax1.plot(testgrafiek['x'], testgrafiek['rivm_tests_perc'], color='yellow', label='percentage')
+ax1.plot(testgrafiek['x'], testgrafiek['rna'], color='lightgreen', label='rna')
 
-ax1.plot(vaccins_totaal['x'], 
-         [x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']], 
-         color='black',
-         label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
+ax1.plot(testgrafiek['x'], 
+        # [(3*t) for p, t in zip(testgrafiek['rivm_tests_perc'], testgrafiek['rivm_totaal_tests'])], 
+        # [(10000*p) for p, t in zip(testgrafiek['rivm_tests_perc'], testgrafiek['rivm_totaal_tests'])], 
+        smooth([((10000*perc)+(3*tot)+(22*pos))*(log(rna,10)/3.8)/3 for perc, tot, pos, rna in zip(testgrafiek['rivm_tests_perc'], testgrafiek['rivm_totaal_tests'], testgrafiek['rivm_totaal_tests_positief'], testgrafiek['rivm_totaal_tests_positief'])]), 
+        color='green',
+        label='Rolf schatting')
 
 # laat huidige datum zien met vertikale lijn
 plt.figtext(0.885,0.125, 
@@ -122,25 +82,16 @@ plt.figtext(0.885,0.125,
          zorder=10)
 ax1.axvline(date.today(), color='red', linewidth=0.5)
 
-ax1.set_yticks      ([0.1,    0.2,   0.3,   0.4,   0.5,   0.6,   0.7,   0.8,  0.9,   1])
-ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
+# ax1.set_yticks      ([0.1,    0.2,   0.3,   0.4,   0.5,   0.6,   0.7,   0.8,  0.9,   1])
+# ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
-plt.figtext(0.22,0.42, 
-         "Deze grafiek gaat over het totaal aantal gezette prikken, \n"+\
-         "in tegenstelling tot de \"Niewe rekenmethode\"(tm) van het RIVM.\n"+\
-         "De huidige vaccins hebben 2 prikken nodig.", 
-         color="gray",
-         bbox=dict(facecolor='white', alpha=1.0, 
-         edgecolor='white'),
-         zorder=10)
-
 gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
-data_tot=vaccins_totaal['x'][-1].strftime("%Y-%m-%d")
+data_tot=testgrafiek['x'][-1].strftime("%Y-%m-%d")
 filedate=data_tot
 
-plt.title('Gezette prikken (COVID-19 vaccinatie voortgang)')
+plt.title('Zoek een patroon')
 
 footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
@@ -152,5 +103,6 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
 
+plt.show()
 
-plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")
+# plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")
