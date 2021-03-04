@@ -37,6 +37,8 @@ for date in metenisweten:
         geschat_ziek_nu = metenisweten[date]['rivm_schatting_besmettelijk']['value']
     if metenisweten[date]['RNA']['besmettelijk']:
         geschat_ziek_nu_rna = metenisweten[date]['RNA']['besmettelijk']
+    if metenisweten[date]['rolf_besmettelijk']:
+        geschat_ziek_nu_rolf = metenisweten[date]['rolf_besmettelijk']
     if metenisweten[date]['Rt_avg'] is not None:
         Rt = float(metenisweten[date]['Rt_avg'])
     # if metenisweten[date]['rivm_totaal_personen_getest'] and metenisweten[date]['rivm_totaal_personen_positief']:
@@ -50,6 +52,7 @@ gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 
 eenopXziek = round(17500000/geschat_ziek_nu)
 eenopXziekRNA = round(17500000/geschat_ziek_nu_rna)
+eenopXziekRolf = round(17500000/geschat_ziek_nu_rolf)
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
@@ -64,13 +67,16 @@ substitutes = {
 
     'geschat_ziek_rivm' : decimalstring(geschat_ziek_nu),
     'geschat_ziek_rna' : decimalstring(round(geschat_ziek_nu_rna)),
-    'geschat_ziek_rolf' : decimalstring(round(geschat_ziek_nu_rna)),
+    'geschat_ziek_rolf' : decimalstring(round(geschat_ziek_nu_rolf)),
 
     'ziekverhouding' : str(eenopXziek),
     'ziekverhouding_color' : 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
 
     'ziekverhouding_rna' : str(eenopXziekRNA),
     'ziekverhouding_rna_color' : 'green' if eenopXziekRNA > 1000 else 'yellow' if eenopXziekRNA > 500 else 'red',
+
+    'ziekverhouding_rolf' : str(eenopXziekRolf),
+    'ziekverhouding_rolf_color' : 'green' if eenopXziekRolf > 1000 else 'yellow' if eenopXziekRolf > 500 else 'red',
 
     'nu_opgenomen' : decimalstring(nu_opgenomen),
     'nu_opgenomen_color': 'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',

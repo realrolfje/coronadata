@@ -5,6 +5,8 @@
     <meta http-equiv="refresh" content="500">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
@@ -35,11 +37,27 @@
                 gevolg van, een COVID-19 besmetting zoals gerapporteerd door Stichting NICE.
             </p>
             <p>
-                <b>Schatting totaal mensen ziek op basis van tests en RNA in rioolwater</b><br/>
+                <b>Schatting totaal mensen ziek op basis van tests en RNA in rioolwater (nu: ${geschat_ziek_rolf})</b><br/>
                 Omdat de rioolwaterdata nogal grillig verloopt, met name na de invoering van nieuwe
                 meetmethodes bij de rioolwaterzuiveringsinstallaties is de schatting van het aantal
                 zieken iets aangepast. De huidige schatting grafiek is gebaseerd op zowel rioolwaterdata
                 als COVID testuitslagen en percentages.
+            </p>
+            <p>
+                <img id="schattingafwijking" src="graphs/schattingafwijking.svg" width="60%" style="float: right;" />
+                Ook al wordt er een hoop gemeten, het schatten van het aantal zieke mensen in Nederland
+                is lastig omdat niet iedereen zich altijd laat testen, rioolwater gegevens erg veel ruis
+                bevatten, en ziekenhuisopnames niet alleen achterlopen, maar ook nog eens beinvloed worden door
+                de kwaliteit van de zorg. Zo worden er nu minder mensen opgenomen in het ziekenhuis omdat
+                al eerder de juiste zorg kan worden geboden. Daardoor lijkt het aantal zieke mensen laag, maar
+                in werkelijkheid is het aantal zieken juist hoger, maar er komt een kleiner percentage van
+                die zieke mensen in het ziekenhuis terecht.
+            </p>
+            <p>
+                De huidige schattingsmethode is imperisch vastgesteld en bestaat uit de volgende gegevens:
+
+                <!-- https://docs.mathjax.org/en/latest/options/input/tex.html#tex-options -->
+                \[Ziek_{geschat} = { ( 10^4 * test_{percentage} + 3 * test_{totaal} + 22 * test_{positief}) * \log(RNA_{ml}) } \over 14 \]
             </p>
             <!--
             <p>
