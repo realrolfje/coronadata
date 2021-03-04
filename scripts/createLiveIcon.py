@@ -9,6 +9,7 @@ from statistics import mean
 import datetime
 import json
 import modules.brondata as brondata
+from modules.brondata import decimalstring
 
 brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -29,6 +30,8 @@ gamma = {
     'max': []
 }
 
+Rt = None
+
 for datum in metenisweten:
     # if metenisweten[datum]['RNA_per_ml_avg']:
     #     alpha['x'].append(parser.parse(datum))
@@ -39,9 +42,12 @@ for datum in metenisweten:
         alpha['y'].append(metenisweten[datum]
                           ['rivm_schatting_besmettelijk']['value'])
 
-    if metenisweten[datum]['RNA']['besmettelijk']:
+    if metenisweten[datum]['rolf_besmettelijk']:
         beta['x'].append(parser.parse(datum))
-        beta['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
+        beta['y'].append(metenisweten[datum]['rolf_besmettelijk'])
+
+    if metenisweten[datum]['Rt_avg']:
+        Rt = float(metenisweten[datum]['Rt_avg'])
 
 print('Generating live iphone icon mini graph...')
 
@@ -61,6 +67,7 @@ plt.figtext(0.5, 0.80,
             color="black",
             fontsize='xx-large',
             horizontalalignment='center',
+            fontweight='bold',
             bbox=dict(
                 facecolor='yellow', 
                 edgecolor='yellow',
@@ -68,7 +75,18 @@ plt.figtext(0.5, 0.80,
             ),
             zorder=10)
 
-ax1.plot(alpha['x'], alpha['y'], color='steelblue')
+plt.figtext(0.5, 0.02,
+            "Rt="+decimalstring(Rt),
+            color="gray",
+            fontsize=20,
+            fontweight='extra bold',
+            horizontalalignment='center',
+            # verticalalignment='center',
+            alpha=0.3,
+            zorder=10)
+
+
+ax1.plot(alpha['x'], alpha['y'], color='lightblue')
 ax1.plot(beta['x'], beta['y'], color='red')
 
 plt.setp(ax1.spines.values(), color='white')
