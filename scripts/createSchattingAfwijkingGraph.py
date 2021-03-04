@@ -38,15 +38,25 @@ for datum in metenisweten:
         alpha['x'].append(parser.parse(datum))
         alpha['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
 
-    if metenisweten[datum]['RNA']['besmettelijk']:
-        beta['x'].append(parser.parse(datum))
-        beta['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
-        beta['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
-        beta['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
+    # if metenisweten[datum]['RNA']['besmettelijk']:
+    #     beta['x'].append(parser.parse(datum))
+    #     beta['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
+    #     beta['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
+    #     beta['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
 
-    if metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and metenisweten[datum]['RNA']['besmettelijk']:
+    if metenisweten[datum]['rolf_besmettelijk']:
+        beta['x'].append(parser.parse(datum))
+        beta['y'].append(metenisweten[datum]['rolf_besmettelijk'])
+        beta['min'].append(metenisweten[datum]['rolf_besmettelijk'] * 0.7)
+        beta['max'].append(metenisweten[datum]['rolf_besmettelijk'] * 1.3)
+
+    # if metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and metenisweten[datum]['RNA']['besmettelijk']:
+    #     gamma['x'].append(parser.parse(datum))
+    #     gamma['y'].append(100 - 100 * metenisweten[datum]['rivm_schatting_besmettelijk']['value'] / metenisweten[datum]['RNA']['besmettelijk'])
+
+    if metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and metenisweten[datum]['rolf_besmettelijk']:
         gamma['x'].append(parser.parse(datum))
-        gamma['y'].append(100 - 100 * metenisweten[datum]['rivm_schatting_besmettelijk']['value'] / metenisweten[datum]['RNA']['besmettelijk'])
+        gamma['y'].append(100 - 100 * metenisweten[datum]['rivm_schatting_besmettelijk']['value'] / metenisweten[datum]['rolf_besmettelijk'])
         
     
 
@@ -68,7 +78,8 @@ ax1.plot(alpha['x'], alpha['y'], color='red', label='Schatting zieken RIVM')
 # ax1.plot(beta['x'], beta['y'], color='steelblue', label='beta')
 
 # ax2.plot(alpha['x'], alpha['y'], c olor='steelblue', label='alpha')
-ax1.plot(beta['x'], beta['y'], color='blue', label='Schatting zieken @rolfje obv RNA in RWZI')
+# ax1.plot(beta['x'], beta['y'], color='blue', label='Schatting zieken @rolfje obv RNA in RWZI')
+ax1.plot(beta['x'], beta['y'], color='blue', label='Schatting zieken @rolfje obv tests en RNA in RWZI')
 
 ax1.fill_between(
     beta['x'],
@@ -77,7 +88,7 @@ ax1.fill_between(
     facecolor='blue', alpha=0.1, interpolate=True)
 
 
-ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking RNA t.o.v. RIVM schatting in %')
+ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking @rolfje t.o.v. RIVM schatting in %')
 
 ax1.set_ylim([0, 400000])
 ax2.set_ylim([-200, 200])
@@ -85,7 +96,7 @@ ax2.set_ylim([-200, 200])
 ax1.set_xlabel("Datum")
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-plt.title('Afwijking schatting o.b.v. RNA t.o.v. RIVM schatting, '+gegenereerd_op)
+plt.title('Afwijking schatting @rolfje t.o.v. RIVM schatting, '+gegenereerd_op)
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
