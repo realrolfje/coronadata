@@ -219,7 +219,7 @@ ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 # Plot ziek based on RNA
 ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
          linestyle=':', 
-         label='Schatting totaal ziek obv riooldata (nu: '+decimalstring(round(geschat_ziek_rna_nu))+')\n'
+         label='Schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_rna_nu))+')\n'
                  +'→ 1 op '+str(round(17500000/geschat_ziek_rna_nu))+' mensen is ziek/besmettelijk')
 ax2.fill_between(
     geschat_ziek_rna['x'][:len(geschat_ziek_rna['min'])], 
