@@ -24,6 +24,16 @@ startdate = parser.parse('2020-03-01')
 
 weightsmap={}
 
+# THe heatmap data is already in metenisweten, we can optimze. Complete this:
+# metenisweten = brondata.readjson('../cache/daily-stats.json')
+# print("Converting records to x/y data")
+# for date_statistics in metenisweten:
+#     if date_statistics > startdate:
+#         for age in metenisweten[date_statistics]['besmettingleeftijd']:
+#             datax = (date_statistics - startdate).days
+#             datay = metenisweten[date_statistics]['besmettingleeftijd']
+
+
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     print("Converting records to x/y data")
