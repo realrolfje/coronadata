@@ -12,11 +12,15 @@ cd scripts
 ./createTestGraph.py
 ./createMobilityGraph.py
 ./createVaccinGraph.py
-./processTemplates.py
 ./processEventsList.py
 ./updatePageHits.py
 ./createPageHitsGraph.py
-cd ..
-lines=$(find . -name "*.py" | xargs cat | wc -l)
-echo "Total $lines lines of python code"
 
+rm ../cache/stats.csv
+lines=$(find . -name "*.py" | xargs cat | wc -l | awk '{print $1;}')
+echo "python_lines;$lines" > ../cache/stats.csv
+cachesize=$(du -sk ../cache | awk '{print $1;}')
+echo "cache_size;$cachesize" >> ../cache/stats.csv
+
+./processTemplates.py
+cd ..
