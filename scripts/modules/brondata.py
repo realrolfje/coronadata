@@ -63,7 +63,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         print("Downloading fresh data to "+filename)
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
-            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2102HotfixDev20/v3/en-us/applemobilitytrends-'+theday+'.csv'
+            url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2103HotfixDev14/v3/en-us/applemobilitytrends-'+theday+'.csv'
             
             try:
                 print("Trying "+url, end="...")
@@ -369,27 +369,23 @@ def builddaily():
             else:
                 continue
 
-            # Ignore stations which measure less than 80% of their value from one region
-            if float(switchdecimals(record['Percentage_in_security_region'])) < 0.8:
-                continue
-
             initrecord(stringdate, metenisweten)
             metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] += rnavalue
             metenisweten[stringdate]['RNA']['totaal_RNA_metingen'] += 1 
             metenisweten[stringdate]['RNA']['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['totaal_RNA_metingen']
 
-            regiocode = record['Security_region_code']
-            if regiocode not in metenisweten[stringdate]['RNA']:
-                metenisweten[stringdate]['RNA']['regio'][regiocode] = {
-                    'totaal_RNA_per_ml'    : 0,
-                    'totaal_RNA_metingen'  : 0,
-                    'RNA_per_ml_avg'       : 0,
-                    'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
-                    'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']                   
-                }
-            metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] += rnavalue
-            metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1 
-            metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
+            # regiocode = record['Security_region_code']
+            # if regiocode not in metenisweten[stringdate]['RNA']:
+            #     metenisweten[stringdate]['RNA']['regio'][regiocode] = {
+            #         'totaal_RNA_per_ml'    : 0,
+            #         'totaal_RNA_metingen'  : 0,
+            #         'RNA_per_ml_avg'       : 0,
+            #         'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
+            #         'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']                   
+            #     }
+            # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] += rnavalue
+            # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1 
+            # metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
     print("Add estimated ill based on RIVM (prevalentie)")
     filename = '../cache/COVID-19_prevalentie.json'
@@ -560,7 +556,6 @@ def builddaily():
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
     rna = []
-    rna_error = []
     rivmschattingratio = []
 
     # Record the newest date with more than 30 RNA measurements, which
@@ -569,36 +564,11 @@ def builddaily():
         # Record last valid RNA date
         # print('RNA metingen '+date+' '+str(metenisweten[date]['RNA']['totaal_RNA_metingen']))
         if metenisweten[date]['RNA']['totaal_RNA_metingen'] > 30:
-            lastrnadate = date
-
-    for date in metenisweten:
-        gewogenrna = 0
-        inwoners = 0
-
-        # TODO: Checken of dit ook goed gaat met meerdere RWZI's in de regio die dan vermenigvuldigd
-        # worden met de inwoners (= groter aandeel)
-        for regio in metenisweten[date]['RNA']['regio']:
-            regiodata = metenisweten[date]['RNA']['regio'][regio]
-            gewogenrna += (regiodata['RNA_per_ml_avg'] * regiodata['inwoners'])
-            inwoners += regiodata['inwoners']
-
-        # Store measurement error
-        metenisweten[date]['RNA']['populatie_dekking'] = inwoners / 17500000
-        metenisweten[date]['RNA']['besmettelijk_error'] = 1 - (inwoners / 17500000)
-
-        # if inwoners < 1000000:
-        #     print('less than 1 million people covered by RNA data on '+date+": "+str(inwoners))
-
-        # Choose nice cutover point where RIVM and RNA estimates cross/match on may 30
-        # Also don't use too recent RNA data
-        if parser.parse(date).date() > parser.parse('2020-05-30').date() and (parser.parse(date).date() <= parser.parse(lastrnadate).date()):
             dates.append(date)
-            rna.append(gewogenrna)
-            rna_error.append(1 - (inwoners / 17500000))
+            rna.append(metenisweten[date]['RNA']['RNA_per_ml_avg'])
 
     # Smooth
     rna_avg = double_savgol(rna, 2, 13, 1)
-    rna_error = double_savgol(rna_error, 2, 13, 1)
 
     # Compare to RIVM estimates and correct scale
     for idx, date in enumerate(dates):
@@ -612,7 +582,6 @@ def builddaily():
     for i in range(len(dates)):
         date = dates[i]
         metenisweten[date]['RNA']['besmettelijk'] = max(1,rna_avg[i]) # Don't allow negative or 0 numbers
-        metenisweten[date]['RNA']['besmettelijk_error'] = rna_error[i]
 
     print("Calculate average age of positive tested people")
     for datum in metenisweten:

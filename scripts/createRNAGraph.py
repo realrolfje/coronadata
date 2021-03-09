@@ -41,7 +41,7 @@ plt.figure(figsize=(10,3))
 
 fig, ax1 = plt.subplots(figsize=(10, 3))
 fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
-ax2 = plt.twinx()
+# ax2 = plt.twinx()
 
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
@@ -62,7 +62,7 @@ plt.figtext(0.885,0.19,
          zorder=10)
 ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
-ax2.plot(RNA_populatie_dekking['x'], smooth(RNA_populatie_dekking['y']), color='orange', label='geschatte populatie dekking %')
+#  ax2.plot(RNA_populatie_dekking['x'], smooth(RNA_populatie_dekking['y']), color='orange', label='geschatte populatie dekking %')
 
 
 axes = plt.gca()
@@ -72,12 +72,12 @@ ax1.set_ylim([0,4000])
 ax1.set_ylabel("RNA per milliliter")
 ax1.set_xlabel("Datum")
 
-ax2.set_ylim([0,100])
-ax2.set_ylabel("% populatie")
-ax2.set_yticks([0,25,50,75,100])
+# ax2.set_ylim([0,100])
+# ax2.set_ylabel("% populatie")
+# ax2.set_yticks([0,25,50,75,100])
 
 ax1.legend(loc="upper left")
-ax2.legend(loc="upper right")
+# ax2.legend(loc="upper right")
 
 plt.figtext(0.30,0.6, 
          "\"Je plee liegt niet\" - Rolf",
