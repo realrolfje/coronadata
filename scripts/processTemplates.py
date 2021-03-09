@@ -7,6 +7,7 @@ from string import Template
 from dateutil import parser
 from os import listdir
 from os.path import isfile, join, basename
+import csv
 
 templatedir = '../docs/templates'
 outputdir = '../docs'
@@ -62,6 +63,15 @@ gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 prikken_gezet_perc=4.63
 prikken_gezet=1619839
 
+filename ='../cache/stats.csv'
+with open(filename, 'r') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=';')
+    for row in csv_reader:
+        if row[0] == 'python_lines':
+            python_lines = int(row[1])
+        if row[0] == 'cache_size':
+            cache_size = int(row[1])*1000
+
 substitutes = {
     'totaal_positief' : decimalstring(totaal_positief),
 
@@ -98,7 +108,10 @@ substitutes = {
 
     'gegenereerd_op':       gegenereerd_op,
     'gegenereerd_op_datum': gegenereerd_datum,
-    'gegenereerd_op_tijd':  gegenereerd_tijd
+    'gegenereerd_op_tijd':  gegenereerd_tijd,
+
+    'python_lines': decimalstring(python_lines),
+    'cache_size': decimalstring(cache_size)
 }
 
 def getTemplates(templatedir):
