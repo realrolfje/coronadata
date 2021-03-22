@@ -169,8 +169,8 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief")
 ax2.set_ylabel("Percentage positief getest")
 
-ax1.set_ylim([0, 80000])
-ax2.set_ylim([0, 40])
+ax1.set_ylim([0, 100000])
+ax2.set_ylim([0, 50])
 
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
