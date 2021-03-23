@@ -60,8 +60,8 @@ gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
 # Percentage gezette prikken, handmatig tot dataset beschikbaar is
-prikken_gezet_perc=5.39
-prikken_gezet=1887726
+prikken_gezet_perc=5.99
+prikken_gezet=2097980
 
 filename ='../cache/stats.csv'
 with open(filename, 'r') as csv_file:
