@@ -36,7 +36,7 @@
         "event": "Terrassen open,\ntests voor\niedereen",
         "testsloc": [
             "2020-05-01",
-            22000
+            31000
         ]
     },
     {
@@ -59,8 +59,8 @@
             22000
         ],
         "mobiliteit": [
-            "2020-06-01",
-            150
+            "2020-05-10",
+            120
         ]
     },
     {
@@ -68,7 +68,7 @@
         "event": "Meer bevoegdheden\ngemeenten.\nContactgegevens aan\nrestaurant afgeven.\nTesten op Schiphol.",
         "mobiliteit": [
             "2020-06-25",
-            10
+            6
         ]
     },
     {
@@ -83,8 +83,8 @@
             50000
         ],
         "mobiliteit": [
-            "2020-08-18",
-            40
+            "2020-08-10",
+            54
         ]
     },
     {
@@ -161,7 +161,7 @@
         ],
         "testsloc": [
             "2020-10-15",
-            60000
+            65000
         ]
     },
     {
@@ -178,7 +178,7 @@
         ],
         "testsloc": [
             "2020-11-06",
-            68000
+            78000
         ],
         "mobiliteit": [
             "2020-11-15",
@@ -266,7 +266,7 @@
             260000
         ],
         "mobiliteit": [
-            "2021-01-03",
+            "2021-01-20",
             105
         ],
         "testsloc": [
@@ -279,7 +279,7 @@
         "event": "Teststraten gesloten\nwegens vorst.",
         "url": "https://112zoetermeer.nl/2021/02/06/ggd-locaties-gesloten-wegens-code-rood/",
         "testsloc": [
-            "2020-12-10",
+            "2020-12-01",
             13000
         ]
     },
@@ -303,7 +303,7 @@
         ],
         "testsloc": [
             "2021-01-05",
-            62000
+            67000
         ]
     },
     {
@@ -334,12 +334,27 @@
         ]
     },
     {
-        "date": "2021-03-25",
+        "date": "2021-03-31",
         "event": "Avonklok\nnaar 22u",
         "url": "https://nos.nl/artikel/2373788-kabinet-besluit-zoals-verwacht-avondklok-naar-22-00-uur.html",
         "zieken": [
             "2021-03-25",
             320000
+        ],
+        "mobiliteit": [
+            "2021-03-01",
+            130
+        ]
+    },
+    {
+        "date": "2021-03-27",
+        "event": "Ollongren\npositief\ngetest.",
+        "url": "https://www.nu.nl/politiek/6123950/formatiegesprekken-opgeschort-omdat-verkenner-ollongren-positief-is-getest.html",
+        "testsloc": [
+            "2021-02-01",
+            80000
         ]
     }
+
+    
 ]
