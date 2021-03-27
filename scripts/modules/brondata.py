@@ -11,13 +11,12 @@ import time
 import json
 import csv
 import re
-import numpy as np
 from dateutil import parser
-from scipy.ndimage.filters import uniform_filter1d
 from scipy.signal import savgol_filter
 from statistics import mean
 from operator import itemgetter
 from math import log
+import pytz
 
 
 def readjson(filename):
@@ -45,15 +44,42 @@ def isnewer(file1, file2):
 
 def sortDictOnKey(dictionary):
     return dict(sorted(dictionary.items(), key=itemgetter(0)))
-def downloadIfStale(filename, url):
 
-    if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):
-        # print(filename+" exists.")
+def downloadIfStale(filename, url):
+    timezone = pytz.timezone("Europe/Amsterdam")
+
+    if os.path.isfile(filename):
+        lastdownload = datetime.datetime.fromtimestamp(os.stat(filename).st_mtime, tz=timezone)
+    else:        
+        lastdownload = datetime.datetime.fromtimestamp(0,tz=timezone)
+
+    if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)):
+        # If just downloaded, don't bother checking with the server
+        # print("Just downloaded, don't check the server")
         return False
-    else:
-        print("Downloading fresh data to "+filename)
-        urllib.request.urlretrieve(url, filename)
-        return True
+
+    with urllib.request.urlopen(url) as response:
+        meta = response.headers
+        try:
+            lastmodified = parser.parse(meta['Last-Modified'])
+        except:
+            print("Server has no Last-Modified for "+url)
+            lastmodified = datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)
+
+        charset = meta.get_content_charset() or 'utf-8'
+        # print('last download: '+str(lastdownload))
+        # print('last modified: '+str(lastmodified))
+
+        if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
+            print("Downloading fresh data to "+filename)
+            with open(filename, 'w') as f:
+                f.write(
+                    response.read().decode(charset)
+                )
+            return True
+        else:
+            # print("Not modified, no need to download")
+            return False
 
 def downloadMostRecentAppleMobilityReport(filename):
     if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):
