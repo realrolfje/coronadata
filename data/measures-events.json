@@ -19,8 +19,8 @@
             13000
         ],
         "zieken": [
-            "2020-04-10",
-            250000
+            "2020-04-01",
+            280000
         ],
         "mobiliteit": [
             "2020-03-22",
@@ -47,8 +47,8 @@
         "date": "2020-07-01",
         "event": "Maatregelen afgezwakt,\nalleen nog 1,5 meter,\nmondkap in OV",
         "zieken": [
-            "2020-05-10",
-            120000
+            "2020-05-01",
+            110000
         ]
     },
     {
@@ -79,7 +79,7 @@
             31000
         ],
         "zieken": [
-            "2020-07-20",
+            "2020-07-05",
             50000
         ],
         "mobiliteit": [
@@ -99,8 +99,8 @@
         "date": "2020-09-20",
         "event": "Horeca sluit 00:00,\nlokale maatregelen\nWest NL\nwww.ballonvossenjacht.nl",
         "zieken": [
-            "2020-07-15",
-            110000
+            "2020-05-20",
+            180000
         ],
         "mobiliteit": [
             "2020-09-13",
@@ -115,16 +115,16 @@
         "date": "2020-09-30",
         "event": "Landelijk\nmondkapadvies",
         "zieken": [
-            "2020-08-20",
-            230000
+            "2020-08-10",
+            130000
         ]
     },
     {
         "date": "2020-10-13",
         "event": "Kroegen dicht\nGeen sportwedstr.",
         "zieken": [
-            "2020-08-30",
-            305000
+            "2020-08-15",
+            205000
         ]
     },
     {
@@ -156,7 +156,7 @@
         "date": "2020-12-01",
         "event": "Mondkapplicht,\nGezond testen",
         "zieken": [
-            "2020-10-29",
+            "2020-10-25",
             14000
         ],
         "testsloc": [
@@ -169,8 +169,8 @@
         "event": "Lockdown",
         "url": "https://www.youtube.com/watch?v=LLktWm8oBMY",
         "zieken": [
-            "2020-11-10",
-            220000
+            "2020-10-20",
+            260000
         ],
         "zieken-sliding": [
             "2020-11-01",
@@ -217,7 +217,7 @@
         "url": "https://www.rtlnieuws.nl/nieuws/nederland/artikel/5205267/horecaondernemers-worstelen-met-kerstafhaalmenus-ik-heb-bestellen",
         "zieken": [
             "2020-12-10",
-            14000
+            104000
         ],
         "mobiliteit": [
             "2020-12-15",
@@ -236,11 +236,7 @@
     {
         "date": "2021-01-12",
         "event": "Lockdown verlengd\ntot 9 Feb.",
-        "url": "https://www.youtube.com/watch?v=HJyszQXZIqA",
-        "zieken": [
-            "2020-12-10",
-            255000
-        ]
+        "url": "https://www.youtube.com/watch?v=HJyszQXZIqA"
     },
     {
         "date": "2021-01-15",
@@ -257,7 +253,7 @@
         "event": "Invoering avondklok",
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/avondklok",
         "zieken": [
-            "2020-12-28",
+            "2020-12-20",
             14000
         ]
     },
@@ -266,8 +262,8 @@
         "event": "Proces tegen\navondklok.",
         "url": "https://www.rechtspraak.nl/Organisatie-en-contact/Organisatie/Rechtbanken/Rechtbank-Den-Haag/Nieuws/Paginas/Staat-moet-avondklok-laten-vervallen.aspx",
         "zieken": [
-            "2021-01-14",
-            305000
+            "2020-12-20",
+            260000
         ],
         "mobiliteit": [
             "2021-01-03",
@@ -299,11 +295,11 @@
     },
     {
         "date": "2021-03-01",
-        "event": "Onderwijs, kappers, sport,\nwinkels zeer beperkt open",
+        "event": "Onderwijs, kappers,\nsport, winkels\nzeer beperkt open",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/02/23/voorzichtig-meer-lucht-tijdens-de-lockdown",
         "zieken": [
-            "2021-01-20",
-            355000
+            "2021-01-05",
+            315000
         ],
         "testsloc": [
             "2021-01-05",
@@ -321,10 +317,10 @@
     },
     {
         "date": "2021-03-16",
-        "event": "Rijscholen, zwemles\nInreisverbod verruimd",
+        "event": "Rijscholen,\nzwemles,\ninreisverbod\nverruimd",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/03/08/verdere-verruiming-lockdown-nog-niet-verantwoord",
         "zieken": [
-            "2021-02-01",
+            "2021-02-17",
             220000
         ]
     },
@@ -333,9 +329,17 @@
         "event": "Verkiezingen",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/03/08/verdere-verruiming-lockdown-nog-niet-verantwoord",
         "zieken": [
-            "2021-03-01",
+            "2021-02-25",
             14000
         ]
+    },
+    {
+        "date": "2021-03-25",
+        "event": "Avonklok\nnaar 22u",
+        "url": "https://nos.nl/artikel/2373788-kabinet-besluit-zoals-verwacht-avondklok-naar-22-00-uur.html",
+        "zieken": [
+            "2021-03-25",
+            320000
+        ]
     }
-
 ]
