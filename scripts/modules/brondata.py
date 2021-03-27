@@ -664,6 +664,15 @@ def builddaily():
 def freshdata():
     if download() or not os.path.isfile('../cache/daily-stats.json') or isnewer(__file__, '../cache/daily-stats.json'):
         builddaily()
+        return True
+    elif os.stat('../cache/daily-stats.json').st_mtime > ( time.time() - 1200):
+        # downloaded data is "fresh" for 20 minutes
+        # This is a workaround so that all graphs get
+        # created if scripts are called within 20 minutes after 
+        # building a new dataset.
+        return True
+    else:
+        return False
 
 
 def getDateRange(metenisweten):

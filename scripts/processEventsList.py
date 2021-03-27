@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 #
 import modules.brondata as brondata
-from modules.brondata import decimalstring
-import datetime
 from string import Template
-from dateutil import parser
-from os import listdir
-from os.path import isfile, join, basename
 
 templatedir = '../docs/templates'
 outputdir = '../docs'
 
-brondata.freshdata()
+if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+    print(__file__ + ": No fresh data, and unchanged code.")
+    exit(0)
+
 events = brondata.readjson('../data/measures-events.json')
 
 

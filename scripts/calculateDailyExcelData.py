@@ -11,7 +11,10 @@ import sys
 from datetime import datetime
 import modules.brondata as brondata
 
-brondata.freshdata()
+if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+    print(__file__ + ": No fresh data, and unchanged code.")
+    exit(0)
+
 testpunten = brondata.readjson('../cache/testlocaties.json')
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 

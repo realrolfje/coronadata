@@ -12,7 +12,10 @@ import csv
 templatedir = '../docs/templates'
 outputdir = '../docs'
 
-brondata.freshdata()
+if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+    print(__file__ + ": No fresh data, and unchanged code.")
+    exit(0)
+
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
 gemiddeldeleeftijdarray=[]

@@ -10,9 +10,11 @@ from dateutil.relativedelta import relativedelta
 import datetime
 import json
 import modules.brondata as brondata
-from modules.brondata import decimalstring
+from modules.brondata import decimalstring, isnewer
 
-brondata.freshdata()
+if not (brondata.freshdata() or isnewer(__file__, '../cache/daily-stats.json')):
+    print(__file__ + ": No fresh data, and unchanged code.")
+    exit(0)
 
 print("Generating date/age heatmap.")
 
