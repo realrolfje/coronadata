@@ -17,6 +17,7 @@ from statistics import mean
 from operator import itemgetter
 from math import log
 import pytz
+import time
 
 
 def readjson(filename):
@@ -54,8 +55,8 @@ def downloadIfStale(filename, url):
         lastdownload = datetime.datetime.fromtimestamp(0,tz=timezone)
 
     if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)):
-        # If just downloaded, don't bother checking with the server
-        # print("Just downloaded, don't check the server")
+        # If just downloaded or checked, don't bother checking with the server
+        print("Just downloaded: %s" % filename)
         return False
 
     with urllib.request.urlopen(url) as response:
@@ -71,14 +72,16 @@ def downloadIfStale(filename, url):
         # print('last modified: '+str(lastmodified))
 
         if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
-            print("Downloading fresh data to "+filename)
+            print("Downloading new: %s" % filename)
             with open(filename, 'w') as f:
                 f.write(
                     response.read().decode(charset)
                 )
             return True
         else:
-            # print("Not modified, no need to download")
+            print("    Still fresh: %s" % filename)
+            now = time.time()
+            os.utime(filename, (now,now))
             return False
 
 def downloadMostRecentAppleMobilityReport(filename):
@@ -86,18 +89,17 @@ def downloadMostRecentAppleMobilityReport(filename):
         # print(filename+" exists.")
         return False
     else:
-        print("Downloading fresh data to "+filename)
+        print("Downloading fresh data to "+filename, end="...")
         for i in range(14):
             theday  = (datetime.date.today() - datetime.timedelta(days = i)).strftime("%Y-%m-%d")
             url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2104HotfixDev12/v3/en-us/applemobilitytrends-'+theday+'.csv'
             
             try:
-                print("Trying "+url, end="...")
                 urllib.request.urlretrieve(url, filename)
-                print("done.")
+                print("done, data up to %s" % str(theday))
                 return True
             except (urllib.error.HTTPError, urllib.error.HTTPError) as err:
-                print("Error "+str(err))
+                print("Error downloding %s: %s" % (url,str(err)))
         raise Exception("Sorry, no Apple mobility data found. Check https://covid19.apple.com/mobility") 
 
 def download():

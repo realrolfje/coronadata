@@ -15,6 +15,8 @@ outputdir = '../docs'
 if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
     print(__file__ + ": No fresh data, and unchanged code.")
     exit(0)
+else:
+    print(__file__ + ": New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 

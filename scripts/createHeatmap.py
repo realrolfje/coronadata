@@ -15,6 +15,8 @@ from modules.brondata import decimalstring, isnewer
 if not (brondata.freshdata() or isnewer(__file__, '../cache/daily-stats.json')):
     print(__file__ + ": No fresh data, and unchanged code.")
     exit(0)
+else:
+    print(__file__ + ": New data, regenerate output.")
 
 print("Generating date/age heatmap.")
 

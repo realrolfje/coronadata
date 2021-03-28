@@ -3,16 +3,14 @@
 # pip3 install matplotlib
 
 from matplotlib import pyplot as plt
-import matplotlib.patches as patches
 from dateutil import parser
-from statistics import mean
-import datetime
-import json
 import modules.brondata as brondata
 
 if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
     print(__file__ + ": No fresh data, and unchanged code.")
     exit(0)
+else:
+    print(__file__ + ": New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
