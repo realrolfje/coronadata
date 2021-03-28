@@ -54,6 +54,10 @@ for date in metenisweten:
         positief_percentage = 100 * metenisweten[date]['rivm_totaal_tests_positief'] / metenisweten[date]['rivm_totaal_tests']
     if metenisweten[date]['besmettingleeftijd_gemiddeld']:
         gemiddeldeleeftijdarray.append(metenisweten[date]['besmettingleeftijd_gemiddeld'])
+    if metenisweten[date]['vaccinaties']['totaal']:
+        prikken_gezet = metenisweten[date]['vaccinaties']['totaal']
+        prikken_gezet_perc=100*(prikken_gezet/(17500000*2)) # 2 prikken per persoon!
+
 
 gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 
@@ -64,10 +68,6 @@ eenopXziekRolf = round(17500000/geschat_ziek_nu_rolf)
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
-
-# Percentage gezette prikken, handmatig tot dataset beschikbaar is
-prikken_gezet_perc=5.99
-prikken_gezet=2097980
 
 filename ='../cache/stats.csv'
 with open(filename, 'r') as csv_file:

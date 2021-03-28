@@ -248,7 +248,8 @@ def initrecord(date, metenisweten):
                 'cure_vac'     : None,
                 'janssen'      : None,
                 'moderna'      : None,
-                'sanofi'       : None
+                'sanofi'       : None,
+                'totaal'       : None
             },
             'rolf_besmettelijk' : None, # Besmettelijke mensen op basis van gecombineerde meetwaarden
 
@@ -565,6 +566,7 @@ def builddaily():
             metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(record['astra_zeneca'])
             metenisweten[datum]['vaccinaties']['pfizer']       = intOrNone(record['pfizer'])
             metenisweten[datum]['vaccinaties']['moderna']      = intOrNone(record['moderna'])
+            metenisweten[datum]['vaccinaties']['totaal']       = intOrNone(record['total'])
 
             # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
             # metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
@@ -579,6 +581,7 @@ def builddaily():
         metenisweten[datum]['vaccinaties']['janssen']      = 0
         metenisweten[datum]['vaccinaties']['moderna']      = 0
         metenisweten[datum]['vaccinaties']['sanofi']       = 0
+        metenisweten[datum]['vaccinaties']['totaal']       = 0
 
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
