@@ -57,6 +57,9 @@ for date in metenisweten:
     if metenisweten[date]['vaccinaties']['totaal']:
         prikken_gezet = metenisweten[date]['vaccinaties']['totaal']
         prikken_gezet_perc=100*(prikken_gezet/(17500000*2)) # 2 prikken per persoon!
+    if metenisweten[date]['vaccinaties']['totaal_geschat']:
+        prikken_gezet_geschat = metenisweten[date]['vaccinaties']['totaal_geschat']
+        prikken_gezet_geschat_perc=100*(prikken_gezet_geschat/(17500000*2)) # 2 prikken per persoon!
 
 
 gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
@@ -109,6 +112,10 @@ substitutes = {
     'prikken_gezet' : decimalstring(prikken_gezet),
     'prikken_gezet_perc' : decimalstring(round(prikken_gezet_perc,2))+'%',
     'prikken_gezet_color' : 'green' if prikken_gezet_perc > 60 else 'yellow' if prikken_gezet_perc > 40 else 'red',
+
+    'prikken_gezet_geschat' : decimalstring(prikken_gezet_geschat),
+    'prikken_gezet_geschat_perc' : decimalstring(round(prikken_gezet_geschat_perc,2))+'%',
+    'prikken_gezet_geschat_color' : 'green' if prikken_gezet_geschat_perc > 60 else 'yellow' if prikken_gezet_geschat_perc > 40 else 'red',
 
     'positief_leeftijd' : str(gemiddeldeleeftijdweek),
 
