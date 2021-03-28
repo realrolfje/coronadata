@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 #
-# Haalt COVID-19 testresultaten op bij RIVM en NICE
-#
 #
 
 from datetime import datetime, timedelta
@@ -42,9 +40,7 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
 
         distance = (d - leftX) / (rightX - leftX)
         yval = round(leftY + ((rightY - leftY) * distance))
-        print("bla")
 
-    print("date %s, yval %s, (%s,%d) text: %s" %(str(d), str(yval), x,y, tekst ))
     if (d is not None) and (yval is not None):
         plt.annotate(
             tekst,

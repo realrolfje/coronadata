@@ -120,18 +120,6 @@ ax2.plot(vaccins_percentage['x'],
          color='black',
          label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
 
-# def anotate(plt, xdata, ydata, datum, tekst, x, y):
-#     xval = parser.parse(datum)
-#     yval = 0.001
-#     plt.annotate(
-#         tekst,
-#         xy=(xval, yval),
-#         xytext=(parser.parse(x), y/100),
-#         fontsize=8,
-#         bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-#         arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-#     )
-
 graphname='vaccins'
 for event in events:
     if graphname in event:
