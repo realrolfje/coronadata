@@ -251,7 +251,7 @@ def initrecord(date, metenisweten):
                 'sanofi'         : None,
                 'totaal'         : None,
                 'totaal_geschat' : None,
-                'levering_geschat' : None,
+                'geleverd'       : None,
             },
             'rolf_besmettelijk' : None, # Besmettelijke mensen op basis van gecombineerde meetwaarden
 
@@ -585,7 +585,7 @@ def builddaily():
             initrecord(datum, metenisweten)
             metenisweten[datum]['vaccinaties']['totaal_geschat']       = intOrNone(record['total'])
 
-        for record in data['vaccine_delivery_estimate']['values']:
+        for record in data['vaccine_delivery']['values']:
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
             if (datetime.datetime.date(d) > datetime.datetime.today().date()):
                 print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
@@ -594,7 +594,7 @@ def builddaily():
 
             datum =  d.strftime('%Y-%m-%d')
             initrecord(datum, metenisweten)
-            metenisweten[datum]['vaccinaties']['geleverd_geschat']       = intOrNone(record['total'])
+            metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
 
         # Hardcode start of vaccination at 0 in 2020
         datum = '2020-12-01'

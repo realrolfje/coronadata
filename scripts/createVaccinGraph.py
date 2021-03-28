@@ -34,6 +34,11 @@ vaccins_geschat = {
     'totaal_geschat': []
 }
 
+vaccins_geleverd = {
+    'x': [],
+    'totaal': []
+}
+
 date_range = brondata.getDateRange(metenisweten)
 
 def addVaccinCount(record, vaccin):
@@ -65,6 +70,10 @@ for d in date_range:
         vaccins_geschat['x'].append(d)
         vaccins_geschat['totaal_geschat'].append(metenisweten[datum]['vaccinaties']['totaal_geschat'])
 
+    if (datum in metenisweten and metenisweten[datum]['vaccinaties']['geleverd'] != None):
+        vaccins_geleverd['x'].append(d)
+        vaccins_geleverd['totaal'].append(metenisweten[datum]['vaccinaties']['geleverd'])
+
 
 totaal_inwoners=17500000
 
@@ -91,6 +100,11 @@ vaccins_geschat_percentage = {
     'totaal_geschat': [100*x/(totaal_inwoners*2) for x in vaccins_geschat['totaal_geschat']]
 }
 
+vaccins_geleverd_percentage = {
+    'x':              vaccins_geleverd['x'],
+    'totaal': [100*x/(totaal_inwoners*2) for x in vaccins_geleverd['totaal']]
+}
+
 print('Generating vaccination graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
@@ -112,6 +126,13 @@ ax1.plot(vaccins_geschat_percentage['x'],
          color='fuchsia',
          label='Totaal geschat (nu: ' + totaal_prikken_geschat + ', ' + percentage_prikken_geschat + '%)')
 
+totaal_vaccins_geleverd = decimalstring(vaccins_geleverd['totaal'][-1])
+percentage_vaccins_geleverd = decimalstring(round(100*vaccins_geleverd['totaal'][-1]/(totaal_inwoners*2),2))
+ax1.plot(vaccins_geleverd_percentage['x'], 
+         vaccins_geleverd_percentage['totaal'], 
+         linestyle='--', 
+         color='c',
+         label='Totaal geleverd (nu: ' + totaal_vaccins_geleverd + ', ' + percentage_vaccins_geleverd + '%)')
 
 ax2.set_xlabel("Datum")
 ax2.set_ylabel("Aantal prikken")
