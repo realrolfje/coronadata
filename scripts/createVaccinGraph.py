@@ -26,7 +26,12 @@ vaccins_totaal = {
     'janssen': [],
     'moderna': [],
     'sanofi': [],
-    'totaal': []
+    'totaal': [],
+}
+
+vaccins_geschat = {
+    'x': [],
+    'totaal_geschat': []
 }
 
 date_range = brondata.getDateRange(metenisweten)
@@ -52,6 +57,15 @@ for d in date_range:
 
         vaccins_totaal['totaal'].append(total)
 
+        # Creer start van schatting grafiek
+        vaccins_geschat['x'].append(d)
+        vaccins_geschat['totaal_geschat'].append(total)
+
+    if (datum in metenisweten and metenisweten[datum]['vaccinaties']['totaal_geschat'] != None):
+        vaccins_geschat['x'].append(d)
+        vaccins_geschat['totaal_geschat'].append(metenisweten[datum]['vaccinaties']['totaal_geschat'])
+
+
 totaal_inwoners=17500000
 
 gezet = vaccins_totaal['totaal'][-1] - vaccins_totaal['totaal'][-2]
@@ -62,14 +76,19 @@ dagentegaan = nogzetten/vaccinsperdag
 klaar = (vaccins_totaal['x'][-1] + timedelta(days=dagentegaan)).strftime("%Y-%m-%d")
 
 vaccins_percentage = {
-    'x':             vaccins_totaal['x'],
-    'astra_zeneca': [100*x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
-    'pfizer':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
-    'cure_vac':     [100*x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
-    'janssen':      [100*x/(totaal_inwoners*2) for x in vaccins_totaal['janssen']],
-    'moderna':      [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
-    'sanofi':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
-    'totaal':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']], 
+    'x':              vaccins_totaal['x'],
+    'astra_zeneca':   [100*x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
+    'pfizer':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
+    'cure_vac':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
+    'janssen':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['janssen']],
+    'moderna':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
+    'sanofi':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
+    'totaal':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']],
+}
+
+vaccins_geschat_percentage = {
+    'x':              vaccins_geschat['x'],
+    'totaal_geschat': [100*x/(totaal_inwoners*2) for x in vaccins_geschat['totaal_geschat']]
 }
 
 print('Generating vaccination graph...')
@@ -83,6 +102,16 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 
 ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
+
+
+totaal_prikken_geschat = decimalstring(vaccins_geschat['totaal_geschat'][-1])
+percentage_prikken_geschat = decimalstring(round(vaccins_geschat_percentage['totaal_geschat'][-1],2))
+ax1.plot(vaccins_geschat_percentage['x'], 
+         vaccins_geschat_percentage['totaal_geschat'], 
+         linestyle=':', 
+         color='fuchsia',
+         label='Totaal geschat (nu: ' + totaal_prikken_geschat + ', ' + percentage_prikken_geschat + '%)')
+
 
 ax2.set_xlabel("Datum")
 ax2.set_ylabel("Aantal prikken")
@@ -113,7 +142,7 @@ ax2.stackplot(
 # die dan  ook bij 1 persoon zijn gezet (dat betekent grofweg dat de data
 # van 3 weken terug beter klopt dan de data van vorige week)
 totaal_prikken = decimalstring(vaccins_totaal['totaal'][-1])
-percentage_prikken = decimalstring(round((100*vaccins_totaal['totaal'][-1])/(totaal_inwoners*2),2))
+percentage_prikken = decimalstring(round(vaccins_percentage['totaal'][-1],2))
 
 ax2.plot(vaccins_percentage['x'], 
          vaccins_percentage['totaal'], 
@@ -150,6 +179,9 @@ ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90
 
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
+ax1.set_ylim([0, 100])
+ax2.set_ylim([0, 100])
+
 plt.figtext(0.22,0.42, 
          "Deze grafiek gaat over het totaal aantal gezette prikken \n"+\
          "op basis van beschikbare weekrapportages.\n"+\
@@ -173,7 +205,7 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://www.rivm.nl/covid-19-vaccinatie/"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-
+ax1.legend(loc="upper right")
 ax2.legend(loc="upper left")
 
 

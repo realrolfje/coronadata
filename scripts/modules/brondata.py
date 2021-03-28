@@ -243,13 +243,15 @@ def initrecord(date, metenisweten):
                 'rijden' : None
             },
             'vaccinaties' : {
-                'astra_zeneca' : None,
-                'pfizer'       : None,
-                'cure_vac'     : None,
-                'janssen'      : None,
-                'moderna'      : None,
-                'sanofi'       : None,
-                'totaal'       : None
+                'astra_zeneca'   : None,
+                'pfizer'         : None,
+                'cure_vac'       : None,
+                'janssen'        : None,
+                'moderna'        : None,
+                'sanofi'         : None,
+                'totaal'         : None,
+                'totaal_geschat' : None,
+                'levering_geschat' : None,
             },
             'rolf_besmettelijk' : None, # Besmettelijke mensen op basis van gecombineerde meetwaarden
 
@@ -571,6 +573,28 @@ def builddaily():
             # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
             # metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
             # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
+
+        for record in data['vaccine_administered_estimate']['values']:
+            d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+            if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+                print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+                # Skip estimates from RIVM
+                continue
+
+            datum =  d.strftime('%Y-%m-%d')
+            initrecord(datum, metenisweten)
+            metenisweten[datum]['vaccinaties']['totaal_geschat']       = intOrNone(record['total'])
+
+        for record in data['vaccine_delivery_estimate']['values']:
+            d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+            if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+                print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+                # Skip estimates from RIVM
+                continue
+
+            datum =  d.strftime('%Y-%m-%d')
+            initrecord(datum, metenisweten)
+            metenisweten[datum]['vaccinaties']['geleverd_geschat']       = intOrNone(record['total'])
 
         # Hardcode start of vaccination at 0 in 2020
         datum = '2020-12-01'
