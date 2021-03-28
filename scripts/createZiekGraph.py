@@ -8,6 +8,7 @@ from statistics import mean
 import datetime
 import modules.brondata as brondata
 from modules.brondata import decimalstring
+from modules.datautil import anotate
 import sys
 
 print("------------ %s ------------" % __file__)
@@ -171,22 +172,6 @@ for d in date_range:
         geschat_ziek_rna['x'].append(parser.parse(datum))
         geschat_ziek_rna['y'].append(nieuw_y)
 
-
-
-
-def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    xindex = xdata.index(parser.parse(datum))
-    if xindex:
-        xval = xdata[xindex]
-        yval = ydata[xindex]
-        plt.annotate(
-            tekst,
-            xy=(xval, yval),
-            xytext=(parser.parse(x), y),
-            fontsize=8,
-            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-        )
 
 print('Generating daily positive tests graph...')
 

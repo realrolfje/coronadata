@@ -570,8 +570,8 @@ def builddaily():
             # metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
             # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
 
-        # Hardcode start of vaccination at 0
-        datum = '2021-01-06'
+        # Hardcode start of vaccination at 0 in 2020
+        datum = '2020-12-01'
         initrecord(datum, metenisweten)
         metenisweten[datum]['vaccinaties']['astra_zeneca'] = 0
         metenisweten[datum]['vaccinaties']['pfizer']       = 0

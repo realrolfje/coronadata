@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
 from modules.brondata import decimalstring, intOrZero
+from modules.datautil import anotate
 from datetime import datetime, date, timedelta
 
 print("------------ %s ------------" % __file__)
@@ -39,7 +40,6 @@ def addVaccinCount(record, vaccin):
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
     if (datum in metenisweten and metenisweten[datum]['vaccinaties']['astra_zeneca'] != None):
-        print("add %s" % str(datum))
         vaccins_totaal['x'].append(d)
 
         record = metenisweten[datum]['vaccinaties']
@@ -61,6 +61,16 @@ vaccinsperdag = gezet/intijd
 dagentegaan = nogzetten/vaccinsperdag
 klaar = (vaccins_totaal['x'][-1] + timedelta(days=dagentegaan)).strftime("%Y-%m-%d")
 
+vaccins_percentage = {
+    'x':             vaccins_totaal['x'],
+    'astra_zeneca': [100*x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
+    'pfizer':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
+    'cure_vac':     [100*x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
+    'janssen':      [100*x/(totaal_inwoners*2) for x in vaccins_totaal['janssen']],
+    'moderna':      [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
+    'sanofi':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
+    'totaal':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']], 
+}
 
 print('Generating vaccination graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
@@ -78,13 +88,13 @@ ax2.set_xlabel("Datum")
 ax2.set_ylabel("Aantal prikken")
 
 ax2.stackplot(
-    vaccins_totaal['x'],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['janssen']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
-    [x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
+    vaccins_percentage['x'],
+    vaccins_percentage['astra_zeneca'],
+    vaccins_percentage['pfizer'],
+    vaccins_percentage['cure_vac'],
+    vaccins_percentage['janssen'],
+    vaccins_percentage['moderna'],
+    vaccins_percentage['sanofi'],
     labels=(
         'COVID-19 Vaccine AstraZeneca ® ('+decimalstring(vaccins_totaal['astra_zeneca'][-1])+')',
         'Comirnaty® (BioNTech/Pfizer) ('+decimalstring(vaccins_totaal['pfizer'][-1])+')',
@@ -105,29 +115,29 @@ ax2.stackplot(
 totaal_prikken = decimalstring(vaccins_totaal['totaal'][-1])
 percentage_prikken = decimalstring(round((100*vaccins_totaal['totaal'][-1])/(totaal_inwoners*2),2))
 
-ax2.plot(vaccins_totaal['x'], 
-         [x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']], 
+ax2.plot(vaccins_percentage['x'], 
+         vaccins_percentage['totaal'], 
          color='black',
          label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
 
-def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    xval = parser.parse(datum)
-    yval = 0.001
-    plt.annotate(
-        tekst,
-        xy=(xval, yval),
-        xytext=(parser.parse(x), y/100),
-        fontsize=8,
-        bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-    )
+# def anotate(plt, xdata, ydata, datum, tekst, x, y):
+#     xval = parser.parse(datum)
+#     yval = 0.001
+#     plt.annotate(
+#         tekst,
+#         xy=(xval, yval),
+#         xytext=(parser.parse(x), y/100),
+#         fontsize=8,
+#         bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+#         arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+#     )
 
 graphname='vaccins'
 for event in events:
     if graphname in event:
         anotate(
             ax2, 
-            vaccins_totaal['x'], vaccins_totaal['totaal'],
+            vaccins_percentage['x'], vaccins_percentage['totaal'],
             event['date'], event['event'], 
             event[graphname][0], 
             event[graphname][1]
@@ -144,10 +154,10 @@ plt.figtext(0.885,0.125,
          zorder=10)
 ax2.axvline(date.today(), color='red', linewidth=0.5)
 
-ax1.set_yticks      ([0.1,    0.2,   0.3,   0.4,   0.5,   0.6,   0.7,   0.8,  0.9,   1])
+ax1.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
 ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
-ax2.set_yticks      ([0.1,    0.2,   0.3,   0.4,   0.5,   0.6,   0.7,   0.8,  0.9,   1])
+ax2.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
 ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
 plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
