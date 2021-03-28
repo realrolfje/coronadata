@@ -550,7 +550,6 @@ def builddaily():
             line_count = line_count + 1
 
     print("Vaccinaties")
-    print("(Nog niet gebruikt in grafiek, data niet betrouwbaar genoeg.)")
     filename ='../cache/rijskoverheid-coronadashboard-NL.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)

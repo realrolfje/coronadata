@@ -6,6 +6,13 @@ import modules.brondata as brondata
 from modules.brondata import decimalstring, intOrZero
 from datetime import datetime, date, timedelta
 
+print("------------ %s ------------" % __file__)
+if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+    print("No fresh data, and unchanged code. Exit.")
+    exit(0)
+else:
+    print("New data, regenerate output.")
+
 #brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
@@ -25,49 +32,25 @@ date_range = brondata.getDateRange(metenisweten)
 
 def addVaccinCount(record, vaccin):
     count = intOrZero(record[vaccin])
-
-    if (len(vaccins_totaal[vaccin]) > 0):
-        vaccins_totaal[vaccin].append(
-            vaccins_totaal[vaccin][-1] + count
-        )
-    else:
-        vaccins_totaal[vaccin].append(count)
+    vaccins_totaal[vaccin].append(count)
     return count
 
 
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
     if (datum in metenisweten and metenisweten[datum]['vaccinaties']['astra_zeneca'] != None):
-        vaccins_totaal['x'].append(datum)
+        print("add %s" % str(datum))
+        vaccins_totaal['x'].append(d)
 
         record = metenisweten[datum]['vaccinaties']
-        daytotal = addVaccinCount(record, 'astra_zeneca')\
+        total = addVaccinCount(record, 'astra_zeneca')\
             + addVaccinCount(record, 'pfizer')\
             + addVaccinCount(record, 'cure_vac')\
             + addVaccinCount(record, 'janssen')\
             + addVaccinCount(record, 'moderna')\
             + addVaccinCount(record, 'sanofi')
 
-        if (len(vaccins_totaal['totaal']) > 0):
-            vaccins_totaal['totaal'].append(
-                vaccins_totaal['totaal'][-1] + daytotal
-            )
-        else:
-            vaccins_totaal['totaal'].append(daytotal)
-
-# Override tot echte data beschikbaar is. Deze data komt uit
-# https://www.rivm.nl/covid-19-vaccinatie/wekelijkse-update-deelname-covid-19-vaccinatie-in-nederland
-# zie 
-vaccins_totaal = {
-    'x':            [ parser.parse("2021-01-06"), parser.parse("2021-01-17"), parser.parse("2021-01-24"), parser.parse("2021-01-31"), parser.parse("2021-02-07"), parser.parse("2021-02-14"), parser.parse("2021-02-21"), parser.parse("2021-02-28"), parser.parse("2021-03-07"), parser.parse("2021-03-14"), parser.parse("2021-03-21")],          #'x':           
-    'astra_zeneca': [                          0,                          0,                          0,                          0,                          0,                          0,                      13386,                      63002,                     120674,                     154803,                     154803],          #'astra_zeneca':
-    'pfizer':       [                          0,                      77000,                     146612,                     337526,                     552626,                     761227,                     961083,                    1200649,                    1405954,                    1619307,                    1817611],          #'pfizer': (gecombineerd met AZ, rapportage maakt geen splitsing)      
-    'cure_vac':     [                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0],          #'cure_vac':    
-    'janssen':      [                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0],          #'janssen':     
-    'moderna':      [                          0,                          0,                          0,                       6000,                      18519,                      22211,                      39570,                      72747,                      93211,                     113616,                     125566],          #'moderna':     
-    'sanofi':       [                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0,                          0],          #'sanofi':      
-    'totaal':       [                          0,                      77000,                     146612,                     343526,                     571145,                     793438,                    1014039,                    1336398,                    1619839,                    1887726,                    2097980]           #'totaal':      
-}
+        vaccins_totaal['totaal'].append(total)
 
 totaal_inwoners=17500000
 
