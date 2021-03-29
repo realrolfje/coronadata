@@ -25,6 +25,7 @@ gemiddeldeleeftijdarray=[]
 # Assumes last records are newest
 for date in metenisweten:
     totaal_positief = metenisweten[date]['totaal_positief']
+    totaal_positief_datum = date
 
     if date in metenisweten \
        and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3))\
@@ -32,6 +33,7 @@ for date in metenisweten:
 
         # print(str(date)+' '+str(metenisweten[date]['nu_op_ic']))
         nu_op_ic = metenisweten[date]['nu_op_ic']
+        nu_op_ic_datum = date
 
     if date in metenisweten \
        and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3))\
@@ -39,27 +41,38 @@ for date in metenisweten:
 
         # print(str(date)+' '+str(metenisweten[date]['nu_opgenomen']))
         nu_opgenomen = metenisweten[date]['nu_opgenomen']
+        nu_opgenomen_datum = date
 
     if metenisweten[date]['rivm_schatting_besmettelijk']['value']:
         geschat_ziek_nu = metenisweten[date]['rivm_schatting_besmettelijk']['value']
+        geschat_ziek_nu_datum = date
     if metenisweten[date]['RNA']['besmettelijk']:
         geschat_ziek_nu_rna = metenisweten[date]['RNA']['besmettelijk']
+        geschat_ziek_nu_rna_datum = date
     if metenisweten[date]['rolf_besmettelijk']:
         geschat_ziek_nu_rolf = metenisweten[date]['rolf_besmettelijk']
+        geschat_ziek_nu_rolf_datum = date
     if metenisweten[date]['Rt_avg'] is not None:
         Rt = float(metenisweten[date]['Rt_avg'])
+        Rt_datum = date
+        
     # if metenisweten[date]['rivm_totaal_personen_getest'] and metenisweten[date]['rivm_totaal_personen_positief']:
     #     positief_percentage = 100 * metenisweten[date]['rivm_totaal_personen_positief'] / metenisweten[date]['rivm_totaal_personen_getest']
     if 'rivm_totaal_tests' in metenisweten[date] and 'rivm_totaal_tests_positief' in metenisweten[date]:
-        positief_percentage = 100 * metenisweten[date]['rivm_totaal_tests_positief'] / metenisweten[date]['rivm_totaal_tests']
+        positief_getest = metenisweten[date]['rivm_totaal_tests_positief']
+        vandaag_getest = metenisweten[date]['rivm_totaal_tests']
+        positief_percentage = 100 * positief_getest / vandaag_getest
+        vandaag_getest_datum = date
     if metenisweten[date]['besmettingleeftijd_gemiddeld']:
         gemiddeldeleeftijdarray.append(metenisweten[date]['besmettingleeftijd_gemiddeld'])
     if metenisweten[date]['vaccinaties']['totaal']:
         prikken_gezet = metenisweten[date]['vaccinaties']['totaal']
         prikken_gezet_perc=100*(prikken_gezet/(17500000*2)) # 2 prikken per persoon!
+        prikken_gezet_datum = date
     if metenisweten[date]['vaccinaties']['totaal_geschat']:
         prikken_gezet_geschat = metenisweten[date]['vaccinaties']['totaal_geschat']
         prikken_gezet_geschat_perc=100*(prikken_gezet_geschat/(17500000*2)) # 2 prikken per persoon!
+        prikken_gezet_geschat_datum = date
 
 
 gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
@@ -82,11 +95,15 @@ with open(filename, 'r') as csv_file:
             cache_size = int(row[1])*1000
 
 substitutes = {
-    'totaal_positief' : decimalstring(totaal_positief),
+    'totaal_positief' :      decimalstring(totaal_positief),
+    'totaal_positief_datum': totaal_positief_datum,
 
-    'geschat_ziek_rivm' : decimalstring(geschat_ziek_nu),
-    'geschat_ziek_rna' : decimalstring(round(geschat_ziek_nu_rna)),
-    'geschat_ziek_rolf' : decimalstring(round(geschat_ziek_nu_rolf)),
+    'geschat_ziek_rivm' :        decimalstring(geschat_ziek_nu),
+    'geschat_ziek_nu_datum':     geschat_ziek_nu_datum,
+    'geschat_ziek_rna' :         decimalstring(round(geschat_ziek_nu_rna)),
+    'geschat_ziek_nu_rna_datum': geschat_ziek_nu_rna_datum,
+    'geschat_ziek_rolf' :        decimalstring(round(geschat_ziek_nu_rolf)),
+    'geschat_ziek_nu_rolf_datum':geschat_ziek_nu_rolf_datum,
 
     'ziekverhouding' : str(eenopXziek),
     'ziekverhouding_color' : 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
@@ -97,25 +114,33 @@ substitutes = {
     'ziekverhouding_rolf' : str(eenopXziekRolf),
     'ziekverhouding_rolf_color' : 'green' if eenopXziekRolf > 1000 else 'yellow' if eenopXziekRolf > 500 else 'red',
 
-    'nu_opgenomen' : decimalstring(nu_opgenomen),
+    'nu_opgenomen' :      decimalstring(nu_opgenomen),
+    'nu_opgenomen_datum': nu_opgenomen_datum,
     'nu_opgenomen_color': 'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',
 
-    'nu_op_ic' : decimalstring(nu_op_ic),
-    'nu_op_ic_color' : 'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
+    'nu_op_ic' :      decimalstring(nu_op_ic),
+    'nu_op_ic_datum': nu_op_ic_datum,
+    'nu_op_ic_color': 'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
 
-    'Rt' : decimalstring(Rt),
+    'Rt' :      decimalstring(Rt),
+    'Rt_datum': Rt_datum,
     'Rt_color': 'green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red',
 
+    'vandaag_getest'      : decimalstring(vandaag_getest),
+    'vandaag_getest_datum': vandaag_getest_datum,
+    'positief_getest'     : decimalstring(positief_getest),
     'positief_percentage' : decimalstring(round(positief_percentage,1))+'%',
     'positief_percentage_color' : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
 
-    'prikken_gezet' : decimalstring(prikken_gezet),
-    'prikken_gezet_perc' : decimalstring(round(prikken_gezet_perc,2))+'%',
-    'prikken_gezet_color' : 'green' if prikken_gezet_perc > 60 else 'yellow' if prikken_gezet_perc > 40 else 'red',
+    'prikken_gezet':       decimalstring(prikken_gezet),
+    'prikken_gezet_datum': prikken_gezet_datum,
+    'prikken_gezet_perc':  decimalstring(round(prikken_gezet_perc,2))+'%',
+    'prikken_gezet_color': 'green' if prikken_gezet_perc > 60 else 'yellow' if prikken_gezet_perc > 40 else 'red',
 
-    'prikken_gezet_geschat' : decimalstring(prikken_gezet_geschat),
+    'prikken_gezet_geschat':       decimalstring(prikken_gezet_geschat),
+    'prikken_gezet_geschat_datum': prikken_gezet_geschat_datum,
     'prikken_gezet_geschat_perc' : decimalstring(round(prikken_gezet_geschat_perc,2))+'%',
-    'prikken_gezet_geschat_color' : 'green' if prikken_gezet_geschat_perc > 60 else 'yellow' if prikken_gezet_geschat_perc > 40 else 'red',
+    'prikken_gezet_geschat_color': 'green' if prikken_gezet_geschat_perc > 60 else 'yellow' if prikken_gezet_geschat_perc > 40 else 'red',
 
     'positief_leeftijd' : str(gemiddeldeleeftijdweek),
 
