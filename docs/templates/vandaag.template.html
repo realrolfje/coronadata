@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <title>Corona data laatste cijfers</title>
+    <meta http-equiv="refresh" content="500">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+</head>
+
+<body>
+    <p class="highlight header center">
+        Geen smoesjes, je weet het best:<br />
+        <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    </p>
+    <table style="  margin-left: auto;  margin-right: auto;" width="800px">
+        <tr><th align="right" width="200px">Op IC</th> <td>${nu_op_ic_datum}</td>              <td>${nu_op_ic}</td></tr>
+        <tr><th align="right">Opgenomen</th>           <td>${nu_opgenomen_datum}</td>          <td>${nu_opgenomen}</td></tr>
+        <tr><th align="right">Tests</th>               <td>${vandaag_getest_datum}</td>        <td>${vandaag_getest} tests waarvan ${positief_getest} positief (${positief_percentage})</td></tr>
+        <tr><th align="right">Geschat ziek</th>        <td>${geschat_ziek_nu_rolf_datum}</td>  <td>${geschat_ziek_rolf} (1:${ziekverhouding_rolf})</td></tr>
+        <tr><th align="right">Rt</th>                  <td>${Rt_datum}</td>                    <td>${Rt}</td></tr>
+        <tr><th align="right">Vaccins geprikt</th>     <td>${prikken_gezet_geschat_datum}</td> <td>${prikken_gezet_geschat}</td></tr>
+        <tr><th align="right">Gegenereerd op</th>      <td colspan="2">${gegenereerd_op}</td></tr>
+    </table>
+</body>
+</html>
