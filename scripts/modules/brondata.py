@@ -574,17 +574,34 @@ def builddaily():
             # metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
             # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
 
+        # Load all predictions
+        voorspelling_vaccinaties = { }
         for record in data['vaccine_administered_estimate']['values']:
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-            if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-                print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
-                # Skip estimates from RIVM
+            voorspelling_vaccinaties[d] = intOrNone(record['total'])
+
+        # Interpolate prediction to TODAY
+        for key, value in voorspelling_vaccinaties.items():
+            if key <= datetime.datetime.now():
+                previousPredictionDate = key
+                previousPredictionValue =  value
                 continue
 
-            datum =  d.strftime('%Y-%m-%d')
-            initrecord(datum, metenisweten)
-            metenisweten[datum]['vaccinaties']['totaal_geschat']       = intOrNone(record['total'])
+            if key >= datetime.datetime.now():
+                nextPredictionDate = key
+                nextPredictionValue =  value
+                continue
+        
+        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
+        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
+        linearFactor = (datetime.datetime.now()- previousPredictionDate).total_seconds() / (nextPredictionDate - previousPredictionDate).total_seconds()
+        linearValue = round(previousPredictionValue + linearFactor * (nextPredictionValue - previousPredictionValue))
+        datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
+        initrecord(datum, metenisweten)
+        metenisweten[datum]['vaccinaties']['totaal_geschat'] = linearValue
+        # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
 
+        # Get actual vaccine deliveries
         for record in data['vaccine_delivery']['values']:
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
             if (datetime.datetime.date(d) > datetime.datetime.today().date()):

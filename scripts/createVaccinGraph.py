@@ -168,7 +168,7 @@ percentage_prikken = decimalstring(round(vaccins_percentage['totaal'][-1],2))
 ax2.plot(vaccins_percentage['x'], 
          vaccins_percentage['totaal'], 
          color='black',
-         label='Totaal (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
+         label='Totaal gerapporteerd (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
 
 graphname='vaccins'
 for event in events:
