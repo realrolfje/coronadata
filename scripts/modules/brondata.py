@@ -585,19 +585,15 @@ def builddaily():
 
         # Interpolate prediction to TODAY
         for key, value in voorspelling_vaccinaties.items():
-            if key <= datetime.datetime.now():
-                previousPredictionDate = key
-                previousPredictionValue =  value
-                continue
-
+            # Get first next date
             if key >= datetime.datetime.now():
                 nextPredictionDate = key
                 nextPredictionValue =  value
-                continue
+                break
 
-        print("Laatste waarde %s")
-        print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
-        print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
+        # print("Laatste waarde %s")
+        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
+        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
         linearFactor = (datetime.datetime.now()- previousPredictionDate).total_seconds() / (nextPredictionDate - previousPredictionDate).total_seconds()
         linearValue = round(previousPredictionValue + linearFactor * (nextPredictionValue - previousPredictionValue))
         datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
