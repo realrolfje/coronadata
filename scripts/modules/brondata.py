@@ -573,6 +573,9 @@ def builddaily():
             # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
             # metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
             # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
+            previousPredictionDate = d
+            previousPredictionValue = intOrNone(record['total'])
+
 
         # Load all predictions
         voorspelling_vaccinaties = { }
@@ -591,9 +594,10 @@ def builddaily():
                 nextPredictionDate = key
                 nextPredictionValue =  value
                 continue
-        
-        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
-        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
+
+        print("Laatste waarde %s")
+        print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
+        print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
         linearFactor = (datetime.datetime.now()- previousPredictionDate).total_seconds() / (nextPredictionDate - previousPredictionDate).total_seconds()
         linearValue = round(previousPredictionValue + linearFactor * (nextPredictionValue - previousPredictionValue))
         datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
