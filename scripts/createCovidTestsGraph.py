@@ -82,15 +82,16 @@ for d in date_range:
             positief_percentage['y'].append(100 * positief['y'][-1] / totaaltests['y'][-1])
         # else:
         #     print("no tests for "+datum)
-
-    if datum in metenisweten:
-        totaal_positief = metenisweten[datum]['totaal_positief']
+    
+        if datum in metenisweten:
+            totaal_positief = metenisweten[datum]['totaal_positief']
 
         if metenisweten[datum]['rivm-datum']:
             filedate = metenisweten[datum]['rivm-datum']
 
     # ---------------------- Voorspelling positief getst obv gemiddelde richtingscoefficient positief getest.
-    if datum in metenisweten and len(positief['y']) > positief_voorspeld['avgsize'] and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
+    if datum in metenisweten and len(positief['y']) > positief_voorspeld['avgsize'] \
+          and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
         # Voorspel morgen op basis van metingen
         rc = (positief['y'][-1]-positief['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
         positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
