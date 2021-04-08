@@ -1,0 +1,12 @@
+{
+    "gegenereerd_op" : "${gegenereerd_op}",
+    "totaal_positief" : ${totaal_positief_num},
+    "positief_percentage" : ${positief_percentage_num},
+    "Rt" : ${Rt_num},
+    "Rt_datum" : "${Rt_datum}",
+    "prikken_gezet_geschat" : ${prikken_gezet_geschat_num},
+    "prikken_gezet_geschat_datum" : "${prikken_gezet_geschat_datum}",
+    "prikken_gezet_geschat_perc" : ${prikken_gezet_geschat_perc_num},
+    "nu_opgenomen" : ${nu_opgenomen_num},
+    "nu_op_ic" : ${nu_op_ic_num}
+}
