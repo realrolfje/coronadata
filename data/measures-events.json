@@ -366,11 +366,32 @@
     },
     {
         "date": "2021-04-01",
-        "event": "Nederland wil\n116.700vaccins\n'uitlenen'.",
+        "event": "Nederland wil\n116.700 vaccins\n'uitlenen'.",
         "url": "https://www.nu.nl/coronavirus/6125484/nederland-wil-coronavaccins-lenen-aan-bulgarije-en-andere-achterlopers-in-eu.html",
         "vaccins": [
             "2021-03-05",
             44
         ]
-   }   
+    },
+    {
+        "date": "2021-04-08",
+        "event": "Astrazeneca\ngestopt",
+        "url": "https://www.parool.nl/nederland/nederland-stopt-vaccinatie-met-astrazeneca-bij-mensen-onder-de-60~b020f0ee/",
+        "vaccins": [
+            "2021-04-01",
+            30
+        ]
+    },
+    {
+        "date": "2021-04-11",
+        "event": "Hart- en\nkankeroperaties\n uitgesteld",
+        "url": "https://www.nu.nl/coronavirus/6127021/ziekenhuizen-stellen-noodgedwongen-hart-en-kankeroperaties-uit.html?redirect=1",
+        "zieken": [
+            "2021-04-12",
+            20000
+        ]
+    }
+    
+    
+    
 ]
