@@ -79,12 +79,12 @@ plt.figtext(0.5, 0.80,
 
 plt.figtext(0.5, 0.02,
             "Rt="+decimalstring(Rt),
-            color="gray",
+            color="royalblue",
             fontsize=20,
             fontweight='extra bold',
             horizontalalignment='center',
             # verticalalignment='center',
-            alpha=0.3,
+            alpha=0.5,
             zorder=10)
 
 

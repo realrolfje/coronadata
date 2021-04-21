@@ -359,19 +359,15 @@
     {
         "date": "2021-04-01",
         "event": "Nederland wil\n116.700 vaccins\n'uitlenen'.",
-        "url": "https://www.nu.nl/coronavirus/6125484/nederland-wil-coronavaccins-lenen-aan-bulgarije-en-andere-achterlopers-in-eu.html",
-        "vaccins": [
-            "2021-02-10",
-            38
-        ]
+        "url": "https://www.nu.nl/coronavirus/6125484/nederland-wil-coronavaccins-lenen-aan-bulgarije-en-andere-achterlopers-in-eu.html"
     },
     {
         "date": "2021-04-08",
         "event": "Astrazeneca\n60- gestopt",
         "url": "https://www.parool.nl/nederland/nederland-stopt-vaccinatie-met-astrazeneca-bij-mensen-onder-de-60~b020f0ee/",
         "vaccins": [
-            "2021-03-15",
-            25
+            "2021-02-10",
+            32
         ]
     },
     {
@@ -395,6 +391,15 @@
         "zieken": [
             "2021-03-10",
             270000
+        ]
+    }    ,
+    {
+        "date": "2021-04-21",
+        "event": "Eerste\nJanssen\nprik",
+        "url": "https://www.omroepwest.nl/nieuws/4384274/Eerste-prik-coronavaccin-Janssen-gezet-in-Leids-museum-Boerhaave",
+        "vaccins": [
+            "2021-03-28",
+            25
         ]
     }
 ]

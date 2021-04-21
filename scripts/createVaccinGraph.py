@@ -124,7 +124,7 @@ ax1.plot(vaccins_geschat_percentage['x'],
          vaccins_geschat_percentage['totaal_geschat'], 
          linestyle=':', 
          color='fuchsia',
-         label='Totaal geschat (nu: ' + totaal_prikken_geschat + ', ' + percentage_prikken_geschat + '%)')
+         label='Geprikt geschat (nu: ' + totaal_prikken_geschat + ', ' + percentage_prikken_geschat + '%)')
 
 totaal_vaccins_geleverd = decimalstring(vaccins_geleverd['totaal'][-1])
 percentage_vaccins_geleverd = decimalstring(round(100*vaccins_geleverd['totaal'][-1]/(totaal_inwoners*2),2))
@@ -132,7 +132,7 @@ ax1.plot(vaccins_geleverd_percentage['x'],
          vaccins_geleverd_percentage['totaal'], 
          linestyle='--', 
          color='c',
-         label='Totaal geleverd (nu: ' + totaal_vaccins_geleverd + ', ' + percentage_vaccins_geleverd + '%)')
+         label='Vaccins geleverd (nu: ' + totaal_vaccins_geleverd + ', ' + percentage_vaccins_geleverd + '%)')
 
 ax2.set_xlabel("Datum")
 ax2.set_ylabel("Aantal prikken")
@@ -149,7 +149,7 @@ ax2.stackplot(
         'COVID-19 Vaccine AstraZeneca ® ('+decimalstring(vaccins_totaal['astra_zeneca'][-1])+')',
         'Comirnaty® (BioNTech/Pfizer) ('+decimalstring(vaccins_totaal['pfizer'][-1])+')',
         'CVnCoV (CureVac) ('+decimalstring(vaccins_totaal['cure_vac'][-1])+')',
-        'janssen ('+decimalstring(vaccins_totaal['janssen'][-1])+')',
+        'COVID-19 Vaccine Janssen ('+decimalstring(vaccins_totaal['janssen'][-1])+')',
         'COVID-19 Vaccine Moderna ® ('+decimalstring(vaccins_totaal['moderna'][-1])+')',
         'Sanofi/GSK ('+decimalstring(vaccins_totaal['sanofi'][-1])+')'
     ),
