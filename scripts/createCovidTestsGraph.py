@@ -40,7 +40,8 @@ positief_voorspeld = {
 
 totaaltests = {
     'x': [],
-    'y': []
+    'y': [],
+    'total': 0
 }
 
 positief_percentage = {
@@ -61,9 +62,11 @@ for d in date_range:
         if 'rivm_totaal_tests' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_tests']:
             totaaltests['x'].append(parser.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
-        elif 'rivm_totaal_personen_getest' in metenisweten[datum]:
+            totaaltests['total'] += int(metenisweten[datum]['rivm_totaal_tests'])
+        elif 'rivm_totaal_personen_getest' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_personen_getest']:
             totaaltests['x'].append(parser.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_personen_getest'])
+            totaaltests['total'] += int(metenisweten[datum]['rivm_totaal_personen_getest'])
         # else:
         #     print("no totaal for "+datum)
 
@@ -130,22 +133,26 @@ ax1.text(
 
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
-         color='lightblue', linestyle='-', label='Uitgevoerde tests')
+         color='lightblue', linestyle='-', label='Uitgevoerde tests (totaal '+decimalstring(totaaltests['total'])+')')
 
-# ax1.plot(personen_positief['x'], personen_positief['y'], 
-#          color='dodgerblue', linestyle='-', label='Personen positief')
+# Plot cases per dag
+totaal_percentage = round(100*totaal_positief/totaaltests['total'],1)
+ax1.plot(positief['x'][:-positief_voorspeld['avgsize']], 
+         positief['y'][:-positief_voorspeld['avgsize']], 
+            color='fuchsia', label=
+            "Tests positief (nu %s, totaal %s, %s%%)"
+            % (decimalstring(positief['y'][-1]), decimalstring(totaal_positief), decimalstring(totaal_percentage))
+)
+#ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
+ax1.plot(positief_voorspeld['x'][-positief_voorspeld['avgsize']-7:], positief_voorspeld['y'][-positief_voorspeld['avgsize']-7:], 
+         color='fuchsia', linestyle=':')
 
 huidigpercentage = decimalstring(round(positief_percentage['y'][-1],1))
 ax2.plot(positief_percentage['x'], positief_percentage['y'], 
          color='gold', linestyle='-', 
-         label='Percentage positieve tests (nu: ' + huidigpercentage + "%).")
-
-# Plot cases per dag
-ax1.plot(positief['x'][:-positief_voorspeld['avgsize']], positief['y'][:-positief_voorspeld['avgsize']], 
-            color='fuchsia', label='Tests positief (totaal '+decimalstring(totaal_positief)+")")
-#ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
-ax1.plot(positief_voorspeld['x'][-positief_voorspeld['avgsize']-7:], positief_voorspeld['y'][-positief_voorspeld['avgsize']-7:], 
-         color='fuchsia', linestyle=':')
+         label='Percentage positieve tests (%s%%).'
+         % ( huidigpercentage)
+)
 
 # laat huidige datum zien met vertikale lijn
 plt.figtext(0.885,0.125, 

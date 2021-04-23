@@ -198,7 +198,7 @@ ax2.grid(which='both', axis='both', linestyle='-.',
 
 
 nu_opgenomen = opgenomen['y'][-1]
-ax1.plot(opgenomen['x'], opgenomen['y'], color='orange', label='aantal opgenomen (nu: '+decimalstring(nu_opgenomen)+')')
+ax1.plot(opgenomen['x'], opgenomen['y'], color='orange', label='aantal op verpleegafdeling (nu: '+decimalstring(nu_opgenomen)+')')
 ax1.plot(opgenomen_voorspeld['x'], opgenomen_voorspeld['y'], color='orange', linestyle=':')
 
 
