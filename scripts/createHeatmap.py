@@ -112,8 +112,9 @@ xlabeldates = [startdate + relativedelta(months=x) for x in range(gemiddeldeleef
 xlabels = []
 xlocs = []
 for label in xlabeldates:
-    xlabels.append(label.strftime("%Y-%m"))
-    xlocs.append((label - startdate).days)
+    if (int(label.strftime("%m")) % 2) != 0:
+        xlabels.append(label.strftime("%Y-%m"))
+        xlocs.append((label - startdate).days)
 locs, labels = plt.xticks(xlocs, xlabels)
 
 # Labels and tickmarks
