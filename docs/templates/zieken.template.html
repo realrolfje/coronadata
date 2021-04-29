@@ -31,8 +31,8 @@
                 opgebouwd:
             </p>          
             <p>
-                <b>aantal opgenomen (nu:${nu_opgenomen})</b><br/>
-                Het aantal mensen dat is opgenomen in het ziekenhuis met, of als gevolg van, een
+                <b>aantal op verpleegafdeling (nu:${nu_opgenomen})</b><br/>
+                Het aantal mensen in een ziekenhuis op een verpleegafdeling met, of als gevolg van, een
                 COVID-19 besmetting zoals gerapporteerd door Stichting NICE.
             </p>
             <p>
@@ -40,6 +40,21 @@
                 Het aantal mensen dat op een intensive care afdeling is opgenomen met, of als 
                 gevolg van, een COVID-19 besmetting zoals gerapporteerd door Stichting NICE.
             </p>
+            <p>
+                <b>Totaal liggen er ${nu_in_ziekenhuis} mensen in het ziekenhuis.</b><br/>
+                <a href="index.html">
+                    <img id="zieken" src="graphs/totaal-mensen-in-ziekenhuis.svg" width="60%" style="float: right; max-width: 500px;" />
+                </a>
+                In de grafiek op de hoofdpagina zijn de getallen <b>niet</b> bijelkaar opgeteld. Zodra
+                iemand van de verpleegafdeling overgeplaatst wordt naar de IC afdeling dan telt die persoon dus
+                niet meer mee op de verpleegafdeling.
+            </p>
+            <p>
+                Voor de duidelijkheid vindt u hiernaast een "gestapelde" grafiek, waarbij het totaal aantal
+                mensen in het ziekenhuis (dus op de verpleegafdeling of op de IC) inzichtelijk is gemaakt.
+                In totaal zijn er nu dus<br/>${nu_opgenomen} + ${nu_op_ic} = ${nu_in_ziekenhuis}<br/>COVID-19 patienten 
+                in het ziekenhuis.
+            </p>          
             <p>
                 <b>Schatting totaal mensen ziek op basis van tests en RNA in rioolwater (nu: ${geschat_ziek_rolf})</b><br/>
                 Omdat de rioolwaterdata nogal grillig verloopt, met name na de invoering van nieuwe

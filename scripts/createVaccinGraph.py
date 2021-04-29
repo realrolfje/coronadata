@@ -181,7 +181,6 @@ for event in events:
             event[graphname][1]
         )
 
-
 # laat huidige datum zien met vertikale lijn
 plt.figtext(0.885,0.125, 
          datetime.now().strftime("%d"), 

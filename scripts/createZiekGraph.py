@@ -231,7 +231,7 @@ ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
 ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
 
 ax1.set_xlabel("Datum")
-ax1.set_ylabel("Aantal in ziekenhuis / op IC")
+ax1.set_ylabel("Aantal op verpleegafdeling / op IC")
 ax2.set_ylabel("Geschat ziek")
 
 ax1.set_ylim([0, 5000])

@@ -125,6 +125,9 @@ substitutes = {
     'nu_op_ic_datum': nu_op_ic_datum,
     'nu_op_ic_color': 'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
 
+    'nu_in_ziekenhuis'     : decimalstring(nu_opgenomen + nu_op_ic),
+    'nu_in_ziekenhuis_num' : nu_opgenomen + nu_op_ic,
+
     'Rt'      : decimalstring(Rt),
     'Rt_num'  : Rt,
     'Rt_datum': Rt_datum,
