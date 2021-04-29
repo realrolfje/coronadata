@@ -6,6 +6,8 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import datetime
 import modules.brondata as brondata
+from math import log
+
 
 print("------------ %s ------------" % __file__)
 if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
@@ -33,6 +35,8 @@ gamma = {
     'y' : [],
 }
 
+debug=False
+
 for datum in metenisweten:
     # if metenisweten[datum]['RNA_per_ml_avg']:
     #     alpha['x'].append(parser.parse(datum))
@@ -50,7 +54,17 @@ for datum in metenisweten:
 
     if metenisweten[datum]['rolf_besmettelijk']:
         beta['x'].append(parser.parse(datum))
-        beta['y'].append(metenisweten[datum]['rolf_besmettelijk'])
+        if debug:
+            beta['y'].append(
+                    ( \
+                        (1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests']) \
+                        + (3 * metenisweten[datum]['rivm_totaal_tests']) \
+                        + (22 * metenisweten[datum]['rivm_totaal_tests_positief']) \
+                    ) * (log(metenisweten[datum]['RNA']['totaal_RNA_per_ml'],10)) \
+                    /14)
+        else:
+            beta['y'].append(metenisweten[datum]['rolf_besmettelijk'])
+
         beta['min'].append(metenisweten[datum]['rolf_besmettelijk'] * 0.7)
         beta['max'].append(metenisweten[datum]['rolf_besmettelijk'] * 1.3)
 
@@ -62,7 +76,8 @@ for datum in metenisweten:
         gamma['x'].append(parser.parse(datum))
         gamma['y'].append(100 - 100 * metenisweten[datum]['rivm_schatting_besmettelijk']['value'] / metenisweten[datum]['rolf_besmettelijk'])
         
-    
+if debug:
+    beta['y'] = brondata.smooth(beta['y'])
 
 print('Generating test graph...')
 
