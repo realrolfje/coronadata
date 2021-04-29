@@ -7,6 +7,7 @@ cd scripts
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
 ./createZiekGraph.py sliding
+./createZiekenhuisTotaalGraph.py
 ./createSchattingAfwijkingGraph.py
 ./createLiveIcon.py
 ./createTestGraph.py
