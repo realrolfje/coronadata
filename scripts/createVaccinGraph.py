@@ -89,7 +89,7 @@ vaccins_percentage = {
     'astra_zeneca':   [100*x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
     'pfizer':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
     'cure_vac':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
-    'janssen':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['janssen']],
+    'janssen':        [100*x/(totaal_inwoners*1) for x in vaccins_totaal['janssen']],
     'moderna':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
     'sanofi':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
     'totaal':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']],
@@ -119,7 +119,10 @@ ax2.grid(which='both', axis='both', linestyle='-.',
 
 
 totaal_prikken_geschat = decimalstring(vaccins_geschat['totaal_geschat'][-1])
+
 percentage_prikken_geschat = decimalstring(round(vaccins_geschat_percentage['totaal_geschat'][-1],2))
+
+
 ax1.plot(vaccins_geschat_percentage['x'], 
          vaccins_geschat_percentage['totaal_geschat'], 
          linestyle=':', 
