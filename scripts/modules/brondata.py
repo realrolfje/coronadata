@@ -568,6 +568,7 @@ def builddaily():
             metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(record['astra_zeneca'])
             metenisweten[datum]['vaccinaties']['pfizer']       = intOrNone(record['pfizer'])
             metenisweten[datum]['vaccinaties']['moderna']      = intOrNone(record['moderna'])
+            metenisweten[datum]['vaccinaties']['janssen']      = intOrNone(record['janssen'])
             metenisweten[datum]['vaccinaties']['totaal']       = intOrNone(record['total'])
 
             # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
