@@ -156,6 +156,14 @@ ax2.stackplot(
         'COVID-19 Vaccine Moderna ® ('+decimalstring(vaccins_totaal['moderna'][-1])+')',
         'Sanofi/GSK ('+decimalstring(vaccins_totaal['sanofi'][-1])+')'
     ),
+    colors=(
+        'mediumblue',
+        'deepskyblue',
+        'darkorange',
+        'tomato',
+        'yellow',
+        'limegreen',
+    ),
     baseline='zero'
 )
 
