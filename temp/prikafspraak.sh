@@ -12,7 +12,7 @@ do
   
   if [[ "$kanik" == *"true"* ]]; then
     echo "$counter" > counter.txt
-    text="Online een afspraak maken kan voor mensen die geboren zijn in $counter of eerder."
+    text="Online een corona vaccinatie afspraak maken kan voor mensen die geboren zijn in $counter of eerder. https://coronatest.nl/ik-wil-me-laten-vaccineren/een-online-afspraak-maken"
     curl -d "$text" -H "Content-type: text/plain" -X POST http://noderedpi.local:1880/alert
     exit 0
   fi
