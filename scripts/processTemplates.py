@@ -85,6 +85,9 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
+with open('prikafspraak/geboortejaar.txt') as f:
+    vaccingeboortejaar=f.read()
+
 filename ='../cache/stats.csv'
 with open(filename, 'r') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
@@ -151,6 +154,7 @@ substitutes = {
     'prikken_gezet_geschat_perc'    : decimalstring(round(prikken_gezet_geschat_perc,2))+'%',
     'prikken_gezet_geschat_perc_num': round(prikken_gezet_geschat_perc,2),
     'prikken_gezet_geschat_color'   : 'green' if prikken_gezet_geschat_perc > 60 else 'yellow' if prikken_gezet_geschat_perc > 40 else 'red',
+    'vaccingeboortejaar'            : vaccingeboortejaar, 
 
     'positief_leeftijd' : str(gemiddeldeleeftijdweek),
 
