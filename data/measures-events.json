@@ -199,7 +199,7 @@
         "event": "EMA goedkeuring\nPfizer vaccin",
         "url": "https://twitter.com/MedicijnNL/status/1341006296255000577",
         "zieken": [
-            "2020-11-08",
+            "2020-11-01",
             320000
         ],
         "zieken-sliding": [
@@ -250,10 +250,10 @@
     },
     {
         "date": "2021-01-23",
-        "event": "Invoering avondklok",
+        "event": "Invoering\navondklok",
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/avondklok",
         "zieken": [
-            "2020-12-15",
+            "2020-12-18",
             14000
         ]
     },
@@ -325,7 +325,7 @@
         "event": "Verkiezingen",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/03/08/verdere-verruiming-lockdown-nog-niet-verantwoord",
         "zieken": [
-            "2021-02-25",
+            "2021-02-01",
             14000
         ]
     },
@@ -414,6 +414,15 @@
         "vaccins": [
             "2021-04-15",
             40
+        ]
+    },
+    {
+        "date": "2021-05-19",
+        "event": "Pretparken open,\nsekswerk toegest.",
+        "url": "https://www.ad.nl/binnenland/nederland-verder-van-het-slot-dit-zijn-alle-versoepelingen-die-19-mei-ingaan~abd06e58/",
+        "zieken": [
+            "2021-03-20",
+            14000
         ]
     }
 ]
