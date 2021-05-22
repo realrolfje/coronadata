@@ -120,8 +120,13 @@ ax2.grid(which='both', axis='both', linestyle='-.',
 
 totaal_prikken_geschat = decimalstring(vaccins_geschat['totaal_geschat'][-1])
 
-percentage_prikken_geschat = decimalstring(round(vaccins_geschat_percentage['totaal_geschat'][-1],2))
+# Janssen is 1 prik, de rest 2 prikken. Schatting heeft geen aparte date voor
+# de prikken dus we rekenen "terug"
+totaal_prikken_geschat_gezet=vaccins_geschat['totaal_geschat'][-1]
+percentage_dubbele_vaccins=1-(vaccins_totaal['janssen'][-1]/vaccins_totaal['totaal'][-1])
+mensen_compleet_gevaccineerd = totaal_prikken_geschat_gezet - (totaal_prikken_geschat_gezet*percentage_dubbele_vaccins)/2
 
+percentage_prikken_geschat = decimalstring(round(100*mensen_compleet_gevaccineerd/totaal_inwoners,2))
 
 ax1.plot(vaccins_geschat_percentage['x'], 
          vaccins_geschat_percentage['totaal_geschat'], 
@@ -129,8 +134,12 @@ ax1.plot(vaccins_geschat_percentage['x'],
          color='fuchsia',
          label='Geprikt geschat (nu: ' + totaal_prikken_geschat + ', ' + percentage_prikken_geschat + '%)')
 
+mensen_compleet_gevaccineerd = totaal_prikken_geschat_gezet - (totaal_prikken_geschat_gezet*percentage_dubbele_vaccins)/2
+totaal_geleverd=vaccins_geleverd['totaal'][-1]
+complete_vaccins_geleverd=totaal_geleverd - (totaal_geleverd*percentage_dubbele_vaccins)/2
+percentage_vaccins_geleverd = decimalstring(round(100*complete_vaccins_geleverd/totaal_inwoners,2))
+
 totaal_vaccins_geleverd = decimalstring(vaccins_geleverd['totaal'][-1])
-percentage_vaccins_geleverd = decimalstring(round(100*vaccins_geleverd['totaal'][-1]/(totaal_inwoners*2),2))
 ax1.plot(vaccins_geleverd_percentage['x'], 
          vaccins_geleverd_percentage['totaal'], 
          linestyle='--', 
