@@ -71,9 +71,10 @@ for date in metenisweten:
         prikken_gezet_datum = date
     if metenisweten[date]['vaccinaties']['totaal_geschat']:
         prikken_gezet_geschat = metenisweten[date]['vaccinaties']['totaal_geschat']
-        prikken_gezet_geschat_perc=100*(prikken_gezet_geschat/(17500000*2)) # 2 prikken per persoon!
         prikken_gezet_geschat_datum = date
-
+    if metenisweten[date]['vaccinaties']['totaal_mensen_geschat']:
+        totaal_mensen_geschat = metenisweten[date]['vaccinaties']['totaal_mensen_geschat']
+        mensen_gevaccineerd_geschat_perc=100*(totaal_mensen_geschat/(17500000))
 
 gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 
@@ -151,9 +152,9 @@ substitutes = {
     'prikken_gezet_geschat'         : decimalstring(prikken_gezet_geschat),
     'prikken_gezet_geschat_num'     : prikken_gezet_geschat,
     'prikken_gezet_geschat_datum'   : prikken_gezet_geschat_datum,
-    'prikken_gezet_geschat_perc'    : decimalstring(round(prikken_gezet_geschat_perc,2))+'%',
-    'prikken_gezet_geschat_perc_num': round(prikken_gezet_geschat_perc,2),
-    'prikken_gezet_geschat_color'   : 'green' if prikken_gezet_geschat_perc > 60 else 'yellow' if prikken_gezet_geschat_perc > 40 else 'red',
+    'prikken_gezet_geschat_perc'    : decimalstring(round(mensen_gevaccineerd_geschat_perc,2))+'%',
+    'prikken_gezet_geschat_perc_num': round(mensen_gevaccineerd_geschat_perc,2),
+    'prikken_gezet_geschat_color'   : 'green' if mensen_gevaccineerd_geschat_perc > 60 else 'yellow' if mensen_gevaccineerd_geschat_perc > 40 else 'red',
     'vaccingeboortejaar'            : vaccingeboortejaar, 
 
     'positief_leeftijd' : str(gemiddeldeleeftijdweek),
