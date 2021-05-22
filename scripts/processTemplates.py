@@ -86,7 +86,7 @@ gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
 with open('prikafspraak/geboortejaar.txt') as f:
-    vaccingeboortejaar=f.read()
+    vaccingeboortejaar=f.read().rstrip()
 
 filename ='../cache/stats.csv'
 with open(filename, 'r') as csv_file:
