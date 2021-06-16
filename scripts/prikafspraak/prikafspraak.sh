@@ -7,7 +7,7 @@ file="geboortejaar.txt"
 huidig=$(cat $file)
 counter=$(($huidig + 5))
 
-if test `find "$file" -mmin +240`
+if test `find "$file" -mmin +0`
 then
   while [ $counter -ge $huidig ]
   do
