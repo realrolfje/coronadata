@@ -339,7 +339,7 @@
         "event": "Ollongren\npositief\ngetest.",
         "url": "https://www.nu.nl/politiek/6123950/formatiegesprekken-opgeschort-omdat-verkenner-ollongren-positief-is-getest.html",
         "testsloc": [
-            "2021-02-01",
+            "2021-05-01",
             80000
         ]
     },
@@ -424,5 +424,28 @@
             "2021-03-20",
             14000
         ]
+    },
+    {
+        "date": "2021-06-19",
+        "event": "Mondkapplicht\nversoepeld,\nEvenementen\nmet tests.",
+        "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/vraag-en-antwoord/persconferentie-18-juni-2021-in-eenvoudige-taal",
+        "zieken": [
+            "2021-05-05",
+            220000
+        ]
+    },
+    {
+        "date": "2021-06-19",
+        "event": "18 jarigen\nmogen prik",
+        "url": "https://www.parool.nl/nederland/zaterdag-laatste-leeftijdsgroep-aan-de-beurt-voor-prikafspraak~b185dc75",
+        "vaccins": [
+            "2021-05-10",
+            50
+        ],
+        "testsloc": [
+            "2021-05-15",
+            50000
+        ]
+
     }
 ]

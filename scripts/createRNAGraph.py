@@ -35,7 +35,10 @@ RNA_populatie_dekking = {
 }
 
 for datum in metenisweten:
-    if metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0:
+    if metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0\
+        and  metenisweten[datum]['RNA']['RNA_per_ml_avg'] < 8000:
+        # The < 8000 is to remove strange 9700 spike in measurements in may
+
         RNA_per_ml_avg['x'].append(parser.parse(datum))
         RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_ml_avg'])
     if metenisweten[datum]['RNA']['populatie_dekking']:
@@ -85,7 +88,7 @@ ax1.set_xlabel("Datum")
 ax1.legend(loc="upper left")
 # ax2.legend(loc="upper right")
 
-plt.figtext(0.30,0.6, 
+plt.figtext(0.25,0.6, 
          "\"Je plee liegt niet\" - Rolf",
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 

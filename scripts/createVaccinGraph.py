@@ -6,9 +6,12 @@ import modules.brondata as brondata
 from modules.brondata import decimalstring, intOrZero
 from modules.datautil import anotate
 from datetime import datetime, date, timedelta
+import sys
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if not (brondata.freshdata() \
+    or brondata.isnewer(__file__, '../cache/daily-stats.json'))\
+    or not ((len(sys.argv) == 2) and (sys.argv[1] == 'force')):
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
 else:
