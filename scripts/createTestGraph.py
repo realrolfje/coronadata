@@ -8,13 +8,15 @@ import modules.brondata as brondata
 import sys 
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() \
-    or brondata.isnewer(__file__, '../cache/daily-stats.json'))\
-    or not ((len(sys.argv) == 2) and (sys.argv[1] == 'force')):
-    print("No fresh data, and unchanged code. Exit.")
-    exit(0)
+if ((len(sys.argv) == 2) and (sys.argv[1] == 'force')):
+    print("Force new generation.")
 else:
-    print("New data, regenerate output.")
+    if not (brondata.freshdata() \
+        or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+        print("No fresh data, and unchanged code. Exit.")
+        exit(0)
+    else:
+        print("New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
