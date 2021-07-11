@@ -19,7 +19,6 @@ from math import log
 import pytz
 import time
 
-
 def readjson(filename):
     print('Reading '+filename)
     with open(filename, 'r') as json_file:
@@ -46,7 +45,10 @@ def isnewer(file1, file2):
 def sortDictOnKey(dictionary):
     return dict(sorted(dictionary.items(), key=itemgetter(0)))
 
-def downloadIfStale(filename, url):
+def downloadBinaryIfStale(filename, url):
+    return downloadIfStale(filename, url, True)
+
+def downloadIfStale(filename, url, binary = False):
     timezone = pytz.timezone("Europe/Amsterdam")
 
     if os.path.isfile(filename):
@@ -67,16 +69,18 @@ def downloadIfStale(filename, url):
             print("Server has no Last-Modified for "+url)
             lastmodified = datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)
 
-        charset = meta.get_content_charset() or 'utf-8'
         # print('last download: '+str(lastdownload))
         # print('last modified: '+str(lastmodified))
 
         if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
             print("Downloading new: %s" % filename)
-            with open(filename, 'w') as f:
-                f.write(
-                    response.read().decode(charset)
-                )
+            if binary:
+                with open(filename, 'w+b') as f:
+                    f.write(response.read())
+            else:
+                with open(filename, 'w') as f:
+                    charset = meta.get_content_charset() or 'utf-8'
+                    f.write(response.read().decode(charset))
             return True
         else:
             print("    Still fresh: %s" % filename)
@@ -102,8 +106,26 @@ def downloadMostRecentAppleMobilityReport(filename):
                 print("Error downloding %s: %s" % (url,str(err)))
         raise Exception("Sorry, no Apple mobility data found. Check https://covid19.apple.com/mobility") 
 
+
+def downloadECDCMap():
+    url="https://www.ecdc.europa.eu/en/covid-19/situation-updates/weekly-maps-coordinated-restriction-free-movement"
+    with urllib.request.urlopen(url) as response:
+        meta = response.headers
+        charset = meta.get_content_charset() or 'utf-8'
+        responsebody = response.read().decode(charset)
+        imglink = re.findall('https://.*is_large/public/images/.*Subnational_Combined_traffic\.png', responsebody)[0]
+        
+        print("Download ECDC map from: "+imglink)
+
+        return downloadBinaryIfStale(
+            '../docs/extern/ECDC_Subnational_Combined_traffic.png',
+            imglink
+        )
+
 def download():
     freshdata = False
+
+    freshdate = downloadECDCMap() or freshdata
 
     freshdata = downloadIfStale(
         '../cache/COVID-19_casus_landelijk.json',
