@@ -113,7 +113,7 @@ def downloadECDCMap():
         meta = response.headers
         charset = meta.get_content_charset() or 'utf-8'
         responsebody = response.read().decode(charset)
-        imglink = re.findall('https://.*is_large/public/images/.*Subnational_Combined_traffic\.png', responsebody)[0]
+        imglink = re.findall('https://www.ecdc.europa.eu/.*/public/images/.*Subnational_Combined_traffic.*\.png', responsebody)[0]
         
         print("Download ECDC map from: "+imglink)
 

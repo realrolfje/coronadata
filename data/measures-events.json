@@ -199,8 +199,8 @@
         "event": "EMA goedkeuring\nPfizer vaccin",
         "url": "https://twitter.com/MedicijnNL/status/1341006296255000577",
         "zieken": [
-            "2020-11-01",
-            320000
+            "2020-10-25",
+            305000
         ],
         "zieken-sliding": [
             "2020-11-15",
@@ -403,8 +403,8 @@
         "event": "Avondklok\nopgeheven,\nwinkels open,\nterras open",
         "url": "https://www.nu.nl/coronavirus/6128745/kabinet-zet-versoepelingen-per-28-april-door-terrassen-open-en-exit-avondklok.html",
         "zieken": [
-            "2021-03-14",
-            270000
+            "2021-03-24",
+            305000
         ]
     },
     {
@@ -430,9 +430,14 @@
         "event": "Mondkapplicht\nversoepeld,\nEvenementen\nmet tests.",
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/vraag-en-antwoord/persconferentie-18-juni-2021-in-eenvoudige-taal",
         "zieken": [
-            "2021-05-05",
+            "2021-05-01",
             220000
+        ],
+        "testsloc": [
+            "2021-03-15",
+            33000
         ]
+
     },
     {
         "date": "2021-06-19",
@@ -443,9 +448,21 @@
             50
         ],
         "testsloc": [
-            "2021-05-15",
+            "2021-04-23",
+            12000
+        ]
+    },
+    {
+        "date": "2021-07-07",
+        "event": "\"Spoedadvies\" OMT",
+        "url": "https://nos.nl/artikel/2388343-kabinet-wil-spoedadvies-vanwege-oplopend-aantal-besmettingen",
+        "zieken": [
+            "2021-06-10",
+            150000
+        ],
+        "testsloc": [
+            "2021-04-10",
             50000
         ]
-
     }
 ]
