@@ -12,53 +12,46 @@ pagehits= {
     'y': []
 }
 
+# Get daily hitcounter (max value for that day)
 filename = '../data/pagehits.csv'
 with open(filename, 'r') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     line_count = 0
-    hits = 0
     for row in csv_reader:
         if line_count > 0:
-            datum = datetime.strptime(row[0],"%Y-%m-%dT%H:%M:%S")
+            datum = datetime.strptime(row[0],"%Y-%m-%dT%H:%M:%S").date()
+            hits = int(row[1])
 
-            if (len(pagehits['x']) == 0 or (datum - pagehits['x'][-1]).seconds > (4*3600)):
-                hits = int(row[1])
-                
-                if len(pagehits['x']) > 0:
-                    seconds = (datum - pagehits['x'][-1]).seconds
-                    deltahits = (hits - pagehits['y'][-1])/seconds
-                else:
-                    deltahits = 0
-
+            i = pagehits['x'].index(datum)
+            if i:
+                if hits > pagehits['y'][i]:
+                    pagehits['y'][i] = hits
+            else:
                 pagehits['x'].append(datum)
-                pagehits['y'].append(deltahits)
+                pagehits['y'].append(hits)
+
         line_count = line_count + 1
     
-hitsperuur = [x * 3600 for x in pagehits['y']]
-
-# Take out outliers
-gem_per_uur = sum(hitsperuur)/len(hitsperuur)
-
-hitsperuur_gem = {
-    'x':[],
-    'y':[]
+dailyhits = {
+    'x': [],
+    'y': []
 }
 
-for i in range(len(hitsperuur)):
-    # if (len(hitsperuur_gem['y'])==0) \
-    #         or (hitsperuur[i] < 100) \
-    #         or (hitsperuur[i] < hitsperuur_gem['y'][-1]*2):
-        hitsperuur_gem['x'].append(pagehits['x'][i])
-        hitsperuur_gem['y'].append(hitsperuur[i])
+for i in range(len(pagehits['x'])):
+    dailyhits['x'] = pagehits['x'][i]
+    if i == 0:
+        dailyhits['y'] = pagehits['y'][i]
+    else:
+        dailyhits['y'] = pagehits['y'][i] - pagehits['y'][i-1]
 
-hitsperuur_gem['y'] = double_savgol(hitsperuur_gem['y'], 10, 5, 1)
-#hitsperuur_gem['y'] = smooth(hitsperuur_gem['y'])
+hitsperuur = [y / 24 for y in dailyhits['y']]
+hitsperuur_gem = smooth(hitsperuur)
 
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-ax1.plot(hitsperuur_gem['x'], hitsperuur_gem['y'], color='red', label='Page hits')
+ax1.plot(dailyhits['x'], hitsperuur_gem, color='red', label='Page hits')
 ax1.fill_between(pagehits['x'], 0, hitsperuur,facecolor='lightsalmon', alpha=0.3, interpolate=True)
 
 ax1.set_ylim(0,4000)
