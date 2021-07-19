@@ -99,8 +99,17 @@ vaccins_percentage = {
     'janssen':        [100*x/(totaal_inwoners*1) for x in vaccins_totaal['janssen']],
     'moderna':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
     'sanofi':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
-    'totaal':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['totaal']],
+    'totaal':         0, # later, need to correct for janssen
 }
+
+for i in range(len(vaccins_percentage['x'])):
+    vaccins_percentage['totaal'][i] =  \
+        vaccins_percentage['astra_zeneca'] +\
+        vaccins_percentage['pfizer']  +\
+        vaccins_percentage['cure_vac'] +\
+        vaccins_percentage['janssen'] +\
+        vaccins_percentage['moderna'] +\
+        vaccins_percentage['sanofi']
 
 vaccins_geschat_percentage = {
     'x':              vaccins_geschat['x'],
