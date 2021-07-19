@@ -99,21 +99,26 @@ vaccins_percentage = {
     'janssen':        [100*x/(totaal_inwoners*1) for x in vaccins_totaal['janssen']],
     'moderna':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
     'sanofi':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
-    'totaal':         0, # later, need to correct for janssen
 }
 
+vaccins_percentage['totaal'] = []
 for i in range(len(vaccins_percentage['x'])):
-    vaccins_percentage['totaal'][i] =  \
-        vaccins_percentage['astra_zeneca'] +\
-        vaccins_percentage['pfizer']  +\
-        vaccins_percentage['cure_vac'] +\
-        vaccins_percentage['janssen'] +\
-        vaccins_percentage['moderna'] +\
-        vaccins_percentage['sanofi']
+    vaccins_percentage['totaal'].append(
+        vaccins_percentage['astra_zeneca'][i] + \
+        vaccins_percentage['pfizer'][i]  + \
+        vaccins_percentage['cure_vac'][i] + \
+        vaccins_percentage['janssen'][i] + \
+        vaccins_percentage['moderna'][i] + \
+        vaccins_percentage['sanofi'][i]
+    )
 
+## Corrigeer schattingen voor de aangepaste percentages for Janssen
+laatsteperc = vaccins_percentage['totaal'][-1]
+i = vaccins_geschat['x'].index(vaccins_percentage['x'][-1])
+eerstgeschat = vaccins_geschat['totaal_geschat'][i]
 vaccins_geschat_percentage = {
     'x':              vaccins_geschat['x'],
-    'totaal_geschat': [100*x/(totaal_inwoners*2) for x in vaccins_geschat['totaal_geschat']]
+    'totaal_geschat': [(laatsteperc * x / eerstgeschat) for x in vaccins_geschat['totaal_geschat']]
 }
 
 vaccins_geleverd_percentage = {
@@ -235,10 +240,11 @@ plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 ax1.set_ylim([0, 100])
 ax2.set_ylim([0, 100])
 
-plt.figtext(0.22,0.42, 
+plt.figtext(0.12,0.42, 
          "Deze grafiek gaat over het totaal aantal gezette prikken \n"+\
-         "op basis van beschikbare weekrapportages.\n"+\
-         "De huidige vaccins hebben 2 prikken nodig.\n"+\
+         "op basis van beschikbare weekrapportages. \n"+\
+         "Het berekent hoeveel % van de Nederlanders met de \n"+\
+         "gezette prikken 100% gevaccineerd zouden kunnen zijn.\n"+\
          "Met het huidig tempo zijn alle prikken gezet op "+klaar+".", 
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 
