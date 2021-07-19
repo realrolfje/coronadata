@@ -22,14 +22,14 @@ with open(filename, 'r') as csv_file:
             datum = datetime.strptime(row[0],"%Y-%m-%dT%H:%M:%S").date()
             hits = int(row[1])
 
-            i = pagehits['x'].index(datum)
-            if i:
+            try:
+                i = pagehits['x'].index(datum)
                 if hits > pagehits['y'][i]:
                     pagehits['y'][i] = hits
-            else:
+            except ValueError:
                 pagehits['x'].append(datum)
                 pagehits['y'].append(hits)
-
+    
         line_count = line_count + 1
     
 dailyhits = {
@@ -38,11 +38,11 @@ dailyhits = {
 }
 
 for i in range(len(pagehits['x'])):
-    dailyhits['x'] = pagehits['x'][i]
+    dailyhits['x'].append(pagehits['x'][i])
     if i == 0:
-        dailyhits['y'] = pagehits['y'][i]
+        dailyhits['y'].append(pagehits['y'][i])
     else:
-        dailyhits['y'] = pagehits['y'][i] - pagehits['y'][i-1]
+        dailyhits['y'].append(pagehits['y'][i] - pagehits['y'][i-1])
 
 hitsperuur = [y / 24 for y in dailyhits['y']]
 hitsperuur_gem = smooth(hitsperuur)
@@ -54,7 +54,7 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax1.plot(dailyhits['x'], hitsperuur_gem, color='red', label='Page hits')
 ax1.fill_between(pagehits['x'], 0, hitsperuur,facecolor='lightsalmon', alpha=0.3, interpolate=True)
 
-ax1.set_ylim(0,4000)
+# ax1.set_ylim(0,4000)
 
 import matplotlib.dates as mdates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
@@ -67,7 +67,7 @@ ax1.set_xticks(r)
 
 ax1.set_xlabel("Datum")
 
-plt.title('Page hits per uur (gemiddeld ongeveer '+str(int(round(hitsperuur_gem['y'][-1])))+").")
+plt.title('Page hits per uur (gemiddeld ongeveer '+str(int(round(hitsperuur_gem[-1])))+").")
 
 gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
 footerleft="Gegenereerd op "+gegenereerd_op+"."
