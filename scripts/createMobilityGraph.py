@@ -108,7 +108,7 @@ ax1.set_ylabel("% t.o.v. 13 januari")
 
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-plt.title('Mobiliteit')
+plt.title('Mobiliteit (op basis van reisplanningsverzoeken)')
 
 data_tot=rijden['x'][-1].strftime("%Y-%m-%d")
 footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
