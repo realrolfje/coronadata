@@ -123,8 +123,8 @@
         "date": "2020-10-13",
         "event": "Kroegen dicht\nGeen sportwedstr.",
         "zieken": [
-            "2020-08-15",
-            205000
+            "2020-08-01",
+            285000
         ]
     },
     {
@@ -169,8 +169,8 @@
         "event": "Lockdown",
         "url": "https://www.youtube.com/watch?v=LLktWm8oBMY",
         "zieken": [
-            "2020-10-20",
-            260000
+            "2020-10-10",
+            250000
         ],
         "zieken-sliding": [
             "2020-11-01",
@@ -199,7 +199,7 @@
         "event": "EMA goedkeuring\nPfizer vaccin",
         "url": "https://twitter.com/MedicijnNL/status/1341006296255000577",
         "zieken": [
-            "2020-10-25",
+            "2020-10-20",
             305000
         ],
         "zieken-sliding": [
@@ -253,7 +253,7 @@
         "event": "Invoering\navondklok",
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/avondklok",
         "zieken": [
-            "2020-12-18",
+            "2021-01-02",
             14000
         ]
     },
@@ -262,7 +262,7 @@
         "event": "Proces tegen\navondklok.",
         "url": "https://www.rechtspraak.nl/Organisatie-en-contact/Organisatie/Rechtbanken/Rechtbank-Den-Haag/Nieuws/Paginas/Staat-moet-avondklok-laten-vervallen.aspx",
         "zieken": [
-            "2020-12-20",
+            "2020-12-15",
             260000
         ],
         "mobiliteit": [
@@ -298,7 +298,7 @@
         "event": "Onderwijs, kappers,\nsport, winkels\nzeer beperkt open",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/02/23/voorzichtig-meer-lucht-tijdens-de-lockdown",
         "zieken": [
-            "2021-01-05",
+            "2021-01-02",
             315000
         ],
         "testsloc": [
@@ -326,7 +326,7 @@
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/03/08/verdere-verruiming-lockdown-nog-niet-verantwoord",
         "zieken": [
             "2021-02-01",
-            14000
+            75000
         ]
     },
     {
@@ -403,7 +403,7 @@
         "event": "Avondklok\nopgeheven,\nwinkels open,\nterras open",
         "url": "https://www.nu.nl/coronavirus/6128745/kabinet-zet-versoepelingen-per-28-april-door-terrassen-open-en-exit-avondklok.html",
         "zieken": [
-            "2021-03-24",
+            "2021-03-28",
             305000
         ]
     },
@@ -470,7 +470,7 @@
             175000
         ],
         "testsloc": [
-            "2021-04-15",
+            "2021-05-10",
             55000
         ],
         "mobiliteit": [
@@ -486,6 +486,24 @@
         "vaccins": [
             "2021-05-15",
             65
+        ]
+    },
+    {
+        "date": "2021-08-30",
+        "event": "Geen 1,5 meter\nop scholen",
+        "url": "https://www.rijksoverheid.nl/documenten/mediateksten/2021/08/13/letterlijke-tekst-persconferentie-minister-president-rutte-en-minister-de-jonge-13-augustus-2021",
+        "zieken": [
+            "2021-07-02",
+            225000
+        ]
+    },
+    {
+        "date": "2021-08-17",
+        "event": "Geen prikbus\nop schoolplein ",
+        "url": "https://www.rtvkatwijk.nl/ggd-ziet-af-van-prikbussen-bij-scholen/",
+        "vaccins": [
+            "2021-06-25",
+            75
         ]
     }
 ]
