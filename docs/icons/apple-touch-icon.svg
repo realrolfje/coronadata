@@ -7,7 +7,7 @@
   <rdf:RDF xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2021-09-03T11:41:06.001756</dc:date>
+    <dc:date>2021-09-03T15:44:33.095023</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -39,7 +39,7 @@ z
 " style="fill:#ffffff;"/>
    </g>
    <g id="line2d_1">
-    <path clip-path="url(#p4c2f1ca96c)" d="M 6.545455 119.565123 
+    <path clip-path="url(#pabec0357fd)" d="M 6.545455 119.565123 
 L 7.245503 119.30436 
 L 7.945552 118.809556 
 L 8.412251 118.176677 
@@ -192,7 +192,7 @@ L 122.520175 115.569847
 " style="fill:none;stroke:#add8e6;stroke-linecap:square;stroke-width:1.5;"/>
    </g>
    <g id="line2d_2">
-    <path clip-path="url(#p4c2f1ca96c)" d="M 31.047156 116.088339 
+    <path clip-path="url(#pabec0357fd)" d="M 31.047156 116.088339 
 L 33.380651 116.939751 
 L 34.547399 117.175647 
 L 34.780749 117.241713 
@@ -307,17 +307,15 @@ L 129.520661 79.303776
 L 130.22071 82.780869 
 L 130.687409 84.240956 
 L 131.154108 85.130268 
-L 131.854157 85.87578 
-L 132.320856 86.057093 
-L 133.020904 85.949457 
-L 134.187652 85.753625 
-L 134.654351 86.003459 
-L 135.12105 86.487547 
-L 135.587749 87.216863 
-L 136.054448 88.31487 
-L 136.987846 90.784773 
-L 137.454545 91.402249 
-L 137.454545 91.402249 
+L 131.854157 85.875722 
+L 132.320856 86.05692 
+L 133.020904 85.949111 
+L 134.654351 85.721105 
+L 135.3544 85.876491 
+L 135.821099 86.17039 
+L 136.754497 87.191447 
+L 137.454545 87.99467 
+L 137.454545 87.99467 
 " style="fill:none;stroke:#ff0000;stroke-linecap:square;stroke-width:1.5;"/>
    </g>
    <g id="patch_3">
@@ -516,7 +514,7 @@ z
    </g>
   </g>
   <g id="text_2">
-   <!-- Rt=1,01 -->
+   <!-- Rt=1,02 -->
    <g style="fill:#4169e1;opacity:0.5;" transform="translate(26.46875 141.12)scale(0.2 -0.2)">
     <defs>
      <path d="M 27.484375 70.21875 
@@ -592,6 +590,27 @@ Q 49.171875 74.21875 56.984375 64.375
 Q 64.796875 54.546875 64.796875 36.375 
 z
 " id="DejaVuSans-Bold-48"/>
+     <path d="M 28.8125 13.8125 
+L 60.890625 13.8125 
+L 60.890625 0 
+L 7.90625 0 
+L 7.90625 13.8125 
+L 34.515625 37.3125 
+Q 38.09375 40.53125 39.796875 43.609375 
+Q 41.5 46.6875 41.5 50 
+Q 41.5 55.125 38.0625 58.25 
+Q 34.625 61.375 28.90625 61.375 
+Q 24.515625 61.375 19.28125 59.5 
+Q 14.0625 57.625 8.109375 53.90625 
+L 8.109375 69.921875 
+Q 14.453125 72.015625 20.65625 73.109375 
+Q 26.859375 74.21875 32.8125 74.21875 
+Q 45.90625 74.21875 53.15625 68.453125 
+Q 60.40625 62.703125 60.40625 52.390625 
+Q 60.40625 46.4375 57.328125 41.28125 
+Q 54.25 36.140625 44.390625 27.484375 
+z
+" id="DejaVuSans-Bold-50"/>
     </defs>
     <use xlink:href="#DejaVuSans-Bold-82"/>
     <use x="77.001953" xlink:href="#DejaVuSans-Bold-116"/>
@@ -599,12 +618,12 @@ z
     <use x="208.59375" xlink:href="#DejaVuSans-Bold-49"/>
     <use x="278.173828" xlink:href="#DejaVuSans-Bold-44"/>
     <use x="316.162109" xlink:href="#DejaVuSans-Bold-48"/>
-    <use x="385.742188" xlink:href="#DejaVuSans-Bold-49"/>
+    <use x="385.742188" xlink:href="#DejaVuSans-Bold-50"/>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="p4c2f1ca96c">
+  <clipPath id="pabec0357fd">
    <rect height="144" width="144" x="0" y="0"/>
   </clipPath>
  </defs>
