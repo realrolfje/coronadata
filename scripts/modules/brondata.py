@@ -606,6 +606,7 @@ def builddaily():
         for record in data['vaccine_administered_estimate']['values']:
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
             voorspelling_vaccinaties[d] = intOrNone(record['total'])
+            print(intOrNone(record['total']))
 
         # Interpolate prediction to TODAY
         for key, value in voorspelling_vaccinaties.items():
@@ -615,15 +616,29 @@ def builddaily():
                 nextPredictionValue =  value
                 break
 
-        # print("Laatste waarde %s")
-        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
-        # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
-        linearFactor = (datetime.datetime.now()- previousPredictionDate).total_seconds() / (nextPredictionDate - previousPredictionDate).total_seconds()
-        linearValue = round(laatste_totaal + linearFactor * (nextPredictionValue - laatste_totaal))
-        datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
-        initrecord(datum, metenisweten)
-        metenisweten[datum]['vaccinaties']['totaal_geschat'] = linearValue
-        metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = linearValue - (linearValue*percentage_dubbele_vaccins)/2
+
+        if (nextPredictionValue > 0):
+            # print("Laatste waarde %s")
+            # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
+            # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
+            linearFactor = (datetime.datetime.now()- previousPredictionDate).total_seconds() / (nextPredictionDate - previousPredictionDate).total_seconds()
+            linearValue = round(laatste_totaal + linearFactor * (nextPredictionValue - laatste_totaal))
+
+            print("---")
+            print(laatste_totaal)
+            print(nextPredictionValue)
+            print(linearFactor)
+            print(linearValue)
+            print("---")
+
+            datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
+            initrecord(datum, metenisweten)
+            metenisweten[datum]['vaccinaties']['totaal_geschat'] = linearValue
+            metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = linearValue - (linearValue*percentage_dubbele_vaccins)/2
+        else:
+            metenisweten[datum]['vaccinaties']['totaal_geschat'] = laatste_totaal
+            metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = laatste_totaal - (laatste_totaal*percentage_dubbele_vaccins)/2
+
 
         # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
 
