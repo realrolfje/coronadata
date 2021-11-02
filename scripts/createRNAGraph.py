@@ -88,7 +88,7 @@ ax1.set_xlabel("Datum")
 ax1.legend(loc="upper left")
 # ax2.legend(loc="upper right")
 
-plt.figtext(0.25,0.6, 
+plt.figtext(0.20,0.6, 
          "\"Je plee liegt niet\" - Rolf",
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 

@@ -94,7 +94,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         return False
     else:
         print("Downloading fresh data to "+filename, end="...")
-        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2119HotfixDev16/v3/en-us/applemobilitytrends-2021-10-23.csv'
+        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2201HotfixDev11/v3/en-us/applemobilitytrends-2021-11-01.csv'
         try:
             urllib.request.urlretrieve(url, filename)
             print("done")
@@ -623,13 +623,6 @@ def builddaily():
             # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
             linearFactor = (datetime.datetime.now()- previousPredictionDate).total_seconds() / (nextPredictionDate - previousPredictionDate).total_seconds()
             linearValue = round(laatste_totaal + linearFactor * (nextPredictionValue - laatste_totaal))
-
-            print("---")
-            print(laatste_totaal)
-            print(nextPredictionValue)
-            print(linearFactor)
-            print(linearValue)
-            print("---")
 
             datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
             initrecord(datum, metenisweten)

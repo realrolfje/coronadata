@@ -245,7 +245,7 @@ if graphname == "zieken":
 else:
     plt.gca().set_xlim([date_range[-1] - datetime.timedelta(days=200), date_range[-1]])
 
-plt.figtext(0.22,0.7, 
+plt.figtext(0.20,0.7, 
          "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 
