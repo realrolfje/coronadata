@@ -3,21 +3,18 @@
 from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
+import modules.arguments as arguments
 from modules.brondata import decimalstring, intOrZero
 from modules.datautil import anotate
 from datetime import datetime, date, timedelta
 import sys
 
 print("------------ %s ------------" % __file__)
-if ((len(sys.argv) == 2) and (sys.argv[1] == 'force')):
-    print("Force new generation.")
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
 else:
-    if not (brondata.freshdata() \
-        or brondata.isnewer(__file__, '../cache/daily-stats.json')):
-        print("No fresh data, and unchanged code. Exit.")
-        exit(0)
-    else:
-        print("New data, regenerate output.")
+    print("No fresh data, and unchanged code. Exit.")
+    exit(0)
 
 #brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -45,6 +42,10 @@ vaccins_geleverd = {
 }
 
 date_range = brondata.getDateRange(metenisweten)
+
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
 
 def addVaccinCount(record, vaccin):
     count = intOrZero(record[vaccin])
@@ -157,12 +158,13 @@ percentage_dubbele_vaccins=1-(vaccins_totaal['janssen'][-1]/vaccins_totaal['tota
 complete_vaccins_geleverd=totaal_geleverd - (totaal_geleverd*percentage_dubbele_vaccins)/2
 percentage_vaccins_geleverd = decimalstring(round(100*complete_vaccins_geleverd/totaal_inwoners,2))
 
-totaal_vaccins_geleverd = decimalstring(vaccins_geleverd['totaal'][-1])
-ax1.plot(vaccins_geleverd_percentage['x'], 
-         vaccins_geleverd_percentage['totaal'], 
-         linestyle='--', 
-         color='c',
-         label='Vaccins geleverd (nu: ' + totaal_vaccins_geleverd + ', ' + percentage_vaccins_geleverd + '%)')
+# Vaccins geleverd is al een tijdje 0, RIVM levert de cijfers niet meer
+# totaal_vaccins_geleverd = decimalstring(vaccins_geleverd['totaal'][-1])
+# ax1.plot(vaccins_geleverd_percentage['x'], 
+#          vaccins_geleverd_percentage['totaal'], 
+#          linestyle='--', 
+#          color='c',
+#          label='Vaccins geleverd (nu: ' + totaal_vaccins_geleverd + ', ' + percentage_vaccins_geleverd + '%)')
 
 ax2.set_xlabel("Datum")
 ax2.set_ylabel("Aantal prikken")
@@ -210,7 +212,7 @@ ax2.plot(vaccins_percentage['x'],
 
 graphname='vaccins'
 for event in events:
-    if graphname in event:
+    if graphname in event and parser.parse(event[graphname][0]) > date_range[0]:
         anotate(
             ax2, 
             vaccins_percentage['x'], vaccins_percentage['totaal'],
@@ -219,15 +221,19 @@ for event in events:
             event[graphname][1]
         )
 
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.125, 
-         datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
-ax2.axvline(date.today(), color='red', linewidth=0.5)
+# Put vertical line at current day
+plt.text(
+    x=date.today(),
+    y=0,
+    s=datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
+plt.axvline(date.today(), color='red', linewidth=0.5)
 
 ax1.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
 ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
@@ -235,17 +241,17 @@ ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90
 ax2.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
 ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
-plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
+plt.gca().set_xlim([date_range[0], date_range[-1]])
 
 ax1.set_ylim([0, 100])
 ax2.set_ylim([0, 100])
 
-plt.figtext(0.12,0.42, 
-         "Deze grafiek gaat over het totaal aantal gezette prikken \n"+\
-         "op basis van beschikbare weekrapportages. \n"+\
-         "Het berekent hoeveel % van de Nederlanders met de \n"+\
-         "gezette prikken 100% gevaccineerd zouden kunnen zijn.\n"+\
-         "Met het huidig tempo zijn alle prikken gezet op "+klaar+".", 
+plt.figtext(0.10,0.50, 
+         "Deze grafiek toont hoeveel % van de Nederlanders\n"+\
+         "met de gezette prikken 100% gevaccineerd zouden\n"+\
+         "kunnen zijn. Met het huidig tempo zijn alle prikken\n"+\
+         "gezet op "+klaar+".", 
+         fontsize=8,
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 
          edgecolor='white'),
@@ -268,4 +274,7 @@ ax1.legend(loc="upper right")
 ax2.legend(loc="upper left")
 
 
-plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/vaccinaties-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")

@@ -606,7 +606,7 @@ def builddaily():
         for record in data['vaccine_administered_estimate']['values']:
             d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
             voorspelling_vaccinaties[d] = intOrNone(record['total'])
-            print(intOrNone(record['total']))
+            # print(intOrNone(record['total']))
 
         # Interpolate prediction to TODAY
         for key, value in voorspelling_vaccinaties.items():
