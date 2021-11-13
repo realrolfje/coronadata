@@ -769,6 +769,8 @@ def getDateRange(metenisweten):
         mindatum = min(mindatum, parser.parse(datum))
         maxdatum = max(maxdatum, parser.parse(datum))
 
+    # Woraround to make graphs look the same when rendering "full width"
+    mindatum = max(mindatum, parser.parse("2020-03-01"))
     date_range = [mindatum + datetime.timedelta(days=x)
                   for x in range(0, (maxdatum-mindatum).days+7)]
     return date_range

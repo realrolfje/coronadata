@@ -6,17 +6,22 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import datetime
 import modules.brondata as brondata
+import modules.arguments as arguments
 from modules.brondata import decimalstring
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
+else:
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
-else:
-    print("New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 date_range = brondata.getDateRange(metenisweten)
+
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
 
 print('Generating Rt graph...')
 
@@ -24,14 +29,16 @@ Rt_avg = {    'x':[],    'y':[]}
 Rt_low = {    'x':[],    'y':[]}
 Rt_up  = {    'x':[],    'y':[]}
 
-for datum in metenisweten:
-    if metenisweten[datum]['Rt_avg'] is not None:
+for d in date_range:
+    datum = d.strftime("%Y-%m-%d")
+
+    if datum in metenisweten and metenisweten[datum]['Rt_avg'] is not None:
         Rt_avg['x'].append(parser.parse(datum))
         Rt_avg['y'].append(float(metenisweten[datum]['Rt_avg']))
-    if metenisweten[datum]['Rt_up'] is not None:
+    if datum in metenisweten and metenisweten[datum]['Rt_up'] is not None:
         Rt_up['x'].append(parser.parse(datum))
         Rt_up['y'].append(float(metenisweten[datum]['Rt_up']))
-    if metenisweten[datum]['Rt_low'] is not None:
+    if datum in metenisweten and metenisweten[datum]['Rt_low'] is not None:
         Rt_low['x'].append(parser.parse(datum))
         Rt_low['y'].append(float(metenisweten[datum]['Rt_low']))
 
@@ -58,15 +65,21 @@ for val in Rt_avg['y']:
 plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=high, facecolor='red', alpha=0.3, interpolate=True)
 plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alpha=0.3, interpolate=True)
 
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.19, 
-         datetime.datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
+# Put vertical line at current day
+plt.text(
+    x=datetime.date.today(),
+    y=0,
+    s=datetime.datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
 plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+
+# Laat afkappunt R zien (is twee weken geleden)
 plt.axvline(datetime.date.today() - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
 
 plt.annotate(
@@ -80,7 +93,7 @@ plt.annotate(
 
 axes = plt.gca()
 axes.set_ylim([0,3])
-axes.set_xlim([parser.parse("2020-03-01"),date_range[-1]])
+axes.set_xlim([date_range[0],date_range[-1]])
 axes.set_xlabel("Datum")
 axes.set_ylabel("Reproductiegetal")
 
@@ -96,6 +109,8 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Bron: https://data.rivm.nl/covid-19"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-plt.savefig("../docs/graphs/reproductiegetal.svg", format="svg")
-
-
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/reproductiegetal-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/reproductiegetal.svg", format="svg")
+    
