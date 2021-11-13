@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <title>Corona data landelijk</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="description" content="Het meest complete en overzichtelijke coronadashboard van Nederland.">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Corona data landelijk">
+    <meta name="twitter:site" content="https://realrolfje.github.io/coronadata/">
+    <meta name="twitter:creator:id" content="@rolfje">
+    <!-- <meta name="twitter:description" content="1 op ${ziekverhouding_rolf} mensen is nu ziek/besmettelijk (geschat). Opgenomen: ${nu_opgenomen}. Op IC: ${nu_op_ic}. Gezette prikken: ${prikken_gezet_geschat} (geschat)."> -->
+    <meta name="twitter:description" content="Het meest complete en overzichtelijke coronadashboard van Nederland. Check hier je prikafspraak geboortejaar.">
+    <meta name="twitter:image" content="https://realrolfje.github.io/coronadata/icons/apple-touch-icon.png?${prikken_gezet_geschat_num}">
+    <meta name="twitter:image:alt" content="Rt=${Rt}">
+
+    <meta http-equiv="refresh" content="500">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+</head>
+
+<body>
+    <p class="highlight header center">
+        <a href="index.html" style="font-size:16pt ;float: left; padding-left:10px; text-decoration: none">&#x1F50D;</a>
+        <a href="http://twitter.com/share?text=1%20op%20102%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%201957%20%28NICE%29.%0ANu%20op%20IC%3A%20845%20%28NICE%29.%0AGezette%20prikken%3A%205.223.026%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/">
+           <img src="icons/tweet-button.png" style="width:25px; float: right; padding-left:10px" title="Deel op Twitter"/>
+        </a>
+        Geen smoesjes, je weet het best:<br />
+        <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    </p>
+    <div class="container center">
+        <div class="graphcontainer">
+            <p class="basisregels">
+                <a href="https://www.ecdc.europa.eu/en/covid-19/situation-updates/weekly-maps-coordinated-restriction-free-movement"><img 
+                    src="extern/ECDC_Subnational_Combined_traffic.png" 
+                    style="width:150px; float: right; padding-top:0px; padding-bottom:0px; padding-left:10px;" 
+                    title="Reizen? Check de ECDC Travel Map"
+                    /></a>    
+                De belangrijkste basisregels vind je op <a
+                    href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nederlandse-maatregelen-tegen-het-coronavirus/gezondheidsadviezen">rijksoverheid.nl</a>.
+                Installeren van de coronamelder app en/of afgeven van je contactgegevens is <a
+                    href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/ondernemers-en-bedrijven/horeca">niet
+                    verplicht</a>.
+                Dragen van een mondkapje (ja, ook over je neus) is verplicht 
+                    <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/openbaar-en-dagelijks-leven/mondkapjes/wanneer-moet-ik-een-mondkapje-dragen">op openbare plekken waar je geen coronatoegangsbewijs hoeft te laten zien, in winkels, openbaar vervoer, mbo en hoger onderwijs</a>.
+                <br/><span style="color:lightgray; font-size: smaller;">${gegenereerd_op}</span>
+            </p>
+        </div>
+    </div>
+    <div class="container center">
+        <!-- o.b.v. RIVM:
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_color}"
+                title="Het door RIVM geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding}</div>
+            </div>
+        </a> -->
+        <!-- <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_rna_color}"
+                title="Het op basis van rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rna} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding_rna}</div>
+            </div>
+        </a> -->
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_rolf_color}"
+                title="Het op basis van COVID Tests en rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rolf} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding_rolf}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#covidtests">
+            <div class="button ${positief_percentage_color}"
+                title="Tests met een positieve uitslag ten opzichte van het totaal afgenomen tests, dagelijks, met vertraging.">
+                <div class="nametext">positief getest</div>
+                <div class="valuetext">${positief_percentage}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${nu_opgenomen_color}"
+                title="Het aantal mensen dat op dit moment is opgenomen in het ziekenuis met, of als gevolg van, COVID-19.">
+                <div class="nametext">opgenomen</div>
+                <div class="valuetext">${nu_opgenomen}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${nu_op_ic_color}"
+                title="Het aantal mensen dat op dit moment op intensive care ligt met, of als gevolg van, COVID-19.">
+                <div class="nametext">intensive care</div>
+                <div class="valuetext">${nu_op_ic}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#reproductiegetal">
+            <div class="button ${Rt_color}"
+                title="Het berekende reproductiegetal Rt over de afgelopen periode, met vertraging.">
+                <div class="nametext">reproductiegetal</div>
+                <div class="valuetext">${Rt}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#besmetleeftijd">
+            <div class="button blue" title="Gemiddelde leeftijd van positief geteste mensen.">
+                <div class="nametext">leeftijd positief</div>
+                <div class="valuetext">${positief_leeftijd}</div>
+            </div>
+        </a>
+        <!-- <a class="buttonlink" href="https://coronatest.nl/ik-wil-me-laten-vaccineren/een-online-afspraak-maken">
+            <div class="button blue" title="Mensen geboren in of voor ${vaccingeboortejaar} kunnen online en vaccinatieafspraak maken. Kik hier.">
+                <div class="nametext">"vaccinjaar"</div>
+                <div class="valuetext">${vaccingeboortejaar}</div>
+            </div>
+        </a> -->
+        <!-- <a class="buttonlink" href="#vaccinaties">
+            <div class="button ${prikken_gezet_color}" title="Aantal gezette prikken met vaccin.">
+                <div class="nametext">prikvoortgang</div>
+                <div class="valuetext">${prikken_gezet_perc}</div>
+            </div>
+        </a> -->
+        <a class="buttonlink" href="#vaccinaties">
+            <div class="button ${prikken_gezet_geschat_color}" title="Aantal gezette prikken met vaccin (geschat).">
+                <div class="nametext">prikvoortgang</div>
+                <div class="valuetext">${prikken_gezet_geschat_perc}</div>
+            </div>
+        </a>
+    </div>
+    <div class="container center">
+        <div class="graphcontainer">
+            <a href="zieken.html" title="klik voor uitleg"><img id="zieken" src="graphs/zieken.svg" width="100%" /></a>
+            <img id="rioolwater" src="graphs/rna-in-rioolwater.svg" width="100%" />
+            <img id="reproductiegetal" src="graphs/reproductiegetal.svg" width="100%" />
+            <img id="covidtests" src="graphs/covidtests.svg" width="100%" />
+        </div>
+        <div class="graphcontainer">
+            <img id="vaccinaties" src="graphs/vaccinaties.svg" width="100%" />
+            <img id="besmetleeftijd" src="graphs/besmettingen-leeftijd.svg" width="100%" />
+            <img id="mobiliteit" src="graphs/mobiliteit.svg" width="100%" />
+        </div>
+    </div>
+    <div class="container center">
+        <a class="buttonlink" href="https://twitter.com/rolfje">
+        <!-- <a class="buttonlink" href="http://twitter.com/share?text=1%20op%20${ziekverhouding_rolf}%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%20${nu_opgenomen}%20%28NICE%29.%0ANu%20op%20IC%3A%20${nu_op_ic}%20%28NICE%29.%0AGezette%20prikken%3A%20${prikken_gezet_geschat}%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/"> -->
+            <div class="tweet">
+                <img src="icons/tweet-icon.svg" style="width:20px; float: right; padding-left:10px" title="@rolfje"/>
+                1 op ${ziekverhouding_rolf} mensen is nu ziek/besmettelijk (geschat).<br />
+                <!-- 1 op ${ziekverhouding_rna} mensen is nu ziek/besmettelijk (RWZI).<br /> -->
+                <!-- 1 op ${ziekverhouding} mensen is nu ziek/besmettelijk (RIVM).<br /> -->
+                Nu opgenomen: ${nu_opgenomen} (NICE).<br />
+                Nu op IC: ${nu_op_ic} (NICE).<br />
+                <!-- Gezette prikken: ${prikken_gezet} (${prikken_gezet_perc}).<br /> -->
+                Gezette prikken: ${prikken_gezet_geschat} (${prikken_gezet_geschat_perc}, geschat).<br />
+                https://realrolfje.github.io/coronadata/<br />
+                #COVID19 #coronavirus #blijfthuis #haaldieprik
+            </div>
+        </a>
+        <div>
+            <a href="https://github.com/realrolfje/coronadata#coronadata-zonder-gedoe">
+                <img width="400px" src="coronadata-charts.png"/>
+            </a>
+        </div>
+
+        <!-- <a href="https://www.google.com/covid19/mobility/">Google mobility reports</a> -->
+        <!-- https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv -->
+    </div>
+    <div class="container center">
+        <div class="footer">
+            <p>
+                Data in deze grafieken is afkomstig van het
+                <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
+                <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care Evaluatie)</a>. 
+                Er werd ${cache_size} bytes aan data geprocessed door ${python_lines} regels python code.
+                Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
+                <a href="https://github.com/realrolfje/coronadata">broncode</a>. Icons en graphics zijn mogelijk gemaakt
+                door <a href="https://www.freepik.com/">freepik.com</a> en <a href="https://www.flaticon.com/">flaticon.com</a>.<br/>
+                De complete lijst met events in de grafieken vind je <a href="events.html">hier</a>.
+            </p>
+            <p>
+                <a href="graphs/pagehits.svg">
+                    <img width="50px" src="https://hitcounter.pythonanywhere.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F" alt="Hits">
+                </a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
