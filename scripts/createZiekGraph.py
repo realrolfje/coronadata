@@ -6,25 +6,22 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 from statistics import mean
 import datetime
+import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring
 from modules.datautil import anotate
-import sys
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
+else:
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
-else:
-    print("New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
 
-if len(sys.argv) == 2 and sys.argv[1] == "sliding":
-    graphname="zieken-sliding"
-else:
-    graphname="zieken"
+graphname="zieken"
 
 print("Calculating "+graphname+" graph...")
 
@@ -71,9 +68,10 @@ besmettingsgraad = {
 }
 
 date_range = brondata.getDateRange(metenisweten)
+lastDays = arguments.lastDays()
 
-# test aangepaste date range
-# date_range = date_range[-60:]
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
 
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
@@ -184,7 +182,7 @@ fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 ax2 = plt.twinx()
 
 for event in events:
-    if graphname in event:
+    if graphname in event and parser.parse(event[graphname][0]) > date_range[0]:
         anotate(
             ax2, 
             geschat_ziek_rna['x'], geschat_ziek_rna['y'],
@@ -219,16 +217,19 @@ ax2.fill_between(
     geschat_ziek_rna['min'], geschat_ziek_rna['max'],
     facecolor='steelblue', alpha=0.1, interpolate=True)
 
-
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.125, 
-         datetime.datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
-ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
+# Put vertical line at current day
+plt.text(
+    x=datetime.date.today(),
+    y=0,
+    s=datetime.datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
+plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
 ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
@@ -243,21 +244,7 @@ ax2.set_ylim([0, 500000])
 ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000])
 ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
 
-# bij aangepaste date range
-# plt.gca().set_xlim([date_range[-1], date_range[-1]])
-
-if graphname == "zieken":
-    plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
-else:
-    plt.gca().set_xlim([date_range[-1] - datetime.timedelta(days=200), date_range[-1]])
-
-plt.figtext(0.20,0.7, 
-         "\"Misschien ben jij klaar met het virus,\n   maar het virus is niet klaar met jou.\"\n    - Hugo de Jonge", 
-         color="gray",
-         bbox=dict(facecolor='white', alpha=1.0, 
-         edgecolor='white'),
-         zorder=10)
-
+plt.gca().set_xlim([date_range[0], date_range[-1]])
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 data_tot=opgenomen['x'][-1].strftime("%Y-%m-%d")
@@ -274,4 +261,7 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
 
-plt.savefig("../docs/graphs/"+graphname+".svg", format="svg")
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/"+graphname+"-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/"+graphname+".svg", format="svg")
