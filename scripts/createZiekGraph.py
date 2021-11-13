@@ -72,6 +72,9 @@ besmettingsgraad = {
 
 date_range = brondata.getDateRange(metenisweten)
 
+# test aangepaste date range
+# date_range = date_range[-60:]
+
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
@@ -239,6 +242,9 @@ ax2.set_ylim([0, 500000])
 
 ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000])
 ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '☠'])
+
+# bij aangepaste date range
+# plt.gca().set_xlim([date_range[-1], date_range[-1]])
 
 if graphname == "zieken":
     plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
