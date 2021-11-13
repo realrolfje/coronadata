@@ -1,19 +1,28 @@
 mkdir -p cache
 
 cd scripts
+
 ./createHeatmap.py
 ./createRtGraph.py
 ./createRNAGraph.py
-./calculateDailyExcelData.py
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
-./createZiekGraph.py sliding
+./createMobilityGraph.py
+./createVaccinGraph.py
+
+./createHeatmap.py 365
+./createRtGraph.py 365
+./createRNAGraph.py 365
+./createCovidTestsGraph.py 365
+./createZiekGraph.py 365
+./createMobilityGraph.py 365
+./createVaccinGraph.py 365
+
+./calculateDailyExcelData.py
 ./createZiekenhuisTotaalGraph.py
 ./createSchattingAfwijkingGraph.py
 ./createLiveIcon.py
 ./createTestGraph.py
-./createMobilityGraph.py
-./createVaccinGraph.py
 ./processEventsList.py
 ./updatePageHits.py
 ./createPageHitsGraph.py

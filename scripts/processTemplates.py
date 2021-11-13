@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 #
+import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring
 import datetime
@@ -13,11 +14,11 @@ templatedir = '../docs/templates'
 outputdir = '../docs'
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
+else:
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
-else:
-    print("New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
