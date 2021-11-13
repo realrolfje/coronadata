@@ -9,15 +9,16 @@ from statistics import mean
 from dateutil.relativedelta import relativedelta
 import datetime
 import json
+import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, isnewer
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
+else:
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
-else:
-    print("New data, regenerate output.")
 
 print("Generating date/age heatmap.")
 
@@ -25,7 +26,13 @@ xlabels = []
 x = []
 y = []
 
-startdate = parser.parse('2020-03-01')
+metenisweten = brondata.readjson('../cache/daily-stats.json')
+date_range = brondata.getDateRange(metenisweten)
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
+
+startdate = date_range[0]
 
 weightsmap={}
 
@@ -72,8 +79,7 @@ gemiddeldeleeftijd = {
     'y': []
 }
 
-metenisweten = brondata.readjson('../cache/daily-stats.json')
-date_range = brondata.getDateRange(metenisweten)
+
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
     if datum in metenisweten and metenisweten[datum]['besmettingleeftijd_gemiddeld'] is not None:
@@ -121,16 +127,22 @@ locs, labels = plt.xticks(xlocs, xlabels)
 heatmap.set_xlabel("Datum")
 heatmap.set_ylabel("Leeftijd")
 
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.165, 
-         datetime.datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
 
+# Put vertical line at current day
+plt.text(
+    x=(datetime.date.today() - startdate.date()).days,
+    y=0,
+    s=datetime.datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
 averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
+
+# averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
 
 data_tot = gemiddeldeleeftijd['x'][-1].strftime("%Y-%m-%d")
 footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
@@ -142,8 +154,9 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 heatmap.grid(which='both', axis='both', linestyle='-.',
             color='gray', linewidth=1, alpha=0.3)
 
-plt.savefig("../docs/graphs/besmettingen-leeftijd.svg", format="svg")
-
-# plt.show()
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/besmettingen-leeftijd-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/besmettingen-leeftijd.svg", format="svg")
 
 

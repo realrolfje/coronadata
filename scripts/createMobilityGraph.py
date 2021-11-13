@@ -5,15 +5,16 @@
 from matplotlib import pyplot as plt
 from dateutil import parser
 import datetime
+import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.datautil import anotate
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
+else:
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
-else:
-    print("New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
@@ -34,6 +35,11 @@ ov = {
 }
 
 date_range = brondata.getDateRange(metenisweten)
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
+
+
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
@@ -69,7 +75,7 @@ fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
+plt.gca().set_xlim([date_range[0], date_range[-1]])
 ax1.set_ylim([0,190])
 
 ax1.axhline(100, color='black', linestyle='-', linewidth=0.4)
@@ -84,7 +90,7 @@ ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemidde
 
 
 for event in events:
-    if 'mobiliteit' in event:
+    if 'mobiliteit' in event and parser.parse(event['mobiliteit'][0]) > date_range[0]:
         anotate(
             ax1, 
             rijden['x'], rijden['y'],
@@ -93,19 +99,22 @@ for event in events:
             event['mobiliteit'][1]
         )
 
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.165, 
-         datetime.datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
-ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
+# Put vertical line at current day
+plt.text(
+    x=datetime.date.today(),
+    y=0,
+    s=datetime.datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
+plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 ax1.set_xlabel("Datum")
-ax1.set_ylabel("% t.o.v. 13 januari")
-
+ax1.set_ylabel("% t.o.v. 13 januari 2021")
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 plt.title('Mobiliteit (op basis van reisplanningsverzoeken)')
@@ -119,6 +128,8 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
 #ax2.legend(loc="upper right")
-plt.savefig("../docs/graphs/mobiliteit.svg", format="svg")
-# plt.savefig("../docs/graphs/mobiliteit.png", format="png", dpi=180/2)
-# plt.show()
+
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/mobiliteit-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/mobiliteit.svg", format="svg")
