@@ -6,17 +6,17 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 from statistics import mean
 import datetime
-import json
+import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth
 from scipy.ndimage.filters import uniform_filter1d
 
 print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
+else:
     print("No fresh data, and unchanged code. Exit.")
     exit(0)
-else:
-    print("New data, regenerate output.")
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 date_range = brondata.getDateRange(metenisweten)
@@ -34,14 +34,21 @@ RNA_populatie_dekking = {
     'y':[],
 }
 
-for datum in metenisweten:
-    if metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0\
+date_range = brondata.getDateRange(metenisweten)
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
+
+for d in date_range:
+    datum = d.strftime("%Y-%m-%d")
+
+    if datum in metenisweten and metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0\
         and  metenisweten[datum]['RNA']['RNA_per_ml_avg'] < 8000:
         # The < 8000 is to remove strange 9700 spike in measurements in may
 
         RNA_per_ml_avg['x'].append(parser.parse(datum))
         RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_ml_avg'])
-    if metenisweten[datum]['RNA']['populatie_dekking']:
+    if datum in metenisweten and metenisweten[datum]['RNA']['populatie_dekking']:
         RNA_populatie_dekking['x'].append(parser.parse(datum))
         RNA_populatie_dekking['y'].append(metenisweten[datum]['RNA']['populatie_dekking'] * 100)
 
@@ -61,21 +68,25 @@ ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', label=
 
 ax1.fill_between(RNA_per_ml_avg['x'], 0, RNA_per_ml_avg['y'],facecolor='green', alpha=0.3, interpolate=True)
 
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.19, 
-         datetime.datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
-ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
+# Put vertical line at current day
+plt.text(
+    x=datetime.date.today(),
+    y=0,
+    s=datetime.datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
+plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 #  ax2.plot(RNA_populatie_dekking['x'], smooth(RNA_populatie_dekking['y']), color='orange', label='geschatte populatie dekking %')
 
 
 axes = plt.gca()
-axes.set_xlim([parser.parse("2020-03-01"),date_range[-1]])
+axes.set_xlim([date_range[0],date_range[-1]])
 
 ax1.set_ylim([0,4000])
 ax1.set_ylabel("RNA per milliliter")
@@ -105,6 +116,7 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Bron: https://data.rivm.nl/covid-19"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-plt.savefig("../docs/graphs/rna-in-rioolwater.svg", format="svg")
-
-
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/rna-in-rioolwater"+"-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/rna-in-rioolwater.svg", format="svg")
