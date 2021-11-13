@@ -68,8 +68,8 @@ besmettingsgraad = {
 }
 
 date_range = brondata.getDateRange(metenisweten)
-lastDays = arguments.lastDays()
 
+lastDays = arguments.lastDays()
 if (lastDays>0):
     date_range = date_range[-lastDays:]
 

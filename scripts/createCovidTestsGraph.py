@@ -6,20 +6,17 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import datetime
 import modules.brondata as brondata
+import modules.arguments as arguments
 from modules.brondata import decimalstring
 from modules.datautil import anotate
 import sys
 
 print("------------ %s ------------" % __file__)
-if ((len(sys.argv) == 2) and (sys.argv[1] == 'force')):
-    print("Force new generation.")
+if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
+    print("New data, regenerate output.")
 else:
-    if not (brondata.freshdata() \
-        or brondata.isnewer(__file__, '../cache/daily-stats.json')):
-        print("No fresh data, and unchanged code. Exit.")
-        exit(0)
-    else:
-        print("New data, regenerate output.")
+    print("No fresh data, and unchanged code. Exit.")
+    exit(0)
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 events = brondata.readjson('../data/measures-events.json')
@@ -55,6 +52,11 @@ positief_percentage = {
 }
 
 date_range = brondata.getDateRange(metenisweten)
+
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
+
 
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
@@ -159,19 +161,22 @@ ax2.plot(positief_percentage['x'], positief_percentage['y'],
          % ( huidigpercentage)
 )
 
-# laat huidige datum zien met vertikale lijn
-plt.figtext(0.885,0.125, 
-         datetime.datetime.now().strftime("%d"), 
-         color="red",
-         fontsize=8,
-         bbox=dict(facecolor='white', alpha=0.9, pad=0,
-         edgecolor='white'),
-         zorder=10)
-ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
-
+# Put vertical line at current day
+plt.text(
+    x=datetime.date.today(),
+    y=0,
+    s=datetime.datetime.now().strftime("%d"), 
+    color="red",
+    fontsize=8,
+    ha="center",
+    va="center",
+    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    zorder=10
+)
+plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 
 for event in events:
-    if 'testsloc' in event:
+    if 'testsloc' in event and parser.parse(event['testsloc'][0]) > date_range[0]:
         anotate(
             ax1, 
             totaaltests['x'],
@@ -188,7 +193,7 @@ ax2.set_ylabel("Percentage positief getest")
 ax1.set_ylim([0, 100000])
 ax2.set_ylim([0, 50])
 
-plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
+plt.gca().set_xlim([date_range[0], date_range[-1]])
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 data_tot=positief['x'][-11].strftime("%Y-%m-%d")
@@ -204,4 +209,9 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
-plt.savefig("../docs/graphs/covidtests.svg", format="svg")
+
+if (lastDays > 0):
+    plt.savefig("../docs/graphs/covidtests-"+str(lastDays)+".svg", format="svg")
+else:
+    plt.savefig("../docs/graphs/covidtests.svg", format="svg")
+
