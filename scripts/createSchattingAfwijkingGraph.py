@@ -121,7 +121,7 @@ ax1.fill_between(
     beta['max'],
     facecolor='blue', alpha=0.1, interpolate=True)
 
-ax1.plot(teta['x'], teta['y'], color='cyan', label='Infectieradar percentage COVID-19 klachten (x'+decimalstring(tetascale)+')')
+ax1.plot(teta['x'], teta['y'], color='cyan', label='Infectieradar COVID-19 klachten (percentage x'+decimalstring(tetascale)+')')
 
 ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking @rolfje t.o.v. RIVM schatting in %')
 
