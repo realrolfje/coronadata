@@ -184,6 +184,13 @@ def download():
         'https://lcps.nu/wp-content/uploads/covid-19.csv'
     ) or freshdata
 
+    freshdata = downloadIfStale(
+        '../cache/COVID-19_Infectieradar_symptomen_per_dag.json',
+        'https://data.rivm.nl/covid-19/COVID-19_Infectieradar_symptomen_per_dag.json'
+    ) or freshdata
+
+
+
     # freshdata = downloadIfStale(
     #     '../cache/Google_Global_Mobility_Report.csv',
     #     'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
@@ -246,7 +253,8 @@ def initrecord(date, metenisweten):
             'rivm_totaal_tests_positief'       : None,
             'rivm_totaal_personen_getest'      : None,
             'rivm_totaal_personen_positief'    : None,
-            'rivm_aantal_testlabs' : None,            
+            'rivm_aantal_testlabs'             : None,
+            'rivm_infectieradar_perc'          : None,
             'rivm_schatting_besmettelijk' : {
                 'min'   : None, # Minimaal personen besmettelijk
                 'value' : None, # Geschat personen besmettelijk
@@ -394,10 +402,10 @@ def builddaily():
             if 'population' in record:
                 metenisweten[record['Date']]['Rt_population']  = record['population']
 
-    print("Load veiligheidsregios for addign to sewage data")
-    filename = '../data/veiligheidsregios.json'
-    with open(filename, 'r') as json_file:
-        veiligheidsregios = json.load(json_file)
+    # print("Load veiligheidsregios for addign to sewage data")
+    # filename = '../data/veiligheidsregios.json'
+    # with open(filename, 'r') as json_file:
+    #     veiligheidsregios = json.load(json_file)
 
     print("Add RNA sewage data per region")
     filename = '../cache/COVID-19_rioolwaterdata.json' 
@@ -453,6 +461,26 @@ def builddaily():
                 metenisweten[stringdate]['rivm_schatting_besmettelijk']['min'] = int(record['prev_low'])
                 metenisweten[stringdate]['rivm_schatting_besmettelijk']['max'] = int(record['prev_up'])
                 metenisweten[stringdate]['rivm_schatting_besmettelijk']['value'] = int(record['prev_avg'])
+            except ValueError as e:
+                print('Ignored: ', e)
+                pass
+            except KeyError as e:
+                print('Ignored: ', e)
+                pass
+
+    print("Add infectieradar percentage met COVID-19 klachten")
+    filename = '../cache/COVID-19_Infectieradar_symptomen_per_dag.json' 
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+        for record in data:
+            stringdate = record['Date_of_statistics']
+
+            if not isvaliddate(stringdate, filename):
+                continue
+
+            try:
+                percentage = float(record['Perc_covid_symptoms'])
+                metenisweten[stringdate]['rivm_infectieradar_perc'] = percentage
             except ValueError as e:
                 print('Ignored: ', e)
                 pass

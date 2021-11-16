@@ -8,6 +8,8 @@ import datetime
 import modules.brondata as brondata
 from math import log
 
+from modules.brondata import decimalstring
+
 
 print("------------ %s ------------" % __file__)
 if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
@@ -28,6 +30,12 @@ beta = {
     'y' : [],
     'min' : [],
     'max' : []
+}
+
+tetascale=50000
+teta = {
+    'x' : [],
+    'y' : []
 }
 
 gamma = {
@@ -75,9 +83,16 @@ for datum in metenisweten:
     if metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and metenisweten[datum]['rolf_besmettelijk']:
         gamma['x'].append(parser.parse(datum))
         gamma['y'].append(100 - 100 * metenisweten[datum]['rivm_schatting_besmettelijk']['value'] / metenisweten[datum]['rolf_besmettelijk'])
+
+    if metenisweten[datum]['rivm_infectieradar_perc']:
+        teta['x'].append(parser.parse(datum))
+        teta['y'].append(metenisweten[datum]['rivm_infectieradar_perc'] * tetascale)
+
         
 if debug:
     beta['y'] = brondata.smooth(beta['y'])
+
+teta['y'] = brondata.smooth(teta['y'])
 
 print('Generating test graph...')
 
@@ -106,6 +121,7 @@ ax1.fill_between(
     beta['max'],
     facecolor='blue', alpha=0.1, interpolate=True)
 
+ax1.plot(teta['x'], teta['y'], color='cyan', label='Infectieradar percentage COVID-19 klachten (x'+decimalstring(tetascale)+')')
 
 ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking @rolfje t.o.v. RIVM schatting in %')
 
