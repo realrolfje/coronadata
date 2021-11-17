@@ -73,11 +73,11 @@ plt.text(
     x=datetime.date.today(),
     y=0,
     s=datetime.datetime.now().strftime("%d"), 
-    color="red",
+    color="white",
     fontsize=8,
     ha="center",
     va="center",
-    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
 plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
@@ -88,7 +88,7 @@ plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 axes = plt.gca()
 axes.set_xlim([date_range[0],date_range[-1]])
 
-ax1.set_ylim([0,4000])
+ax1.set_ylim([0,6000])
 ax1.set_ylabel("RNA per milliliter")
 ax1.set_xlabel("Datum")
 
@@ -99,7 +99,7 @@ ax1.set_xlabel("Datum")
 ax1.legend(loc="upper left")
 # ax2.legend(loc="upper right")
 
-plt.figtext(0.20,0.6, 
+plt.figtext(0.60,0.7, 
          "\"Je plee liegt niet\" - Rolf",
          color="gray",
          bbox=dict(facecolor='white', alpha=1.0, 

@@ -137,7 +137,7 @@ plt.text(
     fontsize=8,
     ha="center",
     va="center",
-    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
 averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)

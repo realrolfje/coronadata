@@ -637,11 +637,12 @@ def builddaily():
             # print(intOrNone(record['total']))
 
         # Interpolate prediction to TODAY
+        nextPredictionValue = 0
         for key, value in voorspelling_vaccinaties.items():
             # Get first next date
             if key >= datetime.datetime.now():
                 nextPredictionDate = key
-                nextPredictionValue =  value
+                nextPredictionValue = value
                 break
 
 

@@ -230,7 +230,7 @@ plt.text(
     fontsize=8,
     ha="center",
     va="center",
-    bbox=dict(facecolor='yellow', alpha=0.9, pad=0, edgecolor='yellow'),
+    bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
 plt.axvline(date.today(), color='red', linewidth=0.5)
