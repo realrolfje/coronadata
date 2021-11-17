@@ -6,6 +6,7 @@ import sys
 def isForce():
     for argument in sys.argv:
         if (argument == 'force'):
+            print("Forcing generation of new graph.")
             return True
     return False
 

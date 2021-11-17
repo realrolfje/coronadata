@@ -10,13 +10,9 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth
 from scipy.ndimage.filters import uniform_filter1d
+from modules.datautil import runIfNewData
 
-print("------------ %s ------------" % __file__)
-if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
-    print("New data, regenerate output.")
-else:
-    print("No fresh data, and unchanged code. Exit.")
-    exit(0)
+runIfNewData(__file__)
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 date_range = brondata.getDateRange(metenisweten)

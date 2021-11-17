@@ -8,13 +8,9 @@ from modules.brondata import decimalstring, intOrZero
 from modules.datautil import anotate
 from datetime import datetime, date, timedelta
 import sys
+from modules.datautil import runIfNewData
 
-print("------------ %s ------------" % __file__)
-if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
-    print("New data, regenerate output.")
-else:
-    print("No fresh data, and unchanged code. Exit.")
-    exit(0)
+runIfNewData(__file__)
 
 #brondata.freshdata()
 metenisweten = brondata.readjson('../cache/daily-stats.json')
@@ -226,7 +222,7 @@ plt.text(
     x=date.today(),
     y=0,
     s=datetime.now().strftime("%d"), 
-    color="red",
+    color="white",
     fontsize=8,
     ha="center",
     va="center",

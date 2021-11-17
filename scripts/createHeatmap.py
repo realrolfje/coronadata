@@ -12,13 +12,9 @@ import json
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, isnewer
+from modules.datautil import runIfNewData
 
-print("------------ %s ------------" % __file__)
-if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
-    print("New data, regenerate output.")
-else:
-    print("No fresh data, and unchanged code. Exit.")
-    exit(0)
+runIfNewData(__file__)
 
 print("Generating date/age heatmap.")
 
@@ -133,7 +129,7 @@ plt.text(
     x=(datetime.date.today() - startdate.date()).days,
     y=0,
     s=datetime.datetime.now().strftime("%d"), 
-    color="red",
+    color="white",
     fontsize=8,
     ha="center",
     va="center",

@@ -4,6 +4,8 @@
 
 from datetime import datetime, timedelta
 from dateutil import parser
+from . brondata import freshdata, isnewer
+from . arguments import isForce
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
     d = parser.parse(datum)
@@ -52,3 +54,17 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
         )
     else:
         print("date %s, yval %s, text not displayed: %s" %(str(d), str(yval), tekst))
+
+
+def runIfNewData(filename):
+    print("------------ %s ------------" % filename)
+    if freshdata():
+        print("New data, regenerate output.")
+    elif isnewer(filename, '../cache/daily-stats.json'):
+        print("Script newer than the data, regenerate output.")
+    elif isForce():
+        print("Force, regenerate output.")
+    else:
+        print("No fresh data, and unchanged code. Exit.")
+        exit(0)
+

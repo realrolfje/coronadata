@@ -9,16 +9,12 @@ from dateutil import parser
 from os import listdir
 from os.path import isfile, join, basename
 import csv
+from modules.datautil import runIfNewData
+
+runIfNewData(__file__)
 
 templatedir = '../docs/templates'
 outputdir = '../docs'
-
-print("------------ %s ------------" % __file__)
-if (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json') or arguments.isForce()):
-    print("New data, regenerate output.")
-else:
-    print("No fresh data, and unchanged code. Exit.")
-    exit(0)
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 

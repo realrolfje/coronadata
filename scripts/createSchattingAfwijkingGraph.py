@@ -7,16 +7,10 @@ from dateutil import parser
 import datetime
 import modules.brondata as brondata
 from math import log
-
 from modules.brondata import decimalstring
+from modules.datautil import runIfNewData
 
-
-print("------------ %s ------------" % __file__)
-if not (brondata.freshdata() or brondata.isnewer(__file__, '../cache/daily-stats.json')):
-    print("No fresh data, and unchanged code. Exit.")
-    exit(0)
-else:
-    print("New data, regenerate output.")
+runIfNewData(__file__)
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
