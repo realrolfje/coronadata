@@ -133,7 +133,7 @@ substitutes = {
     'nu_in_ziekenhuis'     : decimalstring(nu_opgenomen + nu_op_ic),
     'nu_in_ziekenhuis_num' : nu_opgenomen + nu_op_ic,
 
-    'rna_per_100k'       : decimalstring(rna_per_100k),
+    'rna_per_100k'       : decimalstring(round(rna_per_100k)),
     'rna_per_100k_num'   : rna_per_100k,
     'rna_per_100k_datum' : rna_per_100k_datum,
 

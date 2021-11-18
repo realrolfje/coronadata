@@ -742,12 +742,12 @@ def builddaily():
 
             dates.append(datum)
             ziek.append(
-                 ( \
-                    (1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests']) \
+                 ((1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests']) \
                     + (3 * metenisweten[datum]['rivm_totaal_tests']) \
-                    + (22 * metenisweten[datum]['rivm_totaal_tests_positief']) \
-                  ) * (log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'],10)) \
-                 /14)
+                    + (22 * metenisweten[datum]['rivm_totaal_tests_positief'])) \
+                  * log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'],10) \
+                 / 50
+            )
 
     ziek = smooth(ziek)
     for i in range(len(dates)):
