@@ -323,29 +323,31 @@ def builddaily():
     filename = '../cache/COVID-19_casus_landelijk.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        print('Loaded %s, contains %s case records.' % (filename, decimalstring(len(data))))
         for record in data:
             if not isvaliddate(record['Date_statistics'], filename):
                 continue
 
             initrecord(record['Date_statistics'], metenisweten)
-            metenisweten[record['Date_statistics']]['positief'] += 1
+            todaysRecord = metenisweten[record['Date_statistics']]
+
+            todaysRecord['positief'] += 1
 
             if (record['Hospital_admission'] == "Yes"):
-                metenisweten[record['Date_statistics']]['opgenomen'] += 1
+                todaysRecord['opgenomen'] += 1
 
-            # metenisweten[record['Date_statistics']] = record['Agegroup']
-            metenisweten[record['Date_statistics']]['rivm-datum'] = record['Date_file']
+            todaysRecord['rivm-datum'] = record['Date_file']
 
             if (record['Deceased'] == 'Yes'):
-                metenisweten[record['Date_statistics']]['overleden'] += 1
+                todaysRecord['overleden'] += 1
 
             try:
                 # Age groups are 0-10, 10-20, 30-40 etc, we make that 5, 15, 25, 35.
                 age = int(record['Agegroup'].split('-')[0].split('+')[0])+5
-                if age not in metenisweten[record['Date_statistics']]['besmettingleeftijd']:
-                    metenisweten[record['Date_statistics']]['besmettingleeftijd'][age] = 1
+                if age not in todaysRecord['besmettingleeftijd']:
+                    todaysRecord['besmettingleeftijd'][age] = 1
                 else: 
-                    metenisweten[record['Date_statistics']]['besmettingleeftijd'][age] += 1
+                    todaysRecord['besmettingleeftijd'][age] += 1
             except ValueError:
                 # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
                 pass
@@ -355,6 +357,8 @@ def builddaily():
                 testpunten[testpunt] = 1
             else:
                 testpunten[testpunt] += 1
+        
+        print('Processed ' + decimalstring(len(metenisweten)) + ' records.')
 
 
     print("Add intensive care data")
@@ -421,13 +425,11 @@ def builddaily():
             if not isvaliddate(stringdate, filename):
                 continue
 
-            if 'RNA_per_ml' in record and record['RNA_per_ml']:
-                rnavalue = int(record['RNA_per_ml'])
-            elif 'RNA_flow_per_100.000' in record and record['RNA_flow_per_100.000']:
-                rnavalue = int(record['RNA_flow_per_100.000']) / 24650163389
-            elif 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
-                rnavalue = int(record['RNA_flow_per_100000']) / 24650163389
+            if 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
+                rnavalue = int(record['RNA_flow_per_100000'])
+                # print(str(rnavalue), end=",")
             else:
+                # print("No RNA Flow data in %s (%s) for date %s." % (record['RWZI_AWZI_name'],record['RWZI_AWZI_code'],stringdate))
                 continue
 
             initrecord(stringdate, metenisweten)

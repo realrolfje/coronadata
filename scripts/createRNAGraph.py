@@ -38,15 +38,14 @@ if (lastDays>0):
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
-    if datum in metenisweten and metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0\
-        and  metenisweten[datum]['RNA']['RNA_per_ml_avg'] < 8000:
-        # The < 8000 is to remove strange 9700 spike in measurements in may
+    if datum in metenisweten and metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0:
 
+        # Remove strange spike (measurement error) in may 2021
+        if datum == '2021-05-22' and metenisweten[datum]['RNA']['RNA_per_ml_avg'] > 2e+14:
+            continue
+        
         RNA_per_ml_avg['x'].append(parser.parse(datum))
         RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_ml_avg'])
-    if datum in metenisweten and metenisweten[datum]['RNA']['populatie_dekking']:
-        RNA_populatie_dekking['x'].append(parser.parse(datum))
-        RNA_populatie_dekking['y'].append(metenisweten[datum]['RNA']['populatie_dekking'] * 100)
 
 
 plt.figure(figsize=(10,3))
@@ -57,7 +56,8 @@ fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', label='RNA per milliliter rioolwater (gemiddeld)')
+ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', 
+         label='RNA deeltjes per 100.000 inwonwers (gemiddeld)')
 
 # RNA_per_ml_avg['besmettelijk'] = uniform_filter1d(RNA_per_ml_avg['y'], size=20)
 # plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
@@ -84,8 +84,20 @@ plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 axes = plt.gca()
 axes.set_xlim([date_range[0],date_range[-1]])
 
-ax1.set_ylim([0,6000])
-ax1.set_ylabel("RNA per milliliter")
+ax1.set_ylim([0,1.5e+14])
+ax1.set_yticks      ([   0, 0.25e+14, 0.5e+14, 0.75e+14,  1e+14, 1.25e+14, 1.5e+14])
+ax1.set_yticklabels([   '0',   '25T',   '50T',    '75T', '100T',   '125T',  '150T'])
+
+plt.figtext(0.10,0.72, 
+         "(T = Terra = 1.000.000.000.000)",
+         color="gray",
+         fontsize = 8,
+         bbox=dict(facecolor='white', alpha=1.0, 
+         edgecolor='white'),
+         zorder=10)
+
+
+ax1.set_ylabel("Deeltjes per 100k inwoners")
 ax1.set_xlabel("Datum")
 
 # ax2.set_ylim([0,100])
@@ -104,7 +116,7 @@ plt.figtext(0.60,0.7,
 
 data_tot=RNA_per_ml_avg['x'][-1].strftime("%Y-%m-%d")
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-plt.title('Concentratie SARS-CoV-2 RNA per ml rioolwater')
+plt.title('Concentratie SARS-CoV-2 RNA in rioolwater per 100.000 inwoners')
 
 footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
