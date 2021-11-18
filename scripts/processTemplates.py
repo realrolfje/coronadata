@@ -43,6 +43,10 @@ for date in metenisweten:
     if metenisweten[date]['rivm_schatting_besmettelijk']['value']:
         geschat_ziek_nu = metenisweten[date]['rivm_schatting_besmettelijk']['value']
         geschat_ziek_nu_datum = date
+
+    if metenisweten[date]['RNA']['RNA_per_100k_avg']:
+        rna_per_100k = metenisweten[date]['RNA']['RNA_per_100k_avg']
+        rna_per_100k_datum = date
     if metenisweten[date]['RNA']['besmettelijk']:
         geschat_ziek_nu_rna = metenisweten[date]['RNA']['besmettelijk']
         geschat_ziek_nu_rna_datum = date
@@ -128,6 +132,10 @@ substitutes = {
 
     'nu_in_ziekenhuis'     : decimalstring(nu_opgenomen + nu_op_ic),
     'nu_in_ziekenhuis_num' : nu_opgenomen + nu_op_ic,
+
+    'rna_per_100k'       : decimalstring(rna_per_100k),
+    'rna_per_100k_num'   : rna_per_100k,
+    'rna_per_100k_datum' : rna_per_100k_datum,
 
     'Rt'      : decimalstring(Rt),
     'Rt_num'  : Rt,

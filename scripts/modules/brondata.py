@@ -232,18 +232,18 @@ def initrecord(date, metenisweten):
             'Rt_up'                : None,
             'Rt_population'        : None,
             'RNA' : {
-                'totaal_RNA_per_ml'    : 0,
+                'totaal_RNA_per_100k'    : 0,
                 'totaal_RNA_metingen'  : 0,
-                'RNA_per_ml_avg'       : 0,
+                'RNA_per_100k_avg'       : 0,
                 'besmettelijk'         : None, # Aantal besmettelijke mensen op basis van RNA_avg
                 'besmettelijk_error'   : None,
                 'populatie_dekking'    : None,
                 'regio' : {
                     # This will contain data per veiligheidsregio:
                     # 'VR01' : {
-                    #     'totaal_RNA_per_ml'    : 0,
+                    #     'totaal_RNA_per_100k'    : 0,
                     #     'totaal_RNA_metingen'  : 0,
-                    #     'RNA_per_ml_avg'       : 0,
+                    #     'RNA_per_100k_avg'       : 0,
                     #     'inwoners'             : 0,
                     #     'oppervlakte'          : 0                   
                     # }
@@ -433,22 +433,22 @@ def builddaily():
                 continue
 
             initrecord(stringdate, metenisweten)
-            metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] += rnavalue
+            metenisweten[stringdate]['RNA']['totaal_RNA_per_100k'] += rnavalue
             metenisweten[stringdate]['RNA']['totaal_RNA_metingen'] += 1 
-            metenisweten[stringdate]['RNA']['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['totaal_RNA_metingen']
+            metenisweten[stringdate]['RNA']['RNA_per_100k_avg'] = metenisweten[stringdate]['RNA']['totaal_RNA_per_100k'] / metenisweten[stringdate]['RNA']['totaal_RNA_metingen']
 
             # regiocode = record['Security_region_code']
             # if regiocode not in metenisweten[stringdate]['RNA']:
             #     metenisweten[stringdate]['RNA']['regio'][regiocode] = {
-            #         'totaal_RNA_per_ml'    : 0,
+            #         'totaal_RNA_per_100k'    : 0,
             #         'totaal_RNA_metingen'  : 0,
-            #         'RNA_per_ml_avg'       : 0,
+            #         'RNA_per_100k_avg'       : 0,
             #         'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
             #         'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']                   
             #     }
-            # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] += rnavalue
+            # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] += rnavalue
             # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1 
-            # metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_ml_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_ml'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
+            # metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_100k_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
     print("Add estimated ill based on RIVM (prevalentie)")
     filename = '../cache/COVID-19_prevalentie.json'
@@ -701,7 +701,7 @@ def builddaily():
         # print('RNA metingen '+date+' '+str(metenisweten[date]['RNA']['totaal_RNA_metingen']))
         if metenisweten[date]['RNA']['totaal_RNA_metingen'] > 30:
             dates.append(date)
-            rna.append(metenisweten[date]['RNA']['RNA_per_ml_avg'])
+            rna.append(metenisweten[date]['RNA']['RNA_per_100k_avg'])
 
     # Smooth
     rna_avg = double_savgol(rna, 2, 13, 1)
@@ -738,7 +738,7 @@ def builddaily():
         if datum in metenisweten \
             and ('rivm_totaal_tests' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests'] != None \
             and ('rivm_totaal_tests_positief' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests_positief'] != None \
-            and (metenisweten[datum]['RNA']['totaal_RNA_per_ml'] > 1) :
+            and (metenisweten[datum]['RNA']['totaal_RNA_per_100k'] > 1) :
 
             dates.append(datum)
             ziek.append(
@@ -746,7 +746,7 @@ def builddaily():
                     (1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests']) \
                     + (3 * metenisweten[datum]['rivm_totaal_tests']) \
                     + (22 * metenisweten[datum]['rivm_totaal_tests_positief']) \
-                  ) * (log(metenisweten[datum]['RNA']['totaal_RNA_per_ml'],10)) \
+                  ) * (log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'],10)) \
                  /14)
 
     ziek = smooth(ziek)

@@ -19,7 +19,7 @@ date_range = brondata.getDateRange(metenisweten)
 
 print('Generating RNA graph...')
 
-RNA_per_ml_avg = {
+RNA_per_100k_avg = {
     'x':[],
     'y':[],
     'smooth' : []
@@ -39,14 +39,12 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     if datum in metenisweten and metenisweten[datum]['RNA']['totaal_RNA_metingen'] > 0:
-
         # Remove strange spike (measurement error) in may 2021
-        if datum == '2021-05-22' and metenisweten[datum]['RNA']['RNA_per_ml_avg'] > 2e+14:
+        if datum == '2021-05-22' and metenisweten[datum]['RNA']['RNA_per_100k_avg'] > 2e+14:
             continue
         
-        RNA_per_ml_avg['x'].append(parser.parse(datum))
-        RNA_per_ml_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_ml_avg'])
-
+        RNA_per_100k_avg['x'].append(parser.parse(datum))
+        RNA_per_100k_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_100k_avg'])
 
 plt.figure(figsize=(10,3))
 
@@ -56,13 +54,13 @@ fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
-ax1.plot(RNA_per_ml_avg['x'], smooth(RNA_per_ml_avg['y']), color='green', 
+ax1.plot(RNA_per_100k_avg['x'], smooth(RNA_per_100k_avg['y']), color='green', 
          label='RNA deeltjes per 100.000 inwonwers (gemiddeld)')
 
-# RNA_per_ml_avg['besmettelijk'] = uniform_filter1d(RNA_per_ml_avg['y'], size=20)
-# plt.plot(RNA_per_ml_avg['x'], RNA_per_ml_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
+# RNA_per_100k_avg['besmettelijk'] = uniform_filter1d(RNA_per_100k_avg['y'], size=20)
+# plt.plot(RNA_per_100k_avg['x'], RNA_per_100k_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
 
-ax1.fill_between(RNA_per_ml_avg['x'], 0, RNA_per_ml_avg['y'],facecolor='green', alpha=0.3, interpolate=True)
+ax1.fill_between(RNA_per_100k_avg['x'], 0, RNA_per_100k_avg['y'],facecolor='green', alpha=0.3, interpolate=True)
 
 # Put vertical line at current day
 plt.text(
@@ -114,7 +112,7 @@ plt.figtext(0.60,0.7,
          edgecolor='white'),
          zorder=10)
 
-data_tot=RNA_per_ml_avg['x'][-1].strftime("%Y-%m-%d")
+data_tot=RNA_per_100k_avg['x'][-1].strftime("%Y-%m-%d")
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 plt.title('Concentratie SARS-CoV-2 RNA in rioolwater per 100.000 inwoners')
 
