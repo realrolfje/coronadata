@@ -746,7 +746,7 @@ def builddaily():
                     + (3 * metenisweten[datum]['rivm_totaal_tests']) \
                     + (22 * metenisweten[datum]['rivm_totaal_tests_positief'])) \
                   * log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'],10) \
-                 / 50
+                 / 44
             )
 
     ziek = smooth(ziek)
