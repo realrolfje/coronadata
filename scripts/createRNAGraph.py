@@ -55,7 +55,7 @@ fig.subplots_adjust(bottom=0.2, left=0.09, right=0.91)
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 ax1.plot(RNA_per_100k_avg['x'], smooth(RNA_per_100k_avg['y']), color='green', 
-         label='RNA deeltjes per 100.000 inwonwers (gemiddeld)')
+         label='RNA deeltjes per 100.000 inwoners (gemiddeld)')
 
 # RNA_per_100k_avg['besmettelijk'] = uniform_filter1d(RNA_per_100k_avg['y'], size=20)
 # plt.plot(RNA_per_100k_avg['x'], RNA_per_100k_avg['besmettelijk'], color='green', label='Geschat besmettelijk')
