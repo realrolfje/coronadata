@@ -178,7 +178,9 @@ fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 ax2 = plt.twinx()
 
 for event in events:
-    if graphname in event and parser.parse(event[graphname][0]) > date_range[0]:
+    if graphname in event \
+        and parser.parse(event[graphname][0]) > date_range[0]\
+        and (len(event[graphname]) <= 2 or len(date_range) <= event[graphname][2]):
         anotate(
             ax2, 
             geschat_ziek_rna['x'], geschat_ziek_rna['y'],

@@ -79,8 +79,8 @@
             31000
         ],
         "zieken": [
-            "2020-07-05",
-            50000
+            "2020-07-01",
+            56000
         ],
         "mobiliteit": [
             "2020-08-10",
@@ -116,7 +116,8 @@
         "event": "Landelijk\nmondkapadvies",
         "zieken": [
             "2020-08-10",
-            130000
+            130000,
+            365
         ]
     },
     {
@@ -200,7 +201,8 @@
         "url": "https://twitter.com/MedicijnNL/status/1341006296255000577",
         "zieken": [
             "2020-10-20",
-            305000
+            305000,
+            365
         ],
         "zieken-sliding": [
             "2020-11-15",
@@ -253,7 +255,7 @@
         "event": "Invoering\navondklok",
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/avondklok",
         "zieken": [
-            "2021-01-02",
+            "2021-01-10",
             14000
         ]
     },
@@ -299,7 +301,8 @@
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/02/23/voorzichtig-meer-lucht-tijdens-de-lockdown",
         "zieken": [
             "2021-01-02",
-            315000
+            315000,
+            365
         ],
         "testsloc": [
             "2021-01-05",
@@ -326,7 +329,8 @@
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/03/08/verdere-verruiming-lockdown-nog-niet-verantwoord",
         "zieken": [
             "2021-02-01",
-            75000
+            75000,
+            365
         ]
     },
     {
@@ -422,7 +426,8 @@
         "url": "https://www.ad.nl/binnenland/nederland-verder-van-het-slot-dit-zijn-alle-versoepelingen-die-19-mei-ingaan~abd06e58/",
         "zieken": [
             "2021-03-20",
-            14000
+            14000,
+            365
         ]
     },
     {
@@ -493,7 +498,7 @@
         "event": "Geen 1,5 meter\nop scholen",
         "url": "https://www.rijksoverheid.nl/documenten/mediateksten/2021/08/13/letterlijke-tekst-persconferentie-minister-president-rutte-en-minister-de-jonge-13-augustus-2021",
         "zieken": [
-            "2021-07-02",
+            "2021-07-15",
             225000
         ]
     },
@@ -512,7 +517,8 @@
         "url": "https://www.formula1.com/en/racing/2021/Netherlands.html",
         "zieken": [
             "2021-08-20",
-            150000
+            150000,
+            365
         ],
         "testsloc": [
             "2021-08-20",
@@ -561,7 +567,8 @@
         "url": "https://www.rijksoverheid.nl/documenten/mediateksten/2021/11/12/letterlijke-tekst-persconferentie-coronavirus-minister-president-rutte-en-minister-de-jonge-12-november-2021",
         "zieken": [
          "2021-09-08",
-         330000
+         330000,
+         365
          ]
      },
      {
@@ -578,8 +585,9 @@
         "event": "1,5 meter verplicht",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/11/23/15-meter-afstand-houden-is-weer-verplicht",
         "zieken": [
-         "2021-09-20",
-         410000
+         "2021-10-15",
+         410000,
+         365
          ]
      }
 ]
