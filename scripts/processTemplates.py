@@ -18,9 +18,13 @@ outputdir = '../docs'
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 
+dates=[]
+
 gemiddeldeleeftijdarray=[]
 # Assumes last records are newest
 for date in metenisweten:
+    dates.append(date)
+
     totaal_positief = metenisweten[date]['totaal_positief']
     totaal_positief_datum = date
 
@@ -77,6 +81,58 @@ for date in metenisweten:
         totaal_mensen_geschat = metenisweten[date]['vaccinaties']['totaal_mensen_geschat']
         mensen_gevaccineerd_geschat_perc=100*(totaal_mensen_geschat/(17500000))
 
+# Iterate dates in reverse, see https://www.askpython.com/python/array/reverse-an-array-in-python
+nu_opgenomen_record_sinds = "nooit"
+nu_opgenomen_record_flag = False
+for date in dates[::-1]:
+    # Record opgenomen in ziekenhuis
+    x = metenisweten[date]['nu_opgenomen']
+    if x and (abs(1-(x/nu_opgenomen)) > 0.25):
+        nu_opgenomen_record_flag = True    
+    if (nu_opgenomen_record_flag == True) and (x >= nu_opgenomen):
+        nu_opgenomen_record_sinds = date
+        break
+
+nu_op_ic_record_sinds = "nooit"
+nu_op_ic_record_flag = False
+for date in dates[::-1]:
+    # Record opgenomen op IC
+    x = metenisweten[date]['nu_op_ic']
+    if x and (abs(1-(x/nu_op_ic)) > 0.25):
+        nu_op_ic_record_flag = True    
+    if (nu_op_ic_record_flag == True) and (x >= nu_op_ic):
+        nu_op_ic_record_sinds = date
+        break
+
+geschat_ziek_rolf_record_sinds = "nooit"
+geschat_ziek_rolf_record_flag = False
+for date in dates[::-1]:
+    # Record geschat ziek
+    x = metenisweten[date]['rolf_besmettelijk']
+
+    if x and (abs(1-(x/geschat_ziek_nu_rolf)) > 0.25):
+        geschat_ziek_rolf_record_flag = True    
+    if (geschat_ziek_rolf_record_flag == True) and x and (x >= geschat_ziek_nu_rolf):
+        geschat_ziek_record_sinds = date
+        break
+
+
+positief_percentage_record_sinds = "nooit"
+positief_percentage_record_flag = False
+for date in dates[::-1]:
+    if 'rivm_totaal_tests' in metenisweten[date] and 'rivm_totaal_tests_positief' in metenisweten[date]:
+        x = 100 * metenisweten[date]['rivm_totaal_tests_positief'] / metenisweten[date]['rivm_totaal_tests']
+        if x and (abs(1-(x/positief_percentage)) > 0.25):
+            positief_percentage_record_flag = True    
+        if (positief_percentage_record_flag == True) and x and (x >= positief_percentage):
+            positief_percentage_record_sinds = date
+            break
+
+# print("nu opgenomen is een record sinds %s" % nu_opgenomen_record_sinds)
+# print("nu op IC is een record sinds %s" % nu_op_ic_record_sinds)
+# print("geschat ziek is een record sinds %s" % geschat_ziek_rolf_record_sinds)
+# print("test percentage is een record sinds %s" % positief_percentage_record_sinds)
+
 gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 
 eenopXziek = round(17500000/geschat_ziek_nu)
@@ -104,12 +160,13 @@ substitutes = {
     'totaal_positief_num'  : totaal_positief,
     'totaal_positief_datum': totaal_positief_datum,
 
-    'geschat_ziek_rivm'         : decimalstring(geschat_ziek_nu),
-    'geschat_ziek_nu_datum'     : geschat_ziek_nu_datum,
-    'geschat_ziek_rna'          : decimalstring(round(geschat_ziek_nu_rna)),
-    'geschat_ziek_nu_rna_datum' : geschat_ziek_nu_rna_datum,
-    'geschat_ziek_rolf'         : decimalstring(round(geschat_ziek_nu_rolf)),
-    'geschat_ziek_nu_rolf_datum': geschat_ziek_nu_rolf_datum,
+    'geschat_ziek_rivm'             : decimalstring(geschat_ziek_nu),
+    'geschat_ziek_nu_datum'         : geschat_ziek_nu_datum,
+    'geschat_ziek_rna'              : decimalstring(round(geschat_ziek_nu_rna)),
+    'geschat_ziek_nu_rna_datum'     : geschat_ziek_nu_rna_datum,
+    'geschat_ziek_rolf'             : decimalstring(round(geschat_ziek_nu_rolf)),
+    'geschat_ziek_nu_rolf_datum'    : geschat_ziek_nu_rolf_datum,
+    'geschat_ziek_rolf_record_sinds': geschat_ziek_rolf_record_sinds,
 
     'ziekverhouding'      : str(eenopXziek),
     'ziekverhouding_color': 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
@@ -124,11 +181,13 @@ substitutes = {
     'nu_opgenomen_num'  : nu_opgenomen,
     'nu_opgenomen_datum': nu_opgenomen_datum,
     'nu_opgenomen_color': 'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',
+    'nu_opgenomen_record_sinds' : nu_opgenomen_record_sinds,
 
     'nu_op_ic'      : decimalstring(nu_op_ic),
     'nu_op_ic_num'  : nu_op_ic,
     'nu_op_ic_datum': nu_op_ic_datum,
     'nu_op_ic_color': 'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
+    'nu_op_ic_record_sinds': nu_op_ic_record_sinds,
 
     'nu_in_ziekenhuis'     : decimalstring(nu_opgenomen + nu_op_ic),
     'nu_in_ziekenhuis_num' : nu_opgenomen + nu_op_ic,
@@ -142,12 +201,13 @@ substitutes = {
     'Rt_datum': Rt_datum,
     'Rt_color': 'green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red',
 
-    'vandaag_getest'           : decimalstring(vandaag_getest),
-    'vandaag_getest_datum'     : vandaag_getest_datum,
-    'positief_getest'          : decimalstring(positief_getest),
-    'positief_percentage'      : decimalstring(round(positief_percentage,1))+'%',
-    'positief_percentage_num'  : round(positief_percentage,1),
-    'positief_percentage_color': 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+    'vandaag_getest'                   : decimalstring(vandaag_getest),
+    'vandaag_getest_datum'             : vandaag_getest_datum,
+    'positief_getest'                  : decimalstring(positief_getest),
+    'positief_percentage'              : decimalstring(round(positief_percentage,1))+'%',
+    'positief_percentage_num'          : round(positief_percentage,1),
+    'positief_percentage_color'        : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+    'positief_percentage_record_sinds' : positief_percentage_record_sinds,
 
     'prikken_gezet'      : decimalstring(prikken_gezet),
     'prikken_gezet_datum': prikken_gezet_datum,

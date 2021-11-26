@@ -45,11 +45,14 @@ weightsmap={}
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     print("Converting records to x/y data")
+    cachedDate = None
     for record in data:
-        date_statistics = parser.parse(record['Date_statistics'])
+        if (cachedDate != record['Date_statistics']):
+            cachedDate = record['Date_statistics']
+            date_statistics = parser.parse(record['Date_statistics'])
+            datax = (date_statistics - startdate).days
         if date_statistics > startdate:
             try:
-                datax = (date_statistics - startdate).days
                 datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
                 filedate = record['Date_file']
                 x.append(datax)

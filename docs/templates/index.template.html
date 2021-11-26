@@ -173,33 +173,47 @@
                 <img width="400px" src="coronadata-charts.png" />
             </a>
         </div>
-        <div>
-            <center>
-                <table width="400px">
-                    <tr>
-                        <td colspan=2>Wat betekenen de "G's" in de toegangsdiscussie?</td>
-                    </tr>
-                    <tr>
-                        <td valign="top" align="right">1G:</td>
-                        <td>Negatief <b>G</b>etest.</td>
-                    </tr>
-                    <tr>
-                        <td valign="top" align="right">2G:</td>
-                        <td><b>G</b>enezen OF <b>G</b>evaccineerd.</td>
-                    </tr>
-                    <tr>
-                        <td valign="top" align="right">3G:</td>
-                        <td>Negatief <b>G</b>etest OF <b>G</b>evaccineerd OF <b>G</b>enezen.</td>
-                    </tr>
-                </table>
-            </center>
+        <div class="container center">
+            <div class="textblock">
+                <center>
+                    <table>
+                        <tr>
+                            <td colspan="2">Wat betekenen de "G's" in de toegangsdiscussie?</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">1G:</td>
+                            <td>Negatief <b>G</b>etest.</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">2G:</td>
+                            <td><b>G</b>enezen OF <b>G</b>evaccineerd.</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">3G:</td>
+                            <td>Negatief <b>G</b>etest OF <b>G</b>evaccineerd OF <b>G</b>enezen.</td>
+                        </tr>
+                    </table>
+                </center>
+            </div>
         </div>
 
         <!-- <a href="https://www.google.com/covid19/mobility/">Google mobility reports</a> -->
         <!-- https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv -->
     </div>
+
     <div class="container center">
-        <div class="footer">
+        <div class="textblock">
+            <p>
+                De laatste keer dat er ${geschat_ziek_rolf} mensen geschat besmettelijk waren was: ${geschat_ziek_rolf_record_sinds}.
+                De laatste keer dat er ${nu_opgenomen} mensen waren opgenomen was: ${nu_opgenomen_record_sinds}.
+                De laatste keer dat er ${nu_op_ic} mensen op de IC lagen was: ${nu_op_ic_record_sinds}.
+                De laatste keer dat er ${positief_percentage} mensen positief testten was: ${positief_percentage_record_sinds}.
+            </p>
+        </div>
+    </div>
+
+    <div class="container center">
+        <div class="textblock">
             <p>
                 Data in deze grafieken is afkomstig van het
                 <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
@@ -210,6 +224,8 @@
                 <a href="https://github.com/realrolfje/coronadata">broncode</a>. Icons en graphics zijn mogelijk gemaakt
                 door <a href="https://www.freepik.com/">freepik.com</a> en <a
                     href="https://www.flaticon.com/">flaticon.com</a>.<br />
+            </p>
+            <p>
                 De complete lijst met events in de grafieken vind je <a href="events.html">hier</a>.
             </p>
             <p>

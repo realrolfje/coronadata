@@ -94,7 +94,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         return False
     else:
         print("Downloading fresh data to "+filename, end="...")
-        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2202HotfixDev20/v3/en-us/applemobilitytrends-2021-11-20.csv'
+        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2202HotfixDev24/v3/en-us/applemobilitytrends-2021-11-24.csv'
         try:
             urllib.request.urlretrieve(url, filename)
             print("done")
@@ -324,8 +324,19 @@ def builddaily():
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
         print('Loaded %s, contains %s case records.' % (filename, decimalstring(len(data))))
+
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
-            if not isvaliddate(record['Date_statistics'], filename):
+            if cachedDate != record['Date_statistics']:
+                cachedDate = record['Date_statistics']
+
+                if not isvaliddate(record['Date_statistics'], filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
 
             initrecord(record['Date_statistics'], metenisweten)
@@ -365,27 +376,60 @@ def builddaily():
     filename = '../cache/NICE-intake-count.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
-            if not isvaliddate(record['date'], filename):
+            if cachedDate != record['date']:
+                cachedDate = record['date']
+
+                if not isvaliddate(record['date'], filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
+
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['nu_op_ic'] = record['value']
 
     filename = '../cache/NICE-intake-cumulative.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
-            if not isvaliddate(record['date'], filename):
+            if cachedDate != record['date']:
+                cachedDate = record['date']
+
+                if not isvaliddate(record['date'], filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
+
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['geweest_op_ic'] += record['value']
 
     filename = '../cache/NICE-zkh-intake-count.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
-            if not isvaliddate(record['date'], filename):
+            if cachedDate != record['date']:
+                cachedDate = record['date']
+
+                if not isvaliddate(record['date'], filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
+
             initrecord(record['date'], metenisweten)
             metenisweten[record['date']]['nu_opgenomen'] += record['value']
 
@@ -393,9 +437,20 @@ def builddaily():
     filename = '../cache/COVID-19_reproductiegetal.json' 
     with open(filename , 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
-            if not isvaliddate(record['Date'], filename):
+            if cachedDate != record['Date']:
+                cachedDate = record['Date']
+
+                if not isvaliddate(record['Date'], filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
+
             initrecord(record['Date'], metenisweten)
             if 'Rt_avg' in record:
                 metenisweten[record['Date']]['Rt_avg'] = record['Rt_avg']
@@ -415,14 +470,23 @@ def builddaily():
     filename = '../cache/COVID-19_rioolwaterdata.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
+            if cachedDate != record['Date_measurement']:
+                cachedDate = record['Date_measurement']
 
-            # Fix rioolwaterdate. Non-ISO date 01-02-2020 will become ISO date 2020-02-01
-            stringdate = record['Date_measurement']
-            if re.search('-\d{4}$',stringdate):
-                stringdate = datetime.datetime.strptime(stringdate,"%d-%m-%Y").strftime("%Y-%m-%d")
+                # Fix rioolwaterdate. Non-ISO date 01-02-2020 will become ISO date 2020-02-01
+                stringdate = record['Date_measurement']
+                if re.search('-\d{4}$',stringdate):
+                    stringdate = datetime.datetime.strptime(stringdate,"%d-%m-%Y").strftime("%Y-%m-%d")
 
-            if not isvaliddate(stringdate, filename):
+                if not isvaliddate(stringdate, filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
 
             if 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
@@ -454,9 +518,19 @@ def builddaily():
     filename = '../cache/COVID-19_prevalentie.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
             stringdate = record['Date']
-            if not isvaliddate(stringdate, filename):
+            if cachedDate != stringdate:
+                cachedDate = stringdate
+
+                if not isvaliddate(stringdate, filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
 
             try:
@@ -474,10 +548,20 @@ def builddaily():
     filename = '../cache/COVID-19_Infectieradar_symptomen_per_dag.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+        cachedDate = None
+        cachedDateValid = False
         for record in data:
             stringdate = record['Date_of_statistics']
 
-            if not isvaliddate(stringdate, filename):
+            if cachedDate != stringdate:
+                cachedDate = stringdate
+
+                if not isvaliddate(stringdate, filename):
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+            
+            if not cachedDateValid:
                 continue
 
             try:
@@ -608,14 +692,22 @@ def builddaily():
     filename ='../cache/rijskoverheid-coronadashboard-NL.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
+
+        cachedDate = None
+        cachedDateValid = False
         for record in data['vaccine_administered']['values']:
-            d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-            if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-                print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
-                # Skip estimates from RIVM
+            if cachedDate != record['date_end_unix']:
+                d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+                if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+                    print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+                    cachedDateValid = False
+                else:
+                    cachedDateValid = True
+                    datum =  d.strftime('%Y-%m-%d')
+
+            if not cachedDateValid:
                 continue
 
-            datum =  d.strftime('%Y-%m-%d')
             initrecord(datum, metenisweten)
             metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(record['astra_zeneca'])
             metenisweten[datum]['vaccinaties']['pfizer']       = intOrNone(record['pfizer'])
