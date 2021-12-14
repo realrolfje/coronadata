@@ -94,7 +94,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         return False
     else:
         print("Downloading fresh data to "+filename, end="...")
-        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2203HotfixDev9/v3/en-us/applemobilitytrends-2021-12-02.csv'
+        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2203HotfixDev20/v3/en-us/applemobilitytrends-2021-12-12.csv'
         try:
             urllib.request.urlretrieve(url, filename)
             print("done")
