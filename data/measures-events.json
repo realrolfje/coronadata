@@ -576,8 +576,9 @@
         "event": "Rellen bij 2G protest",
         "url": "https://www.telegraaf.nl/nieuws/1246093857/zeven-gewonden-bij-rellen-protest-tegen-2-g-beleid-in-rotterdam",
         "zieken": [
-         "2021-09-15",
-         380000
+         "2021-09-12",
+         380000,
+         365
          ]
      },
      {
@@ -585,9 +586,19 @@
         "event": "1,5 meter verplicht",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/11/23/15-meter-afstand-houden-is-weer-verplicht",
         "zieken": [
-         "2021-10-15",
-         410000,
-         365
+         "2021-10-08",
+         415000
+         ]
+     },
+     {
+        "date": "2021-12-18",
+        "event": "winkels, scholen\ndicht, beperking\ngroepsgrootte",
+        "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/12/18/verspreiding-omikron-vertragen-nederland-in-lockdown",
+        "url2": "https://www.youtube.com/watch?v=aO2y7BtISBg",
+        "url3": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/documenten/mediateksten/2021/12/18/letterlijke-tekst-persconferentie-coronavirus-minister-president-rutte-minister-de-jonge-en-omt-voorzitter-van-dissel-18-december-2021",
+        "zieken": [
+         "2021-11-10",
+         100000
          ]
      }
 ]
