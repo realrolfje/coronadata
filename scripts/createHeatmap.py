@@ -11,7 +11,7 @@ import datetime
 import json
 import modules.arguments as arguments
 import modules.brondata as brondata
-from modules.brondata import decimalstring, isnewer
+from modules.brondata import decimalstring, isnewer, dateCache
 from modules.datautil import runIfNewData
 
 runIfNewData(__file__)
@@ -49,7 +49,7 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     for record in data:
         if (cachedDate != record['Date_statistics']):
             cachedDate = record['Date_statistics']
-            date_statistics = parser.parse(record['Date_statistics'])
+            date_statistics = dateCache.parse(record['Date_statistics'])
             datax = (date_statistics - startdate).days
         if date_statistics > startdate:
             try:
@@ -158,4 +158,4 @@ if (lastDays > 0):
 else:
     plt.savefig("../docs/graphs/besmettingen-leeftijd.svg", format="svg")
 
-
+print("Date cache rate: %d%%" % dateCache.cacheUse())

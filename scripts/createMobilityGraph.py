@@ -9,6 +9,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
+from modules.brondata import dateCache
 
 runIfNewData(__file__)
 
@@ -44,18 +45,18 @@ for d in date_range:
 
     value = metenisweten[datum]['mobiliteit']['rijden']
     if value:
-        rijden['x'].append(parser.parse(datum))
+        rijden['x'].append(dateCache.parse(datum))
         rijden['y'].append(value)
 
     if 'OV' in metenisweten[datum]['mobiliteit']:
         value = metenisweten[datum]['mobiliteit']['OV']
         if value:
-            ov['x'].append(parser.parse(datum))
+            ov['x'].append(dateCache.parse(datum))
             ov['y'].append(value)
 
     value = metenisweten[datum]['mobiliteit']['lopen']
     if value:
-        lopen['x'].append(parser.parse(datum))
+        lopen['x'].append(dateCache.parse(datum))
         lopen['y'].append(value)
 
 
@@ -86,7 +87,7 @@ ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemidde
 
 
 for event in events:
-    if 'mobiliteit' in event and parser.parse(event['mobiliteit'][0]) > date_range[0]:
+    if 'mobiliteit' in event and dateCache.parse(event['mobiliteit'][0]) > date_range[0]:
         anotate(
             ax1, 
             rijden['x'], rijden['y'],
@@ -97,7 +98,7 @@ for event in events:
 
 # Put vertical line at current day
 plt.text(
-    x=datetime.date.today(),
+    x=dateCache.today(),
     y=0,
     s=datetime.datetime.now().strftime("%d"), 
     color="white",
@@ -107,7 +108,7 @@ plt.text(
     bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
-plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("% t.o.v. 13 januari 2021")

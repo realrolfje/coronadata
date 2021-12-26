@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
 import modules.arguments as arguments
-from modules.brondata import decimalstring, intOrZero
+from modules.brondata import decimalstring, intOrZero, dateCache
 from modules.datautil import anotate
 from datetime import datetime, date, timedelta
 import sys
@@ -208,7 +208,7 @@ ax2.plot(vaccins_percentage['x'],
 
 graphname='vaccins'
 for event in events:
-    if graphname in event and parser.parse(event[graphname][0]) > date_range[0]:
+    if graphname in event and dateCache.parse(event[graphname][0]) > date_range[0]:
         anotate(
             ax2, 
             vaccins_percentage['x'], vaccins_percentage['totaal'],
@@ -219,7 +219,7 @@ for event in events:
 
 # Put vertical line at current day
 plt.text(
-    x=date.today(),
+    x=dateCache.today(),
     y=0,
     s=datetime.now().strftime("%d"), 
     color="white",
@@ -229,7 +229,7 @@ plt.text(
     bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
-plt.axvline(date.today(), color='red', linewidth=0.5)
+plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
 ax1.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
 ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
@@ -274,3 +274,5 @@ if (lastDays > 0):
     plt.savefig("../docs/graphs/vaccinaties-"+str(lastDays)+".svg", format="svg")
 else:
     plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")
+
+print("Date cache rate: %d%%" % dateCache.cacheUse())

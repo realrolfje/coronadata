@@ -7,7 +7,7 @@ from dateutil import parser
 import datetime
 import modules.brondata as brondata
 import modules.arguments as arguments
-from modules.brondata import decimalstring
+from modules.brondata import decimalstring, dateCache
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 
@@ -57,33 +57,33 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
-    if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today()):
-        # positief['x'].append(parser.parse(datum))
+    if datum in metenisweten and dateCache.parse(datum) <= (dateCache.today()):
+        # positief['x'].append(dateCache.parse(datum))
         # positief['y'].append(metenisweten[datum]['positief'])
 
         if 'rivm_totaal_tests' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_tests']:
-            totaaltests['x'].append(parser.parse(datum))
+            totaaltests['x'].append(dateCache.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_tests'])
             totaaltests['total'] += int(metenisweten[datum]['rivm_totaal_tests'])
         elif 'rivm_totaal_personen_getest' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_personen_getest']:
-            totaaltests['x'].append(parser.parse(datum))
+            totaaltests['x'].append(dateCache.parse(datum))
             totaaltests['y'].append(metenisweten[datum]['rivm_totaal_personen_getest'])
             totaaltests['total'] += int(metenisweten[datum]['rivm_totaal_personen_getest'])
         # else:
         #     print("no totaal for "+datum)
 
         if 'rivm_totaal_tests_positief' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_tests_positief']:
-            positief['x'].append(parser.parse(datum))
+            positief['x'].append(dateCache.parse(datum))
             positief['y'].append(metenisweten[datum]['rivm_totaal_tests_positief'])
 
-            positief_percentage['x'].append(parser.parse(datum))
+            positief_percentage['x'].append(dateCache.parse(datum))
             positief_percentage['y'].append(100 * positief['y'][-1] / totaaltests['y'][-1])
 
         elif 'rivm_totaal_personen_positief' in metenisweten[datum] and metenisweten[datum]['rivm_totaal_personen_positief']:
-            positief['x'].append(parser.parse(datum))
+            positief['x'].append(dateCache.parse(datum))
             positief['y'].append(metenisweten[datum]['rivm_totaal_personen_positief'])
 
-            positief_percentage['x'].append(parser.parse(datum))
+            positief_percentage['x'].append(dateCache.parse(datum))
             positief_percentage['y'].append(100 * positief['y'][-1] / totaaltests['y'][-1])
         # else:
         #     print("no tests for "+datum)
@@ -96,19 +96,19 @@ for d in date_range:
 
     # ---------------------- Voorspelling positief getst obv gemiddelde richtingscoefficient positief getest.
     if datum in metenisweten and len(positief['y']) > positief_voorspeld['avgsize'] \
-          and parser.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
+          and dateCache.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
         # Voorspel morgen op basis van metingen
         rc = (positief['y'][-1]-positief['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
-        positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
+        positief_voorspeld['x'].append(dateCache.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief['y'][-1] + rc)
     elif len(positief_voorspeld['y']) > positief_voorspeld['avgsize']:
         # Voorspel morgen op basis van schatting gisteren
         rc = (positief_voorspeld['y'][-1]-positief_voorspeld['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
-        positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
+        positief_voorspeld['x'].append(dateCache.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief_voorspeld['y'][-1] + rc)
     elif len(positief['y']) > 0:
         # If all else fails neem waarde van vorige positief
-        positief_voorspeld['x'].append(parser.parse(datum) + datetime.timedelta(days=1))
+        positief_voorspeld['x'].append(dateCache.parse(datum) + datetime.timedelta(days=1))
         positief_voorspeld['y'].append(positief['y'][-1])
     # else:
     #     print('no data to calculate RC')
@@ -127,7 +127,7 @@ ax2.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 ax1.text(
-    parser.parse("2020-04-15"), 45500, 
+    dateCache.parse("2020-04-15"), 45500, 
     "Geen smoesjes,\nje weet het best.\nAls je niet ziek wordt,\nhoef je ook niet getest.", 
     color="gray",
     bbox=dict(facecolor='white', alpha=1.0, edgecolor='white'),
@@ -158,7 +158,7 @@ ax2.plot(positief_percentage['x'], positief_percentage['y'],
 
 # Put vertical line at current day
 plt.text(
-    x=datetime.date.today(),
+    x=dateCache.today(),
     y=0,
     s=datetime.datetime.now().strftime("%d"), 
     color="white",
@@ -168,10 +168,10 @@ plt.text(
     bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
-plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
 for event in events:
-    if 'testsloc' in event and parser.parse(event['testsloc'][0]) > date_range[0]:
+    if 'testsloc' in event and dateCache.parse(event['testsloc'][0]) > date_range[0]:
         anotate(
             ax1, 
             totaaltests['x'],
@@ -210,3 +210,4 @@ if (lastDays > 0):
 else:
     plt.savefig("../docs/graphs/covidtests.svg", format="svg")
 
+print("Date cache rate: %d%%" % dateCache.cacheUse())
