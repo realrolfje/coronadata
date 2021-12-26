@@ -3,12 +3,11 @@
 #
 
 from datetime import datetime, timedelta
-from dateutil import parser
-from . brondata import freshdata, isnewer
+from . brondata import freshdata, isnewer, dateCache
 from . arguments import isForce
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    d = parser.parse(datum)
+    d = dateCache.parse(datum)
 
     if (d < xdata[0]):
         print("Date %s before start of graph, text not displayed: %s" % (datum, tekst))
@@ -47,7 +46,7 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
         plt.annotate(
             tekst,
             xy=(d, yval),
-            xytext=(parser.parse(x), y),
+            xytext=(dateCache.parse(x), y),
             fontsize=8,
             bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
@@ -67,4 +66,5 @@ def runIfNewData(filename):
     else:
         print("No fresh data, and unchanged code. Exit.")
         exit(0)
+
 

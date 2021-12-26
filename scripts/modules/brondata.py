@@ -4,8 +4,8 @@
 #
 #
 # TODO:
-# https://coronadashboard.government.nl/landelijk/varianten
-# https://www.zelftestgedaan.nl/self_tests.json
+# https://coronadashboard.government.nl/landelijk/varianten -> SVG format, need to find the source.
+# https://www.zelftestgedaan.nl/self_tests.json -> unreliable source, too little data.
 #
 
 import urllib.request
@@ -15,13 +15,55 @@ import time
 import json
 import csv
 import re
-from dateutil import parser
 from scipy.signal import savgol_filter
 from statistics import mean
 from operator import itemgetter
 from math import log
+from dateutil import parser
 import pytz
-import time
+
+# Class caching parsed dates for speed optimization
+class DateCache:
+    cachedDates = {}
+    cacheHits = 0
+    cacheMisses = 0
+    acceptDatesAfter = datetime.date.fromisoformat('2020-01-01')
+    todaysDate = datetime.date.today()
+
+    # class default constructor, if needed
+    # def __init__(self): 
+    #     self.cachedDates = {}
+
+    # Cache parsed dates.
+    def parse(self, dateString):
+        try:
+            fromcache = self.cachedDates[dateString]
+            self.cacheHits += 1
+            return fromcache
+        except KeyError:
+            self.cacheMisses += 1
+            parseddate = parser.parse(dateString).date()
+            self.cachedDates[dateString] = parseddate
+            return parseddate
+
+    def isvaliddate(self, datestring, filename):
+        parseddate = self.parse(datestring)
+        if parseddate >= self.acceptDatesAfter and parseddate <= self.todaysDate:
+            return True
+        elif filename:
+            print('Ignoring invalid date '+datestring+' in '+filename+'.')
+        return False
+
+    def today(self):
+        return self.todaysDate
+
+    def cacheUse(self):
+        if (self.cacheMisses == 0):
+            return 0
+        else:
+            return 100 * (self.cacheHits/(self.cacheHits + self.cacheMisses))
+
+dateCache = DateCache()
 
 def readjson(filename):
     print('Reading '+filename)
@@ -68,7 +110,7 @@ def downloadIfStale(filename, url, binary = False):
     with urllib.request.urlopen(url) as response:
         meta = response.headers
         try:
-            lastmodified = parser.parse(meta['Last-Modified'])
+            lastmodified = dateCache.parse(meta['Last-Modified'])
         except:
             print("Server has no Last-Modified for "+url)
             lastmodified = datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)
@@ -98,7 +140,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         return False
     else:
         print("Downloading fresh data to "+filename, end="...")
-        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2204HotfixDev11/v3/en-us/applemobilitytrends-2021-12-17.csv'
+        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2204HotfixDev23/v3/en-us/applemobilitytrends-2021-12-24.csv'
         try:
             urllib.request.urlretrieve(url, filename)
             print("done")
@@ -205,15 +247,8 @@ def download():
     ) or freshdata
 
     return freshdata
-
 def isvaliddate(datestring, filename):
-    parseddate = parser.parse(datestring).date()
-    if parseddate >= datetime.date.fromisoformat('2020-01-01') and parseddate <= datetime.date.today():
-        return True
-    elif filename:
-        print('Ignoring invalid date '+datestring+' in '+filename+'.')
-    return False
-
+    dateCache.isvaliddate(datestring, filename)
 
 def initrecord(date, metenisweten):
     if (date not in metenisweten):
@@ -335,7 +370,7 @@ def builddaily():
             if cachedDate != record['Date_statistics']:
                 cachedDate = record['Date_statistics']
 
-                if not isvaliddate(record['Date_statistics'], filename):
+                if not dateCache.isvaliddate(record['Date_statistics'], filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -386,7 +421,7 @@ def builddaily():
             if cachedDate != record['date']:
                 cachedDate = record['date']
 
-                if not isvaliddate(record['date'], filename):
+                if not dateCache.isvaliddate(record['date'], filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -406,7 +441,7 @@ def builddaily():
             if cachedDate != record['date']:
                 cachedDate = record['date']
 
-                if not isvaliddate(record['date'], filename):
+                if not dateCache.isvaliddate(record['date'], filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -426,7 +461,7 @@ def builddaily():
             if cachedDate != record['date']:
                 cachedDate = record['date']
 
-                if not isvaliddate(record['date'], filename):
+                if not dateCache.isvaliddate(record['date'], filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -447,7 +482,7 @@ def builddaily():
             if cachedDate != record['Date']:
                 cachedDate = record['Date']
 
-                if not isvaliddate(record['Date'], filename):
+                if not dateCache.isvaliddate(record['Date'], filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -485,7 +520,7 @@ def builddaily():
                 if re.search('-\d{4}$',stringdate):
                     stringdate = datetime.datetime.strptime(stringdate,"%d-%m-%Y").strftime("%Y-%m-%d")
 
-                if not isvaliddate(stringdate, filename):
+                if not dateCache.isvaliddate(stringdate, filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -529,7 +564,7 @@ def builddaily():
             if cachedDate != stringdate:
                 cachedDate = stringdate
 
-                if not isvaliddate(stringdate, filename):
+                if not dateCache.isvaliddate(stringdate, filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -560,7 +595,7 @@ def builddaily():
             if cachedDate != stringdate:
                 cachedDate = stringdate
 
-                if not isvaliddate(stringdate, filename):
+                if not dateCache.isvaliddate(stringdate, filename):
                     cachedDateValid = False
                 else:
                     cachedDateValid = True
@@ -597,15 +632,15 @@ def builddaily():
                 valtype = row[6]
                 aantal = int(row[7])
 
-                if not isvaliddate(startdatum, filename):
+                if not dateCache.isvaliddate(startdatum, filename):
                     continue
 
-                if not isvaliddate(einddatum, filename):
+                if not dateCache.isvaliddate(einddatum, filename):
                     continue
 
                 if valtype == 'Totaal':
-                    for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
-                        weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
+                    for n in range(int ((dateCache.parse(einddatum) - dateCache.parse(startdatum)).days)+1):
+                        weekdatum = dateCache.parse(startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
                         initrecord(weekdatumstr, metenisweten)
                         metenisweten[weekdatumstr]['rivm_totaal_personen_getest'] = aantal/7
@@ -614,8 +649,8 @@ def builddaily():
                         # print(weekdatumstr+' '+str(aantal)+' /7= '+str(metenisweten[weekdatumstr]['rivm_totaal_personen_getest'])+' totaal personen getest per dag.')
 
                 if valtype == 'Positief':
-                    for n in range(int ((parser.parse(einddatum) - parser.parse(startdatum)).days)+1):
-                        weekdatum = parser.parse(startdatum) + datetime.timedelta(n)
+                    for n in range(int ((dateCache.parse(einddatum) - dateCache.parse(startdatum)).days)+1):
+                        weekdatum = dateCache.parse(startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
                         initrecord(weekdatumstr, metenisweten)
                         metenisweten[weekdatumstr]['rivm_totaal_personen_positief'] = aantal/7
@@ -886,18 +921,18 @@ def getDateRange(metenisweten):
         try:
             mindatum
         except NameError:
-            mindatum = parser.parse(datum)
+            mindatum = dateCache.parse(datum)
 
         try:
             maxdatum
         except NameError:
-            maxdatum = parser.parse(datum)
+            maxdatum = dateCache.parse(datum)
 
-        mindatum = min(mindatum, parser.parse(datum))
-        maxdatum = max(maxdatum, parser.parse(datum))
+        mindatum = min(mindatum, dateCache.parse(datum))
+        maxdatum = max(maxdatum, dateCache.parse(datum))
 
     # Woraround to make graphs look the same when rendering "full width"
-    mindatum = max(mindatum, parser.parse("2020-03-01"))
+    mindatum = max(mindatum, dateCache.parse("2020-03-01"))
     date_range = [mindatum + datetime.timedelta(days=x)
                   for x in range(0, (maxdatum-mindatum).days+7)]
     return date_range

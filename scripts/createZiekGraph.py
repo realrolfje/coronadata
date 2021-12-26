@@ -9,6 +9,7 @@ import datetime
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring
+from modules.brondata import dateCache
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 
@@ -73,7 +74,7 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # ------------ Totaal positief en laatste meetdatum
-    if datum in metenisweten and parser.parse(datum).date() <= datetime.date.today():
+    if datum in metenisweten and dateCache.parse(datum) <= dateCache.today():
         totaal_positief = metenisweten[datum]['totaal_positief']
 
         if metenisweten[datum]['rivm-datum']:
@@ -81,9 +82,9 @@ for d in date_range:
 
 
     # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
-    if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
+    if datum in metenisweten and dateCache.parse(datum) <= (dateCache.today() - datetime.timedelta(days=3)):
         if 'nu_op_ic' in metenisweten[datum] and metenisweten[datum]['nu_op_ic']:
-            ic['x'].append(parser.parse(datum))
+            ic['x'].append(dateCache.parse(datum))
             ic['y'].append(metenisweten[datum]['nu_op_ic'])
 
             if len(ic['y'])>1:
@@ -92,7 +93,7 @@ for d in date_range:
                 ic['rc'].append(0)
 
         if 'nu_opgenomen' in metenisweten[datum] and metenisweten[datum]['nu_opgenomen']:
-            opgenomen['x'].append(parser.parse(datum))
+            opgenomen['x'].append(dateCache.parse(datum))
             opgenomen['y'].append(metenisweten[datum]['nu_opgenomen'])
 
             if len(opgenomen['y'])>1:
@@ -102,71 +103,71 @@ for d in date_range:
 
 
     # ---------------------- Voorspelling op IC obv gemiddelde richtingscoefficient
-    if len(ic['x']) > 10 and parser.parse(datum) > ic['x'][-1]:
+    if len(ic['x']) > 10 and dateCache.parse(datum) > ic['x'][-1]:
         ic_rc = mean(ic['rc'][-5:])
 
-        ic_voorspeld['x'].append(parser.parse(datum))
-        ic_voorspeld['y'].append(ic['y'][-1] + ic_rc * (parser.parse(datum) - ic['x'][-1]).days )
+        ic_voorspeld['x'].append(dateCache.parse(datum))
+        ic_voorspeld['y'].append(ic['y'][-1] + ic_rc * (dateCache.parse(datum) - ic['x'][-1]).days )
 
 
     # ---------------- Voorspelling opgenomen obv gemiddelde richtingscoefficient
-    if len(opgenomen['x']) > 10 and parser.parse(datum) > opgenomen['x'][-1]:
+    if len(opgenomen['x']) > 10 and dateCache.parse(datum) > opgenomen['x'][-1]:
         opgenomen_rc = mean(opgenomen['rc'][-5:])
 
-        opgenomen_voorspeld['x'].append(parser.parse(datum))
-        opgenomen_voorspeld['y'].append(opgenomen['y'][-1] + opgenomen_rc * (parser.parse(datum) - opgenomen['x'][-1]).days )
+        opgenomen_voorspeld['x'].append(dateCache.parse(datum))
+        opgenomen_voorspeld['y'].append(opgenomen['y'][-1] + opgenomen_rc * (dateCache.parse(datum) - opgenomen['x'][-1]).days )
 
     # ----------------------- Trek "geschat ziek" op basis van RC nog even door.
     deltadagen = 15
     if datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
-        geschat_ziek['x'].append(parser.parse(datum))
+        geschat_ziek['x'].append(dateCache.parse(datum))
         geschat_ziek['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
         geschat_ziek['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
         geschat_ziek['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
         geschat_ziek_nu = metenisweten[datum]['rivm_schatting_besmettelijk']['value']
     elif len(geschat_ziek['y']) > deltadagen:
-        vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
+        vorig_datum = dateCache.parse(datum) - datetime.timedelta(days=deltadagen)
         vorig_y = geschat_ziek['y'][-deltadagen]
         nieuw_y = geschat_ziek['y'][-1] + (geschat_ziek['y'][-1] - vorig_y)/deltadagen
-        geschat_ziek['x'].append(parser.parse(datum))
+        geschat_ziek['x'].append(dateCache.parse(datum))
         geschat_ziek['y'].append(nieuw_y)
 
     # ----------------------- Geschat op basis van RNA
     # if datum in metenisweten and metenisweten[datum]['RNA']['besmettelijk']:
-    #     geschat_ziek_rna['x'].append(parser.parse(datum))
+    #     geschat_ziek_rna['x'].append(dateCache.parse(datum))
     #     geschat_ziek_rna['y'].append(metenisweten[datum]['RNA']['besmettelijk'])
     #     geschat_ziek_rna['min'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1-metenisweten[datum]['RNA']['besmettelijk_error']))
     #     geschat_ziek_rna['max'].append(metenisweten[datum]['RNA']['besmettelijk'] * (1+metenisweten[datum]['RNA']['besmettelijk_error']))
     #     geschat_ziek_rna_nu = metenisweten[datum]['RNA']['besmettelijk']
-    # elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=deltadagen)):
-    #     geschat_ziek_rna['x'].append(parser.parse(datum))
+    # elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and dateCache.parse(datum) <= (dateCache.today() - datetime.timedelta(days=deltadagen)):
+    #     geschat_ziek_rna['x'].append(dateCache.parse(datum))
     #     geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
     #     geschat_ziek_rna['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
     #     geschat_ziek_rna['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
     # elif len(geschat_ziek_rna['y']) > deltadagen:
-    #     vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
+    #     vorig_datum = dateCache.parse(datum) - datetime.timedelta(days=deltadagen)
     #     vorig_y = geschat_ziek_rna['y'][-deltadagen]
     #     nieuw_y = geschat_ziek_rna['y'][-1] + (geschat_ziek_rna['y'][-1] - vorig_y)/deltadagen
-    #     geschat_ziek_rna['x'].append(parser.parse(datum))
+    #     geschat_ziek_rna['x'].append(dateCache.parse(datum))
     #     geschat_ziek_rna['y'].append(nieuw_y)
 
     # ----------------------- Geschat op basis van eigen berekening
     if datum in metenisweten and metenisweten[datum]['rolf_besmettelijk']:
-        geschat_ziek_rna['x'].append(parser.parse(datum))
+        geschat_ziek_rna['x'].append(dateCache.parse(datum))
         geschat_ziek_rna['y'].append(metenisweten[datum]['rolf_besmettelijk'])
         geschat_ziek_rna['min'].append(metenisweten[datum]['rolf_besmettelijk'] * 0.7)
         geschat_ziek_rna['max'].append(metenisweten[datum]['rolf_besmettelijk'] * 1.3)
         geschat_ziek_rna_nu = geschat_ziek_rna['y'][-1]
-    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=deltadagen)):
-        geschat_ziek_rna['x'].append(parser.parse(datum))
+    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and dateCache.parse(datum) <= (dateCache.today() - datetime.timedelta(days=deltadagen)):
+        geschat_ziek_rna['x'].append(dateCache.parse(datum))
         geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
         geschat_ziek_rna['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])
         geschat_ziek_rna['max'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['max'])
     elif len(geschat_ziek_rna['y']) > deltadagen:
-        vorig_datum = parser.parse(datum) - datetime.timedelta(days=deltadagen)
+        vorig_datum = dateCache.parse(datum) - datetime.timedelta(days=deltadagen)
         vorig_y = geschat_ziek_rna['y'][-deltadagen]
         nieuw_y = geschat_ziek_rna['y'][-1] + (geschat_ziek_rna['y'][-1] - vorig_y)/deltadagen
-        geschat_ziek_rna['x'].append(parser.parse(datum))
+        geschat_ziek_rna['x'].append(dateCache.parse(datum))
         geschat_ziek_rna['y'].append(nieuw_y)
 
 
@@ -179,7 +180,7 @@ ax2 = plt.twinx()
 
 for event in events:
     if graphname in event \
-        and parser.parse(event[graphname][0]) > date_range[0]\
+        and dateCache.parse(event[graphname][0]) > date_range[0]\
         and (len(event[graphname]) <= 2 or len(date_range) <= event[graphname][2]):
         anotate(
             ax2, 
@@ -217,7 +218,7 @@ ax2.fill_between(
 
 # Put vertical line at current day
 plt.text(
-    x=datetime.date.today(),
+    x=dateCache.today(),
     y=0,
     s=datetime.datetime.now().strftime("%d"), 
     color="white",
@@ -227,7 +228,7 @@ plt.text(
     bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
-plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
 # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
 ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
@@ -263,3 +264,5 @@ if (lastDays > 0):
     plt.savefig("../docs/graphs/"+graphname+"-"+str(lastDays)+".svg", format="svg")
 else:
     plt.savefig("../docs/graphs/"+graphname+".svg", format="svg")
+
+print("Date cache rate: %d%%" % dateCache.cacheUse())

@@ -3,12 +3,11 @@
 # pip3 install matplotlib
 
 from matplotlib import pyplot as plt
-from dateutil import parser
 from statistics import mean
 import datetime
 import modules.arguments as arguments
 import modules.brondata as brondata
-from modules.brondata import decimalstring, smooth
+from modules.brondata import decimalstring, smooth, dateCache
 from scipy.ndimage.filters import uniform_filter1d
 from modules.datautil import runIfNewData
 
@@ -16,6 +15,7 @@ runIfNewData(__file__)
 
 metenisweten = brondata.readjson('../cache/daily-stats.json')
 date_range = brondata.getDateRange(metenisweten)
+
 
 print('Generating RNA graph...')
 
@@ -43,7 +43,7 @@ for d in date_range:
         if datum == '2021-05-22' and metenisweten[datum]['RNA']['RNA_per_100k_avg'] > 2e+14:
             continue
         
-        RNA_per_100k_avg['x'].append(parser.parse(datum))
+        RNA_per_100k_avg['x'].append(dateCache.parse(datum))
         RNA_per_100k_avg['y'].append(metenisweten[datum]['RNA']['RNA_per_100k_avg'])
 
 plt.figure(figsize=(10,3))
@@ -126,3 +126,5 @@ if (lastDays > 0):
     plt.savefig("../docs/graphs/rna-in-rioolwater"+"-"+str(lastDays)+".svg", format="svg")
 else:
     plt.savefig("../docs/graphs/rna-in-rioolwater.svg", format="svg")
+
+print("Date cache rate: %d%%" % dateCache.cacheUse())
