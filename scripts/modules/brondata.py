@@ -3,6 +3,10 @@
 # Haalt COVID-19 testresultaten op bij RIVM en NICE
 #
 #
+# TODO:
+# https://coronadashboard.government.nl/landelijk/varianten
+# https://www.zelftestgedaan.nl/self_tests.json
+#
 
 import urllib.request
 import os.path
