@@ -158,4 +158,4 @@ if (lastDays > 0):
 else:
     plt.savefig("../docs/graphs/besmettingen-leeftijd.svg", format="svg")
 
-print("Date cache rate: %d%%" % dateCache.cacheUse())
+dateCache.cacheReport()

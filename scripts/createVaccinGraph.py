@@ -275,4 +275,4 @@ if (lastDays > 0):
 else:
     plt.savefig("../docs/graphs/vaccinaties.svg", format="svg")
 
-print("Date cache rate: %d%%" % dateCache.cacheUse())
+dateCache.cacheReport()

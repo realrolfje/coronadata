@@ -3,9 +3,10 @@
 # pip3 install matplotlib
 
 from matplotlib import pyplot as plt
-from dateutil import parser
+from dateutil import dateCache
 import modules.brondata as brondata
 from modules.datautil import runIfNewData
+from modules.brondata import dateCache
 
 runIfNewData(__file__)
 
@@ -40,17 +41,17 @@ epsilon = {
 for datum in metenisweten:
     value = metenisweten[datum]['RNA']['besmettelijk']
     if value:
-        alpha['x'].append(parser.parse(datum))
+        alpha['x'].append(dateCache.parse(datum))
         alpha['y'].append(value)
 
     value = metenisweten[datum]['Rt_avg']
     if value:
-        beta['x'].append(parser.parse(datum))
+        beta['x'].append(dateCache.parse(datum))
         beta['y'].append(value)
 
     value = metenisweten[datum]['positief']
     if value:
-        delta['x'].append(parser.parse(datum))
+        delta['x'].append(dateCache.parse(datum))
         delta['y'].append(value)
 
 
@@ -114,3 +115,5 @@ ax2.legend(loc="upper right")
 plt.savefig("../docs/graphs/derivedRgraph.svg", format="svg")
 # plt.savefig("../docs/graphs/testplot.png", format="png", dpi=180/2)
 # plt.show()
+
+dateCache.cacheReport()

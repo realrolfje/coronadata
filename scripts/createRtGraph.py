@@ -7,7 +7,7 @@ from dateutil import parser
 import datetime
 import modules.brondata as brondata
 import modules.arguments as arguments
-from modules.brondata import decimalstring
+from modules.brondata import decimalstring, dateCache
 from modules.datautil import runIfNewData
 
 runIfNewData(__file__)
@@ -30,13 +30,13 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     if datum in metenisweten and metenisweten[datum]['Rt_avg'] is not None:
-        Rt_avg['x'].append(parser.parse(datum))
+        Rt_avg['x'].append(dateCache.parse(datum))
         Rt_avg['y'].append(float(metenisweten[datum]['Rt_avg']))
     if datum in metenisweten and metenisweten[datum]['Rt_up'] is not None:
-        Rt_up['x'].append(parser.parse(datum))
+        Rt_up['x'].append(dateCache.parse(datum))
         Rt_up['y'].append(float(metenisweten[datum]['Rt_up']))
     if datum in metenisweten and metenisweten[datum]['Rt_low'] is not None:
-        Rt_low['x'].append(parser.parse(datum))
+        Rt_low['x'].append(dateCache.parse(datum))
         Rt_low['y'].append(float(metenisweten[datum]['Rt_low']))
 
 
@@ -64,7 +64,7 @@ plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alp
 
 # Put vertical line at current day
 plt.text(
-    x=datetime.date.today(),
+    x=dateCache.today(),
     y=0,
     s=datetime.datetime.now().strftime("%d"), 
     color="white",
@@ -74,10 +74,10 @@ plt.text(
     bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
     zorder=10
 )
-plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
 # Laat afkappunt R zien (is twee weken geleden)
-plt.axvline(datetime.date.today() - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
+plt.axvline(dateCache.today() - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
 
 plt.annotate(
     decimalstring(Rt_avg['y'][-1]),
@@ -111,3 +111,4 @@ if (lastDays > 0):
 else:
     plt.savefig("../docs/graphs/reproductiegetal.svg", format="svg")
     
+dateCache.cacheReport()

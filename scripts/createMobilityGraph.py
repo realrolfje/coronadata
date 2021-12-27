@@ -130,3 +130,5 @@ if (lastDays > 0):
     plt.savefig("../docs/graphs/mobiliteit-"+str(lastDays)+".svg", format="svg")
 else:
     plt.savefig("../docs/graphs/mobiliteit.svg", format="svg")
+
+dateCache.cacheReport()

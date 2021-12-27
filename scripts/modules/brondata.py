@@ -67,6 +67,11 @@ class DateCache:
         else:
             return 100 * (self.cacheHits/(self.cacheHits + self.cacheMisses))
 
+    def cacheReport(self):
+        print("  cache hits: %d" % self.cacheHits)
+        print("cache misses: %d" % self.cacheHits)
+        print("   hit ratio: %d%%" % self.cacheUse())
+
 dateCache = DateCache()
 
 def readjson(filename):

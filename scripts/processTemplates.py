@@ -246,3 +246,5 @@ for tin in getTemplates(templatedir):
         
     with open(tout, 'w') as outputfile:
         outputfile.write(Template(template).substitute(substitutes))
+
+dateCache.cacheReport()

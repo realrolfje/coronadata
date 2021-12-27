@@ -5,7 +5,7 @@
 from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
-from modules.brondata import decimalstring
+from modules.brondata import decimalstring, dateCache
 from modules.datautil import runIfNewData
 
 runIfNewData(__file__)
@@ -32,16 +32,16 @@ Rt = None
 
 for datum in metenisweten:
     # if metenisweten[datum]['RNA_per_ml_avg']:
-    #     alpha['x'].append(parser.parse(datum))
+    #     alpha['x'].append(dateCache.parse(datum))
     #     alpha['y'].append(metenisweten[datum]['RNA_per_ml_avg'])
 
     if metenisweten[datum]['rivm_schatting_besmettelijk']['value']:
-        alpha['x'].append(parser.parse(datum))
+        alpha['x'].append(dateCache.parse(datum))
         alpha['y'].append(metenisweten[datum]
                           ['rivm_schatting_besmettelijk']['value'])
 
     if metenisweten[datum]['rolf_besmettelijk']:
-        beta['x'].append(parser.parse(datum))
+        beta['x'].append(dateCache.parse(datum))
         beta['y'].append(metenisweten[datum]['rolf_besmettelijk'])
 
     if metenisweten[datum]['Rt_avg']:
@@ -91,3 +91,5 @@ plt.setp(ax1.spines.values(), color='white')
 
 plt.savefig("../docs/icons/apple-touch-icon.svg", format="svg")
 plt.savefig("../docs/icons/apple-touch-icon.png", format="png", dpi=180/2)
+
+dateCache.cacheReport()
