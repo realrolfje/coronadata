@@ -69,7 +69,7 @@ class DateCache:
 
     def cacheReport(self):
         print("  cache hits: %d" % self.cacheHits)
-        print("cache misses: %d" % self.cacheHits)
+        print("cache misses: %d" % self.cacheMisses)
         print("   hit ratio: %d%%" % self.cacheUse())
 
 dateCache = DateCache()
