@@ -42,12 +42,16 @@ class DateCache:
             return fromcache
         except KeyError:
             self.cacheMisses += 1
-            parseddate = parser.parse(dateString).date()
+            parseddate = parser.parse(dateString)
             self.cachedDates[dateString] = parseddate
             return parseddate
 
     def isvaliddate(self, datestring, filename):
         parseddate = self.parse(datestring)
+        
+        if (isinstance(parseddate, datetime.datetime)):
+            parseddate = parseddate.date()
+
         if parseddate >= self.acceptDatesAfter and parseddate <= self.todaysDate:
             return True
         elif filename:
@@ -364,18 +368,8 @@ def builddaily():
         data = json.load(json_file)
         print('Loaded %s, contains %s case records.' % (filename, decimalstring(len(data))))
 
-        cachedDate = None
-        cachedDateValid = False
         for record in data:
-            if cachedDate != record['Date_statistics']:
-                cachedDate = record['Date_statistics']
-
-                if not dateCache.isvaliddate(record['Date_statistics'], filename):
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-            
-            if not cachedDateValid:
+            if not dateCache.isvaliddate(record['Date_statistics'], filename):
                 continue
 
             initrecord(record['Date_statistics'], metenisweten)

@@ -74,7 +74,7 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # ------------ Totaal positief en laatste meetdatum
-    if datum in metenisweten and dateCache.parse(datum) <= dateCache.today():
+    if datum in metenisweten and dateCache.parse(datum).date() <= dateCache.today():
         totaal_positief = metenisweten[datum]['totaal_positief']
 
         if metenisweten[datum]['rivm-datum']:
@@ -82,7 +82,7 @@ for d in date_range:
 
 
     # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
-    if datum in metenisweten and dateCache.parse(datum) <= (dateCache.today() - datetime.timedelta(days=3)):
+    if datum in metenisweten and dateCache.parse(datum).date() <= (dateCache.today() - datetime.timedelta(days=3)):
         if 'nu_op_ic' in metenisweten[datum] and metenisweten[datum]['nu_op_ic']:
             ic['x'].append(dateCache.parse(datum))
             ic['y'].append(metenisweten[datum]['nu_op_ic'])
@@ -158,7 +158,7 @@ for d in date_range:
         geschat_ziek_rna['min'].append(metenisweten[datum]['rolf_besmettelijk'] * 0.7)
         geschat_ziek_rna['max'].append(metenisweten[datum]['rolf_besmettelijk'] * 1.3)
         geschat_ziek_rna_nu = geschat_ziek_rna['y'][-1]
-    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and dateCache.parse(datum) <= (dateCache.today() - datetime.timedelta(days=deltadagen)):
+    elif datum in metenisweten and metenisweten[datum]['rivm_schatting_besmettelijk']['value'] and dateCache.parse(datum).date() <= (dateCache.today() - datetime.timedelta(days=deltadagen)):
         geschat_ziek_rna['x'].append(dateCache.parse(datum))
         geschat_ziek_rna['y'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['value'])
         geschat_ziek_rna['min'].append(metenisweten[datum]['rivm_schatting_besmettelijk']['min'])

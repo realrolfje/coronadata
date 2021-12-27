@@ -2,10 +2,9 @@
 #
 import modules.arguments as arguments
 import modules.brondata as brondata
-from modules.brondata import decimalstring
+from modules.brondata import decimalstring, dateCache
 import datetime
 from string import Template
-from dateutil import parser
 from os import listdir
 from os.path import isfile, join, basename
 import csv
@@ -29,7 +28,7 @@ for date in metenisweten:
     totaal_positief_datum = date
 
     if date in metenisweten \
-       and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3))\
+       and dateCache.parse(date).date() <= (dateCache.today() - datetime.timedelta(days=3))\
        and 'nu_op_ic' in metenisweten[date] and metenisweten[date]['nu_op_ic']:
 
         # print(str(date)+' '+str(metenisweten[date]['nu_op_ic']))
@@ -37,7 +36,7 @@ for date in metenisweten:
         nu_op_ic_datum = date
 
     if date in metenisweten \
-       and parser.parse(date).date() <= (datetime.date.today() - datetime.timedelta(days=3))\
+       and dateCache.parse(date).date() <= (dateCache.today() - datetime.timedelta(days=3))\
        and 'nu_opgenomen' in metenisweten[date] and metenisweten[date]['nu_opgenomen']:
 
         # print(str(date)+' '+str(metenisweten[date]['nu_opgenomen']))

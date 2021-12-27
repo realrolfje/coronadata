@@ -57,7 +57,7 @@ for d in date_range:
     datum = d.strftime("%Y-%m-%d")
 
     # --------------------------------- Normale grafieken (exclusief data van vandaag want dat is altijd incompleet)
-    if datum in metenisweten and dateCache.parse(datum) <= (dateCache.today()):
+    if datum in metenisweten and dateCache.parse(datum).date() <= (dateCache.today()):
         # positief['x'].append(dateCache.parse(datum))
         # positief['y'].append(metenisweten[datum]['positief'])
 
