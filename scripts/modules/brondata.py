@@ -178,7 +178,7 @@ def downloadECDCMap():
 def download():
     freshdata = False
 
-    freshdate = downloadECDCMap() or freshdata
+    freshdata = downloadECDCMap() or freshdata
 
     freshdata = downloadIfStale(
         '../cache/COVID-19_casus_landelijk.json',

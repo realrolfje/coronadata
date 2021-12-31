@@ -27,15 +27,17 @@ vaccins_totaal = {
     'totaal': [],
 }
 
-vaccins_geschat = {
+vaccins_delta = {
     'x': [],
-    'totaal_geschat': []
+    'astra_zeneca': [],
+    'pfizer': [],
+    'cure_vac': [],
+    'janssen': [],
+    'moderna': [],
+    'sanofi': [],
+    'totaal': [],
 }
 
-vaccins_geleverd = {
-    'x': [],
-    'totaal': []
-}
 
 date_range = brondata.getDateRange(metenisweten)
 
@@ -48,6 +50,7 @@ def addVaccinCount(record, vaccin):
     vaccins_totaal[vaccin].append(count)
     return count
 
+allvacins = ['astra_zeneca', 'pfizer', 'cure_vac', 'janssen','moderna', 'sanofi']
 
 for d in date_range:
     datum = d.strftime("%Y-%m-%d")
@@ -55,131 +58,64 @@ for d in date_range:
         vaccins_totaal['x'].append(d)
 
         record = metenisweten[datum]['vaccinaties']
-        total = addVaccinCount(record, 'astra_zeneca')\
-            + addVaccinCount(record, 'pfizer')\
-            + addVaccinCount(record, 'cure_vac')\
-            + addVaccinCount(record, 'janssen')\
-            + addVaccinCount(record, 'moderna')\
-            + addVaccinCount(record, 'sanofi')
 
+        total = 0
+        for vaccin in allvacins:
+            total +=  addVaccinCount(record, vaccin)
         vaccins_totaal['totaal'].append(total)
 
-        # Creer start van schatting grafiek
-        vaccins_geschat['x'].append(d)
-        vaccins_geschat['totaal_geschat'].append(total)
+        if len(vaccins_totaal['x']) > 1:
+            vaccins_delta['x'].append(d)
 
-    if (datum in metenisweten and metenisweten[datum]['vaccinaties']['totaal_geschat'] != None):
-        vaccins_geschat['x'].append(d)
-        vaccins_geschat['totaal_geschat'].append(metenisweten[datum]['vaccinaties']['totaal_geschat'])
+            days = (d - vaccins_totaal['x'][-2]).days
 
-    if (datum in metenisweten and metenisweten[datum]['vaccinaties']['geleverd'] != None):
-        vaccins_geleverd['x'].append(d)
-        vaccins_geleverd['totaal'].append(metenisweten[datum]['vaccinaties']['geleverd'])
+            vaccins_delta['totaal'].append(
+                round(
+                    max(0,
+                        (intOrZero(record['totaal']) - vaccins_totaal['totaal'][-2]) / days
+                    )
+                )
+            )
+            for vaccin in allvacins:
+                vaccins_delta[vaccin].append(
+                    round(
+                        max(0,
+                            (intOrZero(record[vaccin]) - vaccins_totaal[vaccin][-2]) / days
+                        )
+                    )
+                )
 
-    if (datum in metenisweten and metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] != None):
-        mensen_compleet_gevaccineerd = metenisweten[datum]['vaccinaties']['totaal_mensen_geschat']
-
-totaal_inwoners=17500000
-
-gezet = vaccins_totaal['totaal'][-1] - vaccins_totaal['totaal'][-2]
-nogzetten = ((totaal_inwoners*2) - vaccins_totaal['totaal'][-1])
-intijd = (vaccins_totaal['x'][-1] - vaccins_totaal['x'][-2]).days
-vaccinsperdag = gezet/intijd
-dagentegaan = nogzetten/vaccinsperdag
-klaar = (vaccins_totaal['x'][-1] + timedelta(days=dagentegaan)).strftime("%Y-%m-%d")
-
-vaccins_percentage = {
-    'x':              vaccins_totaal['x'],
-    'astra_zeneca':   [100*x/(totaal_inwoners*2) for x in vaccins_totaal['astra_zeneca']],
-    'pfizer':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['pfizer']],
-    'cure_vac':       [100*x/(totaal_inwoners*2) for x in vaccins_totaal['cure_vac']],
-    'janssen':        [100*x/(totaal_inwoners*1) for x in vaccins_totaal['janssen']],
-    'moderna':        [100*x/(totaal_inwoners*2) for x in vaccins_totaal['moderna']],
-    'sanofi':         [100*x/(totaal_inwoners*2) for x in vaccins_totaal['sanofi']],
-}
-
-vaccins_percentage['totaal'] = []
-for i in range(len(vaccins_percentage['x'])):
-    vaccins_percentage['totaal'].append(
-        vaccins_percentage['astra_zeneca'][i] + \
-        vaccins_percentage['pfizer'][i]  + \
-        vaccins_percentage['cure_vac'][i] + \
-        vaccins_percentage['janssen'][i] + \
-        vaccins_percentage['moderna'][i] + \
-        vaccins_percentage['sanofi'][i]
-    )
-
-## Corrigeer schattingen voor de aangepaste percentages for Janssen
-laatsteperc = vaccins_percentage['totaal'][-1]
-i = vaccins_geschat['x'].index(vaccins_percentage['x'][-1])
-eerstgeschat = vaccins_geschat['totaal_geschat'][i]
-vaccins_geschat_percentage = {
-    'x':              vaccins_geschat['x'],
-    'totaal_geschat': [(laatsteperc * x / eerstgeschat) for x in vaccins_geschat['totaal_geschat']]
-}
-
-vaccins_geleverd_percentage = {
-    'x':              vaccins_geleverd['x'],
-    'totaal': [100*x/(totaal_inwoners*2) for x in vaccins_geleverd['totaal']]
-}
 
 print('Generating vaccination graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 
-ax2 = plt.twinx()
+# ax2 = plt.twinx()
 
 ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
-ax2.grid(which='both', axis='both', linestyle='-.',
-         color='gray', linewidth=1, alpha=0.3)
+# ax1.grid(which='both', axis='both', linestyle='-.',
+#          color='gray', linewidth=1, alpha=0.3)
 
+ax1.set_xlabel("Datum")
+ax1.set_ylabel("Prikken per dag")
 
-totaal_prikken_geschat = decimalstring(vaccins_geschat['totaal_geschat'][-1])
-
-
-percentage_prikken_geschat = decimalstring(round(100*mensen_compleet_gevaccineerd/totaal_inwoners,2))
-
-ax1.plot(vaccins_geschat_percentage['x'], 
-         vaccins_geschat_percentage['totaal_geschat'], 
-         linestyle=':', 
-         color='fuchsia',
-         label='Geprikt geschat (nu: ' + totaal_prikken_geschat + ', ' + percentage_prikken_geschat + '%)')
-
-# Janssen is 1 prik, de rest 2 prikken. Schatting heeft geen aparte date voor
-# de prikken dus we rekenen "terug"
-totaal_geleverd=vaccins_geleverd['totaal'][-1]
-percentage_dubbele_vaccins=1-(vaccins_totaal['janssen'][-1]/vaccins_totaal['totaal'][-1])
-complete_vaccins_geleverd=totaal_geleverd - (totaal_geleverd*percentage_dubbele_vaccins)/2
-percentage_vaccins_geleverd = decimalstring(round(100*complete_vaccins_geleverd/totaal_inwoners,2))
-
-# Vaccins geleverd is al een tijdje 0, RIVM levert de cijfers niet meer
-# totaal_vaccins_geleverd = decimalstring(vaccins_geleverd['totaal'][-1])
-# ax1.plot(vaccins_geleverd_percentage['x'], 
-#          vaccins_geleverd_percentage['totaal'], 
-#          linestyle='--', 
-#          color='c',
-#          label='Vaccins geleverd (nu: ' + totaal_vaccins_geleverd + ', ' + percentage_vaccins_geleverd + '%)')
-
-ax2.set_xlabel("Datum")
-ax2.set_ylabel("Aantal prikken")
-
-ax2.stackplot(
-    vaccins_percentage['x'],
-    vaccins_percentage['astra_zeneca'],
-    vaccins_percentage['pfizer'],
-    vaccins_percentage['cure_vac'],
-    vaccins_percentage['janssen'],
-    vaccins_percentage['moderna'],
-    vaccins_percentage['sanofi'],
+ax1.stackplot(
+    vaccins_delta['x'],
+    vaccins_delta['astra_zeneca'],
+    vaccins_delta['pfizer'],
+    vaccins_delta['cure_vac'],
+    vaccins_delta['janssen'],
+    vaccins_delta['moderna'],
+    vaccins_delta['sanofi'],
     labels=(
-        'COVID-19 Vaccine AstraZeneca ® ('+decimalstring(vaccins_totaal['astra_zeneca'][-1])+')',
-        'Comirnaty® (BioNTech/Pfizer) ('+decimalstring(vaccins_totaal['pfizer'][-1])+')',
-        'CVnCoV (CureVac) ('+decimalstring(vaccins_totaal['cure_vac'][-1])+')',
-        'COVID-19 Vaccine Janssen ('+decimalstring(vaccins_totaal['janssen'][-1])+')',
-        'COVID-19 Vaccine Moderna ® ('+decimalstring(vaccins_totaal['moderna'][-1])+')',
-        'Sanofi/GSK ('+decimalstring(vaccins_totaal['sanofi'][-1])+')'
+        'COVID-19 Vaccine AstraZeneca ® (%s)' % decimalstring(vaccins_delta['astra_zeneca'][-1]),
+        'Comirnaty® (BioNTech/Pfizer) (%s)'   % decimalstring(vaccins_delta['pfizer'][-1]),
+        'CVnCoV (CureVac) (%s)'               % decimalstring(vaccins_delta['cure_vac'][-1]),
+        'COVID-19 Vaccine Janssen (%s)'       % decimalstring(vaccins_delta['janssen'][-1]),
+        'COVID-19 Vaccine Moderna ® (%s)'     % decimalstring(vaccins_delta['moderna'][-1]),
+        'Sanofi/GSK (%s)'                     % decimalstring(vaccins_delta['sanofi'][-1])
     ),
     colors=(
         'mediumblue',
@@ -192,26 +128,19 @@ ax2.stackplot(
     baseline='zero'
 )
 
-# Let op! Mensen hebben van (de meeste) vaccins twee prikken nodig.
-# Dat betekent dat de dashboard data van RIVM ongelofelijk slecht is.
-# Omdat we niet weten hoeveel mensen 1x of 2x zijn ingeent, nemen we
-# hier even aan dat alle vaccins 2 prikken nodig hebben, EN dat
-# die dan  ook bij 1 persoon zijn gezet (dat betekent grofweg dat de data
-# van 3 weken terug beter klopt dan de data van vorige week)
-totaal_prikken = decimalstring(vaccins_totaal['totaal'][-1])
-percentage_prikken = decimalstring(round(vaccins_percentage['totaal'][-1],2))
+totaal_prikken = decimalstring(vaccins_delta['totaal'][-1])
 
-ax2.plot(vaccins_percentage['x'], 
-         vaccins_percentage['totaal'], 
+ax1.plot(vaccins_delta['x'], 
+         vaccins_delta['totaal'], 
          color='black',
-         label='Totaal gerapporteerd (nu: ' + totaal_prikken + ', ' + percentage_prikken + '%)')
+         label='Totaal per dag (nu: %s)' % totaal_prikken)
 
 graphname='vaccins'
 for event in events:
     if graphname in event and dateCache.parse(event[graphname][0]) > date_range[0]:
         anotate(
-            ax2, 
-            vaccins_percentage['x'], vaccins_percentage['totaal'],
+            ax1, 
+            vaccins_delta['x'], vaccins_delta['totaal'],
             event['date'], event['event'], 
             event[graphname][0], 
             event[graphname][1]
@@ -231,33 +160,33 @@ plt.text(
 )
 plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
-ax1.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
-ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
+# ax1.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
+# ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
-ax2.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
-ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
+# ax2.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
+# ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
 
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-ax1.set_ylim([0, 100])
-ax2.set_ylim([0, 100])
+ax1.set_ylim([0, 400000])
+# ax2.set_ylim([0, 100])
 
-plt.figtext(0.10,0.50, 
-         "Deze grafiek toont hoeveel % van de Nederlanders\n"+\
-         "met de gezette prikken 100% gevaccineerd zouden\n"+\
-         "kunnen zijn. Met het huidig tempo zijn alle prikken\n"+\
-         "gezet op "+klaar+".", 
-         fontsize=8,
-         color="gray",
-         bbox=dict(facecolor='white', alpha=1.0, 
-         edgecolor='white'),
-         zorder=10)
+# plt.figtext(0.10,0.50, 
+#          "Deze grafiek toont hoeveel % van de Nederlanders\n"+\
+#          "met de gezette prikken 100% gevaccineerd zouden\n"+\
+#          "kunnen zijn. Met het huidig tempo zijn alle prikken\n"+\
+#          "gezet op "+klaar+".", 
+#          fontsize=8,
+#          color="gray",
+#          bbox=dict(facecolor='white', alpha=1.0, 
+#          edgecolor='white'),
+#          zorder=10)
 
 gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
 data_tot=vaccins_totaal['x'][-1].strftime("%Y-%m-%d")
 filedate=data_tot
 
-plt.title('Gezette prikken (COVID-19 vaccinatie voortgang)')
+plt.title('Gezette prikken per dag (COVID-19 vaccinatiesnelheid)')
 
 footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
@@ -266,8 +195,8 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://www.rivm.nl/covid-19-vaccinatie/"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-ax1.legend(loc="upper right")
-ax2.legend(loc="upper left")
+ax1.legend(loc="upper left")
+# ax2.legend(loc="upper left")
 
 
 if (lastDays > 0):
