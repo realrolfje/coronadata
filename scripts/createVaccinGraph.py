@@ -137,7 +137,9 @@ ax1.plot(vaccins_delta['x'],
 
 graphname='vaccins'
 for event in events:
-    if graphname in event and dateCache.parse(event[graphname][0]) > date_range[0]:
+    if graphname in event \
+        and dateCache.parse(event[graphname][0]) > date_range[0]\
+        and (len(event[graphname]) <= 2 or len(date_range) <= event[graphname][2]):
         anotate(
             ax1, 
             vaccins_delta['x'], vaccins_delta['totaal'],
