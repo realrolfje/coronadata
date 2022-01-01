@@ -149,7 +149,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         return False
     else:
         print("Downloading fresh data to "+filename, end="...")
-        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2204HotfixDev23/v3/en-us/applemobilitytrends-2021-12-24.csv'
+        url = 'https://covid19-static.cdn-apple.com/covid19-mobility-data/2204HotfixDev27/v3/en-us/applemobilitytrends-2021-12-28.csv'
         try:
             urllib.request.urlretrieve(url, filename)
             print("done")
@@ -157,7 +157,7 @@ def downloadMostRecentAppleMobilityReport(filename):
         except (urllib.error.HTTPError, urllib.error.HTTPError) as err:
             print("Error downloding %s: %s" % (url,str(err)))
 
-        raise Exception("Sorry, no Apple mobility data found. Check https://covid19.apple.com/mobility") 
+        raise Exception("Sorry, no Apple mobility data found. Check https://covid19.apple.com/mobility")
 
 
 def downloadECDCMap():
