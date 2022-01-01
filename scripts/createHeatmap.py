@@ -51,7 +51,7 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
             cachedDate = record['Date_statistics']
             date_statistics = dateCache.parse(record['Date_statistics'])
             datax = (date_statistics - startdate).days
-        if date_statistics > startdate:
+        if date_statistics >= startdate:
             try:
                 datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
                 filedate = record['Date_file']
@@ -113,13 +113,19 @@ heatmap.set_ylim([0, 100])
 averages.set_ylim([0,100])
 
 # Dirty stuff to get x labels (needs cleanup)
-xlabeldates = [startdate + relativedelta(months=x) for x in range(gemiddeldeleeftijd['x'][-1].month - startdate.month + ((gemiddeldeleeftijd['x'][-1].year - startdate.year) * 12) + 1)]
+xlabeldates = [
+    (startdate + relativedelta(months=x)) - datetime.timedelta(days = (startdate.day - 1))
+    # startdate + relativedelta(months=x)
+    for x in range(
+        gemiddeldeleeftijd['x'][-1].month - startdate.month + ((gemiddeldeleeftijd['x'][-1].year - startdate.year) * 12) + 1)
+]
 xlabels = []
 xlocs = []
 for label in xlabeldates:
-    if (int(label.strftime("%m")) % 2) != 0:
+    print(label)
+    if len(date_range) <= 365 or (int(label.strftime("%m")) % 2) != 0:
         xlabels.append(label.strftime("%Y-%m"))
-        xlocs.append((label - startdate).days)
+        xlocs.append((label - startdate).days + 1)
 locs, labels = plt.xticks(xlocs, xlabels)
 
 # Labels and tickmarks
