@@ -244,6 +244,10 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_Infectieradar_symptomen_per_dag.json'
     ) or freshdata
 
+    freshdata = downloadIfStale(
+        '../cache/COVID-19_varianten.json',
+        'https://data.rivm.nl/covid-19/COVID-19_varianten.json'
+    ) or freshdata   
 
 
     # freshdata = downloadIfStale(
@@ -289,9 +293,9 @@ def initrecord(date, metenisweten):
                 'regio' : {
                     # This will contain data per veiligheidsregio:
                     # 'VR01' : {
-                    #     'totaal_RNA_per_100k'    : 0,
+                    #     'totaal_RNA_per_100k'  : 0,
                     #     'totaal_RNA_metingen'  : 0,
-                    #     'RNA_per_100k_avg'       : 0,
+                    #     'RNA_per_100k_avg'     : 0,
                     #     'inwoners'             : 0,
                     #     'oppervlakte'          : 0                   
                     # }
@@ -332,7 +336,17 @@ def initrecord(date, metenisweten):
                 'geleverd'       : None,
             },
             'rolf_besmettelijk' : None, # Besmettelijke mensen op basis van gecombineerde meetwaarden
-
+            'varianten' : {
+                # Example:
+                # 'B.1.525' : {
+                #     'name'                 : '',
+                #     'ECDC_category'        : 'DEV',
+                #     'WHO_category'         : 'VUM',
+                #     'includes_old_samples' : False,
+                #     'Sample_size'          : 1593,
+                #     'cases'                : 4
+                # }
+            }
         }    
 
 # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
@@ -707,6 +721,24 @@ def builddaily():
                 metenisweten[datum]['nu_op_ic_noncovid_lcps'] = intOrNone(ic_bedden_non_covid)
                 metenisweten[datum]['nu_opgenomen_lcps'] = intOrNone(kliniek_bedden)
             line_count = line_count + 1
+
+    print("Load covid variant statistics")
+    filename = '../cache/COVID-19_varianten.json'
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+        for record in data:
+            datum = record['Date_of_statistics_week_start']
+            initrecord(datum, metenisweten)
+            m = metenisweten[datum]
+            if record['Variant_code'] not in m['varianten']:
+                m['varianten'][record['Variant_code']] = {
+                    'name'                 : record['Variant_name'],
+                    'ECDC_category'        : record['ECDC_category'],
+                    'WHO_category'         : record['WHO_category'],
+                    'includes_old_samples' : record['May_include_samples_listed_before'],
+                    'sample_size'          : record['Sample_size'],
+                    'cases'                : record['Variant_cases']
+                }
 
     print("Load Apple Mobility Data")
     filename ='../cache/Apple_Global_Mobility_Report.csv'
