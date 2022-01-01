@@ -249,7 +249,11 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_varianten.json'
     ) or freshdata   
 
-
+    freshdata = downloadIfStale(
+        '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json',
+        'https://data.rivm.nl/covid-19/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
+    ) or freshdata   
+    
     # freshdata = downloadIfStale(
     #     '../cache/Google_Global_Mobility_Report.csv',
     #     'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
@@ -739,6 +743,14 @@ def builddaily():
                     'sample_size'          : record['Sample_size'],
                     'cases'                : record['Variant_cases']
                 }
+    
+    # print("Load vaccinatiegraad per leeftijd/gemeente")
+    # filename = '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
+    # with open(filename, 'r') as json_file:
+    #     data = json.load(json_file)
+    #     for record in data:
+    #         datum = record['Date_of_statistics']
+    #         initrecord(datum, metenisweten)
 
     print("Load Apple Mobility Data")
     filename ='../cache/Apple_Global_Mobility_Report.csv'
