@@ -56,8 +56,6 @@ for record in varianten:
     if c not in varianten_map[d]:
         varianten_map[d][c] = {}
 
-
-
     varianten_map[d][c]['cases'] = record['Variant_cases']
     varianten_map[d][c]['size'] = record['Sample_size']
 
@@ -70,13 +68,17 @@ for key in varianten_map:
             percentage = 0
         varianten_totaal[variantcode].append(percentage)
 
-    # varianten_totaal['x'].append(
-    #     dateCache.parse(record['Date_of_statistics_week_start'])
-    # )
-    # for variantcode in variantcodes.keys():
-    #     varianten_totaal[variantcode].append(
-    #         record['Variant_cases']/record['Sample_size']
-    #     )
+# top 10:
+totals = {}
+for code in variantcodes:
+    totals[code] = sum(varianten_totaal[code])
+totals=dict(sorted(totals.items(),key=lambda x:x[1]))
+top_variants=[]
+for k in totals.keys(): top_variants.append(k)
+top_variants=top_variants[-5:]
+
+print(top_variants)
+
 
 # record['Variant_code'],
 # record['Variant_name'],
@@ -105,11 +107,8 @@ ax1.set_ylabel("Aandeel")
 yrray = []
 ylabels = []
 for code in variantcodes:
-    print(code)
     yrray.append(varianten_totaal[code])
     ylabels.append(variantcodes[code])
-
-print(ylabels)
 
 ax1.stackplot(
     varianten_totaal['x'],
