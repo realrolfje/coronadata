@@ -250,6 +250,11 @@ def download():
     ) or freshdata   
 
     freshdata = downloadIfStale(
+        '../cache/COVID-19_varianten_corrected.json',
+        'https://data.rivm.nl/covid-19/COVID-19_varianten_corrected.json'
+    ) or freshdata   
+
+    freshdata = downloadIfStale(
         '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json',
         'https://data.rivm.nl/covid-19/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
     ) or freshdata   
