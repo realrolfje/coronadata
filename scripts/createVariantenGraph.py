@@ -202,7 +202,7 @@ footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSo
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 
-footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://www.rivm.nl/covid-19-vaccinatie/"
+footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19/COVID-19_varianten.json"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 ax1.legend(loc="upper left")
