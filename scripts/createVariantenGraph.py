@@ -77,8 +77,15 @@ top_variants=[]
 for k in totals.keys(): top_variants.append(k)
 top_variants=top_variants[-5:]
 
-print(top_variants)
+print("Top variants are: %s" % top_variants)
 
+varianten_totaal['overig'] = [0] * len(varianten_totaal['x'])
+varianten_totaal['totaal'] = [0] * len(varianten_totaal['x'])
+for key in variantcodes:
+    varianten_totaal['totaal'] = [ x + y for x,y in zip(varianten_totaal['totaal'], varianten_totaal[key])]
+    if key not in top_variants and key != 'x' and key != 'totaal':
+        varianten_totaal['overig'] = [ x + y for x,y in zip(varianten_totaal['overig'], varianten_totaal[key])]
+        varianten_totaal.pop(key, None)
 
 # record['Variant_code'],
 # record['Variant_name'],
@@ -106,9 +113,17 @@ ax1.set_ylabel("Aandeel")
 
 yrray = []
 ylabels = []
-for code in variantcodes:
-    yrray.append(varianten_totaal[code])
-    ylabels.append(variantcodes[code])
+for code in varianten_totaal:
+    if code in variantcodes :
+        yrray.append(varianten_totaal[code])
+        ylabels.append(variantcodes[code])
+
+yrray.append(varianten_totaal['overig'])
+ylabels.append('Overig')
+
+# yrray.append(varianten_totaal['totaal'])
+# ylabels.append('Totaal')
+
 
 ax1.stackplot(
     varianten_totaal['x'],
