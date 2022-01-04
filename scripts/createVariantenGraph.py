@@ -66,7 +66,8 @@ for key in varianten_map:
             percentage = varianten_map[key][variantcode]['cases']/varianten_map[key][variantcode]['size']
         else:
             percentage = 0
-        varianten_totaal[variantcode].append(percentage)
+        geschat_ziek = metenisweten[key]['rolf_besmettelijk']    
+        varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
 # top 10:
 totals = {}
@@ -109,17 +110,19 @@ ax1.grid(which='both', axis='both', linestyle='-.',
          color='gray', linewidth=1, alpha=0.3)
 
 ax1.set_xlabel("Datum")
-ax1.set_ylabel("Aandeel")
+ax1.set_ylabel("Geschat aantal personen ziek")
 
 yrray = []
 ylabels = []
 for code in varianten_totaal:
     if code in variantcodes :
         yrray.append(varianten_totaal[code])
-        ylabels.append(variantcodes[code])
+        ylabels.append("%s (nu: %s)" % (variantcodes[code],decimalstring(round(varianten_totaal[code][-1]))))
 
 yrray.append(varianten_totaal['overig'])
-ylabels.append('Overig')
+ylabels.append("Overig (nu: %s)" % (decimalstring(round(varianten_totaal['overig'][-1]))))
+
+
 
 # yrray.append(varianten_totaal['totaal'])
 # ylabels.append('Totaal')
@@ -193,7 +196,7 @@ gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
 data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
 filedate=data_tot
 
-plt.title('COVID-19 varianten')
+plt.title('Besmettelijke personen per COVID-19 variant')
 
 footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
