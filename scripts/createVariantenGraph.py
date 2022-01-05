@@ -69,6 +69,16 @@ for key in varianten_map:
         geschat_ziek = metenisweten[key]['rolf_besmettelijk']    
         varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
+dominance = []
+for i in range(len(varianten_totaal['x'])):
+    n = 0
+    dominant = ''
+    for code in variantcodes:
+        if varianten_totaal[code][i] > n:
+            n = varianten_totaal[code][i]
+            dominant = code
+    dominance.append(dominant)
+
 # top 10:
 totals = {}
 for code in variantcodes:
@@ -101,7 +111,6 @@ lastDays = arguments.lastDays()
 if (lastDays>0):
     date_range = date_range[-lastDays:]
 
-
 print('Generating variants graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
@@ -111,7 +120,6 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Geschat aantal personen ziek")
-
 
 # Variants in order of today's 
 today = {}
@@ -123,6 +131,9 @@ today=dict(sorted(today.items(),key=lambda x:x[1]))
 yrray = []
 ylabels = []
 
+# yrray.append(varianten_totaal['totaal'])
+# ylabels.append('Totaal')
+
 yrray.append(varianten_totaal['overig'])
 ylabels.append("Overig (nu: %s)" % (decimalstring(round(varianten_totaal['overig'][-1]))))
 
@@ -130,13 +141,6 @@ for code in today:
     if code in varianten_totaal and code in variantcodes:
         yrray.append(varianten_totaal[code])
         ylabels.append("%s (nu: %s)" % (variantcodes[code],decimalstring(round(varianten_totaal[code][-1]))))
-
-
-
-
-# yrray.append(varianten_totaal['totaal'])
-# ylabels.append('Totaal')
-
 
 ax1.stackplot(
     varianten_totaal['x'],
@@ -146,8 +150,9 @@ ax1.stackplot(
         'gray',
         'limegreen',
         'yellow',
+        # 'darkorange',
+        'mediumslateblue',
         'tomato',
-        'darkorange',
         'deepskyblue',
     ),
     baseline='zero'
@@ -161,6 +166,20 @@ ax1.stackplot(
 #          vaccins_delta['totaal'], 
 #          color='black',
 #          label='Totaal per dag (nu: %s)' % totaal_prikken)
+
+
+for i in range(len(dominance)):
+    if i > 2  and dominance[i] != dominance[i-1]:
+        ax1.annotate(
+            "Dominant:\n%s" % (variantcodes[dominance[i]]),
+            xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
+            xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 40000),
+            fontsize=8,
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+            ha='center',
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+        )
+  
 
 # graphname='variants'
 # for event in events:
@@ -214,7 +233,7 @@ footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSo
 plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 
-footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19/COVID-19_varianten.json"
+footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19/COVID-19_varianten.json + besmettingdata"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 # Reverse sort the legend and place upper left
