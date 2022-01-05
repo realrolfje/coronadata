@@ -169,13 +169,13 @@ ax1.stackplot(
 
 
 for i in range(len(dominance)):
-    if i > 2  and dominance[i] != dominance[i-1]:
+    if i == 0 or (i > 1  and dominance[i] != dominance[i-1]):
         ax1.annotate(
             "Dominant:\n%s" % (variantcodes[dominance[i]]),
             xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
             xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 40000),
             fontsize=8,
-            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
             ha='center',
             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
         )
