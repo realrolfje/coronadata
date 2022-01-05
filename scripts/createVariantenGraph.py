@@ -112,15 +112,25 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Geschat aantal personen ziek")
 
+
+# Variants in order of today's 
+today = {}
+for code in varianten_totaal:
+    if code != 'x':
+        today[code] = varianten_totaal[code][-1]
+today=dict(sorted(today.items(),key=lambda x:x[1]))
+
 yrray = []
 ylabels = []
-for code in varianten_totaal:
-    if code in variantcodes :
-        yrray.append(varianten_totaal[code])
-        ylabels.append("%s (nu: %s)" % (variantcodes[code],decimalstring(round(varianten_totaal[code][-1]))))
 
 yrray.append(varianten_totaal['overig'])
 ylabels.append("Overig (nu: %s)" % (decimalstring(round(varianten_totaal['overig'][-1]))))
+
+for code in today:
+    if code in varianten_totaal and code in variantcodes:
+        yrray.append(varianten_totaal[code])
+        ylabels.append("%s (nu: %s)" % (variantcodes[code],decimalstring(round(varianten_totaal[code][-1]))))
+
 
 
 
@@ -131,18 +141,20 @@ ylabels.append("Overig (nu: %s)" % (decimalstring(round(varianten_totaal['overig
 ax1.stackplot(
     varianten_totaal['x'],
     *yrray,
-    labels= ylabels,
-    # colors=(
-    #     'mediumblue',
-    #     'deepskyblue',
-    #     'darkorange',
-    #     'tomato',
-    #     'yellow',
-    #     'limegreen',
-    # ),
+    labels=ylabels,
+    colors=( # note these are in reverse order because we revert the labels later
+        'gray',
+        'limegreen',
+        'yellow',
+        'tomato',
+        'darkorange',
+        'deepskyblue',
+    ),
     baseline='zero'
 )
 
+
+# print('reversed %s' % ax1.legend().legendHandles)
 # totaal_prikken = decimalstring(vaccins_delta['totaal'][-1])
 
 # ax1.plot(vaccins_delta['x'], 
@@ -205,7 +217,10 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19/COVID-19_varianten.json"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-ax1.legend(loc="upper left")
+# Reverse sort the legend and place upper left
+handles, labels = ax1.get_legend_handles_labels()   #get the handles
+ax1.legend(reversed(handles), reversed(labels), loc="upper left")
+
 # ax2.legend(loc="upper left")
 
 
