@@ -129,13 +129,23 @@ def downloadIfStale(filename, url, binary = False):
 
         if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
             print("Downloading new: %s" % filename)
+            tempfile = "%s.tmp" % filename
             if binary:
-                with open(filename, 'w+b') as f:
+                with open(tempfile, 'w+b') as f:
                     f.write(response.read())
             else:
-                with open(filename, 'w') as f:
+                with open(tempfile, 'w') as f:
                     charset = meta.get_content_charset() or 'utf-8'
                     f.write(response.read().decode(charset))
+            
+            if os.path.getsize(tempfile) > 100:
+                # Move the downloaded file in place
+                os.delete(filename)
+                os.replace(tempfile, filename)
+            else:
+                print("Problem with downloading to : %s" % tempfile)
+                return False
+
             return True
         else:
             print("    Still fresh: %s" % filename)
@@ -230,7 +240,7 @@ def download():
     ) or freshdata
 
     freshdata = downloadIfStale(
-        '../cache/rijskoverheid-coronadashboard-NL.json',
+        '../cache/rijksoverheid-coronadashboard-NL.json',
         'https://coronadashboard.rijksoverheid.nl/json/NL.json'
     ) or freshdata
 
@@ -776,7 +786,7 @@ def builddaily():
             line_count = line_count + 1
 
     print("Vaccinaties")
-    filename ='../cache/rijskoverheid-coronadashboard-NL.json'
+    filename ='../cache/rijksoverheid-coronadashboard-NL.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
 
