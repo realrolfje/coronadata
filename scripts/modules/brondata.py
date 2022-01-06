@@ -140,7 +140,7 @@ def downloadIfStale(filename, url, binary = False):
             
             if os.path.getsize(tempfile) > 100:
                 # Move the downloaded file in place
-                os.delete(filename)
+                os.remove(filename)
                 os.replace(tempfile, filename)
             else:
                 print("Problem with downloading to : %s" % tempfile)
