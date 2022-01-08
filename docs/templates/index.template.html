@@ -58,7 +58,7 @@
                     href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/algemene-coronaregels/corona-en-boetes">boete</a>
                 opleveren van &euro;95.<br/>
                 Plan je booster op <a href="https://planjeprik.nl">planjeprik.nl</a>!
-                <br /><span style="color:lightgray; font-size: smaller;">${gegenereerd_op}</span>
+                <br /><span style="color:lightgray; font-size: smaller;">${gegenereerd_op} ${error_warning}</span>
             </p>
         </div>
     </div>
@@ -213,6 +213,7 @@
                 De laatste keer dat er ${nu_op_ic} mensen op de IC lagen was: ${nu_op_ic_record_sinds}.
                 De laatste keer dat er ${positief_percentage} mensen positief testten was: ${positief_percentage_record_sinds}.
             </p>
+            ${errors}
         </div>
     </div>
 

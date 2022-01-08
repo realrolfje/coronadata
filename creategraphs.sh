@@ -1,4 +1,5 @@
 mkdir -p cache
+rm -f cache/errors.log
 
 cd scripts
 

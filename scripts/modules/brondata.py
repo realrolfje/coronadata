@@ -9,6 +9,7 @@
 #
 
 import urllib.request
+from urllib.error import URLError, HTTPError
 import os.path
 import datetime
 import time
@@ -84,6 +85,12 @@ def writejson(filename, adict):
     with open(filename, 'w') as file:
         file.write(json.dumps(adict))
 
+def logError(errorString):
+    print(errorString)
+    with open('../cache/errors.log', 'a') as file:
+        file.write(errorString)
+
+
 # Turns US 10,000.00 into EU 10.000,00
 def decimalstring(number):
     if number == round(number) and len(str(number)) <= 4:
@@ -116,42 +123,53 @@ def downloadIfStale(filename, url, binary = False):
         print("Just downloaded: %s" % filename)
         return False
 
-    with urllib.request.urlopen(url) as response:
-        meta = response.headers
-        try:
-            lastmodified = dateCache.parse(meta['Last-Modified'])
-        except:
-            print("Server has no Last-Modified for "+url)
-            lastmodified = datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)
+    try:
+        with urllib.request.urlopen(url) as response:
+            meta = response.headers
+            try:
+                lastmodified = dateCache.parse(meta['Last-Modified'])
+            except:
+                print("Server has no Last-Modified for "+url)
+                lastmodified = datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)
 
-        # print('last download: '+str(lastdownload))
-        # print('last modified: '+str(lastmodified))
+            # print('last download: '+str(lastdownload))
+            # print('last modified: '+str(lastmodified))
 
-        if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
-            print("Downloading new: %s" % filename)
-            tempfile = "%s.tmp" % filename
-            if binary:
-                with open(tempfile, 'w+b') as f:
-                    f.write(response.read())
+            if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
+                print("Downloading new: %s" % filename)
+                tempfile = "%s.tmp" % filename
+                if binary:
+                    with open(tempfile, 'w+b') as f:
+                        f.write(response.read())
+                else:
+                    with open(tempfile, 'w') as f:
+                        charset = meta.get_content_charset() or 'utf-8'
+                        f.write(response.read().decode(charset))
+                
+                if os.path.getsize(tempfile) > 100:
+                    # Move the downloaded file in place
+                    if os.path.isfile(filename):
+                        os.remove(filename)
+                    os.replace(tempfile, filename)
+                else:
+                    logError("No data received from `%s`." % url)
+                    return False
+
+                return True
             else:
-                with open(tempfile, 'w') as f:
-                    charset = meta.get_content_charset() or 'utf-8'
-                    f.write(response.read().decode(charset))
-            
-            if os.path.getsize(tempfile) > 100:
-                # Move the downloaded file in place
-                os.remove(filename)
-                os.replace(tempfile, filename)
-            else:
-                print("Problem with downloading to : %s" % tempfile)
+                print("    Still fresh: %s" % filename)
+                now = time.time()
+                os.utime(filename, (now,now))
                 return False
-
-            return True
-        else:
-            print("    Still fresh: %s" % filename)
-            now = time.time()
-            os.utime(filename, (now,now))
-            return False
+    except HTTPError as e:
+        logError("Problem opening '%s': http error %d, %s" % (url, e.code, e.reason))
+        return False
+    except URLError as e:
+        logError("Problem opening '%s': %s" % (url, e.reason))
+        return False
+    except FileNotFoundError as e:
+        logError("Problem opening file. %s" % (e))
+        return False
 
 def downloadMostRecentAppleMobilityReport(filename):
     if os.path.isfile(filename) and os.stat(filename).st_mtime > ( time.time() - 3600):

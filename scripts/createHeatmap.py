@@ -122,7 +122,7 @@ xlabeldates = [
 xlabels = []
 xlocs = []
 for label in xlabeldates:
-    print(label)
+    # print(label)
     if len(date_range) <= 365 or (int(label.strftime("%m")) % 2) != 0:
         xlabels.append(label.strftime("%Y-%m"))
         xlocs.append((label - startdate).days + 1)

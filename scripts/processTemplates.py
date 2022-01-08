@@ -127,6 +127,16 @@ for date in dates[::-1]:
             positief_percentage_record_sinds = date
             break
 
+# read errors, if there are any
+errors = ''
+if isfile('../cache/errors.log'):
+    with open('../cache/errors.log', 'r') as file:
+        errors = '<p class="highlight">Errors during processing:<br/>'
+        for error in file.readlines():
+            errors = '%s%s<br/>' % (errors, error)
+        errors += '</p>'
+
+
 # print("nu opgenomen is een record sinds %s" % nu_opgenomen_record_sinds)
 # print("nu op IC is een record sinds %s" % nu_op_ic_record_sinds)
 # print("geschat ziek is een record sinds %s" % geschat_ziek_rolf_record_sinds)
@@ -137,6 +147,11 @@ gemiddeldeleeftijdweek = int(round(sum(gemiddeldeleeftijdarray[-7:])/7))
 eenopXziek = round(17500000/geschat_ziek_nu)
 eenopXziekRNA = round(17500000/geschat_ziek_nu_rna)
 eenopXziekRolf = round(17500000/geschat_ziek_nu_rolf)
+
+if errors == '':
+    error_warning = ''
+else:
+    error_warning = 'met errors'
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
@@ -228,7 +243,10 @@ substitutes = {
     'gegenereerd_op_tijd' : gegenereerd_tijd,
 
     'python_lines': decimalstring(python_lines),
-    'cache_size'  : decimalstring(cache_size)
+    'cache_size'  : decimalstring(cache_size),
+
+    'errors'       : errors,
+    'error_warning': error_warning
 }
 
 def getTemplates(templatedir):
