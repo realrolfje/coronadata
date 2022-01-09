@@ -45,14 +45,11 @@ weightsmap={}
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
     print("Converting records to x/y data")
-    cachedDate = None
     for record in data:
-        if (cachedDate != record['Date_statistics']):
-            cachedDate = record['Date_statistics']
-            date_statistics = dateCache.parse(record['Date_statistics'])
-            datax = (date_statistics - startdate).days
+        date_statistics = dateCache.parse(record['Date_statistics'])
         if date_statistics >= startdate:
             try:
+                datax = (date_statistics - startdate).days
                 datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
                 filedate = record['Date_file']
                 x.append(datax)
@@ -103,14 +100,39 @@ print("Plotting heatmap, "+str(len(x))+"x"+str(len(y)))
 # Ongewogen:
 heatmap.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Blues') # inferno is also a good one
 
-
 leeftijdx = [(x-startdate).days for x in gemiddeldeleeftijd['x']]
-averages.plot(leeftijdx, gemiddeldeleeftijd['y'], color='darkred', alpha=0.5, label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')')
+print("Heatmap runs from %d to %d" % (min(x), max(x)))
+print("Average runs from %d to %d" % (min(leeftijdx), max(leeftijdx)))
+averages.plot(
+    leeftijdx, 
+    gemiddeldeleeftijd['y'], 
+    color='darkred', alpha=0.5, 
+    label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')'
+)
+
+# Used to debug the strange scaling/offset problem of the averate age graph
+# averages = plt.twinx()
+# averages.plot(
+#     [0,1,x[-1]], 
+#     [90,10,90], 
+#     color='darkred', alpha=0.5, 
+#     label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')'
+# )
 
 averages.legend(loc="upper right")
 
-heatmap.set_ylim([0, 100])
-averages.set_ylim([0,100])
+heatmap.set(
+    xlim=[x[0], x[-1]+7],
+    xbound=([x[0], x[-1]+7]), 
+    ylim=[0, 100],
+    autoscale_on=False
+)
+averages.set(
+    xlim=([x[0], x[-1]+7]), 
+    xbound=([x[0], x[-1]+7]), 
+    ylim=[0, 100],
+    autoscale_on=False
+)
 
 # Dirty stuff to get x labels (needs cleanup)
 xlabeldates = [
@@ -119,6 +141,9 @@ xlabeldates = [
     for x in range(
         gemiddeldeleeftijd['x'][-1].month - startdate.month + ((gemiddeldeleeftijd['x'][-1].year - startdate.year) * 12) + 1)
 ]
+
+print(gemiddeldeleeftijd['x'][-1])
+
 xlabels = []
 xlocs = []
 for label in xlabeldates:
@@ -131,7 +156,6 @@ locs, labels = plt.xticks(xlocs, xlabels)
 # Labels and tickmarks
 heatmap.set_xlabel("Datum")
 heatmap.set_ylabel("Leeftijd")
-
 
 # Put vertical line at current day
 plt.text(
