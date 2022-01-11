@@ -14,7 +14,7 @@ import modules.brondata as brondata
 from modules.brondata import decimalstring, isnewer, dateCache
 from modules.datautil import runIfNewData
 
-# runIfNewData(__file__)
+runIfNewData(__file__)
 
 print("Generating date/age heatmap.")
 
