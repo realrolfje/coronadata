@@ -23,6 +23,8 @@ from math import log
 from dateutil import parser
 import pytz
 
+timezone = pytz.timezone("Europe/Amsterdam")
+
 # Class caching parsed dates for speed optimization
 class DateCache:
     cachedDates = {}
@@ -111,8 +113,6 @@ def downloadBinaryIfStale(filename, url):
     return downloadIfStale(filename, url, True)
 
 def downloadIfStale(filename, url, binary = False):
-    timezone = pytz.timezone("Europe/Amsterdam")
-
     if os.path.isfile(filename):
         lastdownload = datetime.datetime.fromtimestamp(os.stat(filename).st_mtime, tz=timezone)
     else:        
@@ -205,6 +205,15 @@ def downloadECDCMap():
 
 def download():
     freshdata = False
+
+    markerfile = '../docs/extern/ECDC_Subnational_Combined_traffic.png'
+    if os.path.isfile(markerfile):
+        lastdownload = datetime.datetime.fromtimestamp(os.stat(markerfile).st_mtime, tz=timezone)
+    else:        
+        lastdownload = datetime.datetime.fromtimestamp(0,tz=markerfile)
+    if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(minutes = 20)):
+        print("Downloaded ECDC map less than 20 minutes ago, no new download.")
+        return True
 
     freshdata = downloadECDCMap() or freshdata
 
