@@ -14,7 +14,7 @@ import modules.brondata as brondata
 from modules.brondata import decimalstring, isnewer, dateCache
 from modules.datautil import runIfNewData
 
-runIfNewData(__file__)
+# runIfNewData(__file__)
 
 print("Generating date/age heatmap.")
 
@@ -41,6 +41,7 @@ weightsmap={}
 #             datax = (date_statistics - startdate).days
 #             datay = metenisweten[date_statistics]['besmettingleeftijd']
 
+datelog = []
 
 with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     data = json.load(json_file)
@@ -48,6 +49,7 @@ with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
     for record in data:
         date_statistics = dateCache.parse(record['Date_statistics'])
         if date_statistics >= startdate:
+            datelog.append(date_statistics)
             try:
                 datax = (date_statistics - startdate).days
                 datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
@@ -86,7 +88,7 @@ gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 
 gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
-fig, heatmap = plt.subplots(figsize=(10, 4))
+fig, heatmap = plt.subplots(figsize=(10, 4), constrained_layout=True, sharex='all', sharey='all')
 fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
 averages = plt.twinx()
 
@@ -98,11 +100,17 @@ print("Plotting heatmap, "+str(len(x))+"x"+str(len(y)))
 #plt.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
 
 # Ongewogen:
-heatmap.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmin=1, cmap='Blues') # inferno is also a good one
+heatmap.hist2d(
+    x, y, 
+    bins=[120,10], range=[[0,x[-1]+7],[0,100]], 
+    cmin=1, cmap='Blues'
+) # inferno is also a good one
 
 leeftijdx = [(x-startdate).days for x in gemiddeldeleeftijd['x']]
-print("Heatmap runs from %d to %d" % (min(x), max(x)))
-print("Average runs from %d to %d" % (min(leeftijdx), max(leeftijdx)))
+# print("Heatmap runs from %d to %d" % (min(x), max(x)))
+# print("Heatmap runs from %s to %s" % (datelog[0], datelog[-1]))
+# print("Average runs from %d to %d" % (min(leeftijdx), max(leeftijdx)))
+# print("Average runs from %s to %s" % (gemiddeldeleeftijd['x'][0], gemiddeldeleeftijd['x'][-1]))
 averages.plot(
     leeftijdx, 
     gemiddeldeleeftijd['y'], 
@@ -123,13 +131,13 @@ averages.legend(loc="upper right")
 
 heatmap.set(
     xlim=[x[0], x[-1]+7],
-    xbound=([x[0], x[-1]+7]), 
+    xbound=([x[0], x[-1]+7]),
     ylim=[0, 100],
     autoscale_on=False
 )
 averages.set(
-    xlim=([x[0], x[-1]+7]), 
-    xbound=([x[0], x[-1]+7]), 
+    xlim=([x[0], x[-1]+7]),
+    xbound=([x[0], x[-1]+7]),
     ylim=[0, 100],
     autoscale_on=False
 )
@@ -148,7 +156,7 @@ xlabels = []
 xlocs = []
 for label in xlabeldates:
     # print(label)
-    if len(date_range) <= 365 or (int(label.strftime("%m")) % 2) != 0:
+    if ((label - startdate).days + 1 >= 0) and (len(date_range) <= 365 or (int(label.strftime("%m")) % 2) != 0):
         xlabels.append(label.strftime("%Y-%m"))
         xlocs.append((label - startdate).days + 1)
 locs, labels = plt.xticks(xlocs, xlabels)
