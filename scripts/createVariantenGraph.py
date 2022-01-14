@@ -34,6 +34,14 @@ varianten_totaal = {
 }
 
 # Build unique complete set of variant codes and add add array placeholders
+
+# https://en.wikipedia.org/wiki/Greek_alphabet
+greekmap = {
+    "alpha" : "Α",
+    "beta"  : "Β",
+    "gamma" : "Γ"
+}
+
 variantcodes = {}
 for record in varianten:
     if record['Variant_code'] not in variantcodes:
