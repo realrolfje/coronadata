@@ -44,6 +44,7 @@ variantcodes = {}
 for record in varianten:
     if record['Variant_code'] not in variantcodes:
         varianten_totaal[record['Variant_code']] = []
+        print(record['Variant_name'])
         if record['Variant_name'] == '':
             variantcodes[record['Variant_code']] = record['Variant_code']
         elif record['Variant_name'] in namefix:
@@ -181,7 +182,7 @@ for i in range(len(dominance)):
         ax1.annotate(
             "Dominant:\n%s" % (variantcodes[dominance[i]]),
             xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
-            xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 40000),
+            xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 50000),
             fontsize=8,
             bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
             ha='center',
@@ -217,8 +218,10 @@ plt.text(
 plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-# ax1.set_ylim([0, 400000])
-# ax2.set_ylim([0, 100])
+ax1.set_ylim([0, 400000])
+ax1.set_yticks      ([50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000 ])
+ax1.set_yticklabels([ '50k', '100k', '150k', '200k', '250k', '300k',  '350k', '400k'])
+
 
 # plt.figtext(0.10,0.50, 
 #          "Deze grafiek toont hoeveel % van de Nederlanders\n"+\
