@@ -36,10 +36,8 @@ varianten_totaal = {
 # Build unique complete set of variant codes and add add array placeholders
 
 # https://en.wikipedia.org/wiki/Greek_alphabet
-greekmap = {
-    "alpha" : "Α",
-    "beta"  : "Β",
-    "gamma" : "Γ"
+namefix = {
+    "Omicron" : "Omikron"
 }
 
 variantcodes = {}
@@ -48,6 +46,8 @@ for record in varianten:
         varianten_totaal[record['Variant_code']] = []
         if record['Variant_name'] == '':
             variantcodes[record['Variant_code']] = record['Variant_code']
+        elif record['Variant_name'] in namefix:
+            variantcodes[record['Variant_code']] = "%s (%s)" % (namefix[record['Variant_name']], record['Variant_code'])
         else:
             variantcodes[record['Variant_code']] = "%s (%s)" % (record['Variant_name'], record['Variant_code'])
 

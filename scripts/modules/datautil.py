@@ -48,8 +48,8 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
             xy=(d, yval),
             xytext=(dateCache.parse(x), y),
             fontsize=8,
-            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.5),
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1', alpha=0.5)
         )
     else:
         print("date %s, yval %s, text not displayed: %s" %(str(d), str(yval), tekst))
