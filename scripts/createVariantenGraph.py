@@ -180,7 +180,8 @@ ax1.stackplot(
 for i in range(len(dominance)):
     if i == 0 or (i > 1  and dominance[i] != dominance[i-1]):
         ax1.annotate(
-            "Dominant:\n%s" % (variantcodes[dominance[i]]),
+
+            "%s\nDominant:\n%s" % (varianten_totaal['x'][i], variantcodes[dominance[i]]),
             xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
             xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 50000),
             fontsize=8,
