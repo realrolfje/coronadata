@@ -40,9 +40,11 @@ vaccins_delta = {
 
 
 date_range = brondata.getDateRange(metenisweten)
+plot_range = date_range
 
 lastDays = arguments.lastDays()
 if (lastDays>0):
+    plot_range = date_range[-(lastDays+14):]
     date_range = date_range[-lastDays:]
 
 def addVaccinCount(record, vaccin):
@@ -52,7 +54,7 @@ def addVaccinCount(record, vaccin):
 
 allvacins = ['astra_zeneca', 'pfizer', 'cure_vac', 'janssen','moderna', 'sanofi']
 
-for d in date_range:
+for d in plot_range:
     datum = d.strftime("%Y-%m-%d")
     if (datum in metenisweten and metenisweten[datum]['vaccinaties']['astra_zeneca'] != None):
         vaccins_totaal['x'].append(d)

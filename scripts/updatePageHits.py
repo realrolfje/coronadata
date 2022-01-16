@@ -4,7 +4,7 @@ import urllib.request
 from urllib.error import URLError, HTTPError
 import re 
 from datetime import datetime
-from modules.datautil import logError
+from modules.brondata import logError
 
 url="https://hitcounter.pythonanywhere.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
 
