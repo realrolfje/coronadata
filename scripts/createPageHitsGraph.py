@@ -39,7 +39,7 @@ dailyhits = {
 
 for i in range(len(pagehits['x'])):
     dailyhits['x'].append(pagehits['x'][i])
-    if i == 0:
+    if i == 0 or pagehits['y'][i] < pagehits['y'][i-1]:
         dailyhits['y'].append(pagehits['y'][i])
     else:
         dailyhits['y'].append(pagehits['y'][i] - pagehits['y'][i-1])
