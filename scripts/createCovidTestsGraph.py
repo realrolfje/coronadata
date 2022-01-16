@@ -186,6 +186,9 @@ ax1.set_ylabel("Aantal positief")
 ax2.set_ylabel("Percentage positief getest")
 
 ax1.set_ylim([0, 120000])
+ax1.set_yticks      ([20000, 40000, 60000, 80000, 100000, 120000])
+ax1.set_yticklabels([ '20k', '40k', '60k', '80k', '100k', '120k'])
+
 ax2.set_ylim([0, 60])
 
 plt.gca().set_xlim([date_range[0], date_range[-1]])

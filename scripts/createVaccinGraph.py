@@ -164,11 +164,9 @@ plt.text(
 )
 plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
-# ax1.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
-# ax1.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
-
-# ax2.set_yticks      ([10,    20,   30,   40,   50,   60,   70,   80,  90,   100])
-# ax2.set_yticklabels([ '10%',  '20%', '30%', '40%', '50%', '60%', '70%','80%','90%','100%'])
+ax1.set_ylim([0, 400000])
+ax1.set_yticks      ([50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000 ])
+ax1.set_yticklabels([ '50k', '100k', '150k', '200k', '250k', '300k',  '350k', '400k'])
 
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
