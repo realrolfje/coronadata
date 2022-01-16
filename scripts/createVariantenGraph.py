@@ -44,7 +44,6 @@ variantcodes = {}
 for record in varianten:
     if record['Variant_code'] not in variantcodes:
         varianten_totaal[record['Variant_code']] = []
-        print(record['Variant_name'])
         if record['Variant_name'] == '':
             variantcodes[record['Variant_code']] = record['Variant_code']
         elif record['Variant_name'] in namefix:
