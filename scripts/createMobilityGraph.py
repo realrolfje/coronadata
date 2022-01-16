@@ -87,7 +87,9 @@ ax1.plot(lopen['x'], lopen['y'], color='slateblue', label='Lopen (Apple, gemidde
 
 
 for event in events:
-    if 'mobiliteit' in event and dateCache.parse(event['mobiliteit'][0]) > date_range[0]:
+    if 'mobiliteit' in event\
+        and dateCache.parse(event['mobiliteit'][0]) > date_range[0]\
+        and (len(event['mobiliteit']) <= 2 or len(date_range) <= event['mobiliteit'][2]):
         anotate(
             ax1, 
             rijden['x'], rijden['y'],
