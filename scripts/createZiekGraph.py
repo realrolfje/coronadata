@@ -8,10 +8,8 @@ from statistics import mean
 import datetime
 import modules.arguments as arguments
 import modules.brondata as brondata
-from modules.brondata import decimalstring
-from modules.brondata import dateCache
-from modules.datautil import anotate
-from modules.datautil import runIfNewData
+from modules.brondata import decimalstring, dateCache
+from modules.datautil import runIfNewData, anotate
 
 runIfNewData(__file__)
 
