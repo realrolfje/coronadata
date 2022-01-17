@@ -3,11 +3,15 @@
 #
 
 from datetime import datetime, timedelta
+from sre_compile import isstring
 from . brondata import freshdata, isnewer, dateCache
 from . arguments import isForce
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
-    d = dateCache.parse(datum)
+    if isinstance(datum, str):
+        d = dateCache.parse(datum)
+    else:
+        d = datum
 
     if (d < xdata[0]):
         print("Date %s before start of graph, text not displayed: %s" % (datum, tekst))
@@ -43,10 +47,15 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
         yval = round(leftY + ((rightY - leftY) * distance))
 
     if (d is not None) and (yval is not None):
+        if isinstance(x, str):
+            xx = dateCache.parse(x)
+        else :
+            xx = x
+
         plt.annotate(
             tekst,
             xy=(d, yval),
-            xytext=(dateCache.parse(x), y),
+            xytext=(xx, y),
             fontsize=8,
             bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.5),
             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1', alpha=0.5)

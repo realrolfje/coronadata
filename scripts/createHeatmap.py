@@ -2,19 +2,18 @@
 #
 # pip3 install matplotlib
 
-import numpy as np
 from matplotlib import pyplot as plt
-from dateutil import parser
-from statistics import mean
 from dateutil.relativedelta import relativedelta
 import datetime
 import json
 import modules.arguments as arguments
 import modules.brondata as brondata
-from modules.brondata import decimalstring, isnewer, dateCache
-from modules.datautil import runIfNewData
+from modules.brondata import dateCache
+from modules.datautil import runIfNewData, anotate
 
 runIfNewData(__file__)
+
+events = brondata.readjson('../data/measures-events.json')
 
 print("Generating date/age heatmap.")
 
@@ -32,7 +31,7 @@ startdate = date_range[0]
 
 weightsmap={}
 
-# THe heatmap data is already in metenisweten, we can optimze. Complete this:
+# The heatmap data is already in metenisweten, we can optimze. Complete this:
 # metenisweten = brondata.readjson('../cache/daily-stats.json')
 # print("Converting records to x/y data")
 # for date_statistics in metenisweten:
@@ -118,16 +117,23 @@ averages.plot(
     label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')'
 )
 
-# Used to debug the strange scaling/offset problem of the averate age graph
-# averages = plt.twinx()
-# averages.plot(
-#     [0,1,x[-1]], 
-#     [90,10,90], 
-#     color='darkred', alpha=0.5, 
-#     label='Gemiddelde leeftijd (laatste week: '+str(gemiddeldlaatsteweek)+')'
-# )
-
 averages.legend(loc="upper right")
+
+graphname='heatmap'
+for event in events:
+    if graphname in event \
+        and dateCache.parse(event[graphname][0]) > date_range[0]\
+        and (len(event[graphname]) <= 2 or len(date_range) <= event[graphname][2]):
+
+        eventDateIndex = (dateCache.parse(event['date']) - startdate).days
+        textboxIndex =  (dateCache.parse(event[graphname][0]) - startdate).days
+        anotate(
+            averages, 
+            leeftijdx, gemiddeldeleeftijd['y'],
+            eventDateIndex, event['event'], 
+            textboxIndex, 
+            event[graphname][1]
+        )
 
 heatmap.set(
     xlim=[x[0], x[-1]+7],
