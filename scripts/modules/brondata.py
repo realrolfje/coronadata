@@ -222,6 +222,11 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.json'
     ) or freshdata
 
+    # freshdata = downloadIfStale(
+    #     '../cache/COVID-19_ziekenhuisopnames.json',
+    #     'https://data.rivm.nl/covid-19/COVID-19_ziekenhuisopnames.json'
+    # ) or freshdata
+
     # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/ed0699d1-c9d5-4436-8517-27eb993eab6e?tab=relations
     freshdata = downloadIfStale(
         '../cache/COVID-19_reproductiegetal.json',
@@ -442,8 +447,17 @@ def builddaily():
 
             todaysRecord['positief'] += 1
 
-            if (record['Hospital_admission'] == "Yes"):
-                todaysRecord['opgenomen'] += 1
+
+            # https://data.rivm.nl/meta/srv/dut/catalog.search#/metadata/2c4357c8-76e4-4662-9574-1deb8a73f724?tab=general
+            # -	In versie 2 van deze dataset is de variabele ‘hospital_admission’ niet meer beschikbaar. Voor het aantal 
+            # ziekenhuisopnames wordt verwezen naar de geregistreerde ziekenhuisopnames van Stichting NICE 
+            # (https://data.rivm.nl/covid-19/COVID-19_ziekenhuisopnames.html).
+            # try:
+            #     if 'Hospital_admission' in record and (record['Hospital_admission'] == "Yes"):
+            #         todaysRecord['opgenomen'] += 1
+            # except KeyError:
+            #     print(record)
+            #     raise
 
             todaysRecord['rivm-datum'] = record['Date_file']
 
@@ -469,23 +483,17 @@ def builddaily():
         
         print('Processed ' + decimalstring(len(metenisweten)) + ' records.')
 
+    # print("Add hospitalization data")
+    # filename = '../cache/NICE-intake-count.json' 
+    # with open(filename, 'r') as json_file:
+    #     data = json.load(json_file)
 
     print("Add intensive care data")
     filename = '../cache/NICE-intake-count.json' 
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
-        cachedDate = None
-        cachedDateValid = False
-        for record in data:
-            if cachedDate != record['date']:
-                cachedDate = record['date']
-
-                if not dateCache.isvaliddate(record['date'], filename):
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-            
-            if not cachedDateValid:
+        for record in data:           
+            if not dateCache.isvaliddate(record['date'], filename):
                 continue
 
             initrecord(record['date'], metenisweten)
@@ -494,18 +502,8 @@ def builddaily():
     filename = '../cache/NICE-intake-cumulative.json'
     with open(filename, 'r') as json_file:
         data = json.load(json_file)
-        cachedDate = None
-        cachedDateValid = False
-        for record in data:
-            if cachedDate != record['date']:
-                cachedDate = record['date']
-
-                if not dateCache.isvaliddate(record['date'], filename):
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-            
-            if not cachedDateValid:
+        for record in data:            
+            if not dateCache.isvaliddate(record['date'], filename):
                 continue
 
             initrecord(record['date'], metenisweten)
@@ -976,7 +974,7 @@ def builddaily():
     totaal_overleden = 0
     for datum in metenisweten:
         totaal_positief  += metenisweten[datum]['positief']
-        totaal_opgenomen += metenisweten[datum]['opgenomen']
+        totaal_opgenomen += metenisweten[datum]['nu_opgenomen']
         totaal_overleden += metenisweten[datum]['overleden']
 
         metenisweten[datum]['totaal_positief'] = totaal_positief

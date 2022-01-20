@@ -2,14 +2,12 @@
 #
 from http.client import CannotSendRequest
 from matplotlib import pyplot as plt
-from dateutil import parser
 import modules.brondata as brondata
 import modules.arguments as arguments
-from modules.brondata import decimalstring, intOrZero, dateCache
-from modules.datautil import anotate
+from modules.brondata import decimalstring, intOrZero, dateCache, smooth, double_savgol
+from modules.datautil import anotate, runIfNewData
 from datetime import datetime, date, timedelta
 import sys
-from modules.datautil import runIfNewData
 
 runIfNewData(__file__)
 
@@ -31,6 +29,11 @@ varianten_totaal = {
     'x': [],
     # 'variant code' : percentage
     'totaal': [],
+}
+
+opnamekans = {
+    'x': [],
+    'kans':[]    
 }
 
 # Build unique complete set of variant codes and add add array placeholders
@@ -67,14 +70,25 @@ for record in varianten:
     varianten_map[d][c]['cases'] = record['Variant_cases']
     varianten_map[d][c]['size'] = record['Sample_size']
 
+
 for key in varianten_map:
-    varianten_totaal['x'].append( dateCache.parse(key) )
+    varianten_totaal['x'].append(dateCache.parse(key))
+
+    weeklater = (dateCache.parse(key) + timedelta(days=7)).strftime('%Y-%m-%d')
+
+    # Calculate the number of infections against hospitalization
+    if weeklater in metenisweten:
+        kans = 100 * metenisweten[weeklater]['nu_opgenomen'] / metenisweten[weeklater]['rolf_besmettelijk']
+        opnamekans['x'].append(dateCache.parse(weeklater))
+        opnamekans['kans'].append(kans)
+
+    # For each variant, determine the number of sick people (variant percentage times estimate)
     for variantcode in variantcodes.keys():
         if variantcode in varianten_map[key]:
             percentage = varianten_map[key][variantcode]['cases']/varianten_map[key][variantcode]['size']
         else:
             percentage = 0
-        geschat_ziek = metenisweten[key]['rolf_besmettelijk']    
+        geschat_ziek = metenisweten[key]['rolf_besmettelijk']
         varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
 dominance = []
@@ -129,6 +143,9 @@ ax1.grid(which='both', axis='both', linestyle='-.',
 ax1.set_xlabel("Datum")
 ax1.set_ylabel("Geschat aantal personen ziek")
 
+ax2 = plt.twinx()
+ax2.set_ylabel("Opnamekans")
+
 # Variants in order of today's 
 today = {}
 for code in varianten_totaal:
@@ -165,6 +182,18 @@ ax1.stackplot(
     ),
     baseline='zero'
 )
+
+
+# smoothkans = opnamekans['kans']
+# smoothkans = smooth(opnamekans['kans'])
+smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
+
+ax2.plot(opnamekans['x'], 
+         smoothkans, 
+         color='darkblue',
+         linestyle=':', 
+         label='Opnamekans bij besmetting (nu: %s%%)' % decimalstring(round(smoothkans[-1],1)),
+         alpha=0.7)
 
 
 # print('reversed %s' % ax1.legend().legendHandles)
@@ -218,9 +247,12 @@ plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
 ax1.set_ylim([0, 600000])
-ax1.set_yticks      ([50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 500000, 600000])
-ax1.set_yticklabels([ '50k', '100k', '150k', '200k', '250k', '300k', '350k', '400k', '500k', '600k'])
+ax1.set_yticks      ([100000, 200000, 300000, 400000, 500000, 600000])
+ax1.set_yticklabels([ '100k', '200k', '300k', '400k', '500k', '600k'])
 
+ax2.set_ylim([0, 3])
+ax2.set_yticks      ([ 0.5,    1,     1.5,    2,      2.5,    3])
+ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%', '2.5%', '3.0%'])
 
 # plt.figtext(0.10,0.50, 
 #          "Deze grafiek toont hoeveel % van de Nederlanders\n"+\
@@ -250,7 +282,7 @@ plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 handles, labels = ax1.get_legend_handles_labels()   #get the handles
 ax1.legend(reversed(handles), reversed(labels), loc="upper left")
 
-# ax2.legend(loc="upper left")
+ax2.legend(loc="upper right")
 
 
 if (lastDays > 0):
