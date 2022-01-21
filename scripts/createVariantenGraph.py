@@ -78,7 +78,7 @@ for key in varianten_map:
 
     # Calculate the number of infections against hospitalization
     if weeklater in metenisweten:
-        kans = 100 * metenisweten[weeklater]['nu_opgenomen'] / metenisweten[weeklater]['rolf_besmettelijk']
+        kans = 100 * (metenisweten[weeklater]['nu_opgenomen'] + metenisweten[weeklater]['nu_op_ic']) / metenisweten[weeklater]['rolf_besmettelijk']
         opnamekans['x'].append(dateCache.parse(weeklater))
         opnamekans['kans'].append(kans)
 
