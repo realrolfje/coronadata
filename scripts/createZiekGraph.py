@@ -171,7 +171,7 @@ for d in date_range:
 
 print('Generating daily positive tests graph...')
 
-fig, ax1 = plt.subplots(figsize=(10, 6))
+fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 
 ax2 = plt.twinx()
@@ -235,11 +235,11 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal op verpleegafdeling / op IC")
 ax2.set_ylabel("Geschat ziek")
 
-ax1.set_ylim([0, 6000])
-ax2.set_ylim([0, 600000])
+ax1.set_ylim([0, 3000])
+ax2.set_ylim([0, 1200000])
 
-ax2.set_yticks      ([100000,  200000,  300000, 400000, 500000, 600000])
-ax2.set_yticklabels([ '100k',  '200k', '300k', '400k', '500k', '☠'])
+ax2.set_yticks      ([200000, 400000, 600000, 800000, 1000000, 1200000])
+ax2.set_yticklabels([ '200k', '400k', '600k', '800k', '1000k',     '☠'])
 
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
