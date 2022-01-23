@@ -43,6 +43,7 @@ namefix = {
     "Omicron" : "Omikron"
 }
 
+# Get all id's and names of the variants and put them in variantcodes
 variantcodes = {}
 for record in varianten:
     if record['Variant_code'] not in variantcodes:
@@ -54,6 +55,7 @@ for record in varianten:
         else:
             variantcodes[record['Variant_code']] = "%s (%s)" % (record['Variant_name'], record['Variant_code'])
 
+# Get variant percentages per day and put them in "varianten_map[date][variantcode] = {cases, size}"
 for record in varianten:
     if record['May_include_samples_listed_before']:
         continue
@@ -71,6 +73,7 @@ for record in varianten:
     varianten_map[d][c]['size'] = record['Sample_size']
 
 
+# Take al variant percentages and multiply them with the actual number of sick people on that day
 for key in varianten_map:
     varianten_totaal['x'].append(dateCache.parse(key))
 
@@ -91,6 +94,24 @@ for key in varianten_map:
         geschat_ziek = metenisweten[key]['rolf_besmettelijk']
         varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
+date_range = brondata.getDateRange(metenisweten)
+lastDays = arguments.lastDays()
+if (lastDays>0):
+    date_range = date_range[-lastDays:]
+
+
+# Create a list of total number of sick people per day to plot a totals line over the graph
+totaal_ziek = {
+    'x':[],
+    'y':[],
+}
+for k in date_range:
+    key = k.strftime('%Y-%m-%d')
+    if key in metenisweten and metenisweten[key]['rolf_besmettelijk']:
+        totaal_ziek['x'].append(k)
+        totaal_ziek['y'].append(metenisweten[key]['rolf_besmettelijk'])
+
+# Find when a variant becomes dominant
 dominance = []
 for i in range(len(varianten_totaal['x'])):
     n = 0
@@ -128,11 +149,6 @@ for key in variantcodes:
 # record['Sample_size'],
 # record['Variant_cases']
 
-date_range = brondata.getDateRange(metenisweten)
-lastDays = arguments.lastDays()
-if (lastDays>0):
-    date_range = date_range[-lastDays:]
-
 print('Generating variants graph...')
 fig, ax1 = plt.subplots(figsize=(10, 5))
 fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
@@ -146,7 +162,7 @@ ax1.set_ylabel("Geschat aantal personen ziek")
 ax2 = plt.twinx()
 ax2.set_ylabel("Opnamekans")
 
-# Variants in order of today's 
+# Variants in order of today's highest
 today = {}
 for code in varianten_totaal:
     if code != 'x':
@@ -183,6 +199,14 @@ ax1.stackplot(
     baseline='zero'
 )
 
+ax1.plot(
+    totaal_ziek['x'],
+    totaal_ziek['y'],
+    color='steelblue',
+    linestyle=':', 
+    label='Totaal (nu: %s)' % decimalstring(round(totaal_ziek['y'][-1]))
+)
+
 
 # smoothkans = opnamekans['kans']
 # smoothkans = smooth(opnamekans['kans'])
@@ -191,7 +215,7 @@ smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
 ax2.plot(opnamekans['x'], 
          smoothkans, 
          color='darkblue',
-         linestyle=':', 
+         linestyle='--', 
          label='Opnamekans bij besmetting (nu: %s%%)' % decimalstring(round(smoothkans[-1],1)),
          alpha=0.7)
 
