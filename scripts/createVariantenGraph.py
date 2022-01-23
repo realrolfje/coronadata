@@ -72,7 +72,6 @@ for record in varianten:
     varianten_map[d][c]['cases'] = record['Variant_cases']
     varianten_map[d][c]['size'] = record['Sample_size']
 
-
 # Take al variant percentages and multiply them with the actual number of sick people on that day
 for key in varianten_map:
     varianten_totaal['x'].append(dateCache.parse(key))
