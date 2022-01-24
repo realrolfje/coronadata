@@ -55,6 +55,9 @@ for record in varianten:
         else:
             variantcodes[record['Variant_code']] = "%s (%s)" % (record['Variant_name'], record['Variant_code'])
 
+varianten_totaal['onbekend'] = []
+variantcodes['onbekend'] = "Onbekend"
+
 # Get variant percentages per day and put them in "varianten_map[date][variantcode] = {cases, size}"
 for record in varianten:
     if record['May_include_samples_listed_before']:
@@ -85,13 +88,21 @@ for key in varianten_map:
         opnamekans['kans'].append(kans)
 
     # For each variant, determine the number of sick people (variant percentage times estimate)
+    geschat_ziek = metenisweten[key]['rolf_besmettelijk']
+    totaal_percentage = 0
     for variantcode in variantcodes.keys():
+        if variantcode == 'onbekend':
+            continue
+
         if variantcode in varianten_map[key]:
             percentage = varianten_map[key][variantcode]['cases']/varianten_map[key][variantcode]['size']
         else:
             percentage = 0
-        geschat_ziek = metenisweten[key]['rolf_besmettelijk']
+        totaal_percentage += percentage
         varianten_totaal[variantcode].append(percentage * geschat_ziek)
+
+    # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
+    varianten_totaal['onbekend'].append(max(0,(1 - totaal_percentage) * geschat_ziek))
 
 date_range = brondata.getDateRange(metenisweten)
 lastDays = arguments.lastDays()
@@ -124,7 +135,7 @@ for i in range(len(varianten_totaal['x'])):
 # top 10:
 totals = {}
 for code in variantcodes:
-    totals[code] = sum(varianten_totaal[code])
+    totals[code] = sum(varianten_totaal[code])    
 totals=dict(sorted(totals.items(),key=lambda x:x[1]))
 top_variants=[]
 for k in totals.keys(): top_variants.append(k)
@@ -229,7 +240,7 @@ ax2.plot(opnamekans['x'],
 
 
 for i in range(len(dominance)):
-    if i == 0 or (i > 1  and dominance[i] != dominance[i-1]):
+    if i > 1  and dominance[i] != dominance[i-1]:
         ax1.annotate(
             "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes[dominance[i]]),
             xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
