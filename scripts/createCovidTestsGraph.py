@@ -135,15 +135,15 @@ ax1.text(
 
 
 ax1.plot(totaaltests['x'], totaaltests['y'], 
-         color='lightblue', linestyle='-', label='Uitgevoerde tests (totaal '+decimalstring(totaaltests['total'])+')')
+         color='lightblue', linestyle='-', label='Uitgevoerde tests (nu: '+decimalstring(totaaltests['y'][-1])+')')
 
 # Plot cases per dag
 totaal_percentage = round(100*totaal_positief/totaaltests['total'],1)
 ax1.plot(positief['x'][:-positief_voorspeld['avgsize']], 
          positief['y'][:-positief_voorspeld['avgsize']], 
             color='fuchsia', label=
-            "Tests positief (nu %s, totaal %s, %s%%)"
-            % (decimalstring(positief['y'][-1]), decimalstring(totaal_positief), decimalstring(totaal_percentage))
+            "Tests positief (nu: %s)"
+            % decimalstring(positief['y'][-1])
 )
 #ax1.plot(positief['x'][-11:], positief['y'][-11:], color='steelblue', linestyle='--', alpha=0.3, label='onvolledig')
 ax1.plot(positief_voorspeld['x'][-positief_voorspeld['avgsize']-7:], positief_voorspeld['y'][-positief_voorspeld['avgsize']-7:], 
@@ -185,11 +185,11 @@ ax1.set_xlabel("Datum")
 ax1.set_ylabel("Aantal positief")
 ax2.set_ylabel("Percentage positief getest")
 
-ax1.set_ylim([0, 120000])
-ax1.set_yticks      ([20000, 40000, 60000, 80000, 100000, 120000])
-ax1.set_yticklabels([ '20k', '40k', '60k', '80k', '100k', '120k'])
+ax1.set_ylim([0, 160000])
+ax1.set_yticks      ([20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000])
+ax1.set_yticklabels([ '20k', '40k', '60k', '80k', '100k', '120k', '140k', '160k'])
 
-ax2.set_ylim([0, 60])
+ax2.set_ylim([0, 80])
 
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
