@@ -79,14 +79,6 @@ for record in varianten:
 for key in varianten_map:
     varianten_totaal['x'].append(dateCache.parse(key))
 
-    weeklater = (dateCache.parse(key) + timedelta(days=7)).strftime('%Y-%m-%d')
-
-    # Calculate the number of infections against hospitalization
-    if weeklater in metenisweten:
-        kans = 100 * (metenisweten[weeklater]['nu_opgenomen'] + metenisweten[weeklater]['nu_op_ic']) / metenisweten[weeklater]['rolf_besmettelijk']
-        opnamekans['x'].append(dateCache.parse(weeklater))
-        opnamekans['kans'].append(kans)
-
     # For each variant, determine the number of sick people (variant percentage times estimate)
     geschat_ziek = metenisweten[key]['rolf_besmettelijk']
     totaal_percentage = 0
@@ -120,6 +112,15 @@ for k in date_range:
     if key in metenisweten and metenisweten[key]['rolf_besmettelijk']:
         totaal_ziek['x'].append(k)
         totaal_ziek['y'].append(metenisweten[key]['rolf_besmettelijk'])
+        
+    weeklater = (dateCache.parse(key) + timedelta(days=7)).strftime('%Y-%m-%d')
+
+    # Calculate the number of infections against hospitalization
+    if weeklater in metenisweten and metenisweten[weeklater]['nu_opgenomen'] and metenisweten[weeklater]['nu_op_ic'] and metenisweten[weeklater]['rolf_besmettelijk']:
+        kans = 100 * (metenisweten[weeklater]['nu_opgenomen'] + metenisweten[weeklater]['nu_op_ic']) / metenisweten[weeklater]['rolf_besmettelijk']
+        opnamekans['x'].append(dateCache.parse(weeklater))
+        opnamekans['kans'].append(kans)
+
 
 # Find when a variant becomes dominant
 dominance = []
