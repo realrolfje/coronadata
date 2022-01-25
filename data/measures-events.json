@@ -439,7 +439,7 @@
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/vraag-en-antwoord/persconferentie-18-juni-2021-in-eenvoudige-taal",
         "zieken": [
             "2021-06-01",
-            510000
+            560000
         ],
         "testsloc": [
             "2021-03-15",
@@ -610,7 +610,7 @@
         "event": "1,5 meter verplicht",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2021/11/23/15-meter-afstand-houden-is-weer-verplicht",
         "zieken": [
-            "2021-10-15",
+            "2021-10-10",
             650000
          ]
      },
@@ -622,7 +622,7 @@
         "url3": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/documenten/mediateksten/2021/12/18/letterlijke-tekst-persconferentie-coronavirus-minister-president-rutte-minister-de-jonge-en-omt-voorzitter-van-dissel-18-december-2021",
         "zieken": [
             "2021-11-25",
-            400000
+            390000
          ],
          "mobiliteit": [
              "2021-12-01",
@@ -634,8 +634,8 @@
         "event": "voortgezet\nonderwijs\nopen",
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2022/01/03/primair-en-voortgezet-onderwijs-en-bso-gaan-weer-open-na-kerstvakantie",
         "zieken": [
-            "2021-12-01",
-            740000,
+            "2021-12-03",
+            550000,
             365
          ], 
          "heatmap": [
@@ -649,12 +649,26 @@
         "url": "https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/nieuws/2022/01/14/persconferentie-14-januari-2022",
         "url2": "https://www.youtube.com/watch?v=7uHSEGR8C2c&t=300s",
         "zieken": [
-            "2021-12-15",
-            890000
+            "2021-11-01",
+            770000
          ],
          "mobiliteit": [
              "2021-12-15",
              120
+         ]
+     },
+     {
+        "date": "2022-01-25",
+        "event": "alles open\n05 tot 22u",
+        "url": "https://www.rijksoverheid.nl/actueel/nieuws/2022/01/25/open-tenzij-bijna-alles-open-tot-22.00-uur",
+        "url2": "https://youtu.be/nWpP0AimIC4?t=285",
+        "zieken": [
+            "2021-11-20",
+            900000
+         ],
+         "mobiliteit": [
+             "2021-12-20",
+             140
          ]
      }    
 ]
