@@ -9,8 +9,13 @@ from modules.brondata import logError
 #  <img src="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F" alt="Hits">
 url="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
 
+
 try:
-    with urllib.request.urlopen(url) as response:
+    user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
+    headers = {'User-Agent': user_agent}
+    req = urllib.request.Request(url=url, headers=headers)
+
+    with urllib.request.urlopen(req) as response:
         body = str(response.read())
         counter=re.search('>[\.,0-9]+</', body).group(0)[1:-2]
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
