@@ -9,6 +9,22 @@ from modules.brondata import logError
 
 # The source of the hit counter at pythonanywhere and blakedrumm is:
 # https://github.com/brentvollebregt/hit-counter
+#
+# The svg returned is:
+#
+# <?xml version="1.0"?>
+# <svg xmlns="http://www.w3.org/2000/svg" width="80" height="20">
+# <rect width="30" height="20" fill="#555"/>
+# <rect x="30" width="50" height="20" fill="#4c1"/>
+# <rect rx="3" width="80" height="20" fill="transparent"/>
+# 	<g fill="#fff" text-anchor="middle"
+#     font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+# 	    <text x="15" y="14">hits</text>
+# 	    <text x="55" y="14">2045</text>
+# 	</g>
+# <!-- This count is for the url: realrolfje.github.io/coronadata/ -->
+# </svg>
+#
 
 #  <img src="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F" alt="Hits">
 url="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
