@@ -6,6 +6,10 @@ import re
 from datetime import datetime
 from modules.brondata import logError
 
+
+# The source of the hit counter at pythonanywhere and blakedrumm is:
+# https://github.com/brentvollebregt/hit-counter
+
 #  <img src="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F" alt="Hits">
 url="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
 
