@@ -1,4 +1,4 @@
-git pull
+git pull -X theirs
 ./creategraphs.sh
 echo "<!-- updated $(date) -->" >> docs/index.html
 git add .
