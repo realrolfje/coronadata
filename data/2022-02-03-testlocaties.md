@@ -1,27 +1,27 @@
 | Locatie | Positieve tests |
 |---------|----------------:|
-| GGD Amsterdam                            | 314981 |
-| Veiligheids- en Gezondheidsregio Gelderland-Midden | 152324 |
-| GGD Hollands-Midden                      | 218490 |
-| GGD Hollands-Noorden                     | 163921 |
-| GGD Gelderland-Zuid                      | 144944 |
-| GGD Zuid-Limburg                         | 152392 |
-| GGD Rotterdam-Rijnmond                   | 385729 |
-| GGD Drenthe                              | 87859 |
-| GGD Groningen                            | 109119 |
-| GGD West-Brabant                         | 182139 |
-| GGD Haaglanden                           | 297327 |
-| GGD Twente                               | 159153 |
-| GGD Brabant-Zuidoost                     | 199958 |
-| GGD Limburg-Noord                        | 144896 |
-| GGD IJsselland                           | 117986 |
-| GGD Hart voor Brabant                    | 281117 |
-| GGD Zaanstreek/Waterland                 | 95759 |
-| GGD Gooi en Vechtstreek                  | 67060 |
-| GGD Fryslân                              | 130004 |
-| GGD Flevoland                            | 102514 |
-| GGD Regio Utrecht                        | 367280 |
-| GGD Kennemerland                         | 143700 |
-| Dienst Gezondheid & Jeugd ZHZ            | 132161 |
-| GGD Noord- en Oost-Gelderland            | 188324 |
-| GGD Zeeland                              | 93347 |
+| GGD Amsterdam                            | 329710 |
+| Veiligheids- en Gezondheidsregio Gelderland-Midden | 155278 |
+| GGD Hollands-Midden                      | 229465 |
+| GGD Hollands-Noorden                     | 175832 |
+| GGD Gelderland-Zuid                      | 153925 |
+| GGD Zuid-Limburg                         | 158276 |
+| GGD Rotterdam-Rijnmond                   | 406589 |
+| GGD Drenthe                              | 92553 |
+| GGD Groningen                            | 116373 |
+| GGD West-Brabant                         | 195956 |
+| GGD Haaglanden                           | 312758 |
+| GGD Twente                               | 177681 |
+| GGD Brabant-Zuidoost                     | 214206 |
+| GGD Limburg-Noord                        | 153422 |
+| GGD IJsselland                           | 128299 |
+| GGD Hart voor Brabant                    | 294751 |
+| GGD Zaanstreek/Waterland                 | 99749 |
+| GGD Gooi en Vechtstreek                  | 70580 |
+| GGD Fryslân                              | 137292 |
+| GGD Flevoland                            | 108945 |
+| GGD Regio Utrecht                        | 388122 |
+| GGD Kennemerland                         | 151215 |
+| Dienst Gezondheid & Jeugd ZHZ            | 139317 |
+| GGD Noord- en Oost-Gelderland            | 198791 |
+| GGD Zeeland                              | 99034 |
