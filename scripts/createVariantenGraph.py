@@ -281,9 +281,9 @@ plt.text(
 plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-ax1.set_ylim([0, 600000])
-ax1.set_yticks      ([100000, 200000, 300000, 400000, 500000, 600000])
-ax1.set_yticklabels([ '100k', '200k', '300k', '400k', '500k', '600k'])
+ax1.set_ylim([0, 1200000])
+ax1.set_yticks      ([100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1100000, 1200000])
+ax1.set_yticklabels([ '100k', '200k', '300k', '400k', '500k', '600k', '700k', '800k', '900k',  '1.0M',  '1.1M',  '1.2M'])
 
 ax2.set_ylim([0, 3])
 ax2.set_yticks      ([ 0.5,    1,     1.5,    2,      2.5,    3])

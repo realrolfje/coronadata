@@ -82,9 +82,9 @@ plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
 axes = plt.gca()
 axes.set_xlim([date_range[0],date_range[-1]])
 
-ax1.set_ylim([0,1.5e+14])
-ax1.set_yticks      ([   0, 0.25e+14, 0.5e+14, 0.75e+14,  1e+14, 1.25e+14, 1.5e+14, 1.75e+14,  2e+14])
-ax1.set_yticklabels([   '0',   '25T',   '50T',    '75T', '100T',   '125T',  '150T',   '175T', '200T'])
+ax1.set_ylim([0,2.5e+14])
+ax1.set_yticks     ([  0, 0.5e+14,  1e+14, 1.5e+14,  2e+14,  2.5e+14])
+ax1.set_yticklabels(['0',   '50T', '100T',  '150T', '200T',   '250T'])
 
 plt.figtext(0.10,0.72, 
          "(T = Terra = 1.000.000.000.000)",
