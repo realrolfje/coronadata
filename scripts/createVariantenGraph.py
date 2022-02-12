@@ -245,7 +245,7 @@ for i in range(len(dominance)):
         ax1.annotate(
             "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes[dominance[i]]),
             xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
-            xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 50000),
+            xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 100000),
             fontsize=8,
             bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
             ha='center',
