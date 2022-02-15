@@ -664,11 +664,21 @@
         "url2": "https://youtu.be/nWpP0AimIC4?t=285",
         "zieken": [
             "2021-11-20",
-            900000
+            900000,
+            365
          ],
          "mobiliteit": [
              "2021-12-20",
              140
+         ]
+     },
+     {
+        "date": "2022-02-15",
+        "event": "open in 3 stappen",
+        "url": "https://www.rijksoverheid.nl/actueel/nieuws/2022/02/15/alles-kan-weer-open-in-3-stappen",
+        "zieken": [
+            "2022-01-10",
+            850000
          ]
      }    
 ]
