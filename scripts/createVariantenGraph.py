@@ -54,6 +54,7 @@ for record in varianten:
             variantcodes[record['Variant_code']] = "%s (%s)" % (namefix[record['Variant_name']], record['Variant_code'])
         else:
             variantcodes[record['Variant_code']] = "%s (%s)" % (record['Variant_name'], record['Variant_code'])
+        print('Variant: %s' % variantcodes[record['Variant_code']])
 
 varianten_totaal['onbekend'] = []
 variantcodes['onbekend'] = "Onbekend"
@@ -94,7 +95,10 @@ for key in varianten_map:
         varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
     # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
-    varianten_totaal['onbekend'].append(max(0,(1 - totaal_percentage) * geschat_ziek))
+    gap = max(0,(1 - totaal_percentage) * geschat_ziek)
+    varianten_totaal['onbekend'].append(gap)
+    if gap > 0:
+        print('Percentages niet compleet voor %s, onbekend: %d' % (key, gap))
 
 date_range = brondata.getDateRange(metenisweten)
 lastDays = arguments.lastDays()
