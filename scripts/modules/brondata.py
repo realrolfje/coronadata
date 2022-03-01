@@ -662,6 +662,9 @@ def builddaily():
             try:
                 percentage = float(record['Perc_covid_symptoms'])
                 metenisweten[stringdate]['rivm_infectieradar_perc'] = percentage
+            except TypeError as e:
+                print('Ignored: ', e)
+                pass
             except ValueError as e:
                 print('Ignored: ', e)
                 pass
