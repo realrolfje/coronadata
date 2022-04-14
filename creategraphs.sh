@@ -8,7 +8,7 @@ cd scripts
 ./createRNAGraph.py
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
-./createMobilityGraph.py
+# ./createMobilityGraph.py
 ./createVaccinGraph.py
 ./createVariantenGraph.py
 
@@ -17,7 +17,7 @@ cd scripts
 ./createRNAGraph.py 365
 ./createCovidTestsGraph.py 365
 ./createZiekGraph.py 365
-./createMobilityGraph.py 365
+# ./createMobilityGraph.py 365
 ./createVaccinGraph.py 365
 ./createVariantenGraph.py 365
 
