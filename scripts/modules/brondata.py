@@ -90,7 +90,7 @@ def writejson(filename, adict):
 def logError(errorString):
     print(errorString)
     with open('../cache/errors.log', 'a') as file:
-        file.write(errorString)
+        file.write(errorString+"\n")
 
 
 # Turns US 10,000.00 into EU 10.000,00
