@@ -90,7 +90,7 @@ def writejson(filename, adict):
 def logError(errorString):
     print(errorString)
     with open('../cache/errors.log', 'a') as file:
-        file.write(errorString)
+        file.write(errorString+"\n")
 
 
 # Turns US 10,000.00 into EU 10.000,00
@@ -849,10 +849,13 @@ def builddaily():
 
         # Load all predictions
         voorspelling_vaccinaties = { }
-        for record in data['vaccine_administered_estimate']['values']:
-            d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-            voorspelling_vaccinaties[d] = intOrNone(record['total'])
-            # print(intOrNone(record['total']))
+        if 'vaccine_administered_estimate' in data:
+            for record in data['vaccine_administered_estimate']['values']:
+                d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+                voorspelling_vaccinaties[d] = intOrNone(record['total'])
+                # print(intOrNone(record['total']))
+        else:
+            logError("No data['vaccine_administered_estimate']")
 
         # Interpolate prediction to TODAY
         nextPredictionValue = 0
@@ -883,16 +886,19 @@ def builddaily():
         # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
 
         # Get actual vaccine deliveries
-        for record in data['vaccine_delivery']['values']:
-            d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-            if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-                print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
-                # Skip estimates from RIVM
-                continue
+        if 'vaccine_delivery' in data:
+            for record in data['vaccine_delivery']['values']:
+                d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+                if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+                    print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+                    # Skip estimates from RIVM
+                    continue
 
-            datum =  d.strftime('%Y-%m-%d')
-            initrecord(datum, metenisweten)
-            metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
+                datum =  d.strftime('%Y-%m-%d')
+                initrecord(datum, metenisweten)
+                metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
+        else:
+            logError("No data['vaccine_delivery']")
 
         # Hardcode start of vaccination at 0 in 2020
         datum = '2020-12-01'
