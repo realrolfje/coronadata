@@ -61,7 +61,7 @@ variantcodes['onbekend'] = "Onbekend"
 
 # Get variant percentages per day and put them in "varianten_map[date][variantcode] = {cases, size}"
 for record in varianten:
-    if record['May_include_samples_listed_before']:
+    if record.get('May_include_samples_listed_before', False):
         continue
 
     d = record['Date_of_statistics_week_start']

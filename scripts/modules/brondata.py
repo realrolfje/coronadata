@@ -781,7 +781,7 @@ def builddaily():
                     'name'                 : record['Variant_name'],
                     'ECDC_category'        : record['ECDC_category'],
                     'WHO_category'         : record['WHO_category'],
-                    'includes_old_samples' : record['May_include_samples_listed_before'],
+                    'includes_old_samples' : record.get('May_include_samples_listed_before', False),
                     'sample_size'          : record['Sample_size'],
                     'cases'                : record['Variant_cases']
                 }
