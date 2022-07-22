@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 #
+#
+#  Should be re-done with data from
+# https://data.overheid.nl/dataset/a1ef9334-5ab5-405c-856a-9a97b5d49135
+# Or other source which contains new and existing exact data on vaccinations
+#
+
 from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
