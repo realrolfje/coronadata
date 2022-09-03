@@ -209,7 +209,7 @@ def download():
     if os.path.isfile(markerfile):
         lastdownload = datetime.datetime.fromtimestamp(os.stat(markerfile).st_mtime, tz=timezone)
     else:        
-        lastdownload = datetime.datetime.fromtimestamp(0,tz=markerfile)
+        lastdownload = datetime.datetime.fromtimestamp(0,tz=timezone)
     if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(minutes = 20)):
         print("Downloaded ECDC map less than 20 minutes ago, no new download.")
         return True
@@ -794,23 +794,23 @@ def builddaily():
     #         datum = record['Date_of_statistics']
     #         initrecord(datum, metenisweten)
 
-    print("Load Apple Mobility Data")
-    filename ='../cache/Apple_Global_Mobility_Report.csv'
-    with open(filename, 'r') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        line_count = 0
-        translate = {'walking': 'lopen', 'transit': 'OV', 'driving': 'rijden'}
-        for row in csv_reader:
-            if line_count == 0:
-                headers = row
-            elif row[0] == 'country/region' and row[1] == 'Netherlands':
-                for idx,datum in enumerate(headers[6:]):                
-                    vervoertype = translate[row[2]]
-                    percentagestr = row[idx+6]
-                    if percentagestr:
-                        initrecord(datum, metenisweten)
-                        metenisweten[datum]['mobiliteit'][vervoertype] = float(percentagestr)
-            line_count = line_count + 1
+    # print("Load Apple Mobility Data")
+    # filename ='../cache/Apple_Global_Mobility_Report.csv'
+    # with open(filename, 'r') as csv_file:
+    #     csv_reader = csv.reader(csv_file, delimiter=',')
+    #     line_count = 0
+    #     translate = {'walking': 'lopen', 'transit': 'OV', 'driving': 'rijden'}
+    #     for row in csv_reader:
+    #         if line_count == 0:
+    #             headers = row
+    #         elif row[0] == 'country/region' and row[1] == 'Netherlands':
+    #             for idx,datum in enumerate(headers[6:]):                
+    #                 vervoertype = translate[row[2]]
+    #                 percentagestr = row[idx+6]
+    #                 if percentagestr:
+    #                     initrecord(datum, metenisweten)
+    #                     metenisweten[datum]['mobiliteit'][vervoertype] = float(percentagestr)
+    #         line_count = line_count + 1
 
     print("Vaccinaties")
     filename ='../cache/rijksoverheid-coronadashboard-NL.json'
