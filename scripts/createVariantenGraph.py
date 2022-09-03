@@ -158,7 +158,7 @@ def createVariantenGraph(metenisweten, varianten):
         n = 0
         dominant = ''
         for code in variantcodes:
-            if i in varianten_totaal[code] and varianten_totaal[code][i] > n:
+            if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
         dominance.append(dominant)
