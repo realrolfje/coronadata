@@ -3,23 +3,27 @@ rm -f cache/errors.log
 
 cd scripts
 
+# new combined graphs processing
+./createGraphs.py
+./createGraphs.py 365
+
 ./createHeatmap.py
-./createRtGraph.py
+# ./createRtGraph.py
 ./createRNAGraph.py
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
 # ./createMobilityGraph.py
-./createVaccinGraph.py
-./createVariantenGraph.py
+# ./createVaccinGraph.py
+# ./createVariantenGraph.py
 
 ./createHeatmap.py 365
-./createRtGraph.py 365
+# ./createRtGraph.py 365
 ./createRNAGraph.py 365
 ./createCovidTestsGraph.py 365
 ./createZiekGraph.py 365
 # ./createMobilityGraph.py 365
-./createVaccinGraph.py 365
-./createVariantenGraph.py 365
+# ./createVaccinGraph.py 365
+# ./createVariantenGraph.py 365
 
 ./calculateDailyExcelData.py
 ./createZiekenhuisTotaalGraph.py
