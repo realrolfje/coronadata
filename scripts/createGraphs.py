@@ -6,6 +6,9 @@ import sys
 import modules.brondata as brondata
 from modules.datautil import runIfNewData
 
+# Non-graphs, icons
+from createLiveIcon import createLiveIcon
+
 # Graphs
 from createRtGraph import createRtraph
 from createVariantenGraph import createVariantenGraph
@@ -28,6 +31,8 @@ def main():
     createHeatmap(metenisweten, events)
     createZiekGraph(metenisweten, events)
     createCovidTestsGraph(metenisweten, events)
+
+    createLiveIcon(metenisweten)
 
 if __name__ == '__main__':
     sys.exit(main())

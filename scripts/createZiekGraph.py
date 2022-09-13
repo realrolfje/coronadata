@@ -10,6 +10,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, dateCache
 from modules.datautil import runIfNewData, anotate
+import sys
 
 def main():
     runIfNewData(__file__)
