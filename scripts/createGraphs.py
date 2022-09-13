@@ -12,6 +12,8 @@ from createVariantenGraph import createVariantenGraph
 from createVaccinGraph import createVaccinGraph
 from createRNAGraph import createRNAGraph
 from createHeatmap import createHeatmap
+from createZiekGraph import createZiekGraph
+from createCovidTestsGraph import createCovidTestsGraph
 
 def main():
     runIfNewData(__file__)
@@ -24,6 +26,8 @@ def main():
     createVaccinGraph(metenisweten, events)
     createRNAGraph(metenisweten)
     createHeatmap(metenisweten, events)
+    createZiekGraph(metenisweten, events)
+    createCovidTestsGraph(metenisweten, events)
 
 if __name__ == '__main__':
     sys.exit(main())
