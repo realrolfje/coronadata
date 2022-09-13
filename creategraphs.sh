@@ -7,18 +7,18 @@ cd scripts
 ./createGraphs.py
 ./createGraphs.py 365
 
-./createHeatmap.py
+# ./createHeatmap.py
 # ./createRtGraph.py
-./createRNAGraph.py
+# ./createRNAGraph.py
 ./createCovidTestsGraph.py
 ./createZiekGraph.py
 # ./createMobilityGraph.py
 # ./createVaccinGraph.py
 # ./createVariantenGraph.py
 
-./createHeatmap.py 365
+# ./createHeatmap.py 365
 # ./createRtGraph.py 365
-./createRNAGraph.py 365
+# ./createRNAGraph.py 365
 ./createCovidTestsGraph.py 365
 ./createZiekGraph.py 365
 # ./createMobilityGraph.py 365
