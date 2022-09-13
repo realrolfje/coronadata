@@ -11,6 +11,7 @@ from createRtGraph import createRtraph
 from createVariantenGraph import createVariantenGraph
 from createVaccinGraph import createVaccinGraph
 from createRNAGraph import createRNAGraph
+from createHeatmap import createHeatmap
 
 def main():
     runIfNewData(__file__)
@@ -22,6 +23,7 @@ def main():
     createVariantenGraph(metenisweten, varianten)
     createVaccinGraph(metenisweten, events)
     createRNAGraph(metenisweten)
+    createHeatmap(metenisweten, events)
 
 if __name__ == '__main__':
     sys.exit(main())
