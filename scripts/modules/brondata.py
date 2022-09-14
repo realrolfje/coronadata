@@ -856,7 +856,7 @@ def builddaily():
         #     logError("No data['vaccine_administered_estimate']")
 
         # # Interpolate prediction to TODAY
-        # nextPredictionValue = 0
+        nextPredictionValue = 0
         # for key, value in voorspelling_vaccinaties.items():
         #     # Get first next date
         #     if key >= datetime.datetime.now():
