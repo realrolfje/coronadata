@@ -107,7 +107,7 @@ def createVariantenGraph(metenisweten, varianten):
             if variantcode in varianten_map[key]:
                 # percentage = varianten_map[key][variantcode]['cases']/varianten_map[key][variantcode]['size']
                 percentage = varianten_map[key][variantcode]['cases']/totaal_cases
-                print("cases = %d, size =%d, percentage = %.2f" %(varianten_map[key][variantcode]['cases'], varianten_map[key][variantcode]['size'], percentage))
+                # print("cases = %d, size =%d, percentage = %.2f" %(varianten_map[key][variantcode]['cases'], varianten_map[key][variantcode]['size'], percentage))
             else:
                 print("Variant niet in map: %s" % variantcode)
                 percentage = 0
@@ -115,13 +115,13 @@ def createVariantenGraph(metenisweten, varianten):
             varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
 
-        print("Totaal percentage varianten: %.2f" % totaal_percentage)
+        # print("Totaal percentage varianten: %.2f" % totaal_percentage)
         if totaal_percentage > 2:
             sys.exit(1)
 
         # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
-        print("Variant onbekend gap : %.2f" % gap)
+        # print("Variant onbekend gap : %.2f" % gap)
         varianten_totaal['onbekend'].append(gap)
         if gap > 0:
             print('Percentages niet compleet voor %s, onbekend: %d' % (key, gap))

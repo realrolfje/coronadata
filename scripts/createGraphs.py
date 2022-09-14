@@ -12,7 +12,7 @@ from createLiveIcon import createLiveIcon
 # Graphs
 from createRtGraph import createRtraph
 from createVariantenGraph import createVariantenGraph
-from createVaccinGraph import createVaccinGraph
+# from createVaccinGraph import createVaccinGraph
 from createRNAGraph import createRNAGraph
 from createHeatmap import createHeatmap
 from createZiekGraph import createZiekGraph
@@ -26,7 +26,7 @@ def main():
     
     createRtraph(metenisweten)
     createVariantenGraph(metenisweten, varianten)
-    createVaccinGraph(metenisweten, events)
+    # createVaccinGraph(metenisweten, events)
     createRNAGraph(metenisweten)
     createHeatmap(metenisweten, events)
     createZiekGraph(metenisweten, events)
