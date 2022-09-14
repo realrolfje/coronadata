@@ -291,11 +291,6 @@ def download():
     ) or freshdata   
 
     freshdata = downloadIfStale(
-        '../cache/COVID-19_varianten_corrected.json',
-        'https://data.rivm.nl/covid-19/COVID-19_varianten_corrected.json'
-    ) or freshdata   
-
-    freshdata = downloadIfStale(
         '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json',
         'https://data.rivm.nl/covid-19/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
     ) or freshdata   
@@ -848,23 +843,26 @@ def builddaily():
                 percentage_dubbele_vaccins=1-(intOrZero(record['janssen'])/intOrZero(record['total']))
 
         # Load all predictions
-        voorspelling_vaccinaties = { }
-        if 'vaccine_administered_estimate' in data:
-            for record in data['vaccine_administered_estimate']['values']:
-                d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-                voorspelling_vaccinaties[d] = intOrNone(record['total'])
-                # print(intOrNone(record['total']))
-        else:
-            logError("No data['vaccine_administered_estimate']")
 
-        # Interpolate prediction to TODAY
-        nextPredictionValue = 0
-        for key, value in voorspelling_vaccinaties.items():
-            # Get first next date
-            if key >= datetime.datetime.now():
-                nextPredictionDate = key
-                nextPredictionValue = value
-                break
+
+        # Vaccinatie administratie wordt niet meer (of niet op dezelfde manier) meer gedaan
+        # voorspelling_vaccinaties = { }
+        # if 'vaccine_administered_estimate' in data:
+        #     for record in data['vaccine_administered_estimate']['values']:
+        #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+        #         voorspelling_vaccinaties[d] = intOrNone(record['total'])
+        #         # print(intOrNone(record['total']))
+        # else:
+        #     logError("No data['vaccine_administered_estimate']")
+
+        # # Interpolate prediction to TODAY
+        # nextPredictionValue = 0
+        # for key, value in voorspelling_vaccinaties.items():
+        #     # Get first next date
+        #     if key >= datetime.datetime.now():
+        #         nextPredictionDate = key
+        #         nextPredictionValue = value
+        #         break
 
 
         if (nextPredictionValue > 0):
@@ -885,20 +883,22 @@ def builddaily():
 
         # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
 
-        # Get actual vaccine deliveries
-        if 'vaccine_delivery' in data:
-            for record in data['vaccine_delivery']['values']:
-                d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-                if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-                    print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
-                    # Skip estimates from RIVM
-                    continue
 
-                datum =  d.strftime('%Y-%m-%d')
-                initrecord(datum, metenisweten)
-                metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
-        else:
-            logError("No data['vaccine_delivery']")
+        # Vaccinaties worden niet meer (of niet meer op dezelde manier) bijgehouden
+        # Get actual vaccine deliveries
+        # if 'vaccine_delivery' in data:
+        #     for record in data['vaccine_delivery']['values']:
+        #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+        #         if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+        #             print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+        #             # Skip estimates from RIVM
+        #             continue
+
+        #         datum =  d.strftime('%Y-%m-%d')
+        #         initrecord(datum, metenisweten)
+        #         metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
+        # else:
+        #     logError("No data['vaccine_delivery']")
 
         # Hardcode start of vaccination at 0 in 2020
         datum = '2020-12-01'
