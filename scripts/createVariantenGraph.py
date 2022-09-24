@@ -275,7 +275,7 @@ def createVariantenGraph(metenisweten, varianten):
             ax1.annotate(
                 "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes[dominance[i]]),
                 xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
-                xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 100000),
+                xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 200000),
                 fontsize=8,
                 bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
                 ha='center',
@@ -318,17 +318,6 @@ def createVariantenGraph(metenisweten, varianten):
     ax2.set_ylim([0, 2.5])
     ax2.set_yticks      ([ 0.5,    1,     1.5,    2,      2.5])
     ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%', '2.5%'])
-
-    # plt.figtext(0.10,0.50, 
-    #          "Deze grafiek toont hoeveel % van de Nederlanders\n"+\
-    #          "met de gezette prikken 100% gevaccineerd zouden\n"+\
-    #          "kunnen zijn. Met het huidig tempo zijn alle prikken\n"+\
-    #          "gezet op "+klaar+".", 
-    #          fontsize=8,
-    #          color="gray",
-    #          bbox=dict(facecolor='white', alpha=1.0, 
-    #          edgecolor='white'),
-    #          zorder=10)
 
     gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
