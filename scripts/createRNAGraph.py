@@ -95,7 +95,7 @@ def createRNAGraph(metenisweten):
     ax1.set_yticklabels(['0',   '50T', '100T',  '150T', '200T',   '250T'])
 
     plt.figtext(0.10,0.72, 
-            "(T = Terra = 1.000.000.000.000)",
+            "(T = Tera = 1.000.000.000.000)",
             color="gray",
             fontsize = 8,
             bbox=dict(facecolor='white', alpha=1.0, 
