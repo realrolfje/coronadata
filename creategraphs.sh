@@ -7,12 +7,6 @@ cd scripts
 ./createGraphs.py
 ./createGraphs.py 365
 
-./calculateDailyExcelData.py
-./createZiekenhuisTotaalGraph.py
-./createSchattingAfwijkingGraph.py
-./createLiveIcon.py
-./createTestGraph.py
-./processEventsList.py
 ./updatePageHits.py
 ./createPageHitsGraph.py
 

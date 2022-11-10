@@ -4,7 +4,6 @@
 
 import sys
 from matplotlib import pyplot as plt
-from dateutil import parser
 import datetime
 import modules.brondata as brondata
 import modules.arguments as arguments
