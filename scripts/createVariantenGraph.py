@@ -272,8 +272,9 @@ def createVariantenGraph(metenisweten, varianten):
 
     for i in range(len(dominance)):
         if i > 1  and dominance[i] != dominance[i-1]:
+
             ax1.annotate(
-                "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes[dominance[i]]),
+                "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes.get(dominance[i], dominance[i])),
                 xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
                 xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 200000),
                 fontsize=8,
