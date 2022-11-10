@@ -82,6 +82,10 @@ def createVariantenGraph(metenisweten, varianten):
 
     # Take al variant percentages and multiply them with the actual number of sick people on that day
     for key in varianten_map:
+        # workaround for a day where variant data was not available
+        if key == "2022-09-26":
+            continue
+
         varianten_totaal['x'].append(dateCache.parse(key))
 
         # For each variant, determine the number of sick people (variant percentage times estimate)
