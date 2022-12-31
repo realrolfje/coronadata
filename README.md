@@ -180,6 +180,23 @@ python3 -m ensurepip --default-pip
 pip3 install -r requirements.txt
 ```
 
+## Certificaat probleem oplossen.
+
+Mochten de scripts op macOS SSL certificaat errors opleveren dan zijn de default
+certificaten waarschijnlijk niet of niet correct geinstalleerd. De oplossing hiervoor is
+
+```
+pip3 install --upgrade certifi
+```
+
+Mocht dat niet helpen, dan is het volgende commando een volgende mogelijke oplossing:
+
+```
+open /Applications/Python\ 3.11/Install\ Certificates.command
+```
+
+Voor meer informatie over dit probleem zie https://stackoverflow.com/a/62374703/3540161
+
 ## Credits
 
 Deze repository is ontstaan uit een soort weddenschap die in maart ontstond waarbij we

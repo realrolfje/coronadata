@@ -82,19 +82,12 @@ def createVariantenGraph(metenisweten, varianten):
 
     # Take al variant percentages and multiply them with the actual number of sick people on that day
     for key in varianten_map:
-        # workaround for a day where variant data was not available
-        if key == "2022-09-26":
-            continue
-
-        varianten_totaal['x'].append(dateCache.parse(key))
-
         # For each variant, determine the number of sick people (variant percentage times estimate)
         geschat_ziek = metenisweten[key]['rolf_besmettelijk']
 
         if geschat_ziek is None:
             print("Niks geschat ziek op %s" % key)
-            geschat_ziek = 0
-            # continue
+            continue
 
         # Sample size is niet het totaal aantal cases, dus om de percentages goed te berekenen
         # tellen we alle cases bijelkaar op (dat is dan 100%). De aanname is hierbij dat iemand
@@ -102,6 +95,13 @@ def createVariantenGraph(metenisweten, varianten):
         totaal_cases = 0
         for variantcode in varianten_map[key]:
             totaal_cases += varianten_map[key][variantcode]['cases']
+
+        # workaround for a day where variant data was not available or cases are 0
+        if totaal_cases < 1:
+            continue
+
+        # Add following data to the graph.
+        varianten_totaal['x'].append(dateCache.parse(key))
 
         totaal_percentage = 0
         for variantcode in variantcodes.keys():
