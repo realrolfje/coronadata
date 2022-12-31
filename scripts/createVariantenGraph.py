@@ -161,7 +161,7 @@ def createVariantenGraph(metenisweten, varianten):
     for i in range(len(varianten_totaal['x'])):
         n = 0
         dominant = ''
-        for code in variantcodes:
+        for code in variantcodes.keys():
             if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
@@ -275,7 +275,7 @@ def createVariantenGraph(metenisweten, varianten):
 
 
     for i in range(len(dominance)):
-        if i > 1  and dominance[i] != dominance[i-1]:
+        if i == 0 or dominance[i] != dominance[i-1]:
 
             ax1.annotate(
                 "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes.get(dominance[i], dominance[i])),
