@@ -162,9 +162,11 @@ def createVariantenGraph(metenisweten, varianten):
         n = 0
         dominant = ''
         for code in variantcodes.keys():
+            # print("%s %d" %(code, varianten_totaal[code][i]))
             if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
+        # print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
         dominance.append(dominant)
 
     # top 10:
