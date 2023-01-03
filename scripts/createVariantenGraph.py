@@ -219,9 +219,7 @@ def createVariantenGraph(metenisweten, varianten):
     for code in variantcodes:
         totals[code] = varianten_totaal[code][-1]
     totals=dict(sorted(totals.items(),key=lambda x:x[1]))
-    v = []
-    for k in totals.keys(): v.append(k)
-    top_variants.update(v[-2:])
+    top_variants.update(list(totals.keys())[-3:])
 
     print("Top variants are: %s" % top_variants)
     varianten_totaal['overig'] = [0] * len(varianten_totaal['x'])
@@ -282,8 +280,8 @@ def createVariantenGraph(metenisweten, varianten):
             'gray',
             'limegreen',
             'yellow',
-            # 'darkorange',
-            'mediumslateblue',
+            'darkorange',
+            'blue',
             'tomato',
             'deepskyblue',
         ),
