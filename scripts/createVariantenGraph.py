@@ -4,7 +4,7 @@ from http.client import CannotSendRequest
 from matplotlib import pyplot as plt
 import modules.brondata as brondata
 import modules.arguments as arguments
-from modules.brondata import decimalstring, intOrZero, dateCache, smooth, double_savgol
+from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol
 from modules.datautil import anotate, runIfNewData
 from datetime import datetime, date, timedelta
 import sys
@@ -75,10 +75,51 @@ def createVariantenGraph(metenisweten, varianten):
 
         varianten_map[d][c]['cases'] = record['Variant_cases']
         varianten_map[d][c]['size'] = record['Sample_size']
+        varianten_map[d][c]['sub_of'] = record['Is_subvariant_of']
+        varianten_map[d][c]['prevalence'] = record['Variant_cases']/record['Sample_size']
+
+        # print('%s, %s prevalence %.2f (is variant of : %s) ' %(d, c, varianten_map[d][c]['prevalence'], record['Is_subvariant_of']))
 
         if varianten_map[d][c]['cases'] >varianten_map[d][c]['size']:
             print(record)
             sys.exit(1)
+
+    # Correct the prevalence by suntracting subtypes
+    for d in varianten_map:
+        varianten = varianten_map[d]
+        # print(d)
+        # print('--------------------------')
+        # printDict(varianten)
+        # print('--------------------------')
+
+        # Correct prevalentie voor code c, record r
+        def correctPrevalence(c):
+            # Trek alle subvarianten af van de totale prevalentie van de parent
+            for v in varianten:
+                if varianten[v]['sub_of'] == c:
+                    # Correct prevalence
+                    varianten[c]['prevalence'] = max(0.0, varianten[c]['prevalence'] - varianten[v]['prevalence'])
+                    # Recurse
+                    correctPrevalence(v)
+
+        for code in varianten:
+            # Voor alle parents
+            if len(varianten[code]['sub_of']) == 0:
+                correctPrevalence(code)
+                
+
+        # printDict(varianten)
+        # print('--------------------------')
+
+        total = 0
+        for code in varianten:
+            variant = varianten[code]
+            total += variant['prevalence']
+            # print(code, variant['prevalence'])
+
+        if total > 1.10:
+            print('Error, prevalence incorrect: %s - %.3f' % (d, total))
+            exit(1)
 
     # Take al variant percentages and multiply them with the actual number of sick people on that day
     for key in varianten_map:
@@ -87,17 +128,6 @@ def createVariantenGraph(metenisweten, varianten):
 
         if geschat_ziek is None:
             print("Niks geschat ziek op %s" % key)
-            continue
-
-        # Sample size is niet het totaal aantal cases, dus om de percentages goed te berekenen
-        # tellen we alle cases bijelkaar op (dat is dan 100%). De aanname is hierbij dat iemand
-        # maar 1 variant onder de leden kan hebben.
-        totaal_cases = 0
-        for variantcode in varianten_map[key]:
-            totaal_cases += varianten_map[key][variantcode]['cases']
-
-        # workaround for a day where variant data was not available or cases are 0
-        if totaal_cases < 1:
             continue
 
         # Add following data to the graph.
@@ -109,18 +139,20 @@ def createVariantenGraph(metenisweten, varianten):
                 continue
 
             if variantcode in varianten_map[key]:
-                # percentage = varianten_map[key][variantcode]['cases']/varianten_map[key][variantcode]['size']
-                percentage = varianten_map[key][variantcode]['cases']/totaal_cases
-                # print("cases = %d, size =%d, percentage = %.2f" %(varianten_map[key][variantcode]['cases'], varianten_map[key][variantcode]['size'], percentage))
+                percentage = varianten_map[key][variantcode]['prevalence']
             else:
                 print("Variant niet in map: %s" % variantcode)
                 percentage = 0
+
+            if percentage < 0:
+                print('Error %s %s %.3f' % (key, variantcode, percentage))
+            
             totaal_percentage += percentage
             varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
 
-        # print("Totaal percentage varianten: %.2f" % totaal_percentage)
-        if totaal_percentage > 2:
+        if totaal_percentage > 1.15:
+            print("Totaal percentage varianten op %s: %.2f" % (key,totaal_percentage))
             sys.exit(1)
 
         # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
@@ -128,7 +160,7 @@ def createVariantenGraph(metenisweten, varianten):
         # print("Variant onbekend gap : %.2f" % gap)
         varianten_totaal['onbekend'].append(gap)
         if gap > 0:
-            print('Percentages niet compleet voor %s, onbekend: %d' % (key, gap))
+            print('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
 
     date_range = brondata.getDateRange(metenisweten)
     lastDays = arguments.lastDays()
@@ -169,17 +201,29 @@ def createVariantenGraph(metenisweten, varianten):
         # print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
         dominance.append(dominant)
 
-    # top 10:
+
+    # Dominant variants:
+    top_variants = set(dominance)
+
+    # # top 3 all time:
     totals = {}
+    # for code in variantcodes:
+    #     totals[code] = sum(varianten_totaal[code])    
+    # totals=dict(sorted(totals.items(),key=lambda x:x[1]))
+    # print(totals)
+    # top_variants=[]
+    # for k in totals.keys(): top_variants.append(k)
+    # top_variants=top_variants[-3:]
+
+    # Top add 3 today
     for code in variantcodes:
-        totals[code] = sum(varianten_totaal[code])    
+        totals[code] = varianten_totaal[code][-1]
     totals=dict(sorted(totals.items(),key=lambda x:x[1]))
-    top_variants=[]
-    for k in totals.keys(): top_variants.append(k)
-    top_variants=top_variants[-5:]
+    v = []
+    for k in totals.keys(): v.append(k)
+    top_variants.update(v[-2:])
 
     print("Top variants are: %s" % top_variants)
-
     varianten_totaal['overig'] = [0] * len(varianten_totaal['x'])
     varianten_totaal['totaal'] = [0] * len(varianten_totaal['x'])
     for key in variantcodes:

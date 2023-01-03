@@ -1028,5 +1028,8 @@ def getDateRange(metenisweten):
                   for x in range(0, (maxdatum-mindatum).days+7)]
     return date_range
 
+def printDict(d):
+    print(json.dumps(d, indent = 4))
+
 if __name__ == "__main__":
     freshdata()
