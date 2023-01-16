@@ -120,7 +120,7 @@ def downloadIfStale(filename, url, binary = False):
 
     if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)):
         # If just downloaded or checked, don't bother checking with the server
-        print("Just downloaded: %s" % filename)
+        print("Just downloaded: %s on %s" % (filename, lastdownload))
         return False
 
     try:
@@ -128,6 +128,7 @@ def downloadIfStale(filename, url, binary = False):
             meta = response.headers
             try:
                 lastmodified = dateCache.parse(meta['Last-Modified'])
+                
             except:
                 print("Server has no Last-Modified for "+url)
                 lastmodified = datetime.datetime.now(tz=timezone) - datetime.timedelta(hours = 1)
@@ -157,7 +158,7 @@ def downloadIfStale(filename, url, binary = False):
 
                 return True
             else:
-                print("    Still fresh: %s" % filename)
+                print("    Still fresh: %s last modified on server at %s" % (filename, lastmodified))
                 now = time.time()
                 os.utime(filename, (now,now))
                 return False
@@ -189,6 +190,9 @@ def downloadMostRecentAppleMobilityReport(filename):
 
 
 def downloadECDCMap():
+    logError("ECDC No longer generates a COVID indicator map")
+    return 
+
     url="https://www.ecdc.europa.eu/en/covid-19/situation-updates/weekly-maps-coordinated-restriction-free-movement"
     with urllib.request.urlopen(url) as response:
         meta = response.headers
@@ -210,8 +214,9 @@ def download():
         lastdownload = datetime.datetime.fromtimestamp(os.stat(markerfile).st_mtime, tz=timezone)
     else:        
         lastdownload = datetime.datetime.fromtimestamp(0,tz=timezone)
+
     if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(minutes = 20)):
-        print("Downloaded ECDC map less than 20 minutes ago, no new download.")
+        print("Downloaded ECDC map less than 20 minutes ago (%s), no new download." % lastdownload)
         return True
 
     freshdata = downloadECDCMap() or freshdata
