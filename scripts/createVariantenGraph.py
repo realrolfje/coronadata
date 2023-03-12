@@ -78,10 +78,12 @@ def createVariantenGraph(metenisweten, varianten):
         varianten_map[d][c]['sub_of'] = record['Is_subvariant_of']
         varianten_map[d][c]['prevalence'] = record['Variant_cases']/record['Sample_size']
 
-        # print('%s, %s prevalence %.2f (is variant of : %s) ' %(d, c, varianten_map[d][c]['prevalence'], record['Is_subvariant_of']))
 
-        if varianten_map[d][c]['cases'] >varianten_map[d][c]['size']:
-            print(record)
+        if d == '2023-01-02':
+            print('%s, %s prevalence %.2f (is variant of : %s) samples:%d cases:%d' %(d, c, varianten_map[d][c]['prevalence'], record['Is_subvariant_of'], varianten_map[d][c]['size'], varianten_map[d][c]['cases']))
+
+        if varianten_map[d][c]['cases'] > varianten_map[d][c]['size']:
+            logError(f"Variant has more cases than samplesize. Cases: {varianten_map[d][c]['cases']} Size: {varianten_map[d][c]['size']} Record: {record}")
             sys.exit(1)
 
     # Correct the prevalence by suntracting subtypes
@@ -144,7 +146,7 @@ def createVariantenGraph(metenisweten, varianten):
                 percentage = 0
 
             if percentage < 0:
-                print('Error %s %s %.3f' % (key, variantcode, percentage))
+                logError('Error %s %s %.3f' % (key, variantcode, percentage))
             
             totaal_percentage += percentage
             varianten_totaal[variantcode].append(percentage * geschat_ziek)
@@ -152,6 +154,7 @@ def createVariantenGraph(metenisweten, varianten):
 
         if totaal_percentage > 1.15:
             logError("Totaal percentage varianten op %s: %.2f" % (key,totaal_percentage))
+
 
         # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
