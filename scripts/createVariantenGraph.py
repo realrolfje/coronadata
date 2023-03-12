@@ -79,12 +79,17 @@ def createVariantenGraph(metenisweten, varianten):
         varianten_map[d][c]['prevalence'] = record['Variant_cases']/record['Sample_size']
 
 
-        if d == '2023-01-02':
-            print('%s, %s prevalence %.2f (is variant of : %s) samples:%d cases:%d' %(d, c, varianten_map[d][c]['prevalence'], record['Is_subvariant_of'], varianten_map[d][c]['size'], varianten_map[d][c]['cases']))
+        # if d == '2023-02-13':
+        #     print('%s, %s prevalence %.2f (is variant of : %s) samples:%d cases:%d' %(d, c, varianten_map[d][c]['prevalence'], record['Is_subvariant_of'], varianten_map[d][c]['size'], varianten_map[d][c]['cases']))
 
         if varianten_map[d][c]['cases'] > varianten_map[d][c]['size']:
             logError(f"Variant has more cases than samplesize. Cases: {varianten_map[d][c]['cases']} Size: {varianten_map[d][c]['size']} Record: {record}")
             sys.exit(1)
+    
+    # print("-----")
+    # printDict(varianten_map['2023-02-13'])
+    # print("-----")
+
 
     # Correct the prevalence by suntracting subtypes
     for d in varianten_map:
@@ -98,17 +103,32 @@ def createVariantenGraph(metenisweten, varianten):
         def correctPrevalence(c):
             # Trek alle subvarianten af van de totale prevalentie van de parent
             for v in varianten:
+
                 if varianten[v]['sub_of'] == c:
-                    # Correct prevalence
-                    varianten[c]['prevalence'] = max(0.0, varianten[c]['prevalence'] - varianten[v]['prevalence'])
+                    if varianten[v]['cases'] > varianten[c]['cases']:
+                        logError(f'More cases for subtype {v} than in {c}')
+                    else:
+                        # Correct prevalence
+                        varianten[c]['cases'] = varianten[c]['cases'] - varianten[v]['cases']
                     # Recurse
                     correctPrevalence(v)
+
+        print("Remove overlapping variant, don't know why this variant suddenly counts double cases.")
+        varianten['BA.2+S:L452X']['cases'] = 0
+        varianten['BA.2+S:L452X']['prevalence'] = 0
 
         for code in varianten:
             # Voor alle parents
             if len(varianten[code]['sub_of']) == 0:
                 correctPrevalence(code)
-                
+        
+        totalcases=0
+        for code in varianten:
+            totalcases += varianten[code]['cases']
+            varianten[code]['prevalence'] = varianten[code]['cases'] / varianten[code]['size']
+
+            if totalcases > varianten[code]['size']:
+                logError(f"More cases than samples on {d}")
 
         # printDict(varianten)
         # print('--------------------------')
@@ -121,6 +141,10 @@ def createVariantenGraph(metenisweten, varianten):
 
         if total > 1.10:
             logError('Error, prevalence incorrect: %s - %.3f' % (d, total))
+
+    # print("-----")
+    # printDict(varianten_map['2023-02-13'])
+    # print("-----")    
 
     # Take al variant percentages and multiply them with the actual number of sick people on that day
     for key in varianten_map:
@@ -160,7 +184,7 @@ def createVariantenGraph(metenisweten, varianten):
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
         # print("Variant onbekend gap : %.2f" % gap)
         varianten_totaal['onbekend'].append(gap)
-        if gap > 0:
+        if gap > 0.1:
             logError('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
 
     date_range = brondata.getDateRange(metenisweten)
@@ -199,12 +223,14 @@ def createVariantenGraph(metenisweten, varianten):
             if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
-        # print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
+        print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
         dominance.append(dominant)
 
 
     # Dominant variants:
     top_variants = set(dominance)
+
+    print("Variants which became dominant: %s" % top_variants)
 
     # # top 3 all time:
     totals = {}
@@ -216,7 +242,7 @@ def createVariantenGraph(metenisweten, varianten):
     # for k in totals.keys(): top_variants.append(k)
     # top_variants=top_variants[-3:]
 
-    # Top add 3 today
+    # Top add 3 today to the variants which became dominant at some point
     for code in variantcodes:
         totals[code] = varianten_totaal[code][-1]
     totals=dict(sorted(totals.items(),key=lambda x:x[1]))
@@ -280,11 +306,13 @@ def createVariantenGraph(metenisweten, varianten):
         colors=( # note these are in reverse order because we revert the labels later
             'gray',
             'limegreen',
+            'purple',
             'yellow',
             'darkorange',
+            'brown',
             'blue',
             'tomato',
-            'deepskyblue',
+            'deepskyblue'
         ),
         baseline='zero'
     )
@@ -361,13 +389,13 @@ def createVariantenGraph(metenisweten, varianten):
     plt.axvline(dateCache.today(), color='red', linewidth=0.5)
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-    ax1.set_ylim([0, 2000000])
-    ax1.set_yticks      ([ 200000, 400000, 600000, 800000, 1000000, 1200000,1400000,1600000,1800000])
-    ax1.set_yticklabels([  '200k', '400k', '600k', '800k',  '1.0M',  '1.2M', '1.4M', '1.6M', '1.8M'])
+    ax1.set_ylim([0, 1600000])
+    ax1.set_yticks      ([ 200000, 400000, 600000, 800000, 1000000, 1200000,1400000,1600000])
+    ax1.set_yticklabels([  '200k', '400k', '600k', '800k',  '1.0M',  '1.2M', '1.4M', '1.6M'])
 
-    ax2.set_ylim([0, 2.5])
-    ax2.set_yticks      ([ 0.5,    1,     1.5,    2,      2.5])
-    ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%', '2.5%'])
+    ax2.set_ylim([0, 2.0])
+    ax2.set_yticks      ([ 0.5,    1,     1.5,    2,   ])
+    ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%'])
 
     gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
