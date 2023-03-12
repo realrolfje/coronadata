@@ -4,7 +4,7 @@ from http.client import CannotSendRequest
 from matplotlib import pyplot as plt
 import modules.brondata as brondata
 import modules.arguments as arguments
-from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol
+from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol, logError
 from modules.datautil import anotate, runIfNewData
 from datetime import datetime, date, timedelta
 import sys
@@ -118,8 +118,7 @@ def createVariantenGraph(metenisweten, varianten):
             # print(code, variant['prevalence'])
 
         if total > 1.10:
-            print('Error, prevalence incorrect: %s - %.3f' % (d, total))
-            exit(1)
+            logError('Error, prevalence incorrect: %s - %.3f' % (d, total))
 
     # Take al variant percentages and multiply them with the actual number of sick people on that day
     for key in varianten_map:
@@ -152,15 +151,14 @@ def createVariantenGraph(metenisweten, varianten):
 
 
         if totaal_percentage > 1.15:
-            print("Totaal percentage varianten op %s: %.2f" % (key,totaal_percentage))
-            sys.exit(1)
+            logError("Totaal percentage varianten op %s: %.2f" % (key,totaal_percentage))
 
         # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
         # print("Variant onbekend gap : %.2f" % gap)
         varianten_totaal['onbekend'].append(gap)
         if gap > 0:
-            print('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
+            logError('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
 
     date_range = brondata.getDateRange(metenisweten)
     lastDays = arguments.lastDays()
