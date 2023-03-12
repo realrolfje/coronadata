@@ -106,7 +106,7 @@ def createVariantenGraph(metenisweten, varianten):
 
                 if varianten[v]['sub_of'] == c:
                     if varianten[v]['cases'] > varianten[c]['cases']:
-                        logError(f'More cases for subtype {v} than in {c}')
+                        print(f'More cases for subtype {v} than in {c}')
                     else:
                         # Correct prevalence
                         varianten[c]['cases'] = varianten[c]['cases'] - varianten[v]['cases']
@@ -128,7 +128,7 @@ def createVariantenGraph(metenisweten, varianten):
             varianten[code]['prevalence'] = varianten[code]['cases'] / varianten[code]['size']
 
             if totalcases > varianten[code]['size']:
-                logError(f"More cases than samples on {d}")
+                print(f"More cases than samples on {d}")
 
         # printDict(varianten)
         # print('--------------------------')
