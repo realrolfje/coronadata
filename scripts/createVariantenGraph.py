@@ -223,7 +223,7 @@ def createVariantenGraph(metenisweten, varianten):
             if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
-        print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
+        # print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
         dominance.append(dominant)
 
 
@@ -248,7 +248,7 @@ def createVariantenGraph(metenisweten, varianten):
     totals=dict(sorted(totals.items(),key=lambda x:x[1]))
     top_variants.update(list(totals.keys())[-3:])
 
-    print("Top variants are: %s" % top_variants)
+    print("Top variants including domiants are: %s" % top_variants)
     varianten_totaal['overig'] = [0] * len(varianten_totaal['x'])
     varianten_totaal['totaal'] = [0] * len(varianten_totaal['x'])
     for key in variantcodes:
