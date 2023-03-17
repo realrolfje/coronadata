@@ -655,7 +655,11 @@
          "mobiliteit": [
              "2021-12-15",
              120
-         ]
+         ],
+         "testsloc": [
+            "2021-08-01",
+            114000
+        ]
      },
      {
         "date": "2022-01-25",
@@ -689,7 +693,11 @@
         "zieken": [
             "2022-02-05",
             420000
-         ]
+         ],
+         "testsloc": [
+            "2022-03-30",
+            74000
+        ]
      },
      {
         "date": "2022-07-13",
@@ -698,12 +706,20 @@
         "zieken": [
             "2022-06-01",
             75000
-         ]
+         ],
+         "testsloc": [
+            "2022-06-20",
+            34000
+        ]
      },    
      {
         "date": "2022-07-19",
-        "event": "Minder besmettingen vanwege vakanties",
-        "url": "https://www.nu.nl/coronavirus/6213120/stuk-minder-coronabesmettingen-vorige-week-mogelijk-vanwege-vakanties.html"
+        "event": "Minder besmettingen\nvanwege vakanties",
+        "url": "https://www.nu.nl/coronavirus/6213120/stuk-minder-coronabesmettingen-vorige-week-mogelijk-vanwege-vakanties.html",
+        "testsloc": [
+            "2022-07-20",
+            18000
+        ]
      },
      {
         "date": "2022-09-04",
@@ -735,7 +751,11 @@
      {
         "date": "2022-09-19",
         "event": "Duitsland kondigt\nmaatregelen aan",
-        "url": "https://www.rtlnieuws.nl/nieuws/buitenland/artikel/5333703/duitse-coronamaatregelen-besmettingen-mondkapje-corona-uitbraak"
+        "url": "https://www.rtlnieuws.nl/nieuws/buitenland/artikel/5333703/duitse-coronamaatregelen-besmettingen-mondkapje-corona-uitbraak",
+        "testsloc": [
+            "2022-09-10",
+            34000
+        ]
      },
      {
         "date": "2022-12-22",
@@ -772,7 +792,11 @@
         "zieken": [
             "2023-01-15",
             290000
-         ]
+         ],
+         "testsloc": [
+            "2023-01-20",
+            14000
+        ]
      },
      {
         "date": "2023-03-10",
@@ -780,7 +804,20 @@
         "url": "https://www.rijksoverheid.nl/actueel/nieuws/2023/03/10/laatste-specifieke-corona-adviezen-vervallen-maar-gebruik-je-gezonde-verstand-bij-luchtwegklachten",
         "zieken": [
             "2023-02-01",
-            790000
+            690000
          ]
+     },
+     {
+        "date": "2023-03-10",
+        "event": "GGD Stopt\nmet testen",
+        "url": "https://www.bnr.nl/nieuws/gezondheid/10506967/ggd-en-stoppen-na-vrijdag-met-testen-op-corona",
+        "zieken": [
+            "2023-02-20",
+            90000
+         ],
+         "testsloc": [
+            "2023-02-20",
+            34000
+        ]
      }
 ]

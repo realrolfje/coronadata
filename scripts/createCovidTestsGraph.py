@@ -5,6 +5,7 @@
 from matplotlib import pyplot as plt
 from dateutil import parser
 import datetime
+import sys
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache

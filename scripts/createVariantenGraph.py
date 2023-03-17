@@ -184,7 +184,7 @@ def createVariantenGraph(metenisweten, varianten):
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
         # print("Variant onbekend gap : %.2f" % gap)
         varianten_totaal['onbekend'].append(gap)
-        if gap > 0.1:
+        if gap > 1.0:
             logError('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
 
     date_range = brondata.getDateRange(metenisweten)
