@@ -14,7 +14,7 @@ import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     events = brondata.readjson('../data/measures-events.json')
     createHeatmap(metenisweten, events)
 
@@ -35,7 +35,7 @@ def createHeatmap(metenisweten, events):
     weightsmap={}
 
     # The heatmap data is already in metenisweten, we can optimze. Complete this:
-    # metenisweten = brondata.readjson('../cache/daily-stats.json')
+    # metenisweten = brondata.readjson('../data/daily-stats.json')
     # print("Converting records to x/y data")
     # for date_statistics in metenisweten:
     #     if date_statistics > startdate:

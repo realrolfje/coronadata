@@ -68,7 +68,7 @@ def runIfNewData(filename):
     print("------------ %s ------------" % filename)
     if freshdata():
         print("New data, regenerate output.")
-    elif isnewer(filename, '../cache/daily-stats.json'):
+    elif isnewer(filename, '../data/daily-stats.json'):
         print("Script newer than the data, regenerate output.")
     elif isForce():
         print("Force, regenerate output.")

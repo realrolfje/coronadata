@@ -11,7 +11,7 @@ import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     varianten = brondata.readjson('../cache/COVID-19_varianten.json')
     createVariantenGraph(metenisweten, varianten)
 

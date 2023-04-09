@@ -15,7 +15,7 @@ from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     events = brondata.readjson('../data/measures-events.json')
     createCovidTestsGraph(metenisweten, events)
 

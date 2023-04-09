@@ -13,7 +13,7 @@ from modules.datautil import runIfNewData
 def main():
     runIfNewData(__file__)
     testpunten = brondata.readjson('../cache/testlocaties.json')
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     calculateDailyExcelData(testpunten, metenisweten)
 
 def calculateDailyExcelData(testpunten, metenisweten):
