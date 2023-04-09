@@ -459,7 +459,8 @@ def intOrZero(input):
 
 
 def builddaily():
-    metenisweten = {}
+    # Load previous version of the data, so that we always keep it all.
+    metenisweten = readjson('../data/daily-stats.json')
     testpunten = {}
 
     print('Transform per-case data to daily totals')
@@ -530,14 +531,17 @@ def builddaily():
             metenisweten[record['date']]['nu_op_ic'] = record['value']
 
     filename = '../cache/NICE-intake-cumulative.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        for record in data:
-            if not dateCache.isvaliddate(record['date'], filename):
-                continue
+    if os.path.isfile(filename):
+        with open(filename, 'r') as json_file:
+            data = json.load(json_file)
+            for record in data:
+                if not dateCache.isvaliddate(record['date'], filename):
+                    continue
 
-            initrecord(record['date'], metenisweten)
-            metenisweten[record['date']]['geweest_op_ic'] += record['value']
+                initrecord(record['date'], metenisweten)
+                metenisweten[record['date']]['geweest_op_ic'] += record['value']
+    else:
+        print(filename+" not found, skipped.")
 
     filename = '../cache/NICE-zkh-intake-count.json'
     with open(filename, 'r') as json_file:
@@ -557,7 +561,7 @@ def builddaily():
                 continue
 
             initrecord(record['date'], metenisweten)
-            metenisweten[record['date']]['nu_opgenomen'] += record['value']
+            metenisweten[record['date']]['nu_opgenomen'] = record['value']
 
     print("Add R numbers")
     filename = '../cache/COVID-19_reproductiegetal.json'
@@ -1050,15 +1054,15 @@ def builddaily():
         metenisweten[datum]['totaal_overleden'] = totaal_overleden
 
     # Write sorted data
-    writejson('../cache/daily-stats.json',  sortDictOnKey(metenisweten))
+    writejson('../data/daily-stats.json',  sortDictOnKey(metenisweten))
     writejson('../cache/testlocaties.json', testpunten)
 
 
 def freshdata():
-    if download() or not os.path.isfile('../cache/daily-stats.json') or isnewer(__file__, '../cache/daily-stats.json'):
+    if download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()
         return True
-    elif os.stat('../cache/daily-stats.json').st_mtime > (time.time() - 1200):
+    elif os.stat('../data/daily-stats.json').st_mtime > (time.time() - 1200):
         # downloaded data is "fresh" for 20 minutes
         # This is a workaround so that all graphs get
         # created if scripts are called within 20 minutes after

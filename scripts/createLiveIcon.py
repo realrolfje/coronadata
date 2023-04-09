@@ -12,7 +12,7 @@ import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     createLiveIcon(metenisweten)
 
 

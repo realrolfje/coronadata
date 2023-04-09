@@ -15,13 +15,13 @@ import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     varianten = brondata.readjson('../cache/COVID-19_varianten.json')
     createRNAGraph(metenisweten)
 
 
 def createRNAGraph(metenisweten):
-    metenisweten = brondata.readjson('../cache/daily-stats.json')
+    metenisweten = brondata.readjson('../data/daily-stats.json')
     date_range = brondata.getDateRange(metenisweten)
 
 

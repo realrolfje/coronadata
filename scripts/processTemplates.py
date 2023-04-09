@@ -15,7 +15,7 @@ runIfNewData(__file__)
 templatedir = '../docs/templates'
 outputdir = '../docs'
 
-metenisweten = brondata.readjson('../cache/daily-stats.json')
+metenisweten = brondata.readjson('../data/daily-stats.json')
 
 dates=[]
 

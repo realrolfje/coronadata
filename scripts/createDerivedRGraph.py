@@ -10,7 +10,7 @@ from modules.brondata import dateCache
 
 runIfNewData(__file__)
 
-metenisweten = brondata.readjson('../cache/daily-stats.json')
+metenisweten = brondata.readjson('../data/daily-stats.json')
 
 alpha = {
     'x': [],
