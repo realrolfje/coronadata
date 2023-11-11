@@ -149,6 +149,10 @@ def createVariantenGraph(metenisweten, varianten):
     # Take al variant percentages and multiply them with the actual number of sick people on that day
     for key in varianten_map:
         # For each variant, determine the number of sick people (variant percentage times estimate)
+        if metenisweten[key] is None:
+            print("Geen data over besmettelijkheid %s" % key)
+            continue
+
         geschat_ziek = metenisweten[key]['rolf_besmettelijk']
 
         if geschat_ziek is None:
