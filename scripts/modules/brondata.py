@@ -863,115 +863,116 @@ def builddaily():
 
     print("Vaccinaties")
     filename = '../cache/rijksoverheid-coronadashboard-NL.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
+    # 2023-11-11 Corona Dashboard is changed...
+    # with open(filename, 'r') as json_file:
+    #     data = json.load(json_file)
 
-        cachedDate = None
-        cachedDateValid = False
-        for record in data['vaccine_administered']['values']:
-            if cachedDate != record['date_end_unix']:
-                d = datetime.datetime.utcfromtimestamp(
-                    int(record['date_end_unix']))
-                if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-                    print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > ' +
-                          datetime.datetime.today().date().strftime('%Y-%m-%d'))
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-                    datum = d.strftime('%Y-%m-%d')
+    #     cachedDate = None
+    #     cachedDateValid = False
+    #     for record in data['vaccine_administered']['values']:
+    #         if cachedDate != record['date_end_unix']:
+    #             d = datetime.datetime.utcfromtimestamp(
+    #                 int(record['date_end_unix']))
+    #             if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+    #                 print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > ' +
+    #                       datetime.datetime.today().date().strftime('%Y-%m-%d'))
+    #                 cachedDateValid = False
+    #             else:
+    #                 cachedDateValid = True
+    #                 datum = d.strftime('%Y-%m-%d')
 
-            if not cachedDateValid:
-                continue
+    #         if not cachedDateValid:
+    #             continue
 
-            initrecord(datum, metenisweten)
-            metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(
-                record['astra_zeneca'])
-            metenisweten[datum]['vaccinaties']['pfizer'] = intOrNone(
-                record['pfizer'])
-            metenisweten[datum]['vaccinaties']['moderna'] = intOrNone(
-                record['moderna'])
-            metenisweten[datum]['vaccinaties']['janssen'] = intOrNone(
-                record['janssen'])
-            metenisweten[datum]['vaccinaties']['totaal'] = intOrNone(
-                record['total'])
-            # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
-            # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
+    #         initrecord(datum, metenisweten)
+    #         metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(
+    #             record['astra_zeneca'])
+    #         metenisweten[datum]['vaccinaties']['pfizer'] = intOrNone(
+    #             record['pfizer'])
+    #         metenisweten[datum]['vaccinaties']['moderna'] = intOrNone(
+    #             record['moderna'])
+    #         metenisweten[datum]['vaccinaties']['janssen'] = intOrNone(
+    #             record['janssen'])
+    #         metenisweten[datum]['vaccinaties']['totaal'] = intOrNone(
+    #             record['total'])
+    #         # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
+    #         # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
 
-            previousPredictionDate = d
-            laatste_totaal = intOrNone(record['total'])
+    #         previousPredictionDate = d
+    #         laatste_totaal = intOrNone(record['total'])
 
-            if intOrZero(record['janssen']) > 0 and intOrZero(record['total']) > 0:
-                percentage_dubbele_vaccins = 1 - \
-                    (intOrZero(record['janssen'])/intOrZero(record['total']))
+    #         if intOrZero(record['janssen']) > 0 and intOrZero(record['total']) > 0:
+    #             percentage_dubbele_vaccins = 1 - \
+    #                 (intOrZero(record['janssen'])/intOrZero(record['total']))
 
-        # Load all predictions
+    #     # Load all predictions
 
-        # Vaccinatie administratie wordt niet meer (of niet op dezelfde manier) meer gedaan
-        # voorspelling_vaccinaties = { }
-        # if 'vaccine_administered_estimate' in data:
-        #     for record in data['vaccine_administered_estimate']['values']:
-        #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-        #         voorspelling_vaccinaties[d] = intOrNone(record['total'])
-        #         # print(intOrNone(record['total']))
-        # else:
-        #     logError("No data['vaccine_administered_estimate']")
+    #     # Vaccinatie administratie wordt niet meer (of niet op dezelfde manier) meer gedaan
+    #     # voorspelling_vaccinaties = { }
+    #     # if 'vaccine_administered_estimate' in data:
+    #     #     for record in data['vaccine_administered_estimate']['values']:
+    #     #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+    #     #         voorspelling_vaccinaties[d] = intOrNone(record['total'])
+    #     #         # print(intOrNone(record['total']))
+    #     # else:
+    #     #     logError("No data['vaccine_administered_estimate']")
 
-        # # Interpolate prediction to TODAY
-        nextPredictionValue = 0
-        # for key, value in voorspelling_vaccinaties.items():
-        #     # Get first next date
-        #     if key >= datetime.datetime.now():
-        #         nextPredictionDate = key
-        #         nextPredictionValue = value
-        #         break
+    #     # # Interpolate prediction to TODAY
+    #     nextPredictionValue = 0
+    #     # for key, value in voorspelling_vaccinaties.items():
+    #     #     # Get first next date
+    #     #     if key >= datetime.datetime.now():
+    #     #         nextPredictionDate = key
+    #     #         nextPredictionValue = value
+    #     #         break
 
-        if (nextPredictionValue > 0):
-            # print("Laatste waarde %s")
-            # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
-            # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
-            linearFactor = (datetime.datetime.now() - previousPredictionDate).total_seconds(
-            ) / (nextPredictionDate - previousPredictionDate).total_seconds()
-            linearValue = round(laatste_totaal + linearFactor *
-                                (nextPredictionValue - laatste_totaal))
+    #     if (nextPredictionValue > 0):
+    #         # print("Laatste waarde %s")
+    #         # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
+    #         # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
+    #         linearFactor = (datetime.datetime.now() - previousPredictionDate).total_seconds(
+    #         ) / (nextPredictionDate - previousPredictionDate).total_seconds()
+    #         linearValue = round(laatste_totaal + linearFactor *
+    #                             (nextPredictionValue - laatste_totaal))
 
-            datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
-            initrecord(datum, metenisweten)
-            metenisweten[datum]['vaccinaties']['totaal_geschat'] = linearValue
-            metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = linearValue - \
-                (linearValue*percentage_dubbele_vaccins)/2
-        else:
-            metenisweten[datum]['vaccinaties']['totaal_geschat'] = laatste_totaal
-            metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = laatste_totaal - (
-                laatste_totaal*percentage_dubbele_vaccins)/2
+    #         datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
+    #         initrecord(datum, metenisweten)
+    #         metenisweten[datum]['vaccinaties']['totaal_geschat'] = linearValue
+    #         metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = linearValue - \
+    #             (linearValue*percentage_dubbele_vaccins)/2
+    #     else:
+    #         metenisweten[datum]['vaccinaties']['totaal_geschat'] = laatste_totaal
+    #         metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = laatste_totaal - (
+    #             laatste_totaal*percentage_dubbele_vaccins)/2
 
-        # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
+    #     # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
 
-        # Vaccinaties worden niet meer (of niet meer op dezelde manier) bijgehouden
-        # Get actual vaccine deliveries
-        # if 'vaccine_delivery' in data:
-        #     for record in data['vaccine_delivery']['values']:
-        #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-        #         if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-        #             print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
-        #             # Skip estimates from RIVM
-        #             continue
+    #     # Vaccinaties worden niet meer (of niet meer op dezelde manier) bijgehouden
+    #     # Get actual vaccine deliveries
+    #     # if 'vaccine_delivery' in data:
+    #     #     for record in data['vaccine_delivery']['values']:
+    #     #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
+    #     #         if (datetime.datetime.date(d) > datetime.datetime.today().date()):
+    #     #             print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
+    #     #             # Skip estimates from RIVM
+    #     #             continue
 
-        #         datum =  d.strftime('%Y-%m-%d')
-        #         initrecord(datum, metenisweten)
-        #         metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
-        # else:
-        #     logError("No data['vaccine_delivery']")
+    #     #         datum =  d.strftime('%Y-%m-%d')
+    #     #         initrecord(datum, metenisweten)
+    #     #         metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
+    #     # else:
+    #     #     logError("No data['vaccine_delivery']")
 
-        # Hardcode start of vaccination at 0 in 2020
-        datum = '2020-12-01'
-        initrecord(datum, metenisweten)
-        metenisweten[datum]['vaccinaties']['astra_zeneca'] = 0
-        metenisweten[datum]['vaccinaties']['pfizer'] = 0
-        metenisweten[datum]['vaccinaties']['cure_vac'] = 0
-        metenisweten[datum]['vaccinaties']['janssen'] = 0
-        metenisweten[datum]['vaccinaties']['moderna'] = 0
-        metenisweten[datum]['vaccinaties']['sanofi'] = 0
-        metenisweten[datum]['vaccinaties']['totaal'] = 0
+    #     # Hardcode start of vaccination at 0 in 2020
+    #     datum = '2020-12-01'
+    #     initrecord(datum, metenisweten)
+    #     metenisweten[datum]['vaccinaties']['astra_zeneca'] = 0
+    #     metenisweten[datum]['vaccinaties']['pfizer'] = 0
+    #     metenisweten[datum]['vaccinaties']['cure_vac'] = 0
+    #     metenisweten[datum]['vaccinaties']['janssen'] = 0
+    #     metenisweten[datum]['vaccinaties']['moderna'] = 0
+    #     metenisweten[datum]['vaccinaties']['sanofi'] = 0
+    #     metenisweten[datum]['vaccinaties']['totaal'] = 0
 
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
@@ -1091,6 +1092,8 @@ def getDateRange(metenisweten):
     mindatum = max(mindatum, dateCache.parse("2020-03-01"))
     date_range = [mindatum + datetime.timedelta(days=x)
                   for x in range(0, (maxdatum-mindatum).days+7)]
+    
+    print(maxdatum)
     return date_range
 
 
