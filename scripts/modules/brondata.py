@@ -20,77 +20,13 @@ from scipy.signal import savgol_filter
 from statistics import mean
 from operator import itemgetter
 from math import log
-from dateutil import parser
-import pytz
 
-timezone = pytz.timezone("Europe/Amsterdam")
-
-# Class caching parsed dates for speed optimization
-
-
-class DateCache:
-    cachedDates = {}
-    cacheHits = 0
-    cacheMisses = 0
-    acceptDatesAfter = datetime.date.fromisoformat('2020-01-01')
-    todaysDate = datetime.date.today()
-
-    # class default constructor, if needed
-    # def __init__(self):
-    #     self.cachedDates = {}
-
-    # Cache parsed dates.
-    def parse(self, dateString):
-        try:
-            fromcache = self.cachedDates[dateString]
-            self.cacheHits += 1
-            return fromcache
-        except KeyError:
-            self.cacheMisses += 1
-            parseddate = parser.parse(dateString)
-            self.cachedDates[dateString] = parseddate
-            return parseddate
-
-    def isvaliddate(self, datestring, filename):
-        parseddate = self.parse(datestring)
-
-        if (isinstance(parseddate, datetime.datetime)):
-            parseddate = parseddate.date()
-
-        if parseddate >= self.acceptDatesAfter and parseddate <= self.todaysDate:
-            return True
-        elif filename:
-            print('Ignoring invalid date '+datestring+' in '+filename+'.')
-        return False
-
-    def today(self):
-        return self.todaysDate
-
-    def cacheUse(self):
-        if (self.cacheMisses == 0):
-            return 0
-        else:
-            return 100 * (self.cacheHits/(self.cacheHits + self.cacheMisses))
-
-    def cacheReport(self):
-        print("  date cache hits: %d" % self.cacheHits)
-        print("date cache misses: %d" % self.cacheMisses)
-        print("        hit ratio: %d%%" % self.cacheUse())
-
-
-dateCache = DateCache()
-
-
-def readjson(filename):
-    print('Reading '+filename)
-    with open(filename, 'r') as json_file:
-        return json.load(json_file)
-
-
-def writejson(filename, adict):
-    print('Writing '+filename)
-    with open(filename, 'w') as file:
-        file.write(json.dumps(adict))
+from defaults import timezone
+from datecache import dateCache
+from utilities \
+    import readjson, writejson, \
+           downloadIfStale, downloadBinaryIfStale, \
+           decimalstring, isnewer, switchdecimals
 
 
 def logError(errorString):
@@ -99,93 +35,10 @@ def logError(errorString):
         file.write(errorString+"\n")
 
 
-# Turns US 10,000.00 into EU 10.000,00
-def decimalstring(number):
-    if number == round(number) and len(str(number)) <= 4:
-        return str(number)
-    else:
-        return "{:,}".format(number).replace(',', 'x').replace('.', ',').replace('x', '.')
-
-
-def switchdecimals(numberstring):
-    return numberstring.replace(',', 'x').replace('.', ',').replace('x', '.')
-
-
-def isnewer(file1, file2):
-    return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime
 
 
 def sortDictOnKey(dictionary):
     return dict(sorted(dictionary.items(), key=itemgetter(0)))
-
-
-def downloadBinaryIfStale(filename, url):
-    return downloadIfStale(filename, url, True)
-
-
-def downloadIfStale(filename, url, binary=False):
-    if os.path.isfile(filename):
-        lastdownload = datetime.datetime.fromtimestamp(
-            os.stat(filename).st_mtime, tz=timezone)
-    else:
-        lastdownload = datetime.datetime.fromtimestamp(0, tz=timezone)
-
-    if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours=1)):
-        # If just downloaded or checked, don't bother checking with the server
-        print("Just downloaded: %s on %s" % (filename, lastdownload))
-        return False
-
-    try:
-        with urllib.request.urlopen(url) as response:
-            meta = response.headers
-            try:
-                lastmodified = dateCache.parse(meta['Last-Modified'])
-                # print(F"last modified on server for {filename} is {lastmodified}")
-            except:
-                print(F"Server has no Last-Modified for {url}")
-                lastmodified = datetime.datetime.now(
-                    tz=timezone) - datetime.timedelta(hours=1)
-
-            # print('last download: '+str(lastdownload))
-            # print('last modified: '+str(lastmodified))
-
-            if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
-                print("Downloading new: %s" % filename)
-                tempfile = "%s.tmp" % filename
-                if binary:
-                    with open(tempfile, 'w+b') as f:
-                        f.write(response.read())
-                else:
-                    with open(tempfile, 'w') as f:
-                        charset = meta.get_content_charset() or 'utf-8'
-                        f.write(response.read().decode(charset))
-
-                if os.path.getsize(tempfile) > 100:
-                    # Move the downloaded file in place
-                    if os.path.isfile(filename):
-                        os.remove(filename)
-                    os.replace(tempfile, filename)
-                else:
-                    logError("No data received from `%s`." % url)
-                    return False
-
-                return True
-            else:
-                print("    Still fresh: %s last modified on server at %s" %
-                      (filename, lastmodified))
-                now = time.time()
-                os.utime(filename, (now, now))
-                return False
-    except HTTPError as e:
-        logError("Problem opening '%s': http error %d, %s" % (
-            url, e.code, e.reason))
-        return False
-    except URLError as e:
-        logError("Problem opening '%s': %s" % (url, e.reason))
-        return False
-    except FileNotFoundError as e:
-        logError("Problem opening file. %s" % (e))
-        return False
 
 
 def downloadMostRecentAppleMobilityReport(filename):
