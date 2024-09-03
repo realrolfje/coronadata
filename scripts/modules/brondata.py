@@ -21,24 +21,16 @@ from statistics import mean
 from operator import itemgetter
 from math import log
 
-from defaults import timezone
+from ./defaults import timezone
 from datecache import dateCache
 from utilities \
     import readjson, writejson, \
            downloadIfStale, downloadBinaryIfStale, \
-           decimalstring, isnewer, switchdecimals
+           decimalstring, isnewer, switchdecimals, \
+           logError
+from metenisweten import metenisweten, initrecord, writeMetenIsWeten
+from download_Rt import process as process_Rt
 
-
-def logError(errorString):
-    print(errorString)
-    with open('../cache/errors.log', 'a') as file:
-        file.write(errorString+"\n")
-
-
-
-
-def sortDictOnKey(dictionary):
-    return dict(sorted(dictionary.items(), key=itemgetter(0)))
 
 
 def downloadMostRecentAppleMobilityReport(filename):
@@ -103,12 +95,6 @@ def download():
     #     '../cache/COVID-19_ziekenhuisopnames.json',
     #     'https://data.rivm.nl/covid-19/COVID-19_ziekenhuisopnames.json'
     # ) or freshdata
-
-    # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/ed0699d1-c9d5-4436-8517-27eb993eab6e?tab=relations
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_reproductiegetal.json',
-        'https://data.rivm.nl/covid-19/COVID-19_reproductiegetal.json'
-    ) or freshdata
 
     # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/a2960b68-9d3f-4dc3-9485-600570cd52b9
     freshdata = downloadIfStale(
@@ -189,102 +175,11 @@ def isvaliddate(datestring, filename):
     dateCache.isvaliddate(datestring, filename)
 
 
-def initrecord(date, metenisweten):
-    if (date not in metenisweten):
-        metenisweten[date] = {
-            'positief': 0,
-            'totaal_positief': 0,
-            'nu_op_ic': None,
-            'nu_op_ic_lcps': None,
-            'nu_op_ic_noncovid_lcps': None,
-            'geweest_op_ic': 0,
-            'opgenomen': 0,
-            'nu_opgenomen': 0,
-            'nu_opgenomen_lcps': None,
-            'totaal_opgenomen': 0,
-            'overleden': 0,
-            'totaal_overleden': 0,
-            'rivm-datum': None,
-            'Rt_avg': None,
-            'Rt_low': None,
-            'Rt_up': None,
-            'Rt_population': None,
-            'RNA': {
-                'totaal_RNA_per_100k': 0,
-                'totaal_RNA_metingen': 0,
-                'RNA_per_100k_avg': 0,
-                'besmettelijk': None,  # Aantal besmettelijke mensen op basis van RNA_avg
-                'besmettelijk_error': None,
-                'populatie_dekking': None,
-                'regio': {
-                    # This will contain data per veiligheidsregio:
-                    # 'VR01' : {
-                    #     'totaal_RNA_per_100k'  : 0,
-                    #     'totaal_RNA_metingen'  : 0,
-                    #     'RNA_per_100k_avg'     : 0,
-                    #     'inwoners'             : 0,
-                    #     'oppervlakte'          : 0
-                    # }
-                }
-            },
-            'rivm_totaal_tests         ': None,
-            'rivm_totaal_tests_positief': None,
-            'rivm_totaal_personen_getest': None,
-            'rivm_totaal_personen_positief': None,
-            'rivm_aantal_testlabs': None,
-            'rivm_infectieradar_perc': None,
-            'rivm_schatting_besmettelijk': {
-                'min': None,  # Minimaal personen besmettelijk
-                'value': None,  # Geschat personen besmettelijk
-                'max': None  # Maximaal personen besmettelijk
-            },
-            'besmettingleeftijd_gemiddeld': None,
-            'besmettingleeftijd': {
-                # key = leeftijdscategorie
-                # value = aantal besmettingen
-            },
-            'mobiliteit': {
-                'lopen': None,
-                'ov': None,
-                'rijden': None
-            },
-            'vaccinaties': {
-                'astra_zeneca': None,
-                'pfizer': None,
-                'cure_vac': None,
-                'janssen': None,
-                'moderna': None,
-                'sanofi': None,
-                'totaal': None,
-                'totaal_mensen': None,
-                'totaal_geschat': None,
-                'totaal_mensen_geschat': None,
-                'geleverd': None,
-            },
-            # Besmettelijke mensen op basis van gecombineerde meetwaarden
-            'rolf_besmettelijk': None,
-            'varianten': {
-                # Example:
-                # 'B.1.525' : {
-                #     'name'                 : '',
-                #     'ECDC_category'        : 'DEV',
-                #     'WHO_category'         : 'VUM',
-                #     'includes_old_samples' : False,
-                #     'Sample_size'          : 1593,
-                #     'cases'                : 4
-                # }
-            }
-        }
-
 # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
-
-
 def smooth(inputArray):
     return double_savgol(inputArray, 2, 13, 1)
 
 # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
-
-
 def double_savgol(inputArray, iterations, window, order):
     outputArray = inputArray
     while iterations > 0:
@@ -313,7 +208,6 @@ def intOrZero(input):
 
 def builddaily():
     # Load previous version of the data, so that we always keep it all.
-    metenisweten = readjson('../data/daily-stats.json')
     testpunten = {}
 
     print('Transform per-case data to daily totals')
@@ -327,8 +221,7 @@ def builddaily():
             if not dateCache.isvaliddate(record['Date_statistics'], filename):
                 continue
 
-            initrecord(record['Date_statistics'], metenisweten)
-            todaysRecord = metenisweten[record['Date_statistics']]
+            todaysRecord = initrecord(record['Date_statistics'])
 
             todaysRecord['positief'] += 1
 
@@ -380,8 +273,8 @@ def builddaily():
             if not dateCache.isvaliddate(record['date'], filename):
                 continue
 
-            initrecord(record['date'], metenisweten)
-            metenisweten[record['date']]['nu_op_ic'] = record['value']
+            
+            initrecord(record['date'])['nu_op_ic'] = record['value']
 
     filename = '../cache/NICE-intake-cumulative.json'
     if os.path.isfile(filename):
@@ -391,8 +284,7 @@ def builddaily():
                 if not dateCache.isvaliddate(record['date'], filename):
                     continue
 
-                initrecord(record['date'], metenisweten)
-                metenisweten[record['date']]['geweest_op_ic'] += record['value']
+                initrecord(record['date'])['geweest_op_ic'] += record['value']
     else:
         print(filename+" not found, skipped.")
 
@@ -413,37 +305,8 @@ def builddaily():
             if not cachedDateValid:
                 continue
 
-            initrecord(record['date'], metenisweten)
-            metenisweten[record['date']]['nu_opgenomen'] = record['value']
+            initrecord(record['date'])['nu_opgenomen'] = record['value']
 
-    print("Add R numbers")
-    filename = '../cache/COVID-19_reproductiegetal.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        cachedDate = None
-        cachedDateValid = False
-        for record in data:
-            if cachedDate != record['Date']:
-                cachedDate = record['Date']
-
-                if not dateCache.isvaliddate(record['Date'], filename):
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-
-            if not cachedDateValid:
-                continue
-
-            initrecord(record['Date'], metenisweten)
-            if 'Rt_avg' in record:
-                metenisweten[record['Date']]['Rt_avg'] = record['Rt_avg']
-            if 'Rt_low' in record:
-                metenisweten[record['Date']]['Rt_low'] = record['Rt_low']
-            if 'Rt_up' in record:
-                metenisweten[record['Date']]['Rt_up'] = record['Rt_up']
-            if 'population' in record:
-                metenisweten[record['Date']
-                             ]['Rt_population'] = record['population']
 
     # print("Load veiligheidsregios for addign to sewage data")
     # filename = '../data/veiligheidsregios.json'
@@ -481,24 +344,24 @@ def builddaily():
                 # print("No RNA Flow data in %s (%s) for date %s." % (record['RWZI_AWZI_name'],record['RWZI_AWZI_code'],stringdate))
                 continue
 
-            initrecord(stringdate, metenisweten)
-            metenisweten[stringdate]['RNA']['totaal_RNA_per_100k'] += rnavalue
-            metenisweten[stringdate]['RNA']['totaal_RNA_metingen'] += 1
-            metenisweten[stringdate]['RNA']['RNA_per_100k_avg'] = metenisweten[stringdate]['RNA']['totaal_RNA_per_100k'] / \
-                metenisweten[stringdate]['RNA']['totaal_RNA_metingen']
+            m = initrecord(stringdate)
+            m['RNA']['totaal_RNA_per_100k'] += rnavalue
+            m['RNA']['totaal_RNA_metingen'] += 1
+            m['RNA']['RNA_per_100k_avg'] = m['RNA']['totaal_RNA_per_100k'] / \
+                m['RNA']['totaal_RNA_metingen']
 
             # regiocode = record['Security_region_code']
-            # if regiocode not in metenisweten[stringdate]['RNA']:
-            #     metenisweten[stringdate]['RNA']['regio'][regiocode] = {
+            # if regiocode not in m['RNA']:
+            #     m['RNA']['regio'][regiocode] = {
             #         'totaal_RNA_per_100k'    : 0,
             #         'totaal_RNA_metingen'  : 0,
             #         'RNA_per_100k_avg'       : 0,
             #         'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
             #         'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']
             #     }
-            # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] += rnavalue
-            # metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1
-            # metenisweten[stringdate]['RNA']['regio'][regiocode]['RNA_per_100k_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
+            # m['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] += rnavalue
+            # m['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1
+            # m['RNA']['regio'][regiocode]['RNA_per_100k_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
     print("Add estimated ill based on RIVM (prevalentie)")
     filename = '../cache/COVID-19_prevalentie.json'
@@ -596,9 +459,9 @@ def builddaily():
                         weekdatum = dateCache.parse(
                             startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
-                        initrecord(weekdatumstr, metenisweten)
-                        metenisweten[weekdatumstr]['rivm_totaal_personen_getest'] = aantal/7
-                        metenisweten[weekdatumstr]['rivm_aantal_testlabs'] = aantal_labs
+                        m = initrecord(weekdatumstr)
+                        m['rivm_totaal_personen_getest'] = aantal/7
+                        m['rivm_aantal_testlabs'] = aantal_labs
 
                         # print(weekdatumstr+' '+str(aantal)+' /7= '+str(metenisweten[weekdatumstr]['rivm_totaal_personen_getest'])+' totaal personen getest per dag.')
 
@@ -607,8 +470,8 @@ def builddaily():
                         weekdatum = dateCache.parse(
                             startdatum) + datetime.timedelta(n)
                         weekdatumstr = weekdatum.strftime("%Y-%m-%d")
-                        initrecord(weekdatumstr, metenisweten)
-                        metenisweten[weekdatumstr]['rivm_totaal_personen_positief'] = aantal/7
+                        m = initrecord(weekdatumstr)
+                        m['rivm_totaal_personen_positief'] = aantal/7
 
             line_count += 1
 
@@ -635,13 +498,11 @@ def builddaily():
 
         # Overwrite total number of tests
         for key in temp_totaltests:
-            initrecord(key, metenisweten)
-            metenisweten[key]['rivm_totaal_tests'] = temp_totaltests[key]
+            initrecord(key)['rivm_totaal_tests'] = temp_totaltests[key]
 
         # Overwrite total number of positivetests
         for key in temp_positive:
-            initrecord(key, metenisweten)
-            metenisweten[key]['rivm_totaal_tests_positief'] = temp_positive[key]
+            initrecord(key)['rivm_totaal_tests_positief'] = temp_positive[key]
 
     print("Load LCPS data...")
     filename = '../cache/lcps-covid-19.csv'
@@ -661,13 +522,10 @@ def builddaily():
 
                 # print("LCPS bedden " + datum + " " + ic_bedden_covid + " " + kliniek_bedden)
 
-                initrecord(datum, metenisweten)
-                metenisweten[datum]['nu_op_ic_lcps'] = intOrNone(
-                    ic_bedden_covid)
-                metenisweten[datum]['nu_op_ic_noncovid_lcps'] = intOrNone(
-                    ic_bedden_non_covid)
-                metenisweten[datum]['nu_opgenomen_lcps'] = intOrNone(
-                    kliniek_bedden)
+                m = initrecord(datum)
+                m['nu_op_ic_lcps'] = intOrNone(ic_bedden_covid)
+                m['nu_op_ic_noncovid_lcps'] = intOrNone(ic_bedden_non_covid)
+                m['nu_opgenomen_lcps'] = intOrNone(kliniek_bedden)
             line_count = line_count + 1
 
     print("Load covid variant statistics")
@@ -676,8 +534,7 @@ def builddaily():
         data = json.load(json_file)
         for record in data:
             datum = record['Date_of_statistics_week_start']
-            initrecord(datum, metenisweten)
-            m = metenisweten[datum]
+            m = initrecord(datum)
             if record['Variant_code'] not in m['varianten']:
                 m['varianten'][record['Variant_code']] = {
                     'name': record['Variant_name'],
@@ -908,13 +765,19 @@ def builddaily():
         metenisweten[datum]['totaal_overleden'] = totaal_overleden
 
     # Write sorted data
-    writejson('../data/daily-stats.json',  sortDictOnKey(metenisweten))
+    writeMetenIsWeten()
     writejson('../cache/testlocaties.json', testpunten)
 
 
 def freshdata():
     if download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()
+
+        # New way of doing things:
+        process_Rt()
+        
+        # Write processed and sorted data
+        writeMetenIsWeten()
         return True
     elif os.stat('../data/daily-stats.json').st_mtime > (time.time() - 1200):
         # downloaded data is "fresh" for 20 minutes

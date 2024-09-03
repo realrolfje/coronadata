@@ -1,16 +1,17 @@
 import os
+import json
 import urllib.request
 from urllib.error import URLError, HTTPError
 import datetime
+import time
 
 from defaults import timezone
-
 
 def downloadBinaryIfStale(filename, url):
     return downloadIfStale(filename, url, True)
 
 
-def downloadIfStale(filename, url, binary=False):
+def downloadIfStale(filename, url, binary=False, force=False):
     """Downloads from the given url, and writes to the given filename.
     downloadIfStale("somedata.json", "https://example.com/dataset_with_different_name.json")
     Writes a somedata.json file filled with whatever it got from the url.
@@ -24,7 +25,7 @@ def downloadIfStale(filename, url, binary=False):
     else:
         lastdownload = datetime.datetime.fromtimestamp(0, tz=timezone)
 
-    if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours=1)):
+    if (not force) and lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours=1)):
         # If just downloaded or checked, don't bother checking with the server
         print("Just downloaded: %s on %s" % (filename, lastdownload))
         return False
@@ -43,7 +44,7 @@ def downloadIfStale(filename, url, binary=False):
             # print('last download: '+str(lastdownload))
             # print('last modified: '+str(lastmodified))
 
-            if (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
+            if force or (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
                 print("Downloading new: %s" % filename)
                 tempfile = "%s.tmp" % filename
                 if binary:
@@ -109,3 +110,14 @@ def switchdecimals(numberstring):
 def isnewer(file1, file2):
     """Returns True if both files exist and file 1 is created later (is newer) than file 2 """
     return os.path.isfile(file1) and os.path.isfile(file2) and os.stat(file1).st_mtime > os.stat(file2).st_mtime
+
+
+def logError(errorString):
+    print(errorString)
+    with open('../cache/errors.log', 'a') as file:
+        file.write(errorString+"\n")
+
+
+def sortDictOnKey(dictionary):
+    return dict(sorted(dictionary.items(), key=itemgetter(0)))
+
