@@ -30,6 +30,7 @@ from utilities \
            logError
 from metenisweten import metenisweten, initrecord, writeMetenIsWeten
 from download_Rt import process as process_Rt
+from download_Zkh import process as process_Zkh
 
 
 
@@ -102,20 +103,6 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_rioolwaterdata.json'
     ) or freshdata
 
-    freshdata = downloadIfStale(
-        '../cache/NICE-intake-cumulative.json',
-        'https://www.stichting-nice.nl/covid-19/public/intake-cumulative/'
-    ) or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/NICE-intake-count.json',
-        'https://www.stichting-nice.nl/covid-19/public/intake-count/'
-    ) or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/NICE-zkh-intake-count.json',
-        'https://www.stichting-nice.nl//covid-19/public/zkh/intake-count/'
-    ) or freshdata
 
     freshdata = downloadIfStale(
         '../cache/COVID-19_prevalentie.json',
@@ -264,48 +251,6 @@ def builddaily():
     # filename = '../cache/NICE-intake-count.json'
     # with open(filename, 'r') as json_file:
     #     data = json.load(json_file)
-
-    print("Add intensive care data")
-    filename = '../cache/NICE-intake-count.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        for record in data:
-            if not dateCache.isvaliddate(record['date'], filename):
-                continue
-
-            
-            initrecord(record['date'])['nu_op_ic'] = record['value']
-
-    filename = '../cache/NICE-intake-cumulative.json'
-    if os.path.isfile(filename):
-        with open(filename, 'r') as json_file:
-            data = json.load(json_file)
-            for record in data:
-                if not dateCache.isvaliddate(record['date'], filename):
-                    continue
-
-                initrecord(record['date'])['geweest_op_ic'] += record['value']
-    else:
-        print(filename+" not found, skipped.")
-
-    filename = '../cache/NICE-zkh-intake-count.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        cachedDate = None
-        cachedDateValid = False
-        for record in data:
-            if cachedDate != record['date']:
-                cachedDate = record['date']
-
-                if not dateCache.isvaliddate(record['date'], filename):
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-
-            if not cachedDateValid:
-                continue
-
-            initrecord(record['date'])['nu_opgenomen'] = record['value']
 
 
     # print("Load veiligheidsregios for addign to sewage data")
@@ -775,6 +720,7 @@ def freshdata():
 
         # New way of doing things:
         process_Rt()
+        process_Zkh()
         
         # Write processed and sorted data
         writeMetenIsWeten()

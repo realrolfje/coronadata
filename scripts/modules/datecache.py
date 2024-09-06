@@ -60,8 +60,8 @@ class DateCache:
 
 
     def cacheReport(self):
-        print("    earliest date: %s" % min(self.cachedDates.values()))
-        print("      latest date: %s" % max(self.cachedDates.values()))
+        print("    earliest date: %s" % (min(self.cachedDates.values()) if self.cachedDates else "-"))
+        print("      latest date: %s" % (max(self.cachedDates.values()) if self.cachedDates else "-"))
         print("  date cache size: %d" % len(self.cachedDates))
         print("  date cache hits: %d" % self.cacheHits)
         print("date cache misses: %d" % self.cacheMisses)

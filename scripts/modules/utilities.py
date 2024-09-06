@@ -5,7 +5,7 @@ from urllib.error import URLError, HTTPError
 import datetime
 import time
 
-from defaults import timezone
+from defaults import timezone, cachedir
 
 def downloadBinaryIfStale(filename, url):
     return downloadIfStale(filename, url, True)
@@ -114,7 +114,7 @@ def isnewer(file1, file2):
 
 def logError(errorString):
     print(errorString)
-    with open('../cache/errors.log', 'a') as file:
+    with open(os.path.join(cachedir,'errors.log'), 'a') as file:
         file.write(errorString+"\n")
 
 
