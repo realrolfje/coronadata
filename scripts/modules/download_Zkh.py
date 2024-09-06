@@ -2,6 +2,8 @@
 #
 # Downloads the NICE dataset containing intensive care and hospitak intake.
 #
+# Please note that these files are no longer in this location (gave 404) since beginning of 2024
+#
 
 import os
 from utilities import downloadIfStale, readjson
