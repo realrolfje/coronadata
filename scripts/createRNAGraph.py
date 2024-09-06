@@ -90,9 +90,9 @@ def createRNAGraph(metenisweten):
     axes = plt.gca()
     axes.set_xlim([date_range[0],date_range[-1]])
 
-    ax1.set_ylim([0,3e+14])
-    ax1.set_yticks     ([  0, 0.5e+14,  1e+14, 1.5e+14,  2e+14,  2.5e+14, 3e+14])
-    ax1.set_yticklabels(['0',   '50T', '100T',  '150T', '200T',   '250T', '300T'])
+    ax1.set_ylim([0,4e+14])
+    ax1.set_yticks     ([  0, 0.5e+14,  1e+14, 1.5e+14,  2e+14,  2.5e+14, 3e+14,  3.5e+14, 4e+14])
+    ax1.set_yticklabels(['0',   '50T', '100T',  '150T', '200T',   '250T', '300T', '350T',  '400T'])
 
     plt.figtext(0.10,0.72, 
             "(T = Tera = 1.000.000.000.000)",

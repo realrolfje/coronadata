@@ -20,8 +20,12 @@ from scipy.signal import savgol_filter
 from statistics import mean
 from operator import itemgetter
 from math import log
+import sys
 
-from ./defaults import timezone
+
+# Import python files in modules directory
+sys.path.insert(0, 'modules')
+from defaults import timezone
 from datecache import dateCache
 from utilities \
     import readjson, writejson, \
@@ -31,7 +35,7 @@ from utilities \
 from metenisweten import metenisweten, initrecord, writeMetenIsWeten
 from download_Rt import process as process_Rt
 from download_Zkh import process as process_Zkh
-
+from download_casus_landelijk import process as process_casus_landelijk
 
 
 def downloadMostRecentAppleMobilityReport(filename):
@@ -86,11 +90,6 @@ def download():
         return True
 
     freshdata = downloadECDCMap() or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_casus_landelijk.json',
-        'https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.json'
-    ) or freshdata
 
     # freshdata = downloadIfStale(
     #     '../cache/COVID-19_ziekenhuisopnames.json',
@@ -194,58 +193,9 @@ def intOrZero(input):
 
 
 def builddaily():
-    # Load previous version of the data, so that we always keep it all.
-    testpunten = {}
-
     print('Transform per-case data to daily totals')
     filename = '../cache/COVID-19_casus_landelijk.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        print('Loaded %s, contains %s case records.' %
-              (filename, decimalstring(len(data))))
-
-        for record in data:
-            if not dateCache.isvaliddate(record['Date_statistics'], filename):
-                continue
-
-            todaysRecord = initrecord(record['Date_statistics'])
-
-            todaysRecord['positief'] += 1
-
-            # https://data.rivm.nl/meta/srv/dut/catalog.search#/metadata/2c4357c8-76e4-4662-9574-1deb8a73f724?tab=general
-            # -	In versie 2 van deze dataset is de variabele ‘hospital_admission’ niet meer beschikbaar. Voor het aantal
-            # ziekenhuisopnames wordt verwezen naar de geregistreerde ziekenhuisopnames van Stichting NICE
-            # (https://data.rivm.nl/covid-19/COVID-19_ziekenhuisopnames.html).
-            # try:
-            #     if 'Hospital_admission' in record and (record['Hospital_admission'] == "Yes"):
-            #         todaysRecord['opgenomen'] += 1
-            # except KeyError:
-            #     print(record)
-            #     raise
-
-            todaysRecord['rivm-datum'] = record['Date_file']
-
-            if (record['Deceased'] == 'Yes'):
-                todaysRecord['overleden'] += 1
-
-            try:
-                # Age groups are 0-10, 10-20, 30-40 etc, we make that 5, 15, 25, 35.
-                age = int(record['Agegroup'].split('-')[0].split('+')[0])+5
-                if age not in todaysRecord['besmettingleeftijd']:
-                    todaysRecord['besmettingleeftijd'][age] = 1
-                else:
-                    todaysRecord['besmettingleeftijd'][age] += 1
-            except ValueError:
-                # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
-                pass
-
-            testpunt = record['Municipal_health_service']
-            if testpunt not in testpunten:
-                testpunten[testpunt] = 1
-            else:
-                testpunten[testpunt] += 1
-
-        print('Processed ' + decimalstring(len(metenisweten)) + ' records.')
+    
 
     # print("Add hospitalization data")
     # filename = '../cache/NICE-intake-count.json'
@@ -711,7 +661,6 @@ def builddaily():
 
     # Write sorted data
     writeMetenIsWeten()
-    writejson('../cache/testlocaties.json', testpunten)
 
 
 def freshdata():
@@ -719,6 +668,7 @@ def freshdata():
         builddaily()
 
         # New way of doing things:
+        process_casus_landelijk()
         process_Rt()
         process_Zkh()
         
