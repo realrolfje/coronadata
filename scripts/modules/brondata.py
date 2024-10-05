@@ -18,7 +18,6 @@ import csv
 import re
 from scipy.signal import savgol_filter
 from statistics import mean
-from operator import itemgetter
 from math import log
 import sys
 
@@ -36,6 +35,8 @@ from metenisweten import metenisweten, initrecord, writeMetenIsWeten
 from download_Rt import process as process_Rt
 from download_Zkh import process as process_Zkh
 from download_casus_landelijk import process as process_casus_landelijk
+from download_varianten import process as process_varianten
+from calculate_geschat_ziek import calculate as calculate_geschat_ziek
 
 
 def downloadMostRecentAppleMobilityReport(filename):
@@ -49,7 +50,7 @@ def downloadMostRecentAppleMobilityReport(filename):
             urllib.request.urlretrieve(url, filename)
             print("done")
             return True
-        except (urllib.error.HTTPError, urllib.error.HTTPError) as err:
+        except (HTTPError, URLError) as err:
             print("Error downloding %s: %s" % (url, str(err)))
 
         raise Exception(
@@ -135,10 +136,10 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_Infectieradar_symptomen_per_dag.json'
     ) or freshdata
 
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_varianten.json',
-        'https://data.rivm.nl/covid-19/COVID-19_varianten.json'
-    ) or freshdata
+    # freshdata = downloadIfStale(
+    #     '../cache/COVID-19_varianten.json',
+    #     'https://data.rivm.nl/covid-19/COVID-19_varianten.json'
+    # ) or freshdata
 
     freshdata = downloadIfStale(
         '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json',
@@ -423,22 +424,22 @@ def builddaily():
                 m['nu_opgenomen_lcps'] = intOrNone(kliniek_bedden)
             line_count = line_count + 1
 
-    print("Load covid variant statistics")
-    filename = '../cache/COVID-19_varianten.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        for record in data:
-            datum = record['Date_of_statistics_week_start']
-            m = initrecord(datum)
-            if record['Variant_code'] not in m['varianten']:
-                m['varianten'][record['Variant_code']] = {
-                    'name': record['Variant_name'],
-                    'ECDC_category': record['ECDC_category'],
-                    'WHO_category': record['WHO_category'],
-                    'includes_old_samples': record.get('May_include_samples_listed_before', False),
-                    'sample_size': record['Sample_size'],
-                    'cases': record['Variant_cases']
-                }
+    # print("Load covid variant statistics")
+    # filename = '../cache/COVID-19_varianten.json'
+    # with open(filename, 'r') as json_file:
+    #     data = json.load(json_file)
+    #     for record in data:
+    #         datum = record['Date_of_statistics_week_start']
+    #         m = initrecord(datum)
+    #         if record['Variant_code'] not in m['varianten']:
+    #             m['varianten'][record['Variant_code']] = {
+    #                 'name': record['Variant_name'],
+    #                 'ECDC_category': record['ECDC_category'],
+    #                 'WHO_category': record['WHO_category'],
+    #                 'includes_old_samples': record.get('May_include_samples_listed_before', False),
+    #                 'sample_size': record['Sample_size'],
+    #                 'cases': record['Variant_cases']
+    #             }
 
     # print("Load vaccinatiegraad per leeftijd/gemeente")
     # filename = '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
@@ -623,28 +624,28 @@ def builddaily():
             gemiddeld = som/positief
             metenisweten[datum]['besmettingleeftijd_gemiddeld'] = gemiddeld
 
-    print("Calculate average number of ill people based on tests and rna data (magic formula)")
-    dates = []
-    ziek = []
-    for datum in metenisweten:
-        if datum in metenisweten \
-                and ('rivm_totaal_tests' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests'] != None \
-                and ('rivm_totaal_tests_positief' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests_positief'] != None \
-                and (metenisweten[datum]['RNA']['totaal_RNA_per_100k'] > 1):
+    # print("Calculate average number of ill people based on tests and rna data (magic formula)")
+    # dates = []
+    # ziek = []
+    # for datum in metenisweten:
+    #     if datum in metenisweten \
+    #             and ('rivm_totaal_tests' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests'] != None \
+    #             and ('rivm_totaal_tests_positief' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests_positief'] != None \
+    #             and (metenisweten[datum]['RNA']['totaal_RNA_per_100k'] > 1):
 
-            dates.append(datum)
-            ziek.append(
-                ((1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests'])
-                 + (3 * metenisweten[datum]['rivm_totaal_tests'])
-                    + (22 * metenisweten[datum]['rivm_totaal_tests_positief']))
-                * log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'], 10)
-                / 44
-            )
+    #         dates.append(datum)
+    #         ziek.append(
+    #             ((1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests'])
+    #              + (3 * metenisweten[datum]['rivm_totaal_tests'])
+    #                 + (22 * metenisweten[datum]['rivm_totaal_tests_positief']))
+    #             * log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'], 10)
+    #             / 44
+    #         )
 
-    ziek = smooth(ziek)
-    for i in range(len(dates)):
-        date = dates[i]
-        metenisweten[date]['rolf_besmettelijk'] = ziek[i]
+    # ziek = smooth(ziek)
+    # for i in range(len(dates)):
+    #     date = dates[i]
+    #     metenisweten[date]['rolf_besmettelijk'] = ziek[i]
 
     print("Calculate totals")
     totaal_positief = 0
@@ -667,10 +668,14 @@ def freshdata():
     if download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()
 
-        # New way of doing things:
+        # New way of doing things. Download and add data:
         process_casus_landelijk()
         process_Rt()
         process_Zkh()
+        process_varianten()
+
+        # Calculate derived data
+        calculate_geschat_ziek()
         
         # Write processed and sorted data
         writeMetenIsWeten()

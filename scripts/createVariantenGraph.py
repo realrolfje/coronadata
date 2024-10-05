@@ -91,7 +91,7 @@ def createVariantenGraph(metenisweten, varianten):
     # print("-----")
 
 
-    # Correct the prevalence by suntracting subtypes
+    # Correct the prevalence by subtracting subtypes
     for d in varianten_map:
         varianten = varianten_map[d]
         # print(d)
