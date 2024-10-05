@@ -12,7 +12,7 @@ from metenisweten import initrecord
 from datecache import dateCache
 
 
-def download(force=False):
+def download(force=False) -> str:
     filename = os.path.join(cachedir, "COVID-19_casus_landelijk.json")
     if downloadIfStale(
         filename=filename,
@@ -23,13 +23,13 @@ def download(force=False):
         return None
 
 
-def store(downloaded_file):
+def store(downloaded_file) -> bool:
     if downloaded_file == None:
-        return    
+        return False
 
     testpunten = {}
     for record in readjson(downloaded_file):
-        if not dateCache.isvaliddate(record['Date_statistics'], filename):
+        if not dateCache.isvaliddate(record['Date_statistics'], downloaded_file):
             continue
 
         todaysRecord = initrecord(record['Date_statistics'])
@@ -70,6 +70,7 @@ def store(downloaded_file):
             testpunten[testpunt] += 1
 
     writejson(os.path.join(cachedir, 'testlocaties.json'), testpunten)
+    return True
 
 
 def process(force=False):

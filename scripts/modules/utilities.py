@@ -5,6 +5,8 @@ from urllib.error import URLError, HTTPError
 import datetime
 import time
 from operator import itemgetter
+from tqdm import tqdm
+import sys
 
 
 from defaults import timezone, cachedir
@@ -47,15 +49,27 @@ def downloadIfStale(filename, url, binary=False, force=False):
             # print('last modified: '+str(lastmodified))
 
             if force or (lastmodified > lastdownload) or (os.path.getsize(filename) < 10):
-                print("Downloading new: %s" % filename)
+                total_size = int(response.getheader('Content-Length').strip() or 0)
+                print(f"Downloading new: {filename}, size {total_size}.")
                 tempfile = "%s.tmp" % filename
-                if binary:
-                    with open(tempfile, 'w+b') as f:
-                        f.write(response.read())
+
+                block_size = 1024  # 1 Kilobyte
+                # Initialize tqdm only if running in a terminal
+                if sys.stdout.isatty():
+                    progress_bar = tqdm(total=total_size, unit='B', unit_scale=True, desc=tempfile)
                 else:
-                    with open(tempfile, 'w') as f:
-                        charset = meta.get_content_charset() or 'utf-8'
-                        f.write(response.read().decode(charset))
+                    progress_bar = None
+
+                with open(tempfile, 'wb') as out_file:
+                    while True:
+                        buffer = response.read(block_size)
+                        if not buffer:
+                            break
+                        out_file.write(buffer)
+                        if progress_bar:
+                            progress_bar.update(len(buffer))
+                    if progress_bar:
+                            progress_bar.close()
 
                 if os.path.getsize(tempfile) > 100:
                     # Move the downloaded file in place

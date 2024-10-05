@@ -15,7 +15,7 @@ from metenisweten import initrecord
 from datecache import dateCache
 
 
-def download(force=False):
+def download(force=False) -> str:
     filename = os.path.join(cachedir, "COVID-19_reproductiegetal.json")
     if downloadIfStale(
         filename=filename,
@@ -26,9 +26,9 @@ def download(force=False):
         return None
 
 
-def store(downloaded_file):
+def store(downloaded_file) -> bool:
     if downloaded_file == None:
-        return    
+        return False
 
     data = readjson(downloaded_file)
     for record in data:
@@ -45,6 +45,8 @@ def store(downloaded_file):
             m['Rt_up'] = record['Rt_up']
         if 'population' in record:
             m['Rt_population'] = record['population']
+    
+    return True
 
 def process(force=False):
     """Download and process the data"""

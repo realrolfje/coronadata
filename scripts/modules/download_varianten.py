@@ -12,7 +12,7 @@ from metenisweten import initrecord
 from datecache import dateCache
 
 
-def download(force=False):
+def download(force=False) -> str:
     filename = os.path.join(cachedir, "COVID-19_varianten.json")
     if downloadIfStale(
         filename=filename,
@@ -23,9 +23,9 @@ def download(force=False):
         return None
 
 
-def store(downloaded_file):
+def store(downloaded_file) -> bool:
     if downloaded_file == None:
-        return    
+        return False 
 
     data = readjson(downloaded_file)
     for record in data:
@@ -40,8 +40,9 @@ def store(downloaded_file):
                 'sample_size': record['Sample_size'],
                 'cases': record['Variant_cases']
             }
-        if datum.startswith('2024'):
-            print(f"{datum} {m['varianten'][record['Variant_code']]} {m['varianten'][record['Variant_code']]['sample_size']} {m['varianten'][record['Variant_code']]['cases']}")
+        # if datum.startswith('2024'):
+        #     print(f"{datum} {m['varianten'][record['Variant_code']]} {m['varianten'][record['Variant_code']]['sample_size']} {m['varianten'][record['Variant_code']]['cases']}")
+    return True
 
 
 def process(force=False):

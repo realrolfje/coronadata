@@ -2,7 +2,7 @@ mkdir -p cache
 rm -f cache/errors.log
 
 # Workaround for strange download problem variants
-rm -f cache/COVID-19_varianten.json
+# rm -f cache/COVID-19_varianten.json
 
 cd scripts
 

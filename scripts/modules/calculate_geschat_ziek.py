@@ -44,8 +44,6 @@ def calculate():
             print(f"{datum} no RNA")
             continue
 
-        # print(f"{datum} {sample_size} -> {cases} -> {totaal_rna}")
-
         dates.append(datum)
         ziek.append(
             ((1000000*cases/sample_size)
@@ -59,6 +57,7 @@ def calculate():
     for i in range(len(dates)):
         date = dates[i]
         metenisweten[date]['rolf_besmettelijk'] = ziek[i]
+        print(f"{date} geschat ziek {ziek[i]}")
 
 
 if __name__ == "__main__":

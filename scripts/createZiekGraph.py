@@ -71,6 +71,8 @@ def createZiekGraph(metenisweten, events):
     if (lastDays>0):
         date_range = date_range[-lastDays:]
 
+    filedate = 'onbekend'
+
     for d in date_range:
         datum = d.strftime("%Y-%m-%d")
 
@@ -253,7 +255,6 @@ def createZiekGraph(metenisweten, events):
 
     footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
-
 
     footerright="Publicatiedatum RIVM "+filedate+".\nBronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")

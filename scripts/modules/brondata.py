@@ -39,6 +39,7 @@ from download_varianten import process as process_varianten
 from calculate_geschat_ziek import calculate as calculate_geschat_ziek
 
 
+
 def downloadMostRecentAppleMobilityReport(filename):
     if os.path.isfile(filename) and os.stat(filename).st_mtime > (time.time() - 3600):
         # print(filename+" exists.")
@@ -136,24 +137,11 @@ def download():
         'https://data.rivm.nl/covid-19/COVID-19_Infectieradar_symptomen_per_dag.json'
     ) or freshdata
 
-    # freshdata = downloadIfStale(
-    #     '../cache/COVID-19_varianten.json',
-    #     'https://data.rivm.nl/covid-19/COVID-19_varianten.json'
-    # ) or freshdata
 
     freshdata = downloadIfStale(
         '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json',
         'https://data.rivm.nl/covid-19/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
     ) or freshdata
-
-    # freshdata = downloadIfStale(
-    #     '../cache/Google_Global_Mobility_Report.csv',
-    #     'https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv'
-    # ) or freshdata
-
-    # freshdata = downloadMostRecentAppleMobilityReport(
-    #     '../cache/Apple_Global_Mobility_Report.csv'
-    # ) or freshdata
 
     return freshdata
 
@@ -424,162 +412,6 @@ def builddaily():
                 m['nu_opgenomen_lcps'] = intOrNone(kliniek_bedden)
             line_count = line_count + 1
 
-    # print("Load covid variant statistics")
-    # filename = '../cache/COVID-19_varianten.json'
-    # with open(filename, 'r') as json_file:
-    #     data = json.load(json_file)
-    #     for record in data:
-    #         datum = record['Date_of_statistics_week_start']
-    #         m = initrecord(datum)
-    #         if record['Variant_code'] not in m['varianten']:
-    #             m['varianten'][record['Variant_code']] = {
-    #                 'name': record['Variant_name'],
-    #                 'ECDC_category': record['ECDC_category'],
-    #                 'WHO_category': record['WHO_category'],
-    #                 'includes_old_samples': record.get('May_include_samples_listed_before', False),
-    #                 'sample_size': record['Sample_size'],
-    #                 'cases': record['Variant_cases']
-    #             }
-
-    # print("Load vaccinatiegraad per leeftijd/gemeente")
-    # filename = '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
-    # with open(filename, 'r') as json_file:
-    #     data = json.load(json_file)
-    #     for record in data:
-    #         datum = record['Date_of_statistics']
-    #         initrecord(datum, metenisweten)
-
-    # print("Load Apple Mobility Data")
-    # filename ='../cache/Apple_Global_Mobility_Report.csv'
-    # with open(filename, 'r') as csv_file:
-    #     csv_reader = csv.reader(csv_file, delimiter=',')
-    #     line_count = 0
-    #     translate = {'walking': 'lopen', 'transit': 'OV', 'driving': 'rijden'}
-    #     for row in csv_reader:
-    #         if line_count == 0:
-    #             headers = row
-    #         elif row[0] == 'country/region' and row[1] == 'Netherlands':
-    #             for idx,datum in enumerate(headers[6:]):
-    #                 vervoertype = translate[row[2]]
-    #                 percentagestr = row[idx+6]
-    #                 if percentagestr:
-    #                     initrecord(datum, metenisweten)
-    #                     metenisweten[datum]['mobiliteit'][vervoertype] = float(percentagestr)
-    #         line_count = line_count + 1
-
-    print("Vaccinaties")
-    filename = '../cache/rijksoverheid-coronadashboard-NL.json'
-    # 2023-11-11 Corona Dashboard is changed...
-    # with open(filename, 'r') as json_file:
-    #     data = json.load(json_file)
-
-    #     cachedDate = None
-    #     cachedDateValid = False
-    #     for record in data['vaccine_administered']['values']:
-    #         if cachedDate != record['date_end_unix']:
-    #             d = datetime.datetime.utcfromtimestamp(
-    #                 int(record['date_end_unix']))
-    #             if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-    #                 print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > ' +
-    #                       datetime.datetime.today().date().strftime('%Y-%m-%d'))
-    #                 cachedDateValid = False
-    #             else:
-    #                 cachedDateValid = True
-    #                 datum = d.strftime('%Y-%m-%d')
-
-    #         if not cachedDateValid:
-    #             continue
-
-    #         initrecord(datum, metenisweten)
-    #         metenisweten[datum]['vaccinaties']['astra_zeneca'] = intOrNone(
-    #             record['astra_zeneca'])
-    #         metenisweten[datum]['vaccinaties']['pfizer'] = intOrNone(
-    #             record['pfizer'])
-    #         metenisweten[datum]['vaccinaties']['moderna'] = intOrNone(
-    #             record['moderna'])
-    #         metenisweten[datum]['vaccinaties']['janssen'] = intOrNone(
-    #             record['janssen'])
-    #         metenisweten[datum]['vaccinaties']['totaal'] = intOrNone(
-    #             record['total'])
-    #         # metenisweten[datum]['vaccinaties']['cure_vac']     = intOrNone(record['cure_vac'])
-    #         # metenisweten[datum]['vaccinaties']['sanofi']       = intOrNone(record['sanofi'])
-
-    #         previousPredictionDate = d
-    #         laatste_totaal = intOrNone(record['total'])
-
-    #         if intOrZero(record['janssen']) > 0 and intOrZero(record['total']) > 0:
-    #             percentage_dubbele_vaccins = 1 - \
-    #                 (intOrZero(record['janssen'])/intOrZero(record['total']))
-
-    #     # Load all predictions
-
-    #     # Vaccinatie administratie wordt niet meer (of niet op dezelfde manier) meer gedaan
-    #     # voorspelling_vaccinaties = { }
-    #     # if 'vaccine_administered_estimate' in data:
-    #     #     for record in data['vaccine_administered_estimate']['values']:
-    #     #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-    #     #         voorspelling_vaccinaties[d] = intOrNone(record['total'])
-    #     #         # print(intOrNone(record['total']))
-    #     # else:
-    #     #     logError("No data['vaccine_administered_estimate']")
-
-    #     # # Interpolate prediction to TODAY
-    #     nextPredictionValue = 0
-    #     # for key, value in voorspelling_vaccinaties.items():
-    #     #     # Get first next date
-    #     #     if key >= datetime.datetime.now():
-    #     #         nextPredictionDate = key
-    #     #         nextPredictionValue = value
-    #     #         break
-
-    #     if (nextPredictionValue > 0):
-    #         # print("Laatste waarde %s")
-    #         # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionDate), str(nextPredictionDate)))
-    #         # print("VACCINATIES: previous %s, next %s" % (str(previousPredictionValue), str(nextPredictionValue)))
-    #         linearFactor = (datetime.datetime.now() - previousPredictionDate).total_seconds(
-    #         ) / (nextPredictionDate - previousPredictionDate).total_seconds()
-    #         linearValue = round(laatste_totaal + linearFactor *
-    #                             (nextPredictionValue - laatste_totaal))
-
-    #         datum = datetime.datetime.today().date().strftime('%Y-%m-%d')
-    #         initrecord(datum, metenisweten)
-    #         metenisweten[datum]['vaccinaties']['totaal_geschat'] = linearValue
-    #         metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = linearValue - \
-    #             (linearValue*percentage_dubbele_vaccins)/2
-    #     else:
-    #         metenisweten[datum]['vaccinaties']['totaal_geschat'] = laatste_totaal
-    #         metenisweten[datum]['vaccinaties']['totaal_mensen_geschat'] = laatste_totaal - (
-    #             laatste_totaal*percentage_dubbele_vaccins)/2
-
-    #     # print("VACCINATIES: previous %s, next %s" % (str(datum), str(linearValue)))
-
-    #     # Vaccinaties worden niet meer (of niet meer op dezelde manier) bijgehouden
-    #     # Get actual vaccine deliveries
-    #     # if 'vaccine_delivery' in data:
-    #     #     for record in data['vaccine_delivery']['values']:
-    #     #         d = datetime.datetime.utcfromtimestamp(int(record['date_end_unix']))
-    #     #         if (datetime.datetime.date(d) > datetime.datetime.today().date()):
-    #     #             print(datetime.datetime.date(d).strftime('%Y-%m-%d')+' > '+datetime.datetime.today().date().strftime('%Y-%m-%d'))
-    #     #             # Skip estimates from RIVM
-    #     #             continue
-
-    #     #         datum =  d.strftime('%Y-%m-%d')
-    #     #         initrecord(datum, metenisweten)
-    #     #         metenisweten[datum]['vaccinaties']['geleverd']       = intOrNone(record['total'])
-    #     # else:
-    #     #     logError("No data['vaccine_delivery']")
-
-    #     # Hardcode start of vaccination at 0 in 2020
-    #     datum = '2020-12-01'
-    #     initrecord(datum, metenisweten)
-    #     metenisweten[datum]['vaccinaties']['astra_zeneca'] = 0
-    #     metenisweten[datum]['vaccinaties']['pfizer'] = 0
-    #     metenisweten[datum]['vaccinaties']['cure_vac'] = 0
-    #     metenisweten[datum]['vaccinaties']['janssen'] = 0
-    #     metenisweten[datum]['vaccinaties']['moderna'] = 0
-    #     metenisweten[datum]['vaccinaties']['sanofi'] = 0
-    #     metenisweten[datum]['vaccinaties']['totaal'] = 0
-
     print("Calculate average number of ill people based on Rna measurements")
     dates = []
     rna = []
@@ -624,29 +456,6 @@ def builddaily():
             gemiddeld = som/positief
             metenisweten[datum]['besmettingleeftijd_gemiddeld'] = gemiddeld
 
-    # print("Calculate average number of ill people based on tests and rna data (magic formula)")
-    # dates = []
-    # ziek = []
-    # for datum in metenisweten:
-    #     if datum in metenisweten \
-    #             and ('rivm_totaal_tests' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests'] != None \
-    #             and ('rivm_totaal_tests_positief' in metenisweten[datum]) and metenisweten[datum]['rivm_totaal_tests_positief'] != None \
-    #             and (metenisweten[datum]['RNA']['totaal_RNA_per_100k'] > 1):
-
-    #         dates.append(datum)
-    #         ziek.append(
-    #             ((1000000*metenisweten[datum]['rivm_totaal_tests_positief']/metenisweten[datum]['rivm_totaal_tests'])
-    #              + (3 * metenisweten[datum]['rivm_totaal_tests'])
-    #                 + (22 * metenisweten[datum]['rivm_totaal_tests_positief']))
-    #             * log(metenisweten[datum]['RNA']['totaal_RNA_per_100k'], 10)
-    #             / 44
-    #         )
-
-    # ziek = smooth(ziek)
-    # for i in range(len(dates)):
-    #     date = dates[i]
-    #     metenisweten[date]['rolf_besmettelijk'] = ziek[i]
-
     print("Calculate totals")
     totaal_positief = 0
     totaal_opgenomen = 0
@@ -665,16 +474,17 @@ def builddaily():
 
 
 def freshdata():
-    if download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
+
+    # New way of doing things. Download and add data:
+    newData =  process_casus_landelijk() \
+                or process_Rt() \
+                or process_Zkh() \
+                or process_varianten()
+    
+    if download() or newData or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()
 
-        # New way of doing things. Download and add data:
-        process_casus_landelijk()
-        process_Rt()
-        process_Zkh()
-        process_varianten()
-
-        # Calculate derived data
+        # New way of calculating:
         calculate_geschat_ziek()
         
         # Write processed and sorted data
