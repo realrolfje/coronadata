@@ -57,7 +57,8 @@ def calculate():
     for i in range(len(dates)):
         date = dates[i]
         metenisweten[date]['rolf_besmettelijk'] = ziek[i]
-        print(f"{date} geschat ziek {ziek[i]}")
+
+    print(f"Laatste geschat ziek gegevens op {dates[-1]}, {ziek[i]} zieken.")
 
 
 if __name__ == "__main__":

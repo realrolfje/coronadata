@@ -13,7 +13,7 @@ class DateCache:
     todaysDate = datetime.date.today()
 
     # Cache parsed dates.
-    def parse(self, dateString) -> datetime:
+    def parse(self, dateString:str) -> datetime:
         """Cache correctly parsed dates. Strings which are not
         valid dates are not cached, raise an exception and thus
         also slow things down."""
@@ -27,7 +27,10 @@ class DateCache:
             self.cachedDates[dateString] = parseddate
             return parseddate
 
-    def isvaliddate(self, datestring, filename=None):
+    def isvaliddate(self, datestring: str, filename:str=None) -> bool:
+        """Returns True if the date is parsable, not too old, and not in the future.
+        Returns False if the date is parsable, too old and in the past
+        Throws a ValueError if the date cannot be parsed."""
         try:
             parseddate = self.parse(datestring)
             if (isinstance(parseddate, datetime.datetime)):
@@ -52,7 +55,7 @@ class DateCache:
         return self.todaysDate
 
 
-    def cacheUse(self):
+    def cacheUse(self) -> float:
         if (self.cacheMisses == 0):
             return 0
         else:

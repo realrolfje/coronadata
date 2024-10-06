@@ -10,7 +10,7 @@ from datetime import datetime, date, timedelta
 import sys
 
 def main():
-    runIfNewData(__file__)
+    # runIfNewData(__file__)
     metenisweten = brondata.readjson('../data/daily-stats.json')
     varianten = brondata.readjson('../cache/COVID-19_varianten.json')
     createVariantenGraph(metenisweten, varianten)
@@ -86,14 +86,15 @@ def createVariantenGraph(metenisweten, varianten):
             logError(f"Variant has more cases than samplesize. Cases: {varianten_map[d][c]['cases']} Size: {varianten_map[d][c]['size']} Record: {record}")
             sys.exit(1)
     
+    print(f"Last week date with varianten: {d}")
+    
     # print("-----")
     # printDict(varianten_map['2023-02-13'])
     # print("-----")
 
 
     # Correct the prevalence by subtracting subtypes
-    for d in varianten_map:
-        varianten = varianten_map[d]
+    for d, varianten in varianten_map.items():
         # print(d)
         # print('--------------------------')
         # printDict(varianten)
@@ -103,7 +104,6 @@ def createVariantenGraph(metenisweten, varianten):
         def correctPrevalence(c):
             # Trek alle subvarianten af van de totale prevalentie van de parent
             for v in varianten:
-
                 if varianten[v]['sub_of'] == c:
                     if varianten[v]['cases'] > varianten[c]['cases']:
                         print(f'More cases for subtype {v} than in {c}')
@@ -141,6 +141,8 @@ def createVariantenGraph(metenisweten, varianten):
 
         if total > 1.10:
             logError('Error, prevalence incorrect: %s - %.3f' % (d, total))
+
+    print(f"Laatst gecorriceerde variant datum: {d}")
 
     # print("-----")
     # printDict(varianten_map['2023-02-13'])
@@ -207,14 +209,30 @@ def createVariantenGraph(metenisweten, varianten):
         if key in metenisweten and metenisweten[key]['rolf_besmettelijk']:
             totaal_ziek['x'].append(k)
             totaal_ziek['y'].append(metenisweten[key]['rolf_besmettelijk'])
+        else:
+            print(f"{key} not in metenisweten or not rolf_besmettelijk")
             
         weeklater = (dateCache.parse(key) + timedelta(days=7)).strftime('%Y-%m-%d')
 
+        weeklater_opgenomen = metenisweten.get(weeklater, {}).get('nu_opgenomen')
+        if not weeklater_opgenomen:
+            print("Geen opnames op {weeklater}")
+            continue
+
+        weeklater_op_ic = metenisweten.get(weeklater, {}).get('nu_op_ic')
+        if not weeklater_op_ic:
+            print("Geen ic opnames op {weeklater}")
+            continue
+
+        weeklater_rolf_besmettelijk = metenisweten.get(weeklater, {}).get('rolf_besmettelijk')
+        if not weeklater_rolf_besmettelijk:
+            print("Geen besmettelijk berekening op {weeklater}")
+            continue
+
         # Calculate the number of infections against hospitalization
-        if weeklater in metenisweten and metenisweten[weeklater]['nu_opgenomen'] and metenisweten[weeklater]['nu_op_ic'] and metenisweten[weeklater]['rolf_besmettelijk']:
-            kans = 100 * (metenisweten[weeklater]['nu_opgenomen'] + metenisweten[weeklater]['nu_op_ic']) / metenisweten[weeklater]['rolf_besmettelijk']
-            opnamekans['x'].append(dateCache.parse(weeklater))
-            opnamekans['kans'].append(kans)
+        kans = 100 * (weeklater_opgenomen + weeklater_op_ic) / weeklater_rolf_besmettelijk
+        opnamekans['x'].append(dateCache.parse(weeklater))
+        opnamekans['kans'].append(kans)
 
 
     # Find when a variant becomes dominant
@@ -227,7 +245,7 @@ def createVariantenGraph(metenisweten, varianten):
             if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
-        # print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
+        print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
         dominance.append(dominant)
 
 
@@ -422,9 +440,12 @@ def createVariantenGraph(metenisweten, varianten):
 
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/variants-"+str(lastDays)+".svg", format="svg")
+        filename = "../docs/graphs/variants-"+str(lastDays)+".svg"
     else:
-        plt.savefig("../docs/graphs/variants.svg", format="svg")
+        filename = "../docs/graphs/variants.svg"
+    
+    print(f"Saving to {filename}")
+    plt.savefig(filename, format="svg")
 
     dateCache.cacheReport()
 
