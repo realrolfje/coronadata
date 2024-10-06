@@ -81,14 +81,15 @@ def createRtraph(metenisweten):
     # Laat afkappunt R zien (is twee weken geleden)
     plt.axvline(dateCache.today() - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
 
-    plt.annotate(
-        decimalstring(Rt_avg['y'][-1]),
-        xy=(Rt_avg['x'][-1], Rt_avg['y'][-1]),
-        xytext=(Rt_avg['x'][-1], Rt_avg['y'][-1]+0.5),
-        fontsize=8,
-        bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
-        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-    )
+    if len(Rt_avg['y']) > 1 and len(Rt_avg['x']) > 1:
+        plt.annotate(
+            decimalstring(Rt_avg['y'][-1]),
+            xy=(Rt_avg['x'][-1], Rt_avg['y'][-1]),
+            xytext=(Rt_avg['x'][-1], Rt_avg['y'][-1]+0.5),
+            fontsize=8,
+            bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=1),
+            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+        )
 
     axes = plt.gca()
     axes.set_ylim([0,3])
@@ -96,11 +97,12 @@ def createRtraph(metenisweten):
     axes.set_xlabel("Datum")
     axes.set_ylabel("Reproductiegetal")
 
-
     gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     plt.title('Reproductiegetal')
 
-    R_op=Rt_avg['x'][-1].strftime("%Y-%m-%d")
+    if len(Rt_avg['x']) > 1:
+        R_op=Rt_avg['x'][-1].strftime("%Y-%m-%d")
+    else: R_op = "onbekend"
 
     footerleft="Gegenereerd op "+gegenereerd_op+", Rt berekend tot "+R_op+".\nSource code: http://github.com/realrolfje/coronadata"
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
@@ -109,9 +111,12 @@ def createRtraph(metenisweten):
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/reproductiegetal-"+str(lastDays)+".svg", format="svg")
+        filename = "../docs/graphs/reproductiegetal-"+str(lastDays)+".svg"
     else:
-        plt.savefig("../docs/graphs/reproductiegetal.svg", format="svg")
+        filename = "../docs/graphs/reproductiegetal.svg"
+
+    print(f"Saving {filename}")
+    plt.savefig(filename, format="svg")
         
     dateCache.cacheReport()
 
