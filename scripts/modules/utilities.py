@@ -29,7 +29,7 @@ def downloadIfStale(filename, url, binary=False, force=False):
     else:
         lastdownload = datetime.datetime.fromtimestamp(0, tz=timezone)
 
-    if (not force) and lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours=1)):
+    if (not force) and lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(hours=6)):
         # If just downloaded or checked, don't bother checking with the server
         print("Just downloaded: %s on %s" % (filename, lastdownload))
         return False

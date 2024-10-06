@@ -102,11 +102,14 @@ def createHeatmap(metenisweten, events):
     #plt.hist2d(x, y, bins=[x[-1]+7,10], range=[[0,x[-1]+7],[0,100]], cmap='inferno', weights=weights)
 
     # Ongewogen:
-    heatmap.hist2d(
-        x, y, 
-        bins=[120,10], range=[[0,x[-1]+7],[0,100]], 
-        cmin=1, cmap='Blues'
-    ) # inferno is also a good one
+    try:
+        heatmap.hist2d(
+            x, y, 
+            bins=[120,10], range=[[0,x[-1]+7],[0,100]], 
+            cmin=1, cmap='Blues'
+        ) # inferno is also a good one
+    except IndexError as e:
+        print("Error bij maken heatmap: "+e)
 
     leeftijdx = [(x-startdate).days for x in gemiddeldeleeftijd['x']]
     # print("Heatmap runs from %d to %d" % (min(x), max(x)))

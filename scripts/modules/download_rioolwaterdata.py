@@ -36,10 +36,7 @@ def store(downloaded_file) -> bool:
             cachedDate = record['Date_measurement']
 
             # Fix rioolwaterdate. Non-ISO date 01-02-2020 will become ISO date 2020-02-01
-            stringdate = record['Date_measurement']
-            if re.search('-\d{4}$', stringdate):
-                stringdate = datetime.datetime.strptime(stringdate, "%d-%m-%Y").strftime("%Y-%m-%d")
-
+            stringdate = dateCache.sanitizeDate(record['Date_measurement'])
             if not dateCache.isvaliddate(stringdate, downloaded_file):
                 stringdate = None
 

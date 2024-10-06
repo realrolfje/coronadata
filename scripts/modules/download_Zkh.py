@@ -52,6 +52,8 @@ def store_intake_count(filename) -> bool:
     for record in readjson(filename):
         if dateCache.isvaliddate(record['date'], filename):
             initrecord(record['date'])['nu_op_ic'] = record['value']
+            last = record['date']
+    print(f"Newest IC intake count data: {last}")
     return True
 
 
@@ -61,6 +63,7 @@ def store_intake_cumulative(filename) -> bool:
     for record in readjson(filename):
         if dateCache.isvaliddate(record['date'], filename):
             initrecord(record['date'])['geweest_op_ic'] += record['value']
+    print(f"Newest IC intake cumulative data: {last}")
     return True
 
 
@@ -70,6 +73,7 @@ def store_zkh_intake_count(filename) -> bool:
     for record in readjson(filename):
         if not dateCache.isvaliddate(record['date'], filename):
             initrecord(record['date'])['nu_opgenomen'] = record['value']
+    print(f"Newest hospital intake count data: {last}")
     return True
 
 

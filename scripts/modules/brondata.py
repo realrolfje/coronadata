@@ -38,6 +38,7 @@ from download_Zkh import process as process_Zkh
 from download_casus_landelijk import process as process_casus_landelijk
 from download_varianten import process as process_varianten
 from download_rioolwaterdata import process as process_rioolwaterdata
+from download_lcps_ziekenhuisopnames import process as process_lcps_ziekenhuisopnames
 
 from calculate_geschat_ziek import calculate as calculate_geschat_ziek
 
@@ -421,6 +422,7 @@ def freshdata():
     newData =  [process_casus_landelijk(),
                 process_Rt(),
                 process_Zkh(),
+                process_lcps_ziekenhuisopnames(),
                 process_varianten(),
                 process_rioolwaterdata]
     

@@ -11,6 +11,7 @@ from modules.brondata import decimalstring
 from modules.datautil import anotate
 import sys
 from modules.datautil import runIfNewData
+from modules.datecache import dateCache
 
 
 def main():
@@ -38,41 +39,42 @@ def createZiekenhuisTotaalGraph(metenisweten):
     date_range = brondata.getDateRange(metenisweten)
 
     for d in date_range:
-        datum = d.strftime("%Y-%m-%d")
+        datum = d.strftime("%Y-%m-%d") # Convert back to String
+        m = metenisweten.get(datum)
 
         # ------------ Totaal positief en laatste meetdatum
-        if datum in metenisweten and parser.parse(datum).date() <= datetime.date.today():
-            if metenisweten[datum]['rivm-datum']:
-                filedate = metenisweten[datum]['rivm-datum']
+        if m and dateCache.isvaliddate(datum):
+            if m['rivm-datum']:
+                filedate = m['rivm-datum']
 
 
         # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
-        if datum in metenisweten and parser.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
-            if 'nu_op_ic' in metenisweten[datum] and metenisweten[datum]['nu_op_ic']\
-                and 'nu_opgenomen' in metenisweten[datum] and metenisweten[datum]['nu_opgenomen']:
+        if m and dateCache.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
+            nu_op_ic = m.get('nu_op_ic') or None
+            nu_opgenomen = m.get('nu_opgenomen') or None
 
-                ic['x'].append(parser.parse(datum))
-                ic['y'].append(metenisweten[datum]['nu_op_ic'])
+            if nu_op_ic != None and nu_opgenomen != None:
+                ic['x'].append(dateCache.parse(datum))
+                ic['y'].append(nu_op_ic)
 
-                opgenomen['x'].append(parser.parse(datum))
-                opgenomen['y'].append(metenisweten[datum]['nu_opgenomen'])
+                opgenomen['x'].append(dateCache.parse(datum))
+                opgenomen['y'].append(nu_opgenomen)
             
                 totaal.append(ic['y'][-1] + opgenomen['y'][-1])
+        else:
+            print(f"skipped {datum}")
 
     print('Generating total hospitalized graph')
 
     fig, ax1 = plt.subplots(figsize=(10, 5))
     fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 
-
     ax1.grid(which='both', axis='both', linestyle='-.',
             color='gray', linewidth=1, alpha=0.3)
-
 
     nu_opgenomen = opgenomen['y'][-1]
     nu_op_ic = ic['y'][-1]
     nu_totaal = totaal[-1]
-
 
     plt.stackplot(
         opgenomen['x'],

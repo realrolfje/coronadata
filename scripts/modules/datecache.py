@@ -3,6 +3,7 @@
 # Class caching parsed dates for speed optimization
 import datetime
 from dateutil import parser
+import re
 
 class DateCache:
     """Class for caching parsed dates. Caching is way quicker than parsing."""
@@ -23,9 +24,19 @@ class DateCache:
             return fromcache
         except KeyError:
             self.cacheMisses += 1
+
+            # Turn dd-mm-yyyy into yyyy-mm-dd if needed
+            if re.search('-\d{4}$', dateString):
+                dateString = datetime.datetime.strptime(dateString, "%d-%m-%Y").strftime("%Y-%m-%d")
+
             parseddate = parser.parse(dateString)
             self.cachedDates[dateString] = parseddate
             return parseddate
+
+
+    def sanitizeDate(self, dateString:str) -> str:
+        self.parse(dateString).strftime("%Y-%m-%d")        
+
 
     def isvaliddate(self, datestring: str, filename:str=None) -> bool:
         """Returns True if the date is parsable, not too old, and not in the future.
