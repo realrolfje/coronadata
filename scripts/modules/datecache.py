@@ -13,7 +13,7 @@ class DateCache:
     todaysDate = datetime.date.today()
 
     # Cache parsed dates.
-    def parse(self, dateString):
+    def parse(self, dateString) -> datetime:
         """Cache correctly parsed dates. Strings which are not
         valid dates are not cached, raise an exception and thus
         also slow things down."""

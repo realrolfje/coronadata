@@ -32,10 +32,13 @@ from utilities \
            decimalstring, isnewer, switchdecimals, \
            logError
 from metenisweten import metenisweten, initrecord, writeMetenIsWeten
+
 from download_Rt import process as process_Rt
 from download_Zkh import process as process_Zkh
 from download_casus_landelijk import process as process_casus_landelijk
 from download_varianten import process as process_varianten
+from download_rioolwaterdata import process as process_rioolwaterdata
+
 from calculate_geschat_ziek import calculate as calculate_geschat_ziek
 
 
@@ -92,18 +95,6 @@ def download():
         return True
 
     freshdata = downloadECDCMap() or freshdata
-
-    # freshdata = downloadIfStale(
-    #     '../cache/COVID-19_ziekenhuisopnames.json',
-    #     'https://data.rivm.nl/covid-19/COVID-19_ziekenhuisopnames.json'
-    # ) or freshdata
-
-    # https://data.rivm.nl/geonetwork/srv/dut/catalog.search#/metadata/a2960b68-9d3f-4dc3-9485-600570cd52b9
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_rioolwaterdata.json',
-        'https://data.rivm.nl/covid-19/COVID-19_rioolwaterdata.json'
-    ) or freshdata
-
 
     freshdata = downloadIfStale(
         '../cache/COVID-19_prevalentie.json',
@@ -197,55 +188,6 @@ def builddaily():
     # with open(filename, 'r') as json_file:
     #     veiligheidsregios = json.load(json_file)
 
-    print("Add RNA sewage data per region")
-    filename = '../cache/COVID-19_rioolwaterdata.json'
-    with open(filename, 'r') as json_file:
-        data = json.load(json_file)
-        cachedDate = None
-        cachedDateValid = False
-        for record in data:
-            if cachedDate != record['Date_measurement']:
-                cachedDate = record['Date_measurement']
-
-                # Fix rioolwaterdate. Non-ISO date 01-02-2020 will become ISO date 2020-02-01
-                stringdate = record['Date_measurement']
-                if re.search('-\d{4}$', stringdate):
-                    stringdate = datetime.datetime.strptime(
-                        stringdate, "%d-%m-%Y").strftime("%Y-%m-%d")
-
-                if not dateCache.isvaliddate(stringdate, filename):
-                    cachedDateValid = False
-                else:
-                    cachedDateValid = True
-
-            if not cachedDateValid:
-                continue
-
-            if 'RNA_flow_per_100000' in record and record['RNA_flow_per_100000']:
-                rnavalue = int(record['RNA_flow_per_100000'])
-                # print(str(rnavalue), end=",")
-            else:
-                # print("No RNA Flow data in %s (%s) for date %s." % (record['RWZI_AWZI_name'],record['RWZI_AWZI_code'],stringdate))
-                continue
-
-            m = initrecord(stringdate)
-            m['RNA']['totaal_RNA_per_100k'] += rnavalue
-            m['RNA']['totaal_RNA_metingen'] += 1
-            m['RNA']['RNA_per_100k_avg'] = m['RNA']['totaal_RNA_per_100k'] / \
-                m['RNA']['totaal_RNA_metingen']
-
-            # regiocode = record['Security_region_code']
-            # if regiocode not in m['RNA']:
-            #     m['RNA']['regio'][regiocode] = {
-            #         'totaal_RNA_per_100k'    : 0,
-            #         'totaal_RNA_metingen'  : 0,
-            #         'RNA_per_100k_avg'       : 0,
-            #         'inwoners'             : veiligheidsregios[regiocode]['inwoners'],
-            #         'oppervlak'            : veiligheidsregios[regiocode]['oppervlak']
-            #     }
-            # m['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] += rnavalue
-            # m['RNA']['regio'][regiocode]['totaal_RNA_metingen'] += 1
-            # m['RNA']['regio'][regiocode]['RNA_per_100k_avg'] = metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_per_100k'] / metenisweten[stringdate]['RNA']['regio'][regiocode]['totaal_RNA_metingen']
 
     print("Add estimated ill based on RIVM (prevalentie)")
     filename = '../cache/COVID-19_prevalentie.json'
@@ -476,12 +418,13 @@ def builddaily():
 def freshdata():
 
     # New way of doing things. Download and add data:
-    newData =  process_casus_landelijk() \
-                or process_Rt() \
-                or process_Zkh() \
-                or process_varianten()
+    newData =  [process_casus_landelijk(),
+                process_Rt(),
+                process_Zkh(),
+                process_varianten(),
+                process_rioolwaterdata]
     
-    if download() or newData or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
+    if any(newData) or download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()
 
         # New way of calculating:

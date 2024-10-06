@@ -98,6 +98,7 @@ def downloadIfStale(filename, url, binary=False, force=False):
         logError("Problem opening file. %s" % (e))
         return False
 
+
 def readjson(filename):
     print('Reading '+filename)
     with open(filename, 'r') as json_file:
