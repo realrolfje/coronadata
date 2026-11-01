@@ -5,14 +5,15 @@ from matplotlib import pyplot as plt
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol, logError
+from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
 from modules.datautil import anotate, runIfNewData
 from datetime import datetime, date, timedelta
 import sys
 
 def main():
     # runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    varianten = brondata.readjson('../cache/COVID-19_varianten.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    varianten = brondata.readjson(CACHE_DIR / 'COVID-19_varianten.json')
     createVariantenGraph(metenisweten, varianten)
 
 def createVariantenGraph(metenisweten, varianten):
@@ -440,9 +441,9 @@ def createVariantenGraph(metenisweten, varianten):
 
 
     if (lastDays > 0):
-        filename = "../docs/graphs/variants-"+str(lastDays)+".svg"
+        filename = GRAPHS_DIR / ("variants-"+str(lastDays)+".svg")
     else:
-        filename = "../docs/graphs/variants.svg"
+        filename = GRAPHS_DIR / "variants.svg"
     
     print(f"Saving to {filename}")
     plt.savefig(filename, format="svg")

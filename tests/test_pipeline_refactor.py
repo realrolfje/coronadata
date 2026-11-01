@@ -1,0 +1,71 @@
+import copy
+import json
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+
+from modules.brondata import dateCache
+from pipeline.calculations import calculate_cumulative_totals
+from pipeline.legacy_transform import transform_prevalence, transform_rivm_tests
+
+
+def record():
+    return {
+        "positief": 0, "nu_opgenomen": 0, "overleden": 0,
+        "rivm_schatting_besmettelijk": {"min": None, "max": None, "value": None},
+    }
+
+
+class PipelineRefactorTest(unittest.TestCase):
+    def test_date_parser_sanitizes_and_reuses_dates(self):
+        first = dateCache.parse("2020-03-01T10:30:00Z")
+        second = dateCache.parse("2020-03-01")
+        self.assertEqual("2020-03-01", dateCache.sanitizeDate("2020-03-01T10:30:00Z"))
+        self.assertEqual(first.date(), second.date())
+
+    def test_fixture_transform_merges_without_discarding_existing_fields(self):
+        daily = {"2020-03-01": record() | {"preserved": 42}}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "prevalence.json"
+            path.write_text(json.dumps([{"Date": "2020-03-01", "prev_low": "10", "prev_up": "30", "prev_avg": "20"}]))
+            report = transform_prevalence(path, daily)
+        self.assertEqual(3, report.observations_written)
+        self.assertEqual(42, daily["2020-03-01"]["preserved"])
+        self.assertEqual(20, daily["2020-03-01"]["rivm_schatting_besmettelijk"]["value"])
+
+    def test_source_transform_aggregates_rows_by_date(self):
+        daily = {}
+        def ensure(date):
+            return daily.setdefault(date, record())
+        fixture = [
+            {"Date_of_statistics": "2020-03-01", "Tested_with_result": 10, "Tested_positive": 2},
+            {"Date_of_statistics": "2020-03-01", "Tested_with_result": 5, "Tested_positive": 1},
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "tests.json"
+            path.write_text(json.dumps(fixture))
+            transform_rivm_tests(path, daily, ensure)
+        self.assertEqual(15, daily["2020-03-01"]["rivm_totaal_tests"])
+        self.assertEqual(3, daily["2020-03-01"]["rivm_totaal_tests_positief"])
+
+    def test_cumulative_calculation_is_deterministic(self):
+        daily = {"2020-03-01": record(), "2020-03-02": record()}
+        daily["2020-03-01"].update(positief=2, nu_opgenomen=1)
+        daily["2020-03-02"].update(positief=3, overleden=1)
+        first, second = copy.deepcopy(daily), copy.deepcopy(daily)
+        calculate_cumulative_totals(first)
+        calculate_cumulative_totals(second)
+        self.assertEqual(first, second)
+        self.assertEqual(5, first["2020-03-02"]["totaal_positief"])
+
+    def test_project_paths_do_not_depend_on_current_directory(self):
+        from modules.defaults import DAILY_STATS
+        self.assertEqual(PROJECT_ROOT / "data/daily-stats.json", DAILY_STATS)
+
+
+if __name__ == "__main__":
+    unittest.main()

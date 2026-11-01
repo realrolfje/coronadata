@@ -3,8 +3,8 @@
 import os
 from pathlib import Path
 
-from defaults import cachedir
-from metenisweten import initrecord
+from .defaults import cachedir
+from .metenisweten import initrecord
 from pipeline.download import fetch_json_source
 from pipeline.infectieradar_ari import parse
 

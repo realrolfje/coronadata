@@ -9,14 +9,15 @@ import sys
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
+from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    events = brondata.readjson('../data/measures-events.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createCovidTestsGraph(metenisweten, events)
 
 def createCovidTestsGraph(metenisweten, events):
@@ -219,9 +220,9 @@ def createCovidTestsGraph(metenisweten, events):
     ax2.legend(loc="upper right")
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/covidtests-"+str(lastDays)+".svg", format="svg")
+        plt.savefig(GRAPHS_DIR / ("covidtests-"+str(lastDays)+".svg"), format="svg")
     else:
-        plt.savefig("../docs/graphs/covidtests.svg", format="svg")
+        plt.savefig(GRAPHS_DIR / "covidtests.svg", format="svg")
 
     dateCache.cacheReport()
 

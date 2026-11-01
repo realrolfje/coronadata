@@ -9,13 +9,14 @@ import datetime
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, dateCache
+from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
 from modules.datautil import runIfNewData, anotate
 import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    events = brondata.readjson('../data/measures-events.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createZiekGraph(metenisweten, events)
 
 def createZiekGraph(metenisweten, events):
@@ -267,9 +268,9 @@ def createZiekGraph(metenisweten, events):
     ax2.legend(loc="upper right")
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/"+graphname+"-"+str(lastDays)+".svg", format="svg")
+        plt.savefig(GRAPHS_DIR / (graphname+"-"+str(lastDays)+".svg"), format="svg")
     else:
-        plt.savefig("../docs/graphs/"+graphname+".svg", format="svg")
+        plt.savefig(GRAPHS_DIR / (graphname+".svg"), format="svg")
 
     dateCache.cacheReport()
 

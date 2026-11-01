@@ -5,10 +5,10 @@
 #
 
 import os
-from utilities import downloadIfStale, readjson
-from defaults import cachedir
-from metenisweten import initrecord
-from datecache import dateCache
+from .utilities import readjson
+from .defaults import cachedir
+from .metenisweten import initrecord
+from .datecache import dateCache
 import re
 import datetime
 from pathlib import Path

@@ -6,10 +6,10 @@
 #
 #
 import os
-from utilities import downloadIfStale, readjson
-from defaults import cachedir
-from metenisweten import initrecord
-from datecache import dateCache
+from .utilities import readjson
+from .defaults import cachedir
+from .metenisweten import initrecord
+from .datecache import dateCache
 from pathlib import Path
 from pipeline.download import fetch_json_source
 from pipeline.variants import parse as parse_variants

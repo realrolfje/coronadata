@@ -1,7 +1,7 @@
 import os
 
-from defaults import datadir
-from utilities import readjson, writejson, sortDictOnKey
+from .defaults import datadir
+from .utilities import readjson, writejson, sortDictOnKey
 
 metenisweten_file = os.path.join(datadir,'daily-stats.json')
 metenisweten = readjson(metenisweten_file)

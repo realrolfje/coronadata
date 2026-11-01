@@ -6,6 +6,7 @@ import csv
 from datetime import datetime
 from datetime import timedelta
 from modules.brondata import smooth, double_savgol
+from modules.defaults import DATA_DIR, GRAPHS_DIR
 
 pagehits= {
     'x': [],
@@ -13,7 +14,7 @@ pagehits= {
 }
 
 # Get daily hitcounter (max value for that day)
-filename = '../data/pagehits.csv'
+filename = DATA_DIR / 'pagehits.csv'
 with open(filename, 'r') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     line_count = 0
@@ -76,4 +77,4 @@ plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 footerright="https://realrolfje.github.io/coronadata/"
 plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
-plt.savefig("../docs/graphs/pagehits.svg", format="svg")
+plt.savefig(GRAPHS_DIR / "pagehits.svg", format="svg")

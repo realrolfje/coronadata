@@ -9,7 +9,7 @@ from tqdm import tqdm
 import sys
 
 
-from defaults import timezone, cachedir
+from .defaults import timezone, cachedir
 
 def downloadBinaryIfStale(filename, url):
     return downloadIfStale(filename, url, True)
@@ -100,13 +100,13 @@ def downloadIfStale(filename: str, url, binary=False, force=False):
 
 
 def readjson(filename):
-    print('Reading '+filename)
+    print(f'Reading {filename}')
     with open(filename, 'r') as json_file:
         return json.load(json_file)
 
 
 def writejson(filename, adict):
-    print('Writing '+filename)
+    print(f'Writing {filename}')
     with open(filename, 'w') as file:
         file.write(json.dumps(adict))
 

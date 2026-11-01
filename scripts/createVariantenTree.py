@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
 import modules.brondata as brondata
+from modules.defaults import CACHE_DIR
 import sys
 
 
@@ -11,7 +12,7 @@ def main():
     createVariantenTree()
 
 def buildVarianten():
-    varianten = brondata.readjson('../cache/COVID-19_varianten.json')
+    varianten = brondata.readjson(CACHE_DIR / 'COVID-19_varianten.json')
     namefix = {
         "Omicron" : "Omikron"
     }

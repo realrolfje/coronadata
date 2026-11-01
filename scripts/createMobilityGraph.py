@@ -10,11 +10,12 @@ import modules.brondata as brondata
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 from modules.brondata import dateCache
+from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
 
 runIfNewData(__file__)
 
-metenisweten = brondata.readjson('../data/daily-stats.json')
-events = brondata.readjson('../data/measures-events.json')
+metenisweten = brondata.readjson(DAILY_STATS)
+events = brondata.readjson(DATA_DIR / 'measures-events.json')
 
 rijden = {
     'x': [],
@@ -129,8 +130,8 @@ ax1.legend(loc="upper left")
 #ax2.legend(loc="upper right")
 
 if (lastDays > 0):
-    plt.savefig("../docs/graphs/mobiliteit-"+str(lastDays)+".svg", format="svg")
+    plt.savefig(GRAPHS_DIR / ("mobiliteit-"+str(lastDays)+".svg"), format="svg")
 else:
-    plt.savefig("../docs/graphs/mobiliteit.svg", format="svg")
+    plt.savefig(GRAPHS_DIR / "mobiliteit.svg", format="svg")
 
 dateCache.cacheReport()

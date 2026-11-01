@@ -9,13 +9,14 @@ from os import listdir
 from os.path import isfile, join, basename
 import csv
 from modules.datautil import runIfNewData
+from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, PROJECT_ROOT, TEMPLATES_DIR
 
 runIfNewData(__file__)
 
-templatedir = '../docs/templates'
-outputdir = '../docs'
+templatedir = TEMPLATES_DIR
+outputdir = DOCS_DIR
 
-metenisweten = brondata.readjson('../data/daily-stats.json')
+metenisweten = brondata.readjson(DAILY_STATS)
 
 dates=[]
 
@@ -129,8 +130,8 @@ for date in dates[::-1]:
 
 # read errors, if there are any
 errors = ''
-if isfile('../cache/errors.log'):
-    with open('../cache/errors.log', 'r') as file:
+if (CACHE_DIR / 'errors.log').is_file():
+    with (CACHE_DIR / 'errors.log').open() as file:
         errors = '<p class="highlight">Errors during processing:<br/>'
         for error in file.readlines():
             errors = '%s%s<br/>' % (errors, error)
@@ -157,10 +158,10 @@ gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
 gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
 
-with open('prikafspraak/geboortejaar.txt') as f:
+with (PROJECT_ROOT / 'scripts/prikafspraak/geboortejaar.txt').open() as f:
     vaccingeboortejaar=f.read().rstrip()
 
-filename ='../cache/stats.csv'
+filename = CACHE_DIR / 'stats.csv'
 with open(filename, 'r') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     for row in csv_reader:
@@ -257,7 +258,7 @@ def getTemplates(templatedir):
 
 for tin in getTemplates(templatedir):
     tout = join(outputdir, basename(tin.replace('.template.','.')))
-    print(tin + ' -> ' + tout)
+    print(f'{tin} -> {tout}')
 
     with open(tin, 'r') as templatefile:
         template = templatefile.read()

@@ -8,6 +8,7 @@ import datetime
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth, dateCache
+from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
 from scipy.ndimage.filters import uniform_filter1d
 from modules.datautil import runIfNewData
 import sys
@@ -15,13 +16,13 @@ import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    varianten = brondata.readjson('../cache/COVID-19_varianten.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    varianten = brondata.readjson(CACHE_DIR / 'COVID-19_varianten.json')
     createRNAGraph(metenisweten)
 
 
 def createRNAGraph(metenisweten):
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     date_range = brondata.getDateRange(metenisweten)
 
 
@@ -131,9 +132,9 @@ def createRNAGraph(metenisweten):
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/rna-in-rioolwater"+"-"+str(lastDays)+".svg", format="svg")
+        plt.savefig(GRAPHS_DIR / ("rna-in-rioolwater-"+str(lastDays)+".svg"), format="svg")
     else:
-        plt.savefig("../docs/graphs/rna-in-rioolwater.svg", format="svg")
+        plt.savefig(GRAPHS_DIR / "rna-in-rioolwater.svg", format="svg")
 
     dateCache.cacheReport()
 

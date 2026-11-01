@@ -10,9 +10,10 @@ Alle grafieken zien? Ga naar http://realrolfje.github.io/coronadata
 Data in deze grafieken is afkomstig van het 
 [RIVM (Rijksinstituut voor Volksgezondheid en Millieu)](https://www.rivm.nl/) en 
 [NICE (Stichting Nationale Intensive Care Evaluatie)](https://www.stichting-nice.nl/index.jsp).
-Deze gegevens worden gedownload en lokaal gecached door [brondata.py](scripts/modules/brondata.py).
-Het downloaden van nieuwe gegevens, genereren van alle grafieken en bestanden en publiceren van 
-deze gegevens in deze repository wordt geregeld door het [update.sh](update.sh) bash script.
+De bronadapters en expliciete download-, transformatie-, berekenings- en opslagstappen staan in
+[`scripts/pipeline`](scripts/pipeline). `brondata.py` is alleen nog een compatibiliteitslaag voor
+de bestaande grafieken. Het downloaden, genereren en publiceren wordt geregeld door
+het [update.sh](update.sh) script.
 
 Zie de [Covid dataset](https://data.rivm.nl/covid-19/) 
 
@@ -175,10 +176,8 @@ De data in dit bestand ziet er als volgt uit:
 
 ## Installatie van vereiste python libraries op MacOS
 
-```
-python3 -m ensurepip --default-pip
-pip3 install -r requirements.txt
-```
+Python 3.11 is de ondersteunde versie. De directe dependencies zijn exact vastgezet in
+`requirements.txt`.
 
 ## Historische build en publiceren
 
@@ -195,6 +194,16 @@ herberekeningen:
 ```shell
 ./render.sh
 ```
+
+Voer alle tests plus de historische/normalized parity-controles uit met één commando:
+
+```shell
+./dev.sh
+```
+
+De datastappen zijn afzonderlijk beschikbaar via `scripts/runPipeline.py`. De `update`-opdracht
+downloadt iedere actieve bron eenmaal, valideert die, transformeert gewijzigde bronnen, voert
+afgeleide berekeningen uit en schrijft daarna pas `daily-stats.json`.
 
 De historische regressietests kunnen apart worden uitgevoerd:
 

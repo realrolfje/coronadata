@@ -9,11 +9,12 @@ import sys
 import modules.brondata as brondata
 from math import log
 from modules.brondata import decimalstring
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
 from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createSchattingAfwijkingGraph(metenisweten)
 
 def createSchattingAfwijkingGraph(metenisweten):
@@ -141,7 +142,7 @@ def createSchattingAfwijkingGraph(metenisweten):
 
     ax1.legend(loc="upper left")
     ax2.legend(loc="upper right")
-    plt.savefig("../docs/graphs/schattingafwijking.svg", format="svg")
+    plt.savefig(GRAPHS_DIR / "schattingafwijking.svg", format="svg")
     #plt.show()
 
 if __name__ == '__main__':

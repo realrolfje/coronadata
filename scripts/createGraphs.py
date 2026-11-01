@@ -5,6 +5,7 @@
 import os
 import sys
 import modules.brondata as brondata
+from modules.defaults import CACHE_DIR, DATA_DIR
 from modules.datautil import runIfNewData
 
 # Non-graphs, icons
@@ -27,10 +28,10 @@ from createTestGraph               import createTestGraph
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    varianten    = brondata.readjson('../cache/COVID-19_varianten.json')
-    events       = brondata.readjson('../data/measures-events.json')
-    testpunten   = brondata.readjson('../cache/testlocaties.json')
+    metenisweten = brondata.readjson(DATA_DIR / 'daily-stats.json')
+    varianten    = brondata.readjson(CACHE_DIR / 'COVID-19_varianten.json')
+    events       = brondata.readjson(DATA_DIR / 'measures-events.json')
+    testpunten   = brondata.readjson(CACHE_DIR / 'testlocaties.json')
 
     print("Creating Rt graph")
     createRtraph(metenisweten)

@@ -7,6 +7,7 @@ from sre_compile import isstring
 import os
 from . brondata import freshdata, isnewer, dateCache
 from . arguments import isForce
+from .defaults import DAILY_STATS
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
     if isinstance(datum, str):
@@ -69,9 +70,11 @@ def runIfNewData(filename):
     print("------------ %s ------------" % filename)
     if os.environ.get('CORONADATA_RENDER_ONLY') == '1':
         print("Render-only mode: use existing processed data without downloading or rebuilding it.")
+    elif os.environ.get('CORONADATA_DATA_READY') == '1':
+        print("Pipeline stages already completed; render the prepared data.")
     elif freshdata():
         print("New data, regenerate output.")
-    elif isnewer(filename, '../data/daily-stats.json'):
+    elif isnewer(filename, DAILY_STATS):
         print("Script newer than the data, regenerate output.")
     elif isForce():
         print("Force, regenerate output.")

@@ -8,6 +8,7 @@ from statistics import mean
 import datetime
 import modules.brondata as brondata
 from modules.brondata import decimalstring
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
 from modules.datautil import anotate
 import sys
 from modules.datautil import runIfNewData
@@ -16,7 +17,7 @@ from modules.datecache import dateCache
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createZiekenhuisTotaalGraph(metenisweten)
 
 def createZiekenhuisTotaalGraph(metenisweten):
@@ -127,7 +128,7 @@ def createZiekenhuisTotaalGraph(metenisweten):
 
     ax1.legend(loc="upper left")
 
-    plt.savefig("../docs/graphs/totaal-mensen-in-ziekenhuis.svg", format="svg")
+    plt.savefig(GRAPHS_DIR / "totaal-mensen-in-ziekenhuis.svg", format="svg")
 
 if __name__ == '__main__':
     sys.exit(main())

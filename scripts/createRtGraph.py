@@ -8,11 +8,12 @@ import datetime
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
 from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createRtraph(metenisweten)
 
 def createRtraph(metenisweten):
@@ -111,9 +112,9 @@ def createRtraph(metenisweten):
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
     if (lastDays > 0):
-        filename = "../docs/graphs/reproductiegetal-"+str(lastDays)+".svg"
+        filename = GRAPHS_DIR / ("reproductiegetal-"+str(lastDays)+".svg")
     else:
-        filename = "../docs/graphs/reproductiegetal.svg"
+        filename = GRAPHS_DIR / "reproductiegetal.svg"
 
     print(f"Saving {filename}")
     plt.savefig(filename, format="svg")

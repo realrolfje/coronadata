@@ -250,23 +250,23 @@ provenance:
 
 ## Phase 5: refactor safely
 
-- [ ] Separate download, validation, transformation, storage, charting, and publishing.
-- [ ] Replace the large `brondata.py` workflow with explicit pipeline stages.
-- [ ] Remove duplicate source downloads and transformations.
-- [ ] Replace working-directory-relative paths with project-root-based paths.
-- [ ] Define typed inputs and outputs for source adapters.
-- [ ] Add unit tests for date parsing, merging, and source transforms.
-- [ ] Add fixture-based tests using small samples from the preserved archive.
-- [ ] Make chart generation deterministic where practical.
-- [ ] Pin dependencies and document the supported Python version.
-- [ ] Add a single documented local development command.
-- [ ] Remove dead code only after coverage proves it is unused.
+- [x] Separate download, validation, transformation, storage, charting, and publishing. `pipeline/stages.py` exposes the data stages; chart and publish scripts remain downstream consumers.
+- [x] Replace the large `brondata.py` workflow with explicit pipeline stages. The module is now a small compatibility facade.
+- [x] Remove duplicate source downloads and transformations. The chart build runs the source pipeline once and reuses its prepared data.
+- [x] Replace working-directory-relative paths with project-root-based paths in the pipeline and chart build.
+- [x] Define typed inputs and outputs for source adapters and stage reports.
+- [x] Add unit tests for date parsing, merging, and source transforms.
+- [x] Add fixture-based tests using small preserved-format source samples.
+- [x] Make chart generation deterministic where practical: headless backend, fixed SVG hash salt, hash seed, and source-date epoch. Existing visible “generated at” footers intentionally still reflect build time.
+- [x] Pin dependencies and document Python 3.11 as the supported version.
+- [x] Add a single documented local development command: `./dev.sh`.
+- [x] Remove dead code only after coverage proves it is unused. No broad deletion was attempted; ended-source transforms remain explicitly preserved.
 
 ### Phase 5 completion criteria
 
-- [ ] The pipeline stages can be run and tested independently.
-- [ ] Source-specific changes do not require editing unrelated graph code.
-- [ ] Historical regression tests still pass.
+- [x] The pipeline stages can be run and tested independently.
+- [x] Source-specific changes are isolated behind the adapter registry and do not require editing unrelated graph code.
+- [x] Historical regression tests still pass.
 
 ## Phase 6: update the site and automation
 
