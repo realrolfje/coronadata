@@ -68,6 +68,13 @@ def createHeatmap(metenisweten, events):
                     # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
                     pass
 
+    if not x:
+        print(
+            "Skipping age heatmap: the preserved case cache has no records "
+            "for the requested date range. Existing output is left unchanged."
+        )
+        return False
+
     # print("Calculating weights.")
     # weights=[]
     # for d in x:

@@ -4,6 +4,7 @@
 
 from datetime import datetime, timedelta
 from sre_compile import isstring
+import os
 from . brondata import freshdata, isnewer, dateCache
 from . arguments import isForce
 
@@ -66,7 +67,9 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
 
 def runIfNewData(filename):
     print("------------ %s ------------" % filename)
-    if freshdata():
+    if os.environ.get('CORONADATA_RENDER_ONLY') == '1':
+        print("Render-only mode: use existing processed data without downloading or rebuilding it.")
+    elif freshdata():
         print("New data, regenerate output.")
     elif isnewer(filename, '../data/daily-stats.json'):
         print("Script newer than the data, regenerate output.")

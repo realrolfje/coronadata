@@ -2,6 +2,7 @@
 #
 # pip3 install matplotlib
 
+import os
 import sys
 import modules.brondata as brondata
 from modules.datautil import runIfNewData
@@ -54,8 +55,11 @@ def main():
     print("Creating Live icon")
     createLiveIcon(metenisweten)
 
-    print("Calculate excel data")
-    calculateDailyExcelData(testpunten, metenisweten)
+    if os.environ.get('CORONADATA_RENDER_ONLY') != '1':
+        print("Calculate excel data")
+        calculateDailyExcelData(testpunten, metenisweten)
+    else:
+        print("Render-only mode: skip dated data exports.")
 
     print("Create ziekenhuis totaal graph")
     createZiekenhuisTotaalGraph(metenisweten)

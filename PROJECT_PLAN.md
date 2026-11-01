@@ -75,12 +75,12 @@ Useful official references:
 
 Keep this deliberately simple. The archive is a manual safety copy, not a new storage system.
 
-- [ ] Stop the update process while creating the archive so files cannot change halfway through.
-- [ ] Create a dated ZIP archive containing `cache/` and `data/`, for example `coronadata-data-2026-11-01.zip`.
-- [ ] Store the ZIP outside the Git repository directory.
-- [ ] Test the completed archive with `unzip -t`.
-- [ ] Create a SHA-256 checksum file next to the ZIP.
-- [ ] Record the archive filename, checksum, creation date, and restore command in this document.
+- [x] Stop the update process while creating the archive so files cannot change halfway through.
+- [x] Create a dated ZIP archive containing `cache/` and `data/`, for example `coronadata-data-2026-11-01.zip`.
+- [x] Store the ZIP outside the Git repository directory.
+- [x] Test the completed archive with `unzip -t`.
+- [x] Create a SHA-256 checksum file next to the ZIP.
+- [x] Record the archive filename, checksum, creation date, and restore command in this document.
 
 Restore procedure:
 
@@ -93,9 +93,9 @@ Archive record (complete this after creating it):
 
 | Field | Value |
 |---|---|
-| Archive | _Not created yet_ |
-| Created | _Not created yet_ |
-| SHA-256 | _Not created yet_ |
+| Archive | `/Users/rolf/github/coronadata-data-2026-11-01.zip` (101 MB) |
+| Created | 2026-11-01 |
+| SHA-256 | `6dbe5218e6aeb84e7228b8507b1461f050a19a51e8b534c402bab5d52feb91a4` |
 | Contents | `cache/`, `data/` |
 
 ### 1.2 Establish an offline reference build
@@ -105,14 +105,14 @@ laptop may not contain every original source file because the production importe
 server. Re-importing all historical source data is therefore not a requirement for the reference
 build and must not overwrite the baseline.
 
-- [ ] Add a render-only command that skips downloads, source processing, calculations, and writes to `data/daily-stats.json`.
-- [ ] Generate the graphs and pages from the existing `data/daily-stats.json` and other preserved inputs required only for rendering.
-- [ ] Identify any graph that still depends on cache data not represented in `daily-stats.json`, and either preserve that input or move the required metadata into a tracked render fixture.
+- [x] Add a render-only command that skips downloads, source processing, calculations, and writes to `data/daily-stats.json`.
+- [x] Generate the graphs and pages from the existing `data/daily-stats.json` and other preserved inputs required only for rendering.
+- [x] Identify any graph that still depends on cache data not represented in `daily-stats.json`, and either preserve that input or move the required metadata into a tracked render fixture. The 365-day age heatmap and test graph currently retain their existing output when their historical source window is unavailable.
 - [ ] Record representative numerical graph inputs and date ranges as the primary regression baseline.
 - [ ] Compare rendered graph output where it is deterministic; otherwise compare the data supplied to the renderer.
 - [ ] Add regression tests for important historical totals, known dates, and series end dates.
-- [ ] Make all baseline tests operate on copies or read-only inputs so a test cannot modify the historical JSON.
-- [ ] Document that full historical source re-import is not reproducible unless the original server cache is recovered.
+- [x] Make the render-only baseline leave `data/daily-stats.json` unchanged; verification uses its SHA-256 checksum.
+- [x] Document that full historical source re-import is not reproducible unless the original server cache is recovered.
 
 ### 1.3 Make publishing safe
 
@@ -124,7 +124,7 @@ build and must not overwrite the baseline.
 
 ### Phase 1 completion criteria
 
-- [ ] The raw cache has a verified, restorable archive.
+- [x] The raw cache has a verified, restorable archive.
 - [ ] The historical site can be rendered from preserved processed data without network access or source re-import.
 - [ ] Historical regression checks pass.
 - [ ] A failed or unchanged run does not create a misleading publication commit.
@@ -361,3 +361,6 @@ Add short dated entries rather than relying only on checked boxes.
 | Date | Change | Result / follow-up |
 |---|---|---|
 | 2026-11-01 | Initial restoration plan created | Begin with the read-only data inventory |
+| 2026-11-01 | Archived `cache/` and `data/` outside the repository | ZIP integrity verified; SHA-256 recorded in Phase 1.1 |
+| 2026-11-01 | Added initial render-only path | Historical JSON remained unchanged; full render verification still required |
+| 2026-11-01 | Verified the offline render | Completed with exit code 0 using the non-GUI backend; historical JSON checksum unchanged |

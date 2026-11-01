@@ -117,6 +117,13 @@ def createCovidTestsGraph(metenisweten, events):
         #     print('no data to calculate RC')
 
 
+    if not totaaltests['y'] or not positief['y'] or not positief_percentage['y']:
+        print(
+            "Skipping COVID test graph: the processed baseline has no test "
+            "observations for the requested date range. Existing output is left unchanged."
+        )
+        return False
+
     print('Generating daily positive tests graph...')
 
     fig, ax1 = plt.subplots(figsize=(10, 5))
