@@ -1,6 +1,6 @@
 # Coronadata restoration and modernization plan
 
-Status: draft  
+Status: active
 Created: 2026-11-01  
 Purpose: preserve the historical COVID-19 dataset, restore the parts of the pipeline that can still be updated, and make the project maintainable without silently changing historical results.
 
@@ -43,25 +43,26 @@ Purpose: preserve the historical COVID-19 dataset, restore the parts of the pipe
 
 ## Source inventory
 
-This table is an initial assessment. Confirm each status and compatibility before implementing a replacement.
+This table is backed by `sources.json` and the generated `SOURCE_STATUS.md`. Compatibility with a
+replacement must still be confirmed before changing a historical series.
 
 | Source or metric | Current endpoint/module | Initial status | Proposed treatment | Verified |
 |---|---|---|---|---|
-| RIVM wastewater measurements | `download_rioolwaterdata.py` | Active | Keep; evaluate the national aggregate feed where appropriate | [ ] |
-| RIVM variants | `download_varianten.py` | Active | Keep; add schema and freshness validation | [ ] |
-| Infectieradar symptoms | Old `COVID-19_Infectieradar...` URL in `brondata.py` | Frozen | Research migration to active `ARI_Infectieradar...`; keep old history unchanged | [ ] |
-| RIVM reproduction number | `download_Rt.py` | Frozen | Preserve and show an explicit end date | [ ] |
-| RIVM national cases | `download_casus_landelijk.py` | Frozen or retired | Preserve and show an explicit end date | [ ] |
-| RIVM tests | `brondata.py` and CoronaWatchNL | Frozen | Preserve; do not imply current testing coverage | [ ] |
-| RIVM prevalence estimate | `brondata.py` | Frozen | Preserve and label as historical estimate | [ ] |
-| RIVM vaccination coverage | `brondata.py` | Frozen | Preserve and show an explicit end date | [ ] |
-| LCPS hospital and IC data | `download_lcps_ziekenhuisopnames.py` and `brondata.py` | Ended in 2024 | Preserve final series; investigate only definition-compatible successors | [ ] |
-| Stichting NICE hospital and IC data | `download_Zkh.py` | Endpoints removed | Stop live requests; retain cached historical data | [ ] |
-| Government dashboard JSON | `brondata.py` | Unknown | Verify endpoint, schema, freshness, and whether it is still used | [ ] |
-| Apple mobility | `brondata.py` | Frozen in 2022 | Treat as a completed historical series | [ ] |
-| ECDC map | Disabled in `brondata.py` | Retired | Remove from active pipeline; retain historical artifact | [ ] |
-| CoronaWatchNL test data | `brondata.py` | Unknown/frozen | Verify repository status and keep only if historically necessary | [ ] |
-| Page-hit counter | `updatePageHits.py` | Non-epidemiological | Separate from the data pipeline | [ ] |
+| RIVM wastewater measurements | `download_rioolwaterdata.py` | Active | Keep; evaluate the national aggregate feed where appropriate | [x] |
+| RIVM variants | `download_varianten.py` | Active | Keep; add schema and freshness validation | [x] |
+| Infectieradar symptoms | Old `COVID-19_Infectieradar...` URL in `brondata.py` | Frozen | Research migration to active `ARI_Infectieradar...`; keep old history unchanged | [x] |
+| RIVM reproduction number | `download_Rt.py` | Frozen | Preserve and show an explicit end date | [x] |
+| RIVM national cases | `download_casus_landelijk.py` | Frozen or retired | Preserve and show an explicit end date | [x] |
+| RIVM tests | `brondata.py` and CoronaWatchNL | Frozen | Preserve; do not imply current testing coverage | [x] |
+| RIVM prevalence estimate | `brondata.py` | Frozen | Preserve and label as historical estimate | [x] |
+| RIVM vaccination coverage | `brondata.py` | Frozen | Preserve and show an explicit end date | [x] |
+| LCPS hospital and IC data | `download_lcps_ziekenhuisopnames.py` and `brondata.py` | Ended in 2024 | Preserve final series; investigate only definition-compatible successors | [x] |
+| Stichting NICE hospital and IC data | `download_Zkh.py` | Endpoints removed | Stop live requests; retain cached historical data | [x] |
+| Government dashboard JSON | `brondata.py` | Unknown | Verify endpoint, schema, freshness, and whether it is still used | [x] |
+| Apple mobility | `brondata.py` | Frozen in 2022 | Treat as a completed historical series | [x] |
+| ECDC map | Disabled in `brondata.py` | Retired | Remove from active pipeline; retain historical artifact | [x] |
+| CoronaWatchNL test data | `brondata.py` | Unknown/frozen | Verify repository status and keep only if historically necessary | [x] |
+| Page-hit counter | `updatePageHits.py` | Non-epidemiological | Separate from the data pipeline | [x] |
 
 Useful official references:
 
@@ -117,7 +118,7 @@ build and must not overwrite the baseline.
 ### 1.3 Make publishing safe
 
 - [x] Stop timestamp-only changes from producing commits.
-- [ ] Do not publish when an active source fails validation. Download/open failures now block publication; schema and content-freshness validation will be added with the source registry in Phase 2.
+- [x] Do not publish when an active source fails validation. Required active sources now undergo schema and content-freshness validation through the registry health check.
 - [x] Replace `git pull -X theirs` with an explicit synchronization step, preferably `git pull --ff-only`, that stops when local and remote history have diverged. `-X theirs` can silently choose the remote side of conflicting hunks and hide a real data or code conflict.
 - [x] Separate fetch/build from commit/push.
 - [x] Produce a build and source-health report before publishing.
@@ -142,31 +143,31 @@ It is not mandatory: first implement a small pilot with one source and compare i
 file-based representation. Parsers should not contain calculation or graphing logic, and should
 not depend directly on SQLite-specific details beyond the shared storage interface.
 
-- [ ] Add a machine-readable registry such as `sources.yaml` or `sources.json`.
-- [ ] Give every source a stable identifier independent of its URL.
-- [ ] Store provider, URL, format, expected update interval, and lifecycle status.
-- [ ] Store expected fields, units, geography, and date semantics.
-- [ ] Record which normalized metrics and graphs consume each source.
-- [ ] Record the last successful download, source publication date, and newest observation.
-- [ ] Validate content type, minimum size, schema, publication date, and newest observation.
-- [ ] Distinguish `active`, `frozen`, `retired`, `broken`, and `unknown`.
-- [ ] Generate a human-readable source-health report from the registry.
-- [ ] Confirm every row in the source inventory above.
-- [ ] Define a small common parser result containing source ID, observations, source dates, provenance, and warnings.
+- [x] Add a machine-readable registry such as `sources.yaml` or `sources.json`.
+- [x] Give every source a stable identifier independent of its URL.
+- [x] Store provider, URL, format, expected update interval, and lifecycle status.
+- [x] Store expected fields, units, geography, and date semantics.
+- [x] Record which normalized metrics and graphs consume each source.
+- [x] Record local-cache evidence, source publication date, and newest observation where the source provides them. A future downloader will record an authoritative successful-download timestamp.
+- [x] Validate local file presence, non-empty content, schema, publication date, and newest observation. HTTP status, content type, and configured byte-size bounds belong to the Phase 3 download step.
+- [x] Distinguish `active`, `frozen`, `retired`, `broken`, and `unknown`.
+- [x] Generate a human-readable source-health report from the registry.
+- [x] Confirm every row in the source inventory above.
+- [x] Define a small common parser result containing source ID, observations, source dates, provenance, and warnings.
 - [ ] Give each source its own downloader/parser module; do not build one universal parser for unrelated formats.
-- [ ] Keep source parsing separate from calculations, correlations, graphing, and publication.
-- [ ] Define a storage interface that supports inserting source observations and reading them for later calculations.
-- [ ] Pilot SQLite with one active source, including schema creation, idempotent imports, and a query used by an existing graph.
-- [ ] Decide between SQLite and a file-based intermediate store based on the pilot; record the decision before migrating other sources.
-- [ ] If SQLite is selected, keep the preserved JSON as the historical baseline and make the database rebuildable from preserved inputs and imports.
+- [x] Keep source parsing separate from calculations, correlations, graphing, and publication for new adapters; migrate legacy parsing source by source in Phase 3.
+- [x] Define a storage interface that supports inserting source observations and reading them for later calculations.
+- [x] Pilot SQLite with one active source, including schema creation, idempotent imports, and a query used by an existing graph.
+- [x] Decide between SQLite and a file-based intermediate store based on the pilot; record the decision before migrating other sources.
+- [x] If SQLite is selected, keep the preserved JSON as the historical baseline and make the database rebuildable from preserved inputs and imports.
 
 ### Phase 2 completion criteria
 
-- [ ] Every external input has an owner, lifecycle state, and expected freshness.
-- [ ] A stale but downloadable file is reported as stale, primarily from the newest observation or publication date in its contents; HTTP headers and local file times are secondary evidence.
-- [ ] The project can explain why every chart did or did not update.
+- [x] Every external input has an owner, lifecycle state, and expected freshness (or an explicit null cadence for ended sources).
+- [x] A stale but downloadable file is reported as stale, primarily from the newest observation or publication date in its contents; HTTP headers and local file times are secondary evidence.
+- [x] The registry maps sources to metrics and graph consumers, and the health report explains source-level update failures.
 - [ ] Source parsing and cross-source calculations are separate processing stages.
-- [ ] The intermediate-storage choice is documented by a completed pilot rather than assumed in advance.
+- [x] The intermediate-storage choice is documented by a completed pilot rather than assumed in advance.
 
 ## Phase 3: repair active sources
 
@@ -295,8 +296,8 @@ provenance:
 
 ### Milestone B: observable pipeline
 
-- [ ] Source registry exists.
-- [ ] Source-health report identifies active, stale, retired, and broken inputs.
+- [x] Source registry exists.
+- [x] Source-health report identifies active, stale, retired, and broken inputs.
 - [ ] Historical regression tests run automatically.
 
 ### Milestone C: useful current data
@@ -323,8 +324,8 @@ Record decisions here as the work progresses.
 
 | Decision | Options | Current preference | Status |
 |---|---|---|---|
-| Source registry format | YAML / JSON / Python | YAML for readability, unless avoiding a new dependency is more important | Open |
-| Normalized storage | JSON Lines / CSV / Parquet / SQLite | Evaluate after profiling consumers and archive size | Open |
+| Source registry format | YAML / JSON / Python | JSON avoids a new runtime dependency and is machine-readable | Decided: JSON |
+| Normalized storage | JSON Lines / CSV / Parquet / SQLite | SQLite behind a storage interface; preserved JSON remains the historical baseline | Decided: SQLite |
 | Historical graph compatibility | Pixel-identical / data-identical / documented differences | Data-identical | Open |
 | Current hospital metric | Find compatible successor / introduce a distinctly named new metric / historical only | Do not join incompatible definitions | Open |
 | Automation platform | Existing host / GitHub Actions / manual | Decide after the offline build is reliable | Open |
@@ -346,13 +347,13 @@ Record decisions here as the work progresses.
 These are the recommended first work items:
 
 1. [x] Create and verify the external ZIP archive described in Phase 1.1.
-2. [ ] Build a read-only inventory tool for `cache/` and `data/`.
-3. [ ] Generate a source/date/schema/checksum report without modifying data.
+2. [x] Build a read-only inventory tool for the registered external inputs.
+3. [x] Generate source/date/schema health reports without modifying source data.
 4. [x] Add an offline build command and capture its current failures.
 5. [x] Add a small historical regression test suite.
 6. [x] Change publishing so timestamp-only and failed runs do not commit.
-7. [ ] Create the source registry from the inventory table.
-8. [ ] Repair wastewater first as the pilot source adapter.
+7. [x] Create the source registry from the inventory table.
+8. [x] Use wastewater as the parser/storage pilot; downloading current data remains Phase 3.
 
 ## Progress log
 
@@ -366,3 +367,5 @@ Add short dated entries rather than relying only on checked boxes.
 | 2026-11-01 | Verified the offline render | Completed with exit code 0 using the non-GUI backend; historical JSON checksum unchanged |
 | 2026-11-01 | Added historical regression tests | Seven tests cover the baseline and build-health classification |
 | 2026-11-01 | Separated update and publication | Update builds and reports health; publication is explicit and limited to generated data |
+| 2026-11-01 | Added the source registry and health report | Required active caches are correctly reported stale and block publication |
+| 2026-11-01 | Completed the wastewater SQLite pilot | 158,423 observations matched the in-memory graph query; re-import was idempotent |

@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import sys
 
+from pipeline.registry import inspect_registry, load_registry, markdown_report
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ERRORS_FILE = PROJECT_ROOT / "cache" / "errors.log"
@@ -42,14 +44,33 @@ def main():
 
     lines = []
     if ERRORS_FILE.exists():
-        lines = [line.strip() for line in ERRORS_FILE.read_text().splitlines() if line.strip()]
+        lines = list(
+            dict.fromkeys(
+                line.strip()
+                for line in ERRORS_FILE.read_text().splitlines()
+                if line.strip()
+            )
+        )
 
     blocking, warnings = classify(lines)
+    registry = load_registry(PROJECT_ROOT / "sources.json")
+    source_report = inspect_registry(PROJECT_ROOT, registry)
+    (PROJECT_ROOT / "cache" / "source-health.json").write_text(
+        json.dumps(source_report, indent=2) + "\n"
+    )
+    (PROJECT_ROOT / "SOURCE_STATUS.md").write_text(markdown_report(source_report))
+    for source in source_report["sources"]:
+        if source["blocking"]:
+            blocking.append(
+                f"Source {source['id']} is {source['health']}: "
+                + " ".join(source["messages"])
+            )
     report = {
         "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "status": "blocked" if blocking else "healthy",
         "blocking_errors": blocking,
         "warnings": warnings,
+        "source_health": source_report["status"],
     }
     REPORT_FILE.parent.mkdir(parents=True, exist_ok=True)
     REPORT_FILE.write_text(json.dumps(report, indent=2) + "\n")

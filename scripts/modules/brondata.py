@@ -424,7 +424,7 @@ def freshdata():
                 process_Zkh(),
                 process_lcps_ziekenhuisopnames(),
                 process_varianten(),
-                process_rioolwaterdata]
+                process_rioolwaterdata()]
     
     if any(newData) or download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()

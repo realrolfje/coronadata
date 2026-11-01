@@ -214,6 +214,32 @@ Controleer de wijzigingen en publiceer ze daarna expliciet:
 `publish.sh` weigert te publiceren bij blokkerende bronfouten of wijzigingen buiten `data/` en
 `docs/`. Als er geen gegenereerde wijzigingen zijn, wordt er geen lege commit gemaakt.
 
+## Bronnenregister en bronstatus
+
+[`sources.json`](sources.json) is het machineleesbare register van externe bronnen. Het legt onder
+meer eigenaar, URL, formaat, levenscyclus, verwachte actualiteit, velden, eenheden en afnemende
+grafieken vast. De levenscyclus maakt onderscheid tussen actieve, bevroren, beëindigde, defecte en
+nog onbekende bronnen.
+
+Maak het leesbare statusrapport opnieuw met:
+
+```shell
+.venv/bin/python scripts/sourceInventory.py
+```
+
+Het resultaat staat in [`SOURCE_STATUS.md`](SOURCE_STATUS.md). Verouderde verplichte actieve
+bronnen blokkeren publiceren; een beëindigde historische bron doet dat niet.
+
+Voor nieuwe bronadapters is SQLite gekozen als herbouwbare tussenopslag achter een algemene
+storage-interface. De oorspronkelijke downloads en `data/daily-stats.json` blijven de historische
+basis. De onderbouwing en het reproduceerbare rioolwaterexperiment staan in
+[`docs/architecture/storage-decision.md`](docs/architecture/storage-decision.md). Voer de pilot uit
+met:
+
+```shell
+.venv/bin/python scripts/pilotWastewaterSqlite.py
+```
+
 ## Certificaat probleem oplossen.
 
 Mochten de scripts op macOS SSL certificaat errors opleveren dan zijn de default
