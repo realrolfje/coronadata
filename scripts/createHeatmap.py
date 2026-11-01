@@ -10,6 +10,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import dateCache
 from modules.defaults import CACHE_DIR, DAILY_STATS, DATA_DIR, GRAPHS_DIR
+from modules.buildtime import reference_date, reference_datetime
 from modules.datautil import runIfNewData, anotate
 import sys
 
@@ -96,7 +97,7 @@ def createHeatmap(metenisweten, events):
 
     gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
 
     fig, heatmap = plt.subplots(figsize=(10, 4), constrained_layout=True, sharex='all', sharey='all')
     fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
@@ -187,9 +188,9 @@ def createHeatmap(metenisweten, events):
 
     # Put vertical line at current day
     plt.text(
-        x=(datetime.date.today() - startdate.date()).days,
+        x=(reference_date(metenisweten) - startdate.date()).days,
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=reference_datetime(metenisweten).strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -197,7 +198,7 @@ def createHeatmap(metenisweten, events):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
+    averages.axvline((reference_date(metenisweten) - startdate.date()).days, color='red', linewidth=0.5)
 
     # averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
 

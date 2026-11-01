@@ -195,6 +195,16 @@ herberekeningen:
 ./render.sh
 ```
 
+Bekijk de website uit de huidige working tree—ook als de branch nog niet is gepusht—via:
+
+```shell
+./preview.sh
+```
+
+Dit rendert offline en start daarna een lokale webserver op `http://127.0.0.1:8000/`. Gebruik
+`SKIP_RENDER=1 ./preview.sh` om een al gegenereerde site direct te serveren, of
+`PREVIEW_PORT=8080 ./preview.sh` voor een andere poort.
+
 Voer alle tests plus de historische/normalized parity-controles uit met één commando:
 
 ```shell
@@ -222,6 +232,11 @@ Controleer de wijzigingen en publiceer ze daarna expliciet:
 
 `publish.sh` weigert te publiceren bij blokkerende bronfouten of wijzigingen buiten `data/` en
 `docs/`. Als er geen gegenereerde wijzigingen zijn, wordt er geen lege commit gemaakt.
+Tests, normalized-data parity en bronvalidatie worden vóór publicatie opnieuw gecontroleerd.
+Herstel- en rollbackprocedures staan in [`docs/operations.md`](docs/operations.md).
+
+Page-hitverzameling staat bewust buiten de epidemiologische build. Werk die desgewenst afzonderlijk
+bij met `./update-pagehits.sh`.
 
 ## Bronnenregister en bronstatus
 
@@ -238,6 +253,8 @@ Maak het leesbare statusrapport opnieuw met:
 
 Het resultaat staat in [`SOURCE_STATUS.md`](SOURCE_STATUS.md). Verouderde verplichte actieve
 bronnen blokkeren publiceren; een beëindigde historische bron doet dat niet.
+De website publiceert hetzelfde overzicht als [`docs/source-status.html`](docs/source-status.html)
+en de machineleesbare versie als `docs/data/source-health.json`.
 
 Werk de drie actieve epidemiologische bronnen handmatig bij met:
 

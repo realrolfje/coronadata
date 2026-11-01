@@ -6,6 +6,7 @@ import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol, logError
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import anotate, runIfNewData
 from datetime import datetime, date, timedelta
 import sys
@@ -401,7 +402,7 @@ def createVariantenGraph(metenisweten, varianten):
     plt.text(
         x=dateCache.today(),
         y=0,
-        s=datetime.now().strftime("%d"), 
+        s=reference_datetime(metenisweten).strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -420,7 +421,7 @@ def createVariantenGraph(metenisweten, varianten):
     ax2.set_yticks      ([ 0.5,    1,     1.5,    2,   ])
     ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%'])
 
-    gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
     filedate=data_tot
 

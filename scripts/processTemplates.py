@@ -10,6 +10,7 @@ from os.path import isfile, join, basename
 import csv
 from modules.datautil import runIfNewData
 from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, PROJECT_ROOT, TEMPLATES_DIR
+from modules.buildtime import reference_datetime
 
 runIfNewData(__file__)
 
@@ -19,6 +20,31 @@ outputdir = DOCS_DIR
 metenisweten = brondata.readjson(DAILY_STATS)
 
 dates=[]
+
+def latest_date(predicate):
+    matching = [date for date, record in metenisweten.items() if predicate(record)]
+    return max(matching) if matching else "onbekend"
+
+
+varianten_datum = latest_date(
+    lambda record: any(
+        (variant.get('sample_size') or variant.get('cases'))
+        for variant in record.get('varianten', {}).values()
+    )
+)
+ziekenhuis_datum = latest_date(
+    lambda record: bool(record.get('nu_opgenomen')) or bool(record.get('nu_op_ic'))
+)
+ari_datum = latest_date(
+    lambda record: record.get('rivm_infectieradar_ari_perc') is not None
+)
+tests_datum = latest_date(
+    lambda record: record.get('rivm_totaal_tests') is not None
+    or record.get('rivm_totaal_personen_getest') is not None
+)
+casus_datum = latest_date(
+    lambda record: any(record.get('besmettingleeftijd', {}).values())
+)
 
 gemiddeldeleeftijdarray=[]
 # Assumes last records are newest
@@ -154,9 +180,10 @@ if errors == '':
 else:
     error_warning = 'met errors'
 
-gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
-gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
+build_time = reference_datetime(metenisweten)
+gegenereerd_op=build_time.strftime("%Y-%m-%d %H:%M")
+gegenereerd_datum=build_time.strftime("%Y-%m-%d")
+gegenereerd_tijd=build_time.strftime("%H:%M:%S")
 
 with (PROJECT_ROOT / 'scripts/prikafspraak/geboortejaar.txt').open() as f:
     vaccingeboortejaar=f.read().rstrip()
@@ -171,6 +198,11 @@ with open(filename, 'r') as csv_file:
             cache_size = int(row[1])*1000
 
 substitutes = {
+    'varianten_datum'     : varianten_datum,
+    'ziekenhuis_datum'    : ziekenhuis_datum,
+    'ari_datum'            : ari_datum,
+    'tests_datum'         : tests_datum,
+    'casus_datum'         : casus_datum,
     'totaal_positief'      : decimalstring(totaal_positief),
     'totaal_positief_num'  : totaal_positief,
     'totaal_positief_datum': totaal_positief_datum,

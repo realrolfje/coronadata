@@ -11,6 +11,9 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 git pull --ff-only
+"$PYTHON_BIN" -m unittest discover -s tests
+"$PYTHON_BIN" scripts/buildNormalizedData.py
+"$PYTHON_BIN" scripts/checkNormalizedParity.py
 PYTHON_BIN="$PYTHON_BIN" ./creategraphs.sh
 "$PYTHON_BIN" scripts/checkBuildHealth.py
 

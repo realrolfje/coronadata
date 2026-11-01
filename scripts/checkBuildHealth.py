@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import sys
 
-from pipeline.registry import inspect_registry, load_registry, markdown_report
+from pipeline.registry import inspect_registry, load_registry
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -58,7 +58,6 @@ def main():
     (PROJECT_ROOT / "cache" / "source-health.json").write_text(
         json.dumps(source_report, indent=2) + "\n"
     )
-    (PROJECT_ROOT / "SOURCE_STATUS.md").write_text(markdown_report(source_report))
     for source in source_report["sources"]:
         if source["blocking"]:
             blocking.append(

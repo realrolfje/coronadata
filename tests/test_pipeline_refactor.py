@@ -9,8 +9,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 from modules.brondata import dateCache
+from modules.buildtime import reference_datetime
 from pipeline.calculations import calculate_cumulative_totals
 from pipeline.legacy_transform import transform_prevalence, transform_rivm_tests
+from pipeline.site_export import build_surveillance_export
 
 
 def record():
@@ -65,6 +67,24 @@ class PipelineRefactorTest(unittest.TestCase):
     def test_project_paths_do_not_depend_on_current_directory(self):
         from modules.defaults import DAILY_STATS
         self.assertEqual(PROJECT_ROOT / "data/daily-stats.json", DAILY_STATS)
+
+    def test_site_export_labels_reported_and_calculated_series(self):
+        daily = {
+            "2024-01-01": {
+                "RNA": {"RNA_per_100k_avg": 120, "besmettelijk": 4500}
+            },
+            "2024-01-02": {
+                "RNA": {"RNA_per_100k_avg": 0, "besmettelijk": None}
+            },
+        }
+        export = build_surveillance_export(daily)
+        self.assertEqual("2024-01-01", export["newest_observation"])
+        self.assertEqual(["reported", "calculated"], [item["status"] for item in export["series"]])
+        self.assertEqual(1, len(export["observations"]))
+
+    def test_render_time_is_based_on_newest_observation(self):
+        daily = {"2020-01-01": {}, "2024-05-06": {}}
+        self.assertEqual("2024-05-06T12:00:00", reference_datetime(daily).isoformat())
 
 
 if __name__ == "__main__":

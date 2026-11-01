@@ -10,6 +10,7 @@ import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
 from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 
@@ -100,7 +101,7 @@ def createCovidTestsGraph(metenisweten, events):
 
         # ---------------------- Voorspelling positief getst obv gemiddelde richtingscoefficient positief getest.
         if datum in metenisweten and len(positief['y']) > positief_voorspeld['avgsize'] \
-            and dateCache.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
+            and dateCache.parse(datum) < (reference_datetime(metenisweten) - datetime.timedelta(days=positief_voorspeld['avgsize'])):
             # Voorspel morgen op basis van metingen
             rc = (positief['y'][-1]-positief['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
             positief_voorspeld['x'].append(dateCache.parse(datum) + datetime.timedelta(days=1))
@@ -171,7 +172,7 @@ def createCovidTestsGraph(metenisweten, events):
     plt.text(
         x=dateCache.today(),
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=reference_datetime(metenisweten).strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -204,7 +205,7 @@ def createCovidTestsGraph(metenisweten, events):
 
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     data_tot=positief['x'][-11].strftime("%Y-%m-%d")
 
     plt.title('Positieve COVID-19 tests')

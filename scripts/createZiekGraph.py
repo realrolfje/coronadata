@@ -10,6 +10,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, dateCache
 from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData, anotate
 import sys
 
@@ -226,7 +227,7 @@ def createZiekGraph(metenisweten, events):
     plt.text(
         x=dateCache.today(),
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=reference_datetime(metenisweten).strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -252,7 +253,7 @@ def createZiekGraph(metenisweten, events):
 
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     available_dates = opgenomen['x'] + ic['x'] + geschat_ziek_rna['x']
     data_tot=max(available_dates).strftime("%Y-%m-%d")
 

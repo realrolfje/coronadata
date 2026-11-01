@@ -28,13 +28,6 @@ cd "$project_dir/scripts"
 "$PYTHON_BIN" ./createGraphs.py
 "$PYTHON_BIN" ./createGraphs.py 365
 
-if [ "${CORONADATA_RENDER_ONLY:-0}" != "1" ]; then
-    "$PYTHON_BIN" ./updatePageHits.py
-else
-    echo "Render-only mode: skip page-hit download."
-fi
-"$PYTHON_BIN" ./createPageHitsGraph.py
-
 rm -f ../cache/stats.csv
 lines=$(find . -name "*.py" | xargs cat | wc -l | awk '{print $1;}')
 echo "python_lines;$lines" > ../cache/stats.csv
@@ -50,4 +43,5 @@ else
 fi
 
 "$PYTHON_BIN" ./processTemplates.py
+"$PYTHON_BIN" ./buildSiteData.py
 cd ..

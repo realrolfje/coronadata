@@ -9,6 +9,7 @@ import datetime
 import modules.brondata as brondata
 from modules.brondata import decimalstring
 from modules.defaults import DAILY_STATS, GRAPHS_DIR
+from modules.buildtime import reference_date, reference_datetime
 from modules.datautil import anotate
 import sys
 from modules.datautil import runIfNewData
@@ -50,7 +51,7 @@ def createZiekenhuisTotaalGraph(metenisweten):
 
 
         # --------------- Opname en IC data van vandaag en gisteren zijn niet compleet, niet tonen
-        if m and dateCache.parse(datum).date() <= (datetime.date.today() - datetime.timedelta(days=3)):
+        if m and dateCache.parse(datum).date() <= (reference_date(metenisweten) - datetime.timedelta(days=3)):
             nu_op_ic = m.get('nu_op_ic') or None
             nu_opgenomen = m.get('nu_opgenomen') or None
 
@@ -95,13 +96,13 @@ def createZiekenhuisTotaalGraph(metenisweten):
 
     # laat huidige datum zien met vertikale lijn
     plt.figtext(0.885,0.125, 
-            datetime.datetime.now().strftime("%d"), 
+            reference_datetime(metenisweten).strftime("%d"),
             color="red",
             fontsize=8,
             bbox=dict(facecolor='white', alpha=0.9, pad=0,
             edgecolor='white'),
             zorder=10)
-    ax1.axvline(datetime.date.today(), color='red', linewidth=0.5)
+    ax1.axvline(reference_date(metenisweten), color='red', linewidth=0.5)
 
     # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
     ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
@@ -114,7 +115,7 @@ def createZiekenhuisTotaalGraph(metenisweten):
     plt.gca().set_xlim([parser.parse("2020-03-01"), date_range[-1]])
 
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     data_tot=opgenomen['x'][-1].strftime("%Y-%m-%d")
 
     plt.title('COVID-19 patienten in het ziekenhuis')

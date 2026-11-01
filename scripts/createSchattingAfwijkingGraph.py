@@ -10,6 +10,7 @@ import modules.brondata as brondata
 from math import log
 from modules.brondata import decimalstring
 from modules.defaults import DAILY_STATS, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData
 
 def main():
@@ -137,7 +138,7 @@ def createSchattingAfwijkingGraph(metenisweten):
 
     ax1.set_xlabel("Datum")
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     plt.title('Afwijking schatting @rolfje t.o.v. RIVM schatting, '+gegenereerd_op)
 
     ax1.legend(loc="upper left")

@@ -20,7 +20,6 @@ from createRNAGraph                import createRNAGraph
 from createHeatmap                 import createHeatmap
 from createZiekGraph               import createZiekGraph
 from createCovidTestsGraph         import createCovidTestsGraph
-from calculateDailyExcelData       import calculateDailyExcelData
 from createZiekenhuisTotaalGraph   import createZiekenhuisTotaalGraph
 from createSchattingAfwijkingGraph import createSchattingAfwijkingGraph
 from createTestGraph               import createTestGraph
@@ -55,12 +54,6 @@ def main():
 
     print("Creating Live icon")
     createLiveIcon(metenisweten)
-
-    if os.environ.get('CORONADATA_RENDER_ONLY') != '1':
-        print("Calculate excel data")
-        calculateDailyExcelData(testpunten, metenisweten)
-    else:
-        print("Render-only mode: skip dated data exports.")
 
     print("Create ziekenhuis totaal graph")
     createZiekenhuisTotaalGraph(metenisweten)

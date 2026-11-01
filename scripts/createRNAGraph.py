@@ -9,6 +9,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth, dateCache
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
+from modules.buildtime import reference_date, reference_datetime
 from scipy.ndimage.filters import uniform_filter1d
 from modules.datautil import runIfNewData
 import sys
@@ -73,9 +74,9 @@ def createRNAGraph(metenisweten):
 
     # Put vertical line at current day
     plt.text(
-        x=datetime.date.today(),
+        x=reference_date(metenisweten),
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=reference_datetime(metenisweten).strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -83,7 +84,7 @@ def createRNAGraph(metenisweten):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    plt.axvline(datetime.date.today(), color='red', linewidth=0.5)
+    plt.axvline(reference_date(metenisweten), color='red', linewidth=0.5)
 
     #  ax2.plot(RNA_populatie_dekking['x'], smooth(RNA_populatie_dekking['y']), color='orange', label='geschatte populatie dekking %')
 
@@ -122,7 +123,7 @@ def createRNAGraph(metenisweten):
             zorder=10)
 
     data_tot=RNA_per_100k_avg['x'][-1].strftime("%Y-%m-%d")
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     plt.title('Concentratie SARS-CoV-2 RNA in rioolwater per 100.000 inwoners')
 
     footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
