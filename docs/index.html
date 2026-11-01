@@ -1,95 +1,515 @@
-<!doctype html>
-<html lang="nl">
+<html>
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Actuele luchtweg- en rioolwatersurveillance naast het historische Nederlandse COVID-19-archief.">
-    <title>Coronadata · actuele surveillance en historisch archief</title>
+    <title>Corona data landelijk</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="description" content="Het meest complete en overzichtelijke coronadashboard van Nederland.">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Corona data landelijk">
+    <meta name="twitter:site" content="https://realrolfje.github.io/coronadata/">
+    <meta name="twitter:creator:id" content="@rolfje">
+    <!-- <meta name="twitter:description" content="1 op 808 mensen is nu ziek/besmettelijk (geschat). Opgenomen: 1006. Op IC: 52. Gezette prikken: 36.249.856 (geschat)."> -->
+    <meta name="twitter:description"
+        content="Het meest complete en overzichtelijke coronadashboard van Nederland. Check hier je prikafspraak geboortejaar.">
+    <meta name="twitter:image"
+        content="https://realrolfje.github.io/coronadata/icons/apple-touch-icon.png?36249856">
+    <meta name="twitter:image:alt" content="Rt=0,9">
+
+    <meta http-equiv="refresh" content="500">
     <link rel="stylesheet" href="styles.css">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 </head>
+
 <body>
-    <header class="site-header">
-        <div>
-            <p class="eyebrow">Coronadata Nederland</p>
-            <h1>Actuele surveillance en historisch COVID-19-archief</h1>
-            <p>Actieve bronnen staan los van beëindigde COVID-19-reeksen. Een lege recente periode wordt daardoor niet als nul gepresenteerd.</p>
+    <p class="highlight header center">
+        <a href="index-all.html"
+            style="font-size:16pt ;float: left; padding-left:10px; text-decoration: none">&#x1F50D;</a>
+        <a
+            href="http://twitter.com/share?text=1%20op%20102%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%201957%20%28NICE%29.%0ANu%20op%20IC%3A%20845%20%28NICE%29.%0AGezette%20prikken%3A%205.223.026%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/">
+            <img src="icons/tweet-button.png" style="width:25px; float: right; padding-left:10px"
+                title="Deel op Twitter" />
+        </a>
+        <a href="history.html">
+            <img src="icons/2912778.svg" style="width:25px; float: right; padding-left:10px"
+                title="Historie" />
+        </a>
+        Geen smoesjes, je weet het best:<br />
+        <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    </p>
+    <div class="container center">
+        <div class="graphcontainer">
+            <p class="basisregels">
+                <a href="https://www.ecdc.europa.eu/en/covid-19/situation-updates/weekly-maps-coordinated-restriction-free-movement"><img
+                        src="extern/ECDC_Subnational_Combined_traffic.png"
+                        style="width:150px; float: right; padding-top:0px; padding-bottom:0px; padding-left:10px;"
+                        title="Reizen? Check de ECDC Travel Map" /></a>
+                De belangrijkste basisregels vind je op <a
+                    href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/algemene-coronaregels/kort-overzicht-coronamaatregelen">rijksoverheid.nl</a>.
+                Dragen van een mondkapje is niet meer <a
+                    href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/openbaar-en-dagelijks-leven/mondkapjes/wanneer-moet-ik-een-mondkapje-dragen">verplicht</a>.
+                <br/>
+                Plan je booster op <a href="https://planjeprik.nl">planjeprik.nl</a>!
+                <br /><span style="color:lightgray; font-size: smaller;">2026-10-27 12:00 met errors</span>
+            </p>
         </div>
-        <nav aria-label="Hoofdnavigatie">
-            <a href="#actueel">Actueel</a>
-            <a href="#archief">Historisch archief</a>
-            <a href="source-status.html">Bronstatus</a>
-            <a href="index-all.html">Alle volledige grafieken</a>
-        </nav>
-    </header>
-
-    <main class="page">
-        <section id="actueel" aria-labelledby="actueel-title">
-            <div class="section-heading">
-                <div><p class="eyebrow">Wordt nog bijgewerkt</p><h2 id="actueel-title">Actuele surveillance</h2></div>
-                <a class="secondary-link" href="source-status.html">Bekijk gezondheid van alle bronnen →</a>
+    </div>
+    <div class="container center">
+        <!-- o.b.v. RIVM:
+        <a class="buttonlink" href="#zieken">
+            <div class="button green"
+                title="Het door RIVM geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op 1599 mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:1599</div>
             </div>
-            <p>Deze bronnen worden nog door het RIVM gepubliceerd. De datum bij iedere grafiek is de laatste waarneming, niet de datum waarop deze pagina is geopend.</p>
-
-            <article class="chart-card" data-surveillance-chart>
-                <div class="chart-card-header">
-                    <div><h3>SARS-CoV-2 in rioolwater</h3><p class="chart-meta">RIVM rioolwatersurveillance · laatste waarneming 2026-10-25</p></div>
-                    <button type="button" data-reset-zoom>Hele periode</button>
-                </div>
-                <p class="calculation-note"><strong>Let op:</strong> de rioolwatermeting is gerapporteerde brondata; “geschat aantal besmettelijke mensen” is een experimentele berekening van dit project.</p>
-                <div class="chart-toggles" aria-label="Zichtbare reeksen"></div>
-                <p class="chart-message">De interactieve grafiek wordt geladen. De statische SVG blijft hieronder beschikbaar.</p>
-                <canvas aria-label="Interactieve tijdreeks. Gebruik het muiswiel om te zoomen en sleep om te verschuiven."></canvas>
-                <p class="chart-tooltip" aria-live="polite">Beweeg over de grafiek voor exacte waarden.</p>
-                <div class="chart-fallback">
-                    <a href="rna-in-rioolwater.html"><img src="graphs/rna-in-rioolwater-365.svg" alt="Statische grafiek van SARS-CoV-2 in rioolwater"></a>
-                </div>
-                <p class="chart-help">Zoom met het muiswiel of trackpad, sleep horizontaal om te verschuiven en gebruik de schakelaars om een reeks te verbergen. <a href="graphs/rna-in-rioolwater.svg">Volledige statische tijdlijn</a>.</p>
-            </article>
-
-            <article class="chart-card">
-                <div class="chart-card-header"><div><h3>SARS-CoV-2-varianten</h3><p class="chart-meta">RIVM kiemsurveillance · laatste waarneming 2026-10-19</p></div></div>
-                <img src="graphs/variants-365.svg" alt="Verdeling van SARS-CoV-2-varianten in de recentste periode">
-                <p><a href="graphs/variants.svg">Bekijk de volledige historische tijdlijn</a>.</p>
-            </article>
-            <aside class="surveillance-note">
-                <h3>Infectieradar luchtwegklachten</h3>
-                <p>RIVM Infectieradar ARI · laatste waarneming 2026-10-27. Deze actieve reeks meet acute luchtwegklachten en wordt bewust niet aan de oude COVID-achtige-klachtenreeks vastgeplakt. Details staan op de <a href="source-status.html">bronstatuspagina</a>.</p>
-            </aside>
-        </section>
-
-        <section id="archief" aria-labelledby="archief-title">
-            <div class="section-heading"><div><p class="eyebrow">Beëindigde of bevroren reeksen</p><h2 id="archief-title">Historisch COVID-19-archief</h2></div></div>
-            <p>Deze grafieken blijven volledig beschikbaar, maar hun bronreeksen worden niet meer bijgewerkt. De vermelde einddatum voorkomt dat oude waarden als actuele stand worden gelezen.</p>
-            <div class="archive-grid">
-                <article class="chart-card">
-                    <h3>Ziekenhuis en IC</h3><p class="chart-meta">LCPS/NICE · reeks beëindigd · laatste waarneming 2024-01-01</p>
-                    <a href="zieken.html"><img src="graphs/zieken.svg" alt="Historische grafiek van ziekenhuis- en IC-bezetting"></a>
-                </article>
-                <article class="chart-card">
-                    <h3>Reproductiegetal</h3><p class="chart-meta">RIVM · bevroren · laatste waarneming 2023-06-27</p>
-                    <img src="graphs/reproductiegetal.svg" alt="Historische grafiek van het reproductiegetal">
-                </article>
-                <article class="chart-card">
-                    <h3>COVID-19-tests</h3><p class="chart-meta">RIVM en CoronaWatchNL · bevroren · laatste waarneming 2023-03-17</p>
-                    <img src="graphs/covidtests.svg" alt="Historische grafiek van uitgevoerde COVID-19-tests">
-                </article>
-                <article class="chart-card">
-                    <h3>Besmettingen naar leeftijd</h3><p class="chart-meta">RIVM casusdata · bevroren · laatste waarneming 2023-04-04</p>
-                    <img src="graphs/besmettingen-leeftijd.svg" alt="Historische grafiek van besmettingen naar leeftijd">
-                </article>
+        </a> -->
+        <!-- <a class="buttonlink" href="#zieken">
+            <div class="button red"
+                title="Het op basis van rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op 120 mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:120</div>
             </div>
-            <p><a class="primary-link" href="index-all.html">Open alle volledige historische grafieken</a> · <a href="history.html">Lees het archieflogboek</a></p>
-        </section>
-
-        <section aria-labelledby="verantwoording-title">
-            <h2 id="verantwoording-title">Verantwoording</h2>
+        </a> -->
+        <a class="buttonlink" href="#zieken">
+            <div class="button yellow"
+                title="Het op basis van COVID Tests en rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op 808 mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:808</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#covidtests">
+            <div class="button red"
+                title="Tests met een positieve uitslag ten opzichte van het totaal afgenomen tests, dagelijks, met vertraging.">
+                <div class="nametext">positief getest</div>
+                <div class="valuetext">59,7%</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button yellow"
+                title="Het aantal mensen dat op dit moment is opgenomen in het ziekenuis met, of als gevolg van, COVID-19.">
+                <div class="nametext">opgenomen</div>
+                <div class="valuetext">1006</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button yellow"
+                title="Het aantal mensen dat op dit moment op intensive care ligt met, of als gevolg van, COVID-19.">
+                <div class="nametext">intensive care</div>
+                <div class="valuetext">52</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#reproductiegetal">
+            <div class="button yellow"
+                title="Het berekende reproductiegetal Rt over de afgelopen periode, met vertraging.">
+                <div class="nametext">reproductiegetal</div>
+                <div class="valuetext">0,9</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#besmetleeftijd">
+            <div class="button blue" title="Gemiddelde leeftijd van positief geteste mensen.">
+                <div class="nametext">leeftijd positief</div>
+                <div class="valuetext">68</div>
+            </div>
+        </a>
+        <!-- <a class="buttonlink" href="https://coronatest.nl/ik-wil-me-laten-vaccineren/een-online-afspraak-maken">
+            <div class="button blue" title="Mensen geboren in of voor 2009 kunnen online en vaccinatieafspraak maken. Kik hier.">
+                <div class="nametext">"vaccinjaar"</div>
+                <div class="valuetext">2009</div>
+            </div>
+        </a> -->
+        <!-- <a class="buttonlink" href="#vaccinaties">
+            <div class="button green" title="Aantal gezette prikken met vaccin.">
+                <div class="nametext">prikvoortgang</div>
+                <div class="valuetext">103,57%</div>
+            </div>
+        </a> -->
+        <!--
+        <a class="buttonlink" href="#vaccinaties">
+            <div class="button green" title="Aantal gezette prikken met vaccin (geschat).">
+                <div class="nametext">prikvoortgang</div>
+                <div class="valuetext">106,05%</div>
+            </div>
+        </a>
+        -->
+    </div>
+    <div class="container center">
+        <div class="graphcontainer">
+            <a href="zieken.html" title="klik voor uitleg"><img id="zieken" src="graphs/zieken-365.svg"
+                    width="100%" /></a>
+            <a href="rna-in-rioolwater.html" title="klik voor uitleg"><img id="rioolwater"
+                    src="graphs/rna-in-rioolwater-365.svg" width="100%" /></a>
+            <img id="reproductiegetal" src="graphs/reproductiegetal-365.svg" width="100%" />
+        </div>
+        <div class="graphcontainer">
+            <img id="varianten" src="graphs/variants-365.svg" width="100%" />
+            <img id="covidtests" src="graphs/covidtests-365.svg" width="100%" />
+            <img id="besmetleeftijd" src="graphs/besmettingen-leeftijd-365.svg" width="100%" />
+            <!-- <img id="mobiliteit" src="graphs/mobiliteit-365.svg" width="100%" /> -->
+        </div>
+    </div>
+    <div class="container center">
+        <a class="buttonlink" href="https://twitter.com/rolfje">
+            <!-- <a class="buttonlink" href="http://twitter.com/share?text=1%20op%20808%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%201006%20%28NICE%29.%0ANu%20op%20IC%3A%2052%20%28NICE%29.%0AGezette%20prikken%3A%2036.249.856%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/"> -->
+            <div class="tweet">
+                <img src="icons/tweet-icon.svg" style="width:20px; float: right; padding-left:10px" title="@rolfje" />
+                1 op 808 mensen is nu ziek/besmettelijk (geschat).<br />
+                <!-- 1 op 120 mensen is nu ziek/besmettelijk (RWZI).<br /> -->
+                <!-- 1 op 1599 mensen is nu ziek/besmettelijk (RIVM).<br /> -->
+                Nu opgenomen: 1006 (NICE).<br />
+                Nu op IC: 52 (NICE).<br />
+                <!-- Gezette prikken: 36.249.856 (103,57%).<br /> -->
+                <!-- Gezette prikken: 36.249.856 (106,05%, geschat).<br /> -->
+                https://realrolfje.github.io/coronadata/<br />
+                #COVID19 #coronavirus #haaldieprik
+            </div>
+        </a>
+        <div>
+            <a href="https://github.com/realrolfje/coronadata#coronadata-zonder-gedoe">
+                <img width="400px" src="coronadata-charts.png" />
+            </a>
+        </div>
+        <div class="container center">
             <div class="textblock">
-                <p>Gegenereerd op 2026-10-27 12:00. Bronnen, levenscyclus en laatste waarnemingsdatum staan op de <a href="source-status.html">bronstatuspagina</a>. Gerapporteerde waarden en berekende of experimentele waarden worden afzonderlijk benoemd.</p>
-                <p>De oorspronkelijke downloads en historische dataset blijven bewaard. Zie de <a href="https://github.com/realrolfje/coronadata">broncode en methodologie</a> en de <a href="events.html">historische gebeurtenissen</a>.</p>
+                <center>
+                    <table>
+                        <tr>
+                            <td colspan="2">Wat betekenen de "G's" in de toegangsdiscussie?</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">1G:</td>
+                            <td>Negatief <b>G</b>etest.</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">2G:</td>
+                            <td><b>G</b>enezen OF <b>G</b>evaccineerd.</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">3G:</td>
+                            <td>Negatief <b>G</b>etest OF <b>G</b>evaccineerd OF <b>G</b>enezen.</td>
+                        </tr>
+                    </table>
+                </center>
             </div>
-        </section>
-    </main>
-    <script src="surveillance-chart.js" defer></script>
+        </div>
+
+        <!-- <a href="https://www.google.com/covid19/mobility/">Google mobility reports</a> -->
+        <!-- https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv -->
+    </div>
+
+    <div class="container center">
+        <div class="textblock">
+            <p>
+                De laatste keer dat er 21.654 mensen geschat besmettelijk waren was: nooit.
+                De laatste keer dat er 1006 mensen waren opgenomen was: 2023-04-04.
+                De laatste keer dat er 52 mensen op de IC lagen was: 2023-03-29.
+                De laatste keer dat er 59,7% mensen positief testten was: 2023-03-15.
+            </p>
+            <p class="highlight">Errors during processing:<br/>Error, prevalence incorrect: 2022-05-23 - 1.122
+<br/>Error, prevalence incorrect: 2022-05-30 - 1.110
+<br/>Error, prevalence incorrect: 2025-01-27 - 1.118
+<br/>Error, prevalence incorrect: 2025-02-03 - 1.125
+<br/>Error, prevalence incorrect: 2025-02-10 - 1.185
+<br/>Error, prevalence incorrect: 2025-02-17 - 1.211
+<br/>Error, prevalence incorrect: 2025-02-24 - 1.143
+<br/>Error, prevalence incorrect: 2025-03-03 - 1.167
+<br/>Error, prevalence incorrect: 2025-03-10 - 1.400
+<br/>Error, prevalence incorrect: 2025-03-17 - 1.389
+<br/>Error, prevalence incorrect: 2025-03-24 - 1.500
+<br/>Error, prevalence incorrect: 2025-03-31 - 1.467
+<br/>Error, prevalence incorrect: 2025-04-07 - 1.652
+<br/>Error, prevalence incorrect: 2025-04-14 - 1.389
+<br/>Error, prevalence incorrect: 2025-04-21 - 1.579
+<br/>Error, prevalence incorrect: 2025-04-28 - 1.526
+<br/>Error, prevalence incorrect: 2025-05-05 - 1.444
+<br/>Error, prevalence incorrect: 2025-05-12 - 1.591
+<br/>Error, prevalence incorrect: 2025-05-19 - 1.552
+<br/>Error, prevalence incorrect: 2025-05-26 - 1.378
+<br/>Error, prevalence incorrect: 2025-06-02 - 1.500
+<br/>Error, prevalence incorrect: 2025-06-09 - 1.304
+<br/>Error, prevalence incorrect: 2025-06-16 - 1.311
+<br/>Error, prevalence incorrect: 2025-06-23 - 1.400
+<br/>Error, prevalence incorrect: 2025-06-30 - 1.360
+<br/>Error, prevalence incorrect: 2025-07-07 - 1.263
+<br/>Error, prevalence incorrect: 2025-07-14 - 1.389
+<br/>Error, prevalence incorrect: 2025-07-21 - 1.318
+<br/>Error, prevalence incorrect: 2025-07-28 - 1.170
+<br/>Error, prevalence incorrect: 2025-08-04 - 1.175
+<br/>Error, prevalence incorrect: 2025-08-11 - 1.187
+<br/>Error, prevalence incorrect: 2025-08-25 - 1.126
+<br/>Error, prevalence incorrect: 2025-09-22 - 1.107
+<br/>Error, prevalence incorrect: 2025-10-06 - 1.125
+<br/>Error, prevalence incorrect: 2025-10-20 - 1.149
+<br/>Error, prevalence incorrect: 2025-11-03 - 1.108
+<br/>Error, prevalence incorrect: 2025-11-10 - 1.106
+<br/>Error, prevalence incorrect: 2025-11-24 - 1.134
+<br/>Error, prevalence incorrect: 2025-12-01 - 1.155
+<br/>Error, prevalence incorrect: 2025-12-08 - 1.133
+<br/>Error, prevalence incorrect: 2025-12-15 - 1.149
+<br/>Error, prevalence incorrect: 2025-12-22 - 1.171
+<br/>Error, prevalence incorrect: 2025-12-29 - 1.177
+<br/>Error, prevalence incorrect: 2026-01-05 - 1.270
+<br/>Error, prevalence incorrect: 2026-01-19 - 1.190
+<br/>Error, prevalence incorrect: 2026-01-26 - 1.292
+<br/>Error, prevalence incorrect: 2026-02-09 - 1.167
+<br/>Error, prevalence incorrect: 2026-02-16 - 1.188
+<br/>Error, prevalence incorrect: 2026-02-23 - 1.143
+<br/>Error, prevalence incorrect: 2026-03-02 - 1.375
+<br/>Error, prevalence incorrect: 2026-03-09 - 1.125
+<br/>Error, prevalence incorrect: 2026-03-16 - 1.250
+<br/>Error, prevalence incorrect: 2026-04-06 - 1.222
+<br/>Error, prevalence incorrect: 2026-04-13 - 1.333
+<br/>Error, prevalence incorrect: 2026-04-27 - 1.333
+<br/>Error, prevalence incorrect: 2026-05-18 - 2.000
+<br/>Error, prevalence incorrect: 2026-05-25 - 1.200
+<br/>Error, prevalence incorrect: 2026-06-01 - 1.333
+<br/>Error, prevalence incorrect: 2026-07-13 - 1.200
+<br/>Error, prevalence incorrect: 2026-08-03 - 1.333
+<br/>Error, prevalence incorrect: 2026-08-17 - 1.500
+<br/>Error, prevalence incorrect: 2026-08-24 - 1.154
+<br/>Error, prevalence incorrect: 2026-08-31 - 1.235
+<br/>Error, prevalence incorrect: 2026-09-07 - 1.105
+<br/>Error, prevalence incorrect: 2026-09-14 - 1.143
+<br/>Percentages niet compleet voor 2020-12-14, onbekend: 6839 (99.51%)
+<br/>Percentages niet compleet voor 2020-12-21, onbekend: 13059 (97.67%)
+<br/>Percentages niet compleet voor 2020-12-28, onbekend: 18910 (95.17%)
+<br/>Percentages niet compleet voor 2021-01-04, onbekend: 23035 (87.36%)
+<br/>Percentages niet compleet voor 2021-01-11, onbekend: 25924 (78.88%)
+<br/>Percentages niet compleet voor 2021-01-18, onbekend: 29598 (75.27%)
+<br/>Percentages niet compleet voor 2021-01-25, onbekend: 33206 (72.60%)
+<br/>Percentages niet compleet voor 2021-02-01, onbekend: 34345 (65.97%)
+<br/>Percentages niet compleet voor 2021-02-08, onbekend: 33420 (57.34%)
+<br/>Percentages niet compleet voor 2021-02-15, onbekend: 22667 (35.21%)
+<br/>Percentages niet compleet voor 2021-02-22, onbekend: 14887 (21.22%)
+<br/>Percentages niet compleet voor 2021-03-01, onbekend: 10485 (13.86%)
+<br/>Percentages niet compleet voor 2021-03-08, onbekend: 7180 (8.92%)
+<br/>Percentages niet compleet voor 2021-03-15, onbekend: 4593 (5.44%)
+<br/>Percentages niet compleet voor 2021-03-22, onbekend: 2409 (2.75%)
+<br/>Percentages niet compleet voor 2021-03-29, onbekend: 1877 (2.08%)
+<br/>Percentages niet compleet voor 2021-04-05, onbekend: 1135 (1.24%)
+<br/>Percentages niet compleet voor 2021-05-31, onbekend: 1037 (1.10%)
+<br/>Percentages niet compleet voor 2021-06-07, onbekend: 1442 (1.53%)
+<br/>Percentages niet compleet voor 2021-06-14, onbekend: 2535 (2.69%)
+<br/>Percentages niet compleet voor 2021-06-28, onbekend: 1553 (1.61%)
+<br/>Percentages niet compleet voor 2021-07-12, onbekend: 1060 (1.07%)
+<br/>Percentages niet compleet voor 2024-03-04, onbekend: 1322 (3.33%)
+<br/>Percentages niet compleet voor 2024-03-11, onbekend: 3441 (8.57%)
+<br/>Percentages niet compleet voor 2024-03-25, onbekend: 1250 (2.94%)
+<br/>Percentages niet compleet voor 2024-04-01, onbekend: 1336 (3.03%)
+<br/>Totaal percentage varianten op 2025-02-10: 1.19
+<br/>Totaal percentage varianten op 2025-02-17: 1.21
+<br/>Totaal percentage varianten op 2025-03-03: 1.17
+<br/>Totaal percentage varianten op 2025-03-10: 1.40
+<br/>Totaal percentage varianten op 2025-03-17: 1.39
+<br/>Totaal percentage varianten op 2025-03-24: 1.50
+<br/>Totaal percentage varianten op 2025-03-31: 1.47
+<br/>Totaal percentage varianten op 2025-04-07: 1.65
+<br/>Totaal percentage varianten op 2025-04-14: 1.39
+<br/>Totaal percentage varianten op 2025-04-21: 1.58
+<br/>Totaal percentage varianten op 2025-04-28: 1.53
+<br/>Totaal percentage varianten op 2025-05-05: 1.44
+<br/>Totaal percentage varianten op 2025-05-12: 1.59
+<br/>Totaal percentage varianten op 2025-05-19: 1.55
+<br/>Totaal percentage varianten op 2025-05-26: 1.38
+<br/>Totaal percentage varianten op 2025-06-02: 1.50
+<br/>Totaal percentage varianten op 2025-06-09: 1.30
+<br/>Totaal percentage varianten op 2025-06-16: 1.31
+<br/>Totaal percentage varianten op 2025-06-23: 1.40
+<br/>Totaal percentage varianten op 2025-06-30: 1.36
+<br/>Totaal percentage varianten op 2025-07-07: 1.26
+<br/>Totaal percentage varianten op 2025-07-14: 1.39
+<br/>Totaal percentage varianten op 2025-07-21: 1.32
+<br/>Totaal percentage varianten op 2025-07-28: 1.17
+<br/>Totaal percentage varianten op 2025-08-04: 1.17
+<br/>Totaal percentage varianten op 2025-08-11: 1.19
+<br/>Totaal percentage varianten op 2025-12-01: 1.16
+<br/>Totaal percentage varianten op 2025-12-22: 1.17
+<br/>Totaal percentage varianten op 2025-12-29: 1.18
+<br/>Totaal percentage varianten op 2026-01-05: 1.27
+<br/>Totaal percentage varianten op 2026-01-19: 1.19
+<br/>Totaal percentage varianten op 2026-01-26: 1.29
+<br/>Totaal percentage varianten op 2026-02-09: 1.17
+<br/>Totaal percentage varianten op 2026-02-16: 1.19
+<br/>Totaal percentage varianten op 2026-03-02: 1.38
+<br/>Totaal percentage varianten op 2026-03-16: 1.25
+<br/>Totaal percentage varianten op 2026-04-06: 1.22
+<br/>Totaal percentage varianten op 2026-04-13: 1.33
+<br/>Totaal percentage varianten op 2026-04-27: 1.33
+<br/>Totaal percentage varianten op 2026-05-18: 2.00
+<br/>Totaal percentage varianten op 2026-05-25: 1.20
+<br/>Totaal percentage varianten op 2026-06-01: 1.33
+<br/>Totaal percentage varianten op 2026-07-13: 1.20
+<br/>Totaal percentage varianten op 2026-08-03: 1.33
+<br/>Totaal percentage varianten op 2026-08-17: 1.50
+<br/>Totaal percentage varianten op 2026-08-24: 1.15
+<br/>Totaal percentage varianten op 2026-08-31: 1.24
+<br/>Error, prevalence incorrect: 2022-05-23 - 1.122
+<br/>Error, prevalence incorrect: 2022-05-30 - 1.110
+<br/>Error, prevalence incorrect: 2025-01-27 - 1.118
+<br/>Error, prevalence incorrect: 2025-02-03 - 1.125
+<br/>Error, prevalence incorrect: 2025-02-10 - 1.185
+<br/>Error, prevalence incorrect: 2025-02-17 - 1.211
+<br/>Error, prevalence incorrect: 2025-02-24 - 1.143
+<br/>Error, prevalence incorrect: 2025-03-03 - 1.167
+<br/>Error, prevalence incorrect: 2025-03-10 - 1.400
+<br/>Error, prevalence incorrect: 2025-03-17 - 1.389
+<br/>Error, prevalence incorrect: 2025-03-24 - 1.500
+<br/>Error, prevalence incorrect: 2025-03-31 - 1.467
+<br/>Error, prevalence incorrect: 2025-04-07 - 1.652
+<br/>Error, prevalence incorrect: 2025-04-14 - 1.389
+<br/>Error, prevalence incorrect: 2025-04-21 - 1.579
+<br/>Error, prevalence incorrect: 2025-04-28 - 1.526
+<br/>Error, prevalence incorrect: 2025-05-05 - 1.444
+<br/>Error, prevalence incorrect: 2025-05-12 - 1.591
+<br/>Error, prevalence incorrect: 2025-05-19 - 1.552
+<br/>Error, prevalence incorrect: 2025-05-26 - 1.378
+<br/>Error, prevalence incorrect: 2025-06-02 - 1.500
+<br/>Error, prevalence incorrect: 2025-06-09 - 1.304
+<br/>Error, prevalence incorrect: 2025-06-16 - 1.311
+<br/>Error, prevalence incorrect: 2025-06-23 - 1.400
+<br/>Error, prevalence incorrect: 2025-06-30 - 1.360
+<br/>Error, prevalence incorrect: 2025-07-07 - 1.263
+<br/>Error, prevalence incorrect: 2025-07-14 - 1.389
+<br/>Error, prevalence incorrect: 2025-07-21 - 1.318
+<br/>Error, prevalence incorrect: 2025-07-28 - 1.170
+<br/>Error, prevalence incorrect: 2025-08-04 - 1.175
+<br/>Error, prevalence incorrect: 2025-08-11 - 1.187
+<br/>Error, prevalence incorrect: 2025-08-25 - 1.126
+<br/>Error, prevalence incorrect: 2025-09-22 - 1.107
+<br/>Error, prevalence incorrect: 2025-10-06 - 1.125
+<br/>Error, prevalence incorrect: 2025-10-20 - 1.149
+<br/>Error, prevalence incorrect: 2025-11-03 - 1.108
+<br/>Error, prevalence incorrect: 2025-11-10 - 1.106
+<br/>Error, prevalence incorrect: 2025-11-24 - 1.134
+<br/>Error, prevalence incorrect: 2025-12-01 - 1.155
+<br/>Error, prevalence incorrect: 2025-12-08 - 1.133
+<br/>Error, prevalence incorrect: 2025-12-15 - 1.149
+<br/>Error, prevalence incorrect: 2025-12-22 - 1.171
+<br/>Error, prevalence incorrect: 2025-12-29 - 1.177
+<br/>Error, prevalence incorrect: 2026-01-05 - 1.270
+<br/>Error, prevalence incorrect: 2026-01-19 - 1.190
+<br/>Error, prevalence incorrect: 2026-01-26 - 1.292
+<br/>Error, prevalence incorrect: 2026-02-09 - 1.167
+<br/>Error, prevalence incorrect: 2026-02-16 - 1.188
+<br/>Error, prevalence incorrect: 2026-02-23 - 1.143
+<br/>Error, prevalence incorrect: 2026-03-02 - 1.375
+<br/>Error, prevalence incorrect: 2026-03-09 - 1.125
+<br/>Error, prevalence incorrect: 2026-03-16 - 1.250
+<br/>Error, prevalence incorrect: 2026-04-06 - 1.222
+<br/>Error, prevalence incorrect: 2026-04-13 - 1.333
+<br/>Error, prevalence incorrect: 2026-04-27 - 1.333
+<br/>Error, prevalence incorrect: 2026-05-18 - 2.000
+<br/>Error, prevalence incorrect: 2026-05-25 - 1.200
+<br/>Error, prevalence incorrect: 2026-06-01 - 1.333
+<br/>Error, prevalence incorrect: 2026-07-13 - 1.200
+<br/>Error, prevalence incorrect: 2026-08-03 - 1.333
+<br/>Error, prevalence incorrect: 2026-08-17 - 1.500
+<br/>Error, prevalence incorrect: 2026-08-24 - 1.154
+<br/>Error, prevalence incorrect: 2026-08-31 - 1.235
+<br/>Error, prevalence incorrect: 2026-09-07 - 1.105
+<br/>Error, prevalence incorrect: 2026-09-14 - 1.143
+<br/>Percentages niet compleet voor 2020-12-14, onbekend: 6839 (99.51%)
+<br/>Percentages niet compleet voor 2020-12-21, onbekend: 13059 (97.67%)
+<br/>Percentages niet compleet voor 2020-12-28, onbekend: 18910 (95.17%)
+<br/>Percentages niet compleet voor 2021-01-04, onbekend: 23035 (87.36%)
+<br/>Percentages niet compleet voor 2021-01-11, onbekend: 25924 (78.88%)
+<br/>Percentages niet compleet voor 2021-01-18, onbekend: 29598 (75.27%)
+<br/>Percentages niet compleet voor 2021-01-25, onbekend: 33206 (72.60%)
+<br/>Percentages niet compleet voor 2021-02-01, onbekend: 34345 (65.97%)
+<br/>Percentages niet compleet voor 2021-02-08, onbekend: 33420 (57.34%)
+<br/>Percentages niet compleet voor 2021-02-15, onbekend: 22667 (35.21%)
+<br/>Percentages niet compleet voor 2021-02-22, onbekend: 14887 (21.22%)
+<br/>Percentages niet compleet voor 2021-03-01, onbekend: 10485 (13.86%)
+<br/>Percentages niet compleet voor 2021-03-08, onbekend: 7180 (8.92%)
+<br/>Percentages niet compleet voor 2021-03-15, onbekend: 4593 (5.44%)
+<br/>Percentages niet compleet voor 2021-03-22, onbekend: 2409 (2.75%)
+<br/>Percentages niet compleet voor 2021-03-29, onbekend: 1877 (2.08%)
+<br/>Percentages niet compleet voor 2021-04-05, onbekend: 1135 (1.24%)
+<br/>Percentages niet compleet voor 2021-05-31, onbekend: 1037 (1.10%)
+<br/>Percentages niet compleet voor 2021-06-07, onbekend: 1442 (1.53%)
+<br/>Percentages niet compleet voor 2021-06-14, onbekend: 2535 (2.69%)
+<br/>Percentages niet compleet voor 2021-06-28, onbekend: 1553 (1.61%)
+<br/>Percentages niet compleet voor 2021-07-12, onbekend: 1060 (1.07%)
+<br/>Percentages niet compleet voor 2024-03-04, onbekend: 1322 (3.33%)
+<br/>Percentages niet compleet voor 2024-03-11, onbekend: 3441 (8.57%)
+<br/>Percentages niet compleet voor 2024-03-25, onbekend: 1250 (2.94%)
+<br/>Percentages niet compleet voor 2024-04-01, onbekend: 1336 (3.03%)
+<br/>Totaal percentage varianten op 2025-02-10: 1.19
+<br/>Totaal percentage varianten op 2025-02-17: 1.21
+<br/>Totaal percentage varianten op 2025-03-03: 1.17
+<br/>Totaal percentage varianten op 2025-03-10: 1.40
+<br/>Totaal percentage varianten op 2025-03-17: 1.39
+<br/>Totaal percentage varianten op 2025-03-24: 1.50
+<br/>Totaal percentage varianten op 2025-03-31: 1.47
+<br/>Totaal percentage varianten op 2025-04-07: 1.65
+<br/>Totaal percentage varianten op 2025-04-14: 1.39
+<br/>Totaal percentage varianten op 2025-04-21: 1.58
+<br/>Totaal percentage varianten op 2025-04-28: 1.53
+<br/>Totaal percentage varianten op 2025-05-05: 1.44
+<br/>Totaal percentage varianten op 2025-05-12: 1.59
+<br/>Totaal percentage varianten op 2025-05-19: 1.55
+<br/>Totaal percentage varianten op 2025-05-26: 1.38
+<br/>Totaal percentage varianten op 2025-06-02: 1.50
+<br/>Totaal percentage varianten op 2025-06-09: 1.30
+<br/>Totaal percentage varianten op 2025-06-16: 1.31
+<br/>Totaal percentage varianten op 2025-06-23: 1.40
+<br/>Totaal percentage varianten op 2025-06-30: 1.36
+<br/>Totaal percentage varianten op 2025-07-07: 1.26
+<br/>Totaal percentage varianten op 2025-07-14: 1.39
+<br/>Totaal percentage varianten op 2025-07-21: 1.32
+<br/>Totaal percentage varianten op 2025-07-28: 1.17
+<br/>Totaal percentage varianten op 2025-08-04: 1.17
+<br/>Totaal percentage varianten op 2025-08-11: 1.19
+<br/>Totaal percentage varianten op 2025-12-01: 1.16
+<br/>Totaal percentage varianten op 2025-12-22: 1.17
+<br/>Totaal percentage varianten op 2025-12-29: 1.18
+<br/>Totaal percentage varianten op 2026-01-05: 1.27
+<br/>Totaal percentage varianten op 2026-01-19: 1.19
+<br/>Totaal percentage varianten op 2026-01-26: 1.29
+<br/>Totaal percentage varianten op 2026-02-09: 1.17
+<br/>Totaal percentage varianten op 2026-02-16: 1.19
+<br/>Totaal percentage varianten op 2026-03-02: 1.38
+<br/>Totaal percentage varianten op 2026-03-16: 1.25
+<br/>Totaal percentage varianten op 2026-04-06: 1.22
+<br/>Totaal percentage varianten op 2026-04-13: 1.33
+<br/>Totaal percentage varianten op 2026-04-27: 1.33
+<br/>Totaal percentage varianten op 2026-05-18: 2.00
+<br/>Totaal percentage varianten op 2026-05-25: 1.20
+<br/>Totaal percentage varianten op 2026-06-01: 1.33
+<br/>Totaal percentage varianten op 2026-07-13: 1.20
+<br/>Totaal percentage varianten op 2026-08-03: 1.33
+<br/>Totaal percentage varianten op 2026-08-17: 1.50
+<br/>Totaal percentage varianten op 2026-08-24: 1.15
+<br/>Totaal percentage varianten op 2026-08-31: 1.24
+<br/></p>
+        </div>
+    </div>
+
+    <div class="container center">
+        <div class="textblock">
+            <p>
+                Data in deze grafieken is afkomstig van het
+                <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
+                <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care
+                    Evaluatie)</a>.
+                Er werd 3.649.040.000 bytes aan data geprocessed door 6246 regels python code.
+                Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
+                <a href="https://github.com/realrolfje/coronadata">broncode</a>. Icons en graphics zijn mogelijk gemaakt
+                door <a href="https://www.freepik.com/">freepik.com</a> en <a
+                    href="https://www.flaticon.com/">flaticon.com</a>.<br />
+            </p>
+            <p>
+                De complete lijst met events in de grafieken vind je <a href="events.html">hier</a>.
+            </p>
+            <p style="text-align: right;">
+                <a href="pagehits.html">
+                    <img width="50px"
+                        src="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
+                        alt="Hits">
+                </a>
+            </p>
+        </div>
+    </div>
 </body>
+
 </html>

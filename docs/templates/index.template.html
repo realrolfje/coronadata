@@ -1,95 +1,239 @@
-<!doctype html>
-<html lang="nl">
+<html>
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Actuele luchtweg- en rioolwatersurveillance naast het historische Nederlandse COVID-19-archief.">
-    <title>Coronadata · actuele surveillance en historisch archief</title>
+    <title>Corona data landelijk</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="description" content="Het meest complete en overzichtelijke coronadashboard van Nederland.">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Corona data landelijk">
+    <meta name="twitter:site" content="https://realrolfje.github.io/coronadata/">
+    <meta name="twitter:creator:id" content="@rolfje">
+    <!-- <meta name="twitter:description" content="1 op ${ziekverhouding_rolf} mensen is nu ziek/besmettelijk (geschat). Opgenomen: ${nu_opgenomen}. Op IC: ${nu_op_ic}. Gezette prikken: ${prikken_gezet_geschat} (geschat)."> -->
+    <meta name="twitter:description"
+        content="Het meest complete en overzichtelijke coronadashboard van Nederland. Check hier je prikafspraak geboortejaar.">
+    <meta name="twitter:image"
+        content="https://realrolfje.github.io/coronadata/icons/apple-touch-icon.png?${prikken_gezet_geschat_num}">
+    <meta name="twitter:image:alt" content="Rt=${Rt}">
+
+    <meta http-equiv="refresh" content="500">
     <link rel="stylesheet" href="styles.css">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 </head>
+
 <body>
-    <header class="site-header">
-        <div>
-            <p class="eyebrow">Coronadata Nederland</p>
-            <h1>Actuele surveillance en historisch COVID-19-archief</h1>
-            <p>Actieve bronnen staan los van beëindigde COVID-19-reeksen. Een lege recente periode wordt daardoor niet als nul gepresenteerd.</p>
+    <p class="highlight header center">
+        <a href="index-all.html"
+            style="font-size:16pt ;float: left; padding-left:10px; text-decoration: none">&#x1F50D;</a>
+        <a
+            href="http://twitter.com/share?text=1%20op%20102%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%201957%20%28NICE%29.%0ANu%20op%20IC%3A%20845%20%28NICE%29.%0AGezette%20prikken%3A%205.223.026%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/">
+            <img src="icons/tweet-button.png" style="width:25px; float: right; padding-left:10px"
+                title="Deel op Twitter" />
+        </a>
+        <a href="history.html">
+            <img src="icons/2912778.svg" style="width:25px; float: right; padding-left:10px"
+                title="Historie" />
+        </a>
+        Geen smoesjes, je weet het best:<br />
+        <b>Houd afstand, werk thuis, was je handen, vermijd drukke plaatsen.</b>
+    </p>
+    <div class="container center">
+        <div class="graphcontainer">
+            <p class="basisregels">
+                <a href="https://www.ecdc.europa.eu/en/covid-19/situation-updates/weekly-maps-coordinated-restriction-free-movement"><img
+                        src="extern/ECDC_Subnational_Combined_traffic.png"
+                        style="width:150px; float: right; padding-top:0px; padding-bottom:0px; padding-left:10px;"
+                        title="Reizen? Check de ECDC Travel Map" /></a>
+                De belangrijkste basisregels vind je op <a
+                    href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/algemene-coronaregels/kort-overzicht-coronamaatregelen">rijksoverheid.nl</a>.
+                Dragen van een mondkapje is niet meer <a
+                    href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-covid-19/openbaar-en-dagelijks-leven/mondkapjes/wanneer-moet-ik-een-mondkapje-dragen">verplicht</a>.
+                <br/>
+                Plan je booster op <a href="https://planjeprik.nl">planjeprik.nl</a>!
+                <br /><span style="color:lightgray; font-size: smaller;">${gegenereerd_op} ${error_warning}</span>
+            </p>
         </div>
-        <nav aria-label="Hoofdnavigatie">
-            <a href="#actueel">Actueel</a>
-            <a href="#archief">Historisch archief</a>
-            <a href="source-status.html">Bronstatus</a>
-            <a href="index-all.html">Alle volledige grafieken</a>
-        </nav>
-    </header>
-
-    <main class="page">
-        <section id="actueel" aria-labelledby="actueel-title">
-            <div class="section-heading">
-                <div><p class="eyebrow">Wordt nog bijgewerkt</p><h2 id="actueel-title">Actuele surveillance</h2></div>
-                <a class="secondary-link" href="source-status.html">Bekijk gezondheid van alle bronnen →</a>
+    </div>
+    <div class="container center">
+        <!-- o.b.v. RIVM:
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_color}"
+                title="Het door RIVM geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding}</div>
             </div>
-            <p>Deze bronnen worden nog door het RIVM gepubliceerd. De datum bij iedere grafiek is de laatste waarneming, niet de datum waarop deze pagina is geopend.</p>
-
-            <article class="chart-card" data-surveillance-chart>
-                <div class="chart-card-header">
-                    <div><h3>SARS-CoV-2 in rioolwater</h3><p class="chart-meta">RIVM rioolwatersurveillance · laatste waarneming ${rna_per_100k_datum}</p></div>
-                    <button type="button" data-reset-zoom>Hele periode</button>
-                </div>
-                <p class="calculation-note"><strong>Let op:</strong> de rioolwatermeting is gerapporteerde brondata; “geschat aantal besmettelijke mensen” is een experimentele berekening van dit project.</p>
-                <div class="chart-toggles" aria-label="Zichtbare reeksen"></div>
-                <p class="chart-message">De interactieve grafiek wordt geladen. De statische SVG blijft hieronder beschikbaar.</p>
-                <canvas aria-label="Interactieve tijdreeks. Gebruik het muiswiel om te zoomen en sleep om te verschuiven."></canvas>
-                <p class="chart-tooltip" aria-live="polite">Beweeg over de grafiek voor exacte waarden.</p>
-                <div class="chart-fallback">
-                    <a href="rna-in-rioolwater.html"><img src="graphs/rna-in-rioolwater-365.svg" alt="Statische grafiek van SARS-CoV-2 in rioolwater"></a>
-                </div>
-                <p class="chart-help">Zoom met het muiswiel of trackpad, sleep horizontaal om te verschuiven en gebruik de schakelaars om een reeks te verbergen. <a href="graphs/rna-in-rioolwater.svg">Volledige statische tijdlijn</a>.</p>
-            </article>
-
-            <article class="chart-card">
-                <div class="chart-card-header"><div><h3>SARS-CoV-2-varianten</h3><p class="chart-meta">RIVM kiemsurveillance · laatste waarneming ${varianten_datum}</p></div></div>
-                <img src="graphs/variants-365.svg" alt="Verdeling van SARS-CoV-2-varianten in de recentste periode">
-                <p><a href="graphs/variants.svg">Bekijk de volledige historische tijdlijn</a>.</p>
-            </article>
-            <aside class="surveillance-note">
-                <h3>Infectieradar luchtwegklachten</h3>
-                <p>RIVM Infectieradar ARI · laatste waarneming ${ari_datum}. Deze actieve reeks meet acute luchtwegklachten en wordt bewust niet aan de oude COVID-achtige-klachtenreeks vastgeplakt. Details staan op de <a href="source-status.html">bronstatuspagina</a>.</p>
-            </aside>
-        </section>
-
-        <section id="archief" aria-labelledby="archief-title">
-            <div class="section-heading"><div><p class="eyebrow">Beëindigde of bevroren reeksen</p><h2 id="archief-title">Historisch COVID-19-archief</h2></div></div>
-            <p>Deze grafieken blijven volledig beschikbaar, maar hun bronreeksen worden niet meer bijgewerkt. De vermelde einddatum voorkomt dat oude waarden als actuele stand worden gelezen.</p>
-            <div class="archive-grid">
-                <article class="chart-card">
-                    <h3>Ziekenhuis en IC</h3><p class="chart-meta">LCPS/NICE · reeks beëindigd · laatste waarneming ${ziekenhuis_datum}</p>
-                    <a href="zieken.html"><img src="graphs/zieken.svg" alt="Historische grafiek van ziekenhuis- en IC-bezetting"></a>
-                </article>
-                <article class="chart-card">
-                    <h3>Reproductiegetal</h3><p class="chart-meta">RIVM · bevroren · laatste waarneming ${Rt_datum}</p>
-                    <img src="graphs/reproductiegetal.svg" alt="Historische grafiek van het reproductiegetal">
-                </article>
-                <article class="chart-card">
-                    <h3>COVID-19-tests</h3><p class="chart-meta">RIVM en CoronaWatchNL · bevroren · laatste waarneming ${tests_datum}</p>
-                    <img src="graphs/covidtests.svg" alt="Historische grafiek van uitgevoerde COVID-19-tests">
-                </article>
-                <article class="chart-card">
-                    <h3>Besmettingen naar leeftijd</h3><p class="chart-meta">RIVM casusdata · bevroren · laatste waarneming ${casus_datum}</p>
-                    <img src="graphs/besmettingen-leeftijd.svg" alt="Historische grafiek van besmettingen naar leeftijd">
-                </article>
+        </a> -->
+        <!-- <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_rna_color}"
+                title="Het op basis van rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rna} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding_rna}</div>
             </div>
-            <p><a class="primary-link" href="index-all.html">Open alle volledige historische grafieken</a> · <a href="history.html">Lees het archieflogboek</a></p>
-        </section>
-
-        <section aria-labelledby="verantwoording-title">
-            <h2 id="verantwoording-title">Verantwoording</h2>
+        </a> -->
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${ziekverhouding_rolf_color}"
+                title="Het op basis van COVID Tests en rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rolf} mensen is nu mogelijk besmettelijk of ziek.">
+                <div class="nametext">mensen ziek</div>
+                <div class="valuetext">1:${ziekverhouding_rolf}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#covidtests">
+            <div class="button ${positief_percentage_color}"
+                title="Tests met een positieve uitslag ten opzichte van het totaal afgenomen tests, dagelijks, met vertraging.">
+                <div class="nametext">positief getest</div>
+                <div class="valuetext">${positief_percentage}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${nu_opgenomen_color}"
+                title="Het aantal mensen dat op dit moment is opgenomen in het ziekenuis met, of als gevolg van, COVID-19.">
+                <div class="nametext">opgenomen</div>
+                <div class="valuetext">${nu_opgenomen}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#zieken">
+            <div class="button ${nu_op_ic_color}"
+                title="Het aantal mensen dat op dit moment op intensive care ligt met, of als gevolg van, COVID-19.">
+                <div class="nametext">intensive care</div>
+                <div class="valuetext">${nu_op_ic}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#reproductiegetal">
+            <div class="button ${Rt_color}"
+                title="Het berekende reproductiegetal Rt over de afgelopen periode, met vertraging.">
+                <div class="nametext">reproductiegetal</div>
+                <div class="valuetext">${Rt}</div>
+            </div>
+        </a>
+        <a class="buttonlink" href="#besmetleeftijd">
+            <div class="button blue" title="Gemiddelde leeftijd van positief geteste mensen.">
+                <div class="nametext">leeftijd positief</div>
+                <div class="valuetext">${positief_leeftijd}</div>
+            </div>
+        </a>
+        <!-- <a class="buttonlink" href="https://coronatest.nl/ik-wil-me-laten-vaccineren/een-online-afspraak-maken">
+            <div class="button blue" title="Mensen geboren in of voor ${vaccingeboortejaar} kunnen online en vaccinatieafspraak maken. Kik hier.">
+                <div class="nametext">"vaccinjaar"</div>
+                <div class="valuetext">${vaccingeboortejaar}</div>
+            </div>
+        </a> -->
+        <!-- <a class="buttonlink" href="#vaccinaties">
+            <div class="button ${prikken_gezet_color}" title="Aantal gezette prikken met vaccin.">
+                <div class="nametext">prikvoortgang</div>
+                <div class="valuetext">${prikken_gezet_perc}</div>
+            </div>
+        </a> -->
+        <!--
+        <a class="buttonlink" href="#vaccinaties">
+            <div class="button ${prikken_gezet_geschat_color}" title="Aantal gezette prikken met vaccin (geschat).">
+                <div class="nametext">prikvoortgang</div>
+                <div class="valuetext">${prikken_gezet_geschat_perc}</div>
+            </div>
+        </a>
+        -->
+    </div>
+    <div class="container center">
+        <div class="graphcontainer">
+            <a href="zieken.html" title="klik voor uitleg"><img id="zieken" src="graphs/zieken-365.svg"
+                    width="100%" /></a>
+            <a href="rna-in-rioolwater.html" title="klik voor uitleg"><img id="rioolwater"
+                    src="graphs/rna-in-rioolwater-365.svg" width="100%" /></a>
+            <img id="reproductiegetal" src="graphs/reproductiegetal-365.svg" width="100%" />
+        </div>
+        <div class="graphcontainer">
+            <img id="varianten" src="graphs/variants-365.svg" width="100%" />
+            <img id="covidtests" src="graphs/covidtests-365.svg" width="100%" />
+            <img id="besmetleeftijd" src="graphs/besmettingen-leeftijd-365.svg" width="100%" />
+            <!-- <img id="mobiliteit" src="graphs/mobiliteit-365.svg" width="100%" /> -->
+        </div>
+    </div>
+    <div class="container center">
+        <a class="buttonlink" href="https://twitter.com/rolfje">
+            <!-- <a class="buttonlink" href="http://twitter.com/share?text=1%20op%20${ziekverhouding_rolf}%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%20${nu_opgenomen}%20%28NICE%29.%0ANu%20op%20IC%3A%20${nu_op_ic}%20%28NICE%29.%0AGezette%20prikken%3A%20${prikken_gezet_geschat}%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/"> -->
+            <div class="tweet">
+                <img src="icons/tweet-icon.svg" style="width:20px; float: right; padding-left:10px" title="@rolfje" />
+                1 op ${ziekverhouding_rolf} mensen is nu ziek/besmettelijk (geschat).<br />
+                <!-- 1 op ${ziekverhouding_rna} mensen is nu ziek/besmettelijk (RWZI).<br /> -->
+                <!-- 1 op ${ziekverhouding} mensen is nu ziek/besmettelijk (RIVM).<br /> -->
+                Nu opgenomen: ${nu_opgenomen} (NICE).<br />
+                Nu op IC: ${nu_op_ic} (NICE).<br />
+                <!-- Gezette prikken: ${prikken_gezet} (${prikken_gezet_perc}).<br /> -->
+                <!-- Gezette prikken: ${prikken_gezet_geschat} (${prikken_gezet_geschat_perc}, geschat).<br /> -->
+                https://realrolfje.github.io/coronadata/<br />
+                #COVID19 #coronavirus #haaldieprik
+            </div>
+        </a>
+        <div>
+            <a href="https://github.com/realrolfje/coronadata#coronadata-zonder-gedoe">
+                <img width="400px" src="coronadata-charts.png" />
+            </a>
+        </div>
+        <div class="container center">
             <div class="textblock">
-                <p>Gegenereerd op ${gegenereerd_op}. Bronnen, levenscyclus en laatste waarnemingsdatum staan op de <a href="source-status.html">bronstatuspagina</a>. Gerapporteerde waarden en berekende of experimentele waarden worden afzonderlijk benoemd.</p>
-                <p>De oorspronkelijke downloads en historische dataset blijven bewaard. Zie de <a href="https://github.com/realrolfje/coronadata">broncode en methodologie</a> en de <a href="events.html">historische gebeurtenissen</a>.</p>
+                <center>
+                    <table>
+                        <tr>
+                            <td colspan="2">Wat betekenen de "G's" in de toegangsdiscussie?</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">1G:</td>
+                            <td>Negatief <b>G</b>etest.</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">2G:</td>
+                            <td><b>G</b>enezen OF <b>G</b>evaccineerd.</td>
+                        </tr>
+                        <tr>
+                            <td valign="top" align="right">3G:</td>
+                            <td>Negatief <b>G</b>etest OF <b>G</b>evaccineerd OF <b>G</b>enezen.</td>
+                        </tr>
+                    </table>
+                </center>
             </div>
-        </section>
-    </main>
-    <script src="surveillance-chart.js" defer></script>
+        </div>
+
+        <!-- <a href="https://www.google.com/covid19/mobility/">Google mobility reports</a> -->
+        <!-- https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv -->
+    </div>
+
+    <div class="container center">
+        <div class="textblock">
+            <p>
+                De laatste keer dat er ${geschat_ziek_rolf} mensen geschat besmettelijk waren was: ${geschat_ziek_rolf_record_sinds}.
+                De laatste keer dat er ${nu_opgenomen} mensen waren opgenomen was: ${nu_opgenomen_record_sinds}.
+                De laatste keer dat er ${nu_op_ic} mensen op de IC lagen was: ${nu_op_ic_record_sinds}.
+                De laatste keer dat er ${positief_percentage} mensen positief testten was: ${positief_percentage_record_sinds}.
+            </p>
+            ${errors}
+        </div>
+    </div>
+
+    <div class="container center">
+        <div class="textblock">
+            <p>
+                Data in deze grafieken is afkomstig van het
+                <a href="https://www.rivm.nl/">RIVM (Rijksinstituut voor Volksgezondheid en Millieu)</a> en
+                <a href="https://www.stichting-nice.nl/index.jsp">Stichting NICE (Nationale Intensive Care
+                    Evaluatie)</a>.
+                Er werd ${cache_size} bytes aan data geprocessed door ${python_lines} regels python code.
+                Wil je meer weten over hoe deze grafieken tot stand kwamen, zie de
+                <a href="https://github.com/realrolfje/coronadata">broncode</a>. Icons en graphics zijn mogelijk gemaakt
+                door <a href="https://www.freepik.com/">freepik.com</a> en <a
+                    href="https://www.flaticon.com/">flaticon.com</a>.<br />
+            </p>
+            <p>
+                De complete lijst met events in de grafieken vind je <a href="events.html">hier</a>.
+            </p>
+            <p style="text-align: right;">
+                <a href="pagehits.html">
+                    <img width="50px"
+                        src="https://counter.blakedrumm.com/count/tag.svg?url=https%3A%2F%2Frealrolfje.github.io%2Fcoronadata%2F"
+                        alt="Hits">
+                </a>
+            </p>
+        </div>
+    </div>
 </body>
+
 </html>

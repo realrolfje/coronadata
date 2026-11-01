@@ -7,6 +7,7 @@ from pathlib import Path
 class SeriesDefinition:
     key: str
     label: str
+    axis_label: str
     unit: str
     status: str
     source_id: str
@@ -14,11 +15,13 @@ class SeriesDefinition:
 
 WASTEWATER_SERIES = (
     SeriesDefinition(
-        "wastewater_rna", "Virusdeeltjes per 100.000 inwoners", "virusdeeltjes",
+        "wastewater_rna", "Virusdeeltjes per 100.000 inwoners", "Rioolwater",
+        "virusdeeltjes",
         "reported", "rivm_wastewater",
     ),
     SeriesDefinition(
-        "estimated_infectious", "Geschat aantal besmettelijke mensen", "personen",
+        "estimated_infectious", "Geschat aantal besmettelijke mensen", "Schatting",
+        "personen",
         "calculated", "derived_coronadata",
     ),
 )

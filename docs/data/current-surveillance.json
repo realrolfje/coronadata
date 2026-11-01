@@ -6,6 +6,7 @@
     {
       "key": "wastewater_rna",
       "label": "Virusdeeltjes per 100.000 inwoners",
+      "axis_label": "Rioolwater",
       "unit": "virusdeeltjes",
       "status": "reported",
       "source_id": "rivm_wastewater"
@@ -13,6 +14,7 @@
     {
       "key": "estimated_infectious",
       "label": "Geschat aantal besmettelijke mensen",
+      "axis_label": "Schatting",
       "unit": "personen",
       "status": "calculated",
       "source_id": "derived_coronadata"

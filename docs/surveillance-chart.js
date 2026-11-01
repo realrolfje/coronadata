@@ -18,7 +18,7 @@
   let enabled = [];
 
   const format = new Intl.NumberFormat("nl-NL", { maximumFractionDigits: 0 });
-  const margins = { left: 58, right: 18, top: 24, bottom: 38 };
+  const margins = { left: 82, right: 82, top: 24, bottom: 38 };
 
   function visibleRows() {
     const count = data.observations.length;
@@ -74,8 +74,35 @@
     });
 
     data.series.forEach((series, seriesIndex) => {
-      if (!enabled[seriesIndex]) return;
       const [, max] = bounds(rows, seriesIndex);
+      const axisX = seriesIndex === 0 ? plot.x : plot.x + plot.width;
+      const align = seriesIndex === 0 ? "right" : "left";
+      const labelX = seriesIndex === 0 ? axisX - 8 : axisX + 8;
+      ctx.strokeStyle = colors[seriesIndex];
+      ctx.fillStyle = enabled[seriesIndex] ? colors[seriesIndex] : "#89969b";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(axisX, plot.y); ctx.lineTo(axisX, plot.y + plot.height); ctx.stroke();
+      ctx.textAlign = align;
+      for (let tick = 0; tick <= 4; tick += 1) {
+        const y = plot.y + plot.height * tick / 4;
+        const value = max * (1 - tick / 4);
+        ctx.beginPath();
+        ctx.moveTo(axisX + (seriesIndex === 0 ? -4 : 4), y);
+        ctx.lineTo(axisX, y);
+        ctx.stroke();
+        ctx.fillText(format.format(value), labelX, y + 4);
+      }
+      ctx.save();
+      ctx.fillStyle = enabled[seriesIndex] ? colors[seriesIndex] : "#89969b";
+      ctx.font = "bold 12px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.translate(seriesIndex === 0 ? 14 : width - 14, plot.y + plot.height / 2);
+      ctx.rotate(seriesIndex === 0 ? -Math.PI / 2 : Math.PI / 2);
+      ctx.fillText(`${series.axis_label} (${series.unit})`, 0, 0);
+      ctx.restore();
+      ctx.font = "12px system-ui, sans-serif";
+
+      if (!enabled[seriesIndex]) return;
       ctx.strokeStyle = colors[seriesIndex];
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -89,9 +116,6 @@
         open = true;
       });
       ctx.stroke();
-      ctx.fillStyle = colors[seriesIndex];
-      ctx.textAlign = seriesIndex === 0 ? "left" : "right";
-      ctx.fillText(`max ${format.format(max)} ${series.unit}`, seriesIndex === 0 ? plot.x : plot.x + plot.width, plot.y - 7);
     });
   }
 
