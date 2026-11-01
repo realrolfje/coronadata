@@ -20,6 +20,22 @@ def main():
     events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createZiekGraph(metenisweten, events)
 
+
+def select_date_range(metenisweten, last_days):
+    """Keep the short hospital chart anchored to its final reported observation."""
+    dates = brondata.getDateRange(metenisweten)
+    if last_days <= 0:
+        return dates
+    hospital_dates = [
+        d for d in dates
+        if metenisweten.get(d.strftime("%Y-%m-%d"), {}).get("nu_opgenomen")
+        or metenisweten.get(d.strftime("%Y-%m-%d"), {}).get("nu_op_ic")
+    ]
+    if hospital_dates:
+        final_hospital_date = hospital_dates[-1]
+        dates = [date for date in dates if date <= final_hospital_date]
+    return dates[-last_days:]
+
 def createZiekGraph(metenisweten, events):
     graphname="zieken"
 
@@ -67,11 +83,8 @@ def createZiekGraph(metenisweten, events):
         'y' : []    
     }
 
-    date_range = brondata.getDateRange(metenisweten)
-
     lastDays = arguments.lastDays()
-    if (lastDays>0):
-        date_range = date_range[-lastDays:]
+    date_range = select_date_range(metenisweten, lastDays)
 
     filedate = 'onbekend'
 
@@ -223,11 +236,13 @@ def createZiekGraph(metenisweten, events):
         geschat_ziek_rna['min'], geschat_ziek_rna['max'],
         facecolor='steelblue', alpha=0.1, interpolate=True)
 
-    # Put vertical line at current day
+    # Mark the final day represented by this chart. For an ended historical series this is
+    # deliberately not the wall-clock date.
+    chart_end = date_range[-1]
     plt.text(
-        x=dateCache.today(),
+        x=chart_end,
         y=0,
-        s=reference_datetime(metenisweten).strftime("%d"),
+        s=chart_end.strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -235,7 +250,7 @@ def createZiekGraph(metenisweten, events):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    plt.axvline(dateCache.today(), color='red', linewidth=0.5)
+    plt.axvline(chart_end, color='red', linewidth=0.5)
 
     # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
     if ic['y']:

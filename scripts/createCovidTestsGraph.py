@@ -21,6 +21,28 @@ def main():
     events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createCovidTestsGraph(metenisweten, events)
 
+
+def select_test_date_range(metenisweten, last_days):
+    """Anchor the short graph to the final reported testing observation."""
+    dates = brondata.getDateRange(metenisweten)
+    if last_days <= 0:
+        return dates
+    fields = (
+        "rivm_totaal_tests", "rivm_totaal_tests_positief",
+        "rivm_totaal_personen_getest", "rivm_totaal_personen_positief",
+    )
+    test_dates = [
+        date for date in dates
+        if any(
+            metenisweten.get(date.strftime("%Y-%m-%d"), {}).get(field) is not None
+            for field in fields
+        )
+    ]
+    if test_dates:
+        dates = [date for date in dates if date <= test_dates[-1]]
+    return dates[-last_days:]
+
+
 def createCovidTestsGraph(metenisweten, events):
     print("Calculating predictions...")
 
@@ -51,11 +73,8 @@ def createCovidTestsGraph(metenisweten, events):
         'y': []
     }
 
-    date_range = brondata.getDateRange(metenisweten)
-
     lastDays = arguments.lastDays()
-    if (lastDays>0):
-        date_range = date_range[-lastDays:]
+    date_range = select_test_date_range(metenisweten, lastDays)
 
 
     for d in date_range:
@@ -168,11 +187,12 @@ def createCovidTestsGraph(metenisweten, events):
             % ( huidigpercentage)
     )
 
-    # Put vertical line at current day
+    # Mark the final day represented by this ended historical series.
+    chart_end = date_range[-1]
     plt.text(
-        x=dateCache.today(),
+        x=chart_end,
         y=0,
-        s=reference_datetime(metenisweten).strftime("%d"),
+        s=chart_end.strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -180,7 +200,7 @@ def createCovidTestsGraph(metenisweten, events):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    plt.axvline(dateCache.today(), color='red', linewidth=0.5)
+    plt.axvline(chart_end, color='red', linewidth=0.5)
 
     for event in events:
         if 'testsloc' in event and dateCache.parse(event['testsloc'][0]) > date_range[0]:

@@ -10,7 +10,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import dateCache
 from modules.defaults import CACHE_DIR, DAILY_STATS, DATA_DIR, GRAPHS_DIR
-from modules.buildtime import reference_date, reference_datetime
+from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData, anotate
 import sys
 
@@ -20,6 +20,25 @@ def main():
     events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createHeatmap(metenisweten, events)
 
+
+def select_age_date_range(metenisweten, last_days):
+    """Anchor the short heatmap to the final case/age observation."""
+    dates = brondata.getDateRange(metenisweten)
+    if last_days <= 0:
+        return dates
+    age_dates = [
+        date for date in dates
+        if any(
+            metenisweten.get(date.strftime("%Y-%m-%d"), {})
+            .get("besmettingleeftijd", {})
+            .values()
+        )
+    ]
+    if age_dates:
+        dates = [date for date in dates if date <= age_dates[-1]]
+    return dates[-last_days:]
+
+
 def createHeatmap(metenisweten, events):
     print("Generating date/age heatmap.")
 
@@ -27,10 +46,8 @@ def createHeatmap(metenisweten, events):
     x = []
     y = []
 
-    date_range = brondata.getDateRange(metenisweten)
     lastDays = arguments.lastDays()
-    if (lastDays>0):
-        date_range = date_range[-lastDays:]
+    date_range = select_age_date_range(metenisweten, lastDays)
 
     startdate = date_range[0]
 
@@ -52,7 +69,7 @@ def createHeatmap(metenisweten, events):
         print("Converting records to x/y data")
         for record in data:
             date_statistics = dateCache.parse(record['Date_statistics'])
-            if date_statistics >= startdate:
+            if startdate <= date_statistics <= date_range[-1]:
                 datelog.append(date_statistics)
                 try:
                     datax = (date_statistics - startdate).days
@@ -186,11 +203,12 @@ def createHeatmap(metenisweten, events):
     heatmap.set_xlabel("Datum")
     heatmap.set_ylabel("Leeftijd")
 
-    # Put vertical line at current day
+    # Mark the final day represented by this ended historical series.
+    chart_end = date_range[-1]
     plt.text(
-        x=(reference_date(metenisweten) - startdate.date()).days,
+        x=(chart_end.date() - startdate.date()).days,
         y=0,
-        s=reference_datetime(metenisweten).strftime("%d"),
+        s=chart_end.strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -198,7 +216,7 @@ def createHeatmap(metenisweten, events):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    averages.axvline((reference_date(metenisweten) - startdate.date()).days, color='red', linewidth=0.5)
+    averages.axvline((chart_end.date() - startdate.date()).days, color='red', linewidth=0.5)
 
     # averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
 

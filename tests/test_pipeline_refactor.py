@@ -13,6 +13,10 @@ from modules.buildtime import reference_datetime
 from pipeline.calculations import calculate_cumulative_totals
 from pipeline.legacy_transform import transform_prevalence, transform_rivm_tests
 from pipeline.site_export import build_surveillance_export
+from createZiekGraph import select_date_range
+from createRtGraph import select_rt_date_range
+from createCovidTestsGraph import select_test_date_range
+from createHeatmap import select_age_date_range
 
 
 def record():
@@ -85,6 +89,42 @@ class PipelineRefactorTest(unittest.TestCase):
     def test_render_time_is_based_on_newest_observation(self):
         daily = {"2020-01-01": {}, "2024-05-06": {}}
         self.assertEqual("2024-05-06T12:00:00", reference_datetime(daily).isoformat())
+
+    def test_short_hospital_chart_ends_at_last_hospital_observation(self):
+        daily = {
+            "2024-01-01": {"nu_opgenomen": 10, "nu_op_ic": 2},
+            "2024-01-02": {"nu_opgenomen": 0, "nu_op_ic": 0},
+            "2025-01-01": {"nu_opgenomen": 0, "nu_op_ic": 0},
+        }
+        selected = select_date_range(daily, 365)
+        self.assertEqual("2024-01-01", selected[-1].strftime("%Y-%m-%d"))
+
+    def test_short_rt_chart_ends_at_last_rt_observation(self):
+        daily = {
+            "2023-07-09": {"Rt_avg": None, "Rt_low": 0.1, "Rt_up": 0.3},
+            "2023-07-10": {"Rt_avg": None, "Rt_low": None, "Rt_up": None},
+            "2025-01-01": {"Rt_avg": None, "Rt_low": None, "Rt_up": None},
+        }
+        selected = select_rt_date_range(daily, 365)
+        self.assertEqual("2023-07-09", selected[-1].strftime("%Y-%m-%d"))
+
+    def test_short_test_chart_ends_at_last_test_observation(self):
+        daily = {
+            "2023-03-17": {"rivm_totaal_tests": 100},
+            "2023-03-18": {"rivm_totaal_tests": None},
+            "2025-01-01": {"rivm_totaal_tests": None},
+        }
+        selected = select_test_date_range(daily, 365)
+        self.assertEqual("2023-03-17", selected[-1].strftime("%Y-%m-%d"))
+
+    def test_short_age_chart_ends_at_last_age_observation(self):
+        daily = {
+            "2023-04-04": {"besmettingleeftijd": {"65": 3}},
+            "2023-04-05": {"besmettingleeftijd": {"65": 0}},
+            "2025-01-01": {"besmettingleeftijd": {}},
+        }
+        selected = select_age_date_range(daily, 365)
+        self.assertEqual("2023-04-04", selected[-1].strftime("%Y-%m-%d"))
 
 
 if __name__ == "__main__":
