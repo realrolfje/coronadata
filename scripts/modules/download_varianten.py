@@ -10,17 +10,28 @@ from utilities import downloadIfStale, readjson
 from defaults import cachedir
 from metenisweten import initrecord
 from datecache import dateCache
+from pathlib import Path
+from pipeline.download import fetch_json_source
+from pipeline.variants import parse as parse_variants
+
+
+PRESERVED_HISTORY_END = "2024-09-23"
 
 
 def download(force=False) -> str:
     filename = os.path.join(cachedir, "COVID-19_varianten.json")
-    if downloadIfStale(
-        filename=filename,
+    result = fetch_json_source(
+        source_id="rivm_variants",
         url='https://data.rivm.nl/covid-19/COVID-19_varianten.json',
-        force = force):
+        target=Path(filename),
+        snapshot_root=Path(cachedir) / "raw",
+        parser=parse_variants,
+        minimum_bytes=100_000,
+    )
+    baseline = Path(cachedir).parent / "data" / "daily-stats.json"
+    if result.changed or force or not baseline.exists() or Path(filename).stat().st_mtime > baseline.stat().st_mtime:
         return filename
-    else:
-        return None
+    return None
 
 
 def store(downloaded_file) -> bool:
@@ -28,9 +39,15 @@ def store(downloaded_file) -> bool:
         return False 
 
     data = readjson(downloaded_file)
+    initialized_dates = set()
     for record in data:
         datum = record['Date_of_statistics_week_start']
+        if datum <= PRESERVED_HISTORY_END:
+            continue
         m = initrecord(datum)
+        if datum not in initialized_dates:
+            m['varianten'] = {}
+            initialized_dates.add(datum)
         if record['Variant_code'] not in m['varianten']:
             m['varianten'][record['Variant_code']] = {
                 'name': record['Variant_name'],

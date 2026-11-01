@@ -350,14 +350,14 @@ def createVariantenGraph(metenisweten, varianten):
 
     # smoothkans = opnamekans['kans']
     # smoothkans = smooth(opnamekans['kans'])
-    smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
-
-    ax2.plot(opnamekans['x'], 
-            smoothkans, 
-            color='darkblue',
-            linestyle='--', 
-            label='Opnamekans bij besmetting (nu: %s%%)' % decimalstring(round(smoothkans[-1],1)),
-            alpha=0.7)
+    if opnamekans['kans']:
+        smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
+        ax2.plot(opnamekans['x'],
+                smoothkans,
+                color='darkblue',
+                linestyle='--',
+                label='Opnamekans bij besmetting (nu: %s%%)' % decimalstring(round(smoothkans[-1],1)),
+                alpha=0.7)
 
 
     # print('reversed %s' % ax1.legend().legendHandles)

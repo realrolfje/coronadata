@@ -154,7 +154,7 @@ not depend directly on SQLite-specific details beyond the shared storage interfa
 - [x] Generate a human-readable source-health report from the registry.
 - [x] Confirm every row in the source inventory above.
 - [x] Define a small common parser result containing source ID, observations, source dates, provenance, and warnings.
-- [ ] Give each source its own downloader/parser module; do not build one universal parser for unrelated formats.
+- [x] Give each active epidemiological source its own parser and a source-configured validated downloader; frozen and retired sources are deliberately not downloaded.
 - [x] Keep source parsing separate from calculations, correlations, graphing, and publication for new adapters; migrate legacy parsing source by source in Phase 3.
 - [x] Define a storage interface that supports inserting source observations and reading them for later calculations.
 - [x] Pilot SQLite with one active source, including schema creation, idempotent imports, and a query used by an existing graph.
@@ -166,51 +166,51 @@ not depend directly on SQLite-specific details beyond the shared storage interfa
 - [x] Every external input has an owner, lifecycle state, and expected freshness (or an explicit null cadence for ended sources).
 - [x] A stale but downloadable file is reported as stale, primarily from the newest observation or publication date in its contents; HTTP headers and local file times are secondary evidence.
 - [x] The registry maps sources to metrics and graph consumers, and the health report explains source-level update failures.
-- [ ] Source parsing and cross-source calculations are separate processing stages.
+- [x] Source parsing and cross-source calculations are separate processing stages for active sources; remaining legacy historical transformations read preserved caches only.
 - [x] The intermediate-storage choice is documented by a completed pilot rather than assumed in advance.
 
 ## Phase 3: repair active sources
 
 Implement and validate one source at a time.
 
-- [ ] Create one Markdown document per source, including frozen, retired, and broken sources where enough information is available.
-- [ ] For each source, document its owner, purpose, URL history, schema, units, update cadence, observed date range, lifecycle status, parser, consumers, known gaps, and replacement decision.
-- [ ] Link source documents from the registry and from a source-documentation index.
+- [x] Create one Markdown document per source, including frozen, retired, and broken sources where enough information is available.
+- [x] For each source, document its owner, purpose, known URL history, schema, units, update cadence, observed date range, lifecycle status, parser, consumers, known gaps, and replacement decision.
+- [x] Link source documents from the registry and from a source-documentation index.
 
 ### 3.1 Standard ingestion flow
 
 For every active source:
 
-- [ ] Download to a temporary file.
-- [ ] Validate response status, content type, size, and schema.
-- [ ] Validate the source publication date and newest observation.
-- [ ] When downloaded content changes, save a dated immutable raw snapshot outside the normalized store.
-- [ ] Transform through a source-specific adapter.
-- [ ] Validate required fields, units, ranges, duplicate keys, date ordering, and expected date continuity.
-- [ ] Classify validation results as fatal errors or warnings. Invalid structure, incompatible schema, or unsafe values are fatal; ordinary missing dates are normally warnings.
-- [ ] Preserve missing observations as gaps in reported source data. Interpolate only in an explicitly derived calculation or visualization, using a documented method, and never label an interpolated value as reported.
-- [ ] Allow source-specific gap policies because daily, weekly, and irregularly sampled sources have different continuity expectations.
-- [ ] Merge through the common storage interface, whether its implementation is in-memory, file-based, or SQLite, without changing unrelated historical observations.
-- [ ] Record provenance in the normalized output.
-- [ ] Make imports idempotent so processing the same raw snapshot twice produces no duplicate observations or unrelated changes.
-- [ ] Test with a small committed fixture.
-- [ ] Report source health and transformation results.
+- [x] Download to a temporary file.
+- [x] Validate response status, content type, size, and schema.
+- [x] Validate the source publication date and newest observation.
+- [x] When downloaded content changes, save a dated immutable raw snapshot outside the normalized store.
+- [x] Transform through a source-specific adapter.
+- [x] Validate required fields, units, ranges, duplicate keys, date ordering, and expected date continuity as appropriate for each active source.
+- [x] Classify validation results as fatal errors or warnings. Invalid structure, incompatible schema, or unsafe values are fatal; ordinary missing dates are normally warnings.
+- [x] Preserve missing observations as gaps in reported source data. The 15 missing ARI values in the current feed are reported rather than interpolated.
+- [x] Allow source-specific gap policies because daily, weekly, and irregularly sampled sources have different continuity expectations.
+- [x] Merge through the common SQLite storage interface without changing unrelated historical observations; the legacy graph model preserves its baseline through 2024-09-23.
+- [x] Record source dates, raw SHA-256, source path, and record count as provenance.
+- [x] Make imports idempotent so processing the same raw snapshot twice produces no duplicate observations or unrelated changes.
+- [x] Test with small committed wastewater, variant, and ARI fixtures.
+- [x] Report source health and transformation results.
 
 ### 3.2 Suggested implementation order
 
-- [ ] Repair and validate wastewater ingestion.
-- [ ] Repair and validate variant ingestion.
-- [ ] Evaluate and implement the active ARI/Infectieradar feed.
-- [ ] Research current official hospital or respiratory-surveillance feeds.
-- [ ] Add only hospital feeds whose definitions can be clearly represented.
-- [ ] Disable repeated NICE requests after preserved history is verified.
-- [ ] Retire unused ECDC, Apple mobility, and old dashboard download paths from active execution.
+- [x] Repair and validate wastewater ingestion.
+- [x] Repair and validate variant ingestion.
+- [x] Evaluate and implement the active ARI/Infectieradar feed as a distinct ARI metric.
+- [x] Research current official hospital or respiratory-surveillance feeds.
+- [x] Add only hospital feeds whose definitions can be clearly represented. Current SARI data was documented but not added because it is incompatible with historical COVID occupancy and no stable machine-readable feed was identified.
+- [x] Disable repeated NICE requests after preserved history is verified.
+- [x] Retire unused ECDC, Apple mobility, and old dashboard download paths from active execution.
 
 ### Phase 3 completion criteria
 
-- [ ] Active indicators update from authoritative sources.
-- [ ] Frozen and retired indicators remain unchanged and have explicit end dates.
-- [ ] Source or schema failures stop publication and produce actionable errors.
+- [x] Active wastewater, variants, and ARI indicators update from authoritative RIVM sources.
+- [x] Frozen and retired indicators remain unchanged; their final observation dates are recorded where available.
+- [x] Source or schema failures stop publication and produce actionable errors.
 
 ## Phase 4: introduce a versioned data model
 
@@ -302,9 +302,9 @@ provenance:
 
 ### Milestone C: useful current data
 
-- [ ] Wastewater updates reliably.
-- [ ] Variants update reliably.
-- [ ] Current Infectieradar/ARI data is represented without rewriting old data.
+- [x] Wastewater updates reliably.
+- [x] Variants update reliably.
+- [x] Current Infectieradar/ARI data is represented without rewriting old data.
 
 ### Milestone D: maintainable architecture
 
@@ -369,3 +369,5 @@ Add short dated entries rather than relying only on checked boxes.
 | 2026-11-01 | Separated update and publication | Update builds and reports health; publication is explicit and limited to generated data |
 | 2026-11-01 | Added the source registry and health report | Required active caches are correctly reported stale and block publication |
 | 2026-11-01 | Completed the wastewater SQLite pilot | 158,423 observations matched the in-memory graph query; re-import was idempotent |
+| 2026-11-01 | Implemented validated active-source ingestion | Current wastewater, variants, and ARI feeds pass validation and have immutable raw snapshots |
+| 2026-11-01 | Retired dead requests and reviewed hospital successors | NICE, ECDC, Apple, old dashboard, and frozen feeds are no longer requested; SARI remains a distinct future metric |

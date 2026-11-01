@@ -9,9 +9,12 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 from pipeline.storage import MemoryObservationStore, SQLiteObservationStore
 from pipeline.wastewater import METRIC, SOURCE_ID, parse
+from pipeline.infectieradar_ari import parse as parse_ari
+from pipeline.variants import parse as parse_variants
 
 
 FIXTURE = PROJECT_ROOT / "tests" / "fixtures" / "wastewater.json"
+FIXTURES = PROJECT_ROOT / "tests" / "fixtures"
 
 
 class PipelineStorageTest(unittest.TestCase):
@@ -38,6 +41,23 @@ class PipelineStorageTest(unittest.TestCase):
         expected = [("2024-09-30", 200.0), ("2024-10-01", 200.0)]
         self.assertEqual(expected, memory.daily_average(SOURCE_ID, METRIC))
         self.assertEqual(expected, sqlite_values)
+
+    def test_variants_parser_validates_and_normalizes(self):
+        result = parse_variants(FIXTURES / "variants.json")
+
+        self.assertEqual(result.source_id, "rivm_variants")
+        self.assertEqual(result.publication_date, "2026-10-28")
+        self.assertEqual(result.newest_observation, "2026-10-19")
+        self.assertEqual(len(result.observations), 2)
+        self.assertEqual(result.observations[0].dimensions["sample_size"], 100)
+
+    def test_ari_parser_preserves_missing_value_as_gap(self):
+        result = parse_ari(FIXTURES / "infectieradar-ari.json")
+
+        self.assertEqual(result.source_id, "rivm_infectieradar_ari")
+        self.assertEqual(result.newest_observation, "2026-10-27")
+        self.assertEqual(len(result.observations), 2)
+        self.assertIn("1 dates have no reported ARI percentage", result.warnings)
 
 
 if __name__ == "__main__":

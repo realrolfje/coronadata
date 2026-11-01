@@ -38,6 +38,7 @@ from download_Zkh import process as process_Zkh
 from download_casus_landelijk import process as process_casus_landelijk
 from download_varianten import process as process_varianten
 from download_rioolwaterdata import process as process_rioolwaterdata
+from download_infectieradar_ari import process as process_infectieradar_ari
 from download_lcps_ziekenhuisopnames import process as process_lcps_ziekenhuisopnames
 
 from calculate_geschat_ziek import calculate as calculate_geschat_ziek
@@ -82,60 +83,9 @@ def downloadECDCMap():
 
 
 def download():
-    freshdata = False
-
-    markerfile = '../docs/extern/ECDC_Subnational_Combined_traffic.png'
-    if os.path.isfile(markerfile):
-        lastdownload = datetime.datetime.fromtimestamp(
-            os.stat(markerfile).st_mtime, tz=timezone)
-    else:
-        lastdownload = datetime.datetime.fromtimestamp(0, tz=timezone)
-
-    if lastdownload > (datetime.datetime.now(tz=timezone) - datetime.timedelta(minutes=20)):
-        print("Downloaded ECDC map less than 20 minutes ago (%s), no new download." % lastdownload)
-        return True
-
-    freshdata = downloadECDCMap() or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_prevalentie.json',
-        'https://data.rivm.nl/covid-19/COVID-19_prevalentie.json'
-    ) or freshdata
-
-    # Uitgevoerde tests van VOOR 2021, per week
-    freshdata = downloadIfStale(
-        '../cache/J535D165-RIVM_NL_test_latest.csv',
-        'https://raw.githubusercontent.com/J535D165/CoronaWatchNL/master/data-misc/data-test/RIVM_NL_test_latest.csv'
-    ) or freshdata
-
-    # Uitgevoerde tests in 2021, per dag van RIVM
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_uitgevoerde_testen.json',
-        'https://data.rivm.nl/covid-19/COVID-19_uitgevoerde_testen.json'
-    ) or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/rijksoverheid-coronadashboard-NL.json',
-        'https://coronadashboard.rijksoverheid.nl/json/NL.json'
-    ) or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/lcps-covid-19.csv',
-        'https://lcps.nu/wp-content/uploads/covid-19.csv'
-    ) or freshdata
-
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_Infectieradar_symptomen_per_dag.json',
-        'https://data.rivm.nl/covid-19/COVID-19_Infectieradar_symptomen_per_dag.json'
-    ) or freshdata
-
-
-    freshdata = downloadIfStale(
-        '../cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json',
-        'https://data.rivm.nl/covid-19/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json'
-    ) or freshdata
-
-    return freshdata
+    # All sources formerly downloaded here are frozen, retired, or unused. Their preserved
+    # cache files remain available to historical processing, but are no longer requested.
+    return False
 
 
 def isvaliddate(datestring, filename):
@@ -149,6 +99,8 @@ def smooth(inputArray):
 # https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
 def double_savgol(inputArray, iterations, window, order):
     outputArray = inputArray
+    if len(outputArray) < window:
+        return outputArray
     while iterations > 0:
         outputArray = savgol_filter(outputArray, window, order)
         iterations = iterations - 1
@@ -419,12 +371,9 @@ def builddaily():
 def freshdata():
 
     # New way of doing things. Download and add data:
-    newData =  [process_casus_landelijk(),
-                process_Rt(),
-                process_Zkh(),
-                process_lcps_ziekenhuisopnames(),
-                process_varianten(),
-                process_rioolwaterdata()]
+    newData =  [process_varianten(),
+                process_rioolwaterdata(),
+                process_infectieradar_ari()]
     
     if any(newData) or download() or not os.path.isfile('../data/daily-stats.json') or isnewer(__file__, '../data/daily-stats.json'):
         builddaily()

@@ -230,6 +230,20 @@ Maak het leesbare statusrapport opnieuw met:
 Het resultaat staat in [`SOURCE_STATUS.md`](SOURCE_STATUS.md). Verouderde verplichte actieve
 bronnen blokkeren publiceren; een beëindigde historische bron doet dat niet.
 
+Werk de drie actieve epidemiologische bronnen handmatig bij met:
+
+```shell
+.venv/bin/python scripts/updateActiveSources.py
+```
+
+Elke download gaat eerst naar een tijdelijk bestand. Na HTTP-, content-type-, omvang- en
+schemavalidatie wordt gewijzigde inhoud atomair geïnstalleerd en als alleen-lezen snapshot onder
+`cache/raw/` bewaard. De genormaliseerde observaties worden idempotent in de lokale SQLite-opslag
+geschreven. Ontbrekende ARI-waarnemingen blijven ontbrekend; ze worden niet geïnterpoleerd.
+
+De documentatie per bron staat in [`docs/sources/`](docs/sources/README.md), inclusief de beslissing
+om actuele SARI-ziekenhuisgegevens niet aan de historische COVID-bezettingsreeks te plakken.
+
 Voor nieuwe bronadapters is SQLite gekozen als herbouwbare tussenopslag achter een algemene
 storage-interface. De oorspronkelijke downloads en `data/daily-stats.json` blijven de historische
 basis. De onderbouwing en het reproduceerbare rioolwaterexperiment staan in

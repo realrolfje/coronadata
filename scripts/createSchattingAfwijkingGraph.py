@@ -34,6 +34,10 @@ def createSchattingAfwijkingGraph(metenisweten):
         'x' : [],
         'y' : []
     }
+    ari = {
+        'x': [],
+        'y': []
+    }
 
     gamma = {
         'x' : [],
@@ -85,6 +89,10 @@ def createSchattingAfwijkingGraph(metenisweten):
             teta['x'].append(parser.parse(datum))
             teta['y'].append(metenisweten[datum]['rivm_infectieradar_perc'] * tetascale)
 
+        if metenisweten[datum].get('rivm_infectieradar_ari_perc') is not None:
+            ari['x'].append(parser.parse(datum))
+            ari['y'].append(metenisweten[datum]['rivm_infectieradar_ari_perc'] * tetascale)
+
             
     if debug:
         beta['y'] = brondata.smooth(beta['y'])
@@ -119,6 +127,7 @@ def createSchattingAfwijkingGraph(metenisweten):
         facecolor='blue', alpha=0.1, interpolate=True)
 
     ax1.plot(teta['x'], teta['y'], color='cyan', label='Infectieradar COVID-19 klachten (percentage x'+decimalstring(tetascale)+')')
+    ax1.plot(ari['x'], ari['y'], color='darkcyan', label='Infectieradar acute luchtwegklachten (percentage x'+decimalstring(tetascale)+')')
 
     ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking @rolfje t.o.v. RIVM schatting in %')
 

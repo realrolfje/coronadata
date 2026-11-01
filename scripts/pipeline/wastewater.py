@@ -1,4 +1,5 @@
 import hashlib
+import datetime
 import json
 from pathlib import Path
 
@@ -24,6 +25,7 @@ def parse(filename):
     warnings = []
     observations = []
     publication_dates = []
+    keys = set()
 
     for index, record in enumerate(records):
         missing = REQUIRED_FIELDS - record.keys()
@@ -37,8 +39,14 @@ def parse(filename):
             raise ValueError(f"record {index} has a negative RNA flow value")
 
         date = record["Date_measurement"][:10]
+        datetime.date.fromisoformat(date)
         publication_date = record["Date_of_report"][:10]
+        datetime.date.fromisoformat(publication_date)
         publication_dates.append(publication_date)
+        key = (date, str(record["RWZI_AWZI_code"]))
+        if key in keys:
+            raise ValueError(f"duplicate wastewater date/location key: {key}")
+        keys.add(key)
         observations.append(
             Observation(
                 source_id=SOURCE_ID,

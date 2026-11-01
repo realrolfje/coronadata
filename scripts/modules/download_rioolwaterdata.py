@@ -11,17 +11,28 @@ from metenisweten import initrecord
 from datecache import dateCache
 import re
 import datetime
+from pathlib import Path
+from pipeline.download import fetch_json_source
+from pipeline.wastewater import parse as parse_wastewater
+
+
+PRESERVED_HISTORY_END = "2024-09-23"
 
 
 def download(force=False) -> str:
     filename = os.path.join(cachedir, "COVID-19_rioolwaterdata.json")
-    if downloadIfStale(
-        filename=filename,
+    result = fetch_json_source(
+        source_id="rivm_wastewater",
         url="https://data.rivm.nl/covid-19/COVID-19_rioolwaterdata.json",
-        force = force):
+        target=Path(filename),
+        snapshot_root=Path(cachedir) / "raw",
+        parser=parse_wastewater,
+        minimum_bytes=1_000_000,
+    )
+    baseline = Path(cachedir).parent / "data" / "daily-stats.json"
+    if result.changed or force or not baseline.exists() or Path(filename).stat().st_mtime > baseline.stat().st_mtime:
         return filename
-    else:
-        return None
+    return None
 
 
 def store(downloaded_file) -> bool:
@@ -31,6 +42,7 @@ def store(downloaded_file) -> bool:
     print("Add RNA sewage data per region")
     data = readjson(downloaded_file)
     cachedDate = None
+    initialized_dates = set()
     for record in data:
         if cachedDate != record['Date_measurement']:
             cachedDate = record['Date_measurement']
@@ -42,6 +54,21 @@ def store(downloaded_file) -> bool:
 
         if stringdate == None:
             continue
+
+        if stringdate <= PRESERVED_HISTORY_END:
+            continue
+
+        if stringdate not in initialized_dates:
+            initrecord(stringdate)['RNA'] = {
+                'totaal_RNA_per_100k': 0,
+                'totaal_RNA_metingen': 0,
+                'RNA_per_100k_avg': 0,
+                'besmettelijk': None,
+                'besmettelijk_error': None,
+                'populatie_dekking': None,
+                'regio': {},
+            }
+            initialized_dates.add(stringdate)
 
         if record.get('RNA_flow_per_100000') != None:
             rnavalue = int(record['RNA_flow_per_100000'])
@@ -73,7 +100,7 @@ def store(downloaded_file) -> bool:
 
 def process(force=False):
     """Download and process the data"""
-    store(download(force))
+    return store(download(force))
 
 if __name__ == "__main__":
     process(force=True)

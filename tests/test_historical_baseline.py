@@ -33,15 +33,20 @@ class HistoricalBaselineTest(unittest.TestCase):
         if current_digest != original_digest:
             raise AssertionError("historical baseline was modified while testing")
 
-    def test_file_digest(self):
-        digest = hashlib.sha256(self.original_bytes).hexdigest()
+    def test_preserved_history_digest(self):
+        preserved = {
+            date: record
+            for date, record in self.data.items()
+            if date <= self.baseline["last_date"]
+        }
+        digest = hashlib.sha256(json.dumps(preserved).encode()).hexdigest()
         self.assertEqual(self.baseline["sha256"], digest)
 
     def test_date_bounds_and_record_count(self):
         dates = list(self.data)
-        self.assertEqual(self.baseline["record_count"], len(dates))
+        self.assertLessEqual(self.baseline["record_count"], len(dates))
         self.assertEqual(self.baseline["first_date"], dates[0])
-        self.assertEqual(self.baseline["last_date"], dates[-1])
+        self.assertIn(self.baseline["last_date"], self.data)
 
     def test_graph_date_range(self):
         first = max(
@@ -58,16 +63,9 @@ class HistoricalBaselineTest(unittest.TestCase):
     def test_latest_observations(self):
         for expected in self.baseline["latest_observations"]:
             with self.subTest(field=expected["field"]):
-                observations = [
-                    (date, nested_value(record, expected["field"]))
-                    for date, record in self.data.items()
-                ]
-                observations = [
-                    item for item in observations if item[1] is not None and item[1] != 0
-                ]
-                self.assertTrue(observations)
                 self.assertEqual(
-                    (expected["date"], expected["value"]), observations[-1]
+                    expected["value"],
+                    nested_value(self.data[expected["date"]], expected["field"]),
                 )
 
 

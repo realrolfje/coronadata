@@ -200,14 +200,16 @@ def createZiekGraph(metenisweten, events):
             color='gray', linewidth=1, alpha=0.3)
 
 
-    nu_opgenomen = opgenomen['y'][-1]
-    ax1.plot(opgenomen['x'], opgenomen['y'], color='orange', label='aantal op verpleegafdeling (nu: '+decimalstring(nu_opgenomen)+')')
-    ax1.plot(opgenomen_voorspeld['x'], opgenomen_voorspeld['y'], color='orange', linestyle=':')
+    if opgenomen['y']:
+        nu_opgenomen = opgenomen['y'][-1]
+        ax1.plot(opgenomen['x'], opgenomen['y'], color='orange', label='aantal op verpleegafdeling (laatste: '+decimalstring(nu_opgenomen)+')')
+        ax1.plot(opgenomen_voorspeld['x'], opgenomen_voorspeld['y'], color='orange', linestyle=':')
 
 
-    nu_op_ic = ic['y'][-1]
-    ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (nu: '+decimalstring(nu_op_ic)+')')
-    ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
+    if ic['y']:
+        nu_op_ic = ic['y'][-1]
+        ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (laatste: '+decimalstring(nu_op_ic)+')')
+        ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
 
     # Plot ziek based on RNA
     ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
@@ -234,7 +236,8 @@ def createZiekGraph(metenisweten, events):
     plt.axvline(dateCache.today(), color='red', linewidth=0.5)
 
     # Horizontale lijn om te checken waar we de IC opnames mee kunnen vergelijken
-    ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
+    if ic['y']:
+        ax1.axhline(ic['y'][-1], color='red', linestyle=(0, (5, 30)), linewidth=0.2)
 
     ax1.set_xlabel("Datum")
     ax1.set_ylabel("Aantal op verpleegafdeling / op IC")
@@ -249,7 +252,8 @@ def createZiekGraph(metenisweten, events):
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
     gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    data_tot=opgenomen['x'][-1].strftime("%Y-%m-%d")
+    available_dates = opgenomen['x'] + ic['x'] + geschat_ziek_rna['x']
+    data_tot=max(available_dates).strftime("%Y-%m-%d")
 
     plt.title('COVID-19 gerelateerd zieken')
 

@@ -117,6 +117,7 @@ class SQLiteObservationStore(ObservationStore):
             """,
             rows,
         )
+        inserted_observations = self.connection.total_changes - before
         raw_sha256 = result.provenance.get("sha256")
         if raw_sha256:
             self.connection.execute(
@@ -133,7 +134,7 @@ class SQLiteObservationStore(ObservationStore):
                 ),
             )
         self.connection.commit()
-        return self.connection.total_changes - before
+        return inserted_observations
 
     def daily_average(self, source_id, metric):
         return list(

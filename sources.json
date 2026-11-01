@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "documentation_index": "docs/sources/README.md",
   "lifecycle_states": ["active", "frozen", "retired", "broken", "unknown"],
   "sources": [
     {
@@ -22,7 +23,8 @@
       "units": ["virus particles per 100,000 inhabitants"],
       "geography": "wastewater treatment plant, aggregated nationally",
       "metrics": ["RNA.RNA_per_100k_avg", "RNA.besmettelijk"],
-      "consumers": ["scripts/createRNAGraph.py", "scripts/modules/calculate_geschat_ziek.py"]
+      "consumers": ["scripts/createRNAGraph.py", "scripts/modules/calculate_geschat_ziek.py"],
+      "known_observation_range": ["2020-03-30", "2026-10-25"]
     },
     {
       "id": "rivm_variants",
@@ -35,7 +37,7 @@
       "metadata_url": "https://data.rivm.nl/covid-19/COVID-19_varianten.html",
       "cache_path": "cache/COVID-19_varianten.json",
       "format": "json",
-      "parser": "scripts/modules/download_varianten.py",
+      "parser": "scripts.pipeline.variants",
       "expected_update_days": 28,
       "max_age_days": 45,
       "observation_date_field": "Date_of_statistics_week_start",
@@ -44,30 +46,32 @@
       "units": ["samples", "variant cases"],
       "geography": "Netherlands",
       "metrics": ["varianten"],
-      "consumers": ["scripts/createVariantenGraph.py"]
+      "consumers": ["scripts/createVariantenGraph.py"],
+      "known_observation_range": ["2020-11-30", "2026-10-19"]
     },
     {
       "id": "rivm_infectieradar_ari",
       "name": "RIVM Infection Radar acute respiratory symptoms",
       "provider": "RIVM",
-      "category": "candidate replacement",
+      "category": "respiratory surveillance",
       "lifecycle": "active",
-      "required_for_publish": false,
+      "required_for_publish": true,
       "url": "https://data.rivm.nl/covid-19/ARI_Infectieradar_symptomen_per_dag.json",
       "metadata_url": "https://data.rivm.nl/covid-19/ARI_Infectieradar_symptomen_per_dag.html",
-      "cache_path": null,
+      "cache_path": "cache/ARI_Infectieradar_symptomen_per_dag.json",
       "format": "json",
-      "parser": null,
+      "parser": "scripts.pipeline.infectieradar_ari",
       "expected_update_days": 7,
       "max_age_days": 14,
       "observation_date_field": "Date_of_statistics",
       "publication_date_field": "Date_of_report",
-      "required_fields": [],
+      "required_fields": ["Version", "Date_of_report", "Date_of_statistics"],
       "units": ["percentage of participants"],
       "geography": "Netherlands",
-      "metrics": [],
-      "consumers": [],
-      "notes": "Candidate successor; compatibility with the legacy COVID symptom definition must be evaluated before use."
+      "metrics": ["rivm_infectieradar_ari_perc"],
+      "consumers": ["scripts/createSchattingAfwijkingGraph.py"],
+      "known_observation_range": ["2020-11-01", "2026-10-27"],
+      "notes": "Implemented as a distinct acute-respiratory-symptoms metric; it is not joined to the frozen COVID-like-symptoms series."
     },
     {
       "id": "rivm_infectieradar_covid",
@@ -173,6 +177,7 @@
       "max_age_days": null,
       "observation_date_field": "EindDatum",
       "publication_date_field": null,
+      "known_last_observation": "2021-01-31",
       "required_fields": ["Jaar", "Week", "BeginDatum", "EindDatum", "Type", "Aantal"],
       "units": ["persons tested"],
       "geography": "Netherlands",
@@ -263,6 +268,7 @@
       "max_age_days": null,
       "observation_date_field": "Datum",
       "publication_date_field": null,
+      "known_last_observation": "2021-07-26",
       "required_fields": ["Datum", "IC_Bedden_COVID", "IC_Bedden_Non_COVID", "Kliniek_Bedden"],
       "units": ["occupied beds", "admissions"],
       "geography": "Netherlands",
@@ -284,6 +290,7 @@
       "max_age_days": null,
       "observation_date_field": "date",
       "publication_date_field": null,
+      "known_last_observation": "2023-11-01",
       "required_fields": ["date", "value"],
       "units": ["patients"],
       "geography": "Netherlands",
@@ -326,6 +333,7 @@
       "max_age_days": null,
       "observation_date_field": "date",
       "publication_date_field": null,
+      "known_last_observation": "2023-11-01",
       "required_fields": ["date", "value"],
       "units": ["patients"],
       "geography": "Netherlands",
@@ -337,7 +345,7 @@
       "name": "Dutch government coronavirus dashboard JSON",
       "provider": "Rijksoverheid",
       "category": "dashboard",
-      "lifecycle": "unknown",
+      "lifecycle": "retired",
       "required_for_publish": false,
       "url": "https://coronadashboard.rijksoverheid.nl/json/NL.json",
       "cache_path": "cache/rijksoverheid-coronadashboard-NL.json",
@@ -352,7 +360,7 @@
       "geography": "Netherlands",
       "metrics": [],
       "consumers": [],
-      "notes": "Downloaded by the legacy pipeline but no current consumer was found."
+      "notes": "No consumer was found, so the obsolete dashboard request was removed from active execution."
     },
     {
       "id": "apple_mobility",
