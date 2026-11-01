@@ -15,7 +15,7 @@ def downloadBinaryIfStale(filename, url):
     return downloadIfStale(filename, url, True)
 
 
-def downloadIfStale(filename, url, binary=False, force=False):
+def downloadIfStale(filename: str, url, binary=False, force=False):
     """Downloads from the given url, and writes to the given filename.
     downloadIfStale("somedata.json", "https://example.com/dataset_with_different_name.json")
     Writes a somedata.json file filled with whatever it got from the url.
@@ -56,7 +56,7 @@ def downloadIfStale(filename, url, binary=False, force=False):
                 block_size = 1024  # 1 Kilobyte
                 # Initialize tqdm only if running in a terminal
                 if sys.stdout.isatty():
-                    progress_bar = tqdm(total=total_size, unit='B', unit_scale=True, desc=tempfile)
+                    progress_bar = tqdm(total=total_size, unit='B', unit_scale=True, desc=os.path.basename(filename))
                 else:
                     progress_bar = None
 

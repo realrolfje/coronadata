@@ -61,8 +61,6 @@ def createZiekenhuisTotaalGraph(metenisweten):
                 opgenomen['y'].append(nu_opgenomen)
             
                 totaal.append(ic['y'][-1] + opgenomen['y'][-1])
-        else:
-            print(f"skipped {datum}")
 
     print('Generating total hospitalized graph')
 
