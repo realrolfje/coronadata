@@ -244,6 +244,22 @@ geschreven. Ontbrekende ARI-waarnemingen blijven ontbrekend; ze worden niet geï
 De documentatie per bron staat in [`docs/sources/`](docs/sources/README.md), inclusief de beslissing
 om actuele SARI-ziekenhuisgegevens niet aan de historische COVID-bezettingsreeks te plakken.
 
+## Genormaliseerd datamodel
+
+Het versie-1 observatiemodel draait voorlopig naast `data/daily-stats.json`. Het oude bestand blijft
+de invoer voor de website en wordt door deze conversie niet aangepast. Bouw de lokale SQLite-versie
+en controleer de gelijkheid per metriek met:
+
+```shell
+.venv/bin/python scripts/buildNormalizedData.py
+.venv/bin/python scripts/checkNormalizedParity.py
+```
+
+De database `cache/normalized-v1.sqlite` is een genegeerd, herbouwbaar artefact. De bijgehouden
+manifest- en parityrapporten staan onder `data/`. De velden, null-regels, statussen en datumsemantiek
+zijn beschreven in
+[`docs/architecture/normalized-schema-v1.md`](docs/architecture/normalized-schema-v1.md).
+
 Voor nieuwe bronadapters is SQLite gekozen als herbouwbare tussenopslag achter een algemene
 storage-interface. De oorspronkelijke downloads en `data/daily-stats.json` blijven de historische
 basis. De onderbouwing en het reproduceerbare rioolwaterexperiment staan in

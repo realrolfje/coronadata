@@ -64,12 +64,26 @@ class SQLiteObservationStore(ObservationStore):
                 geography TEXT NOT NULL,
                 publication_date TEXT,
                 dimensions_json TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'reported',
+                schema_version INTEGER NOT NULL DEFAULT 1,
+                provenance_json TEXT NOT NULL DEFAULT '{}',
                 PRIMARY KEY (
                     source_id, metric, observation_date, geography, dimensions_json
                 )
             )
             """
         )
+        columns = {
+            row[1] for row in self.connection.execute("PRAGMA table_info(observations)")
+        }
+        migrations = {
+            "status": "ALTER TABLE observations ADD COLUMN status TEXT NOT NULL DEFAULT 'reported'",
+            "schema_version": "ALTER TABLE observations ADD COLUMN schema_version INTEGER NOT NULL DEFAULT 1",
+            "provenance_json": "ALTER TABLE observations ADD COLUMN provenance_json TEXT NOT NULL DEFAULT '{}'",
+        }
+        for column, statement in migrations.items():
+            if column not in columns:
+                self.connection.execute(statement)
         self.connection.execute(
             """
             CREATE TABLE IF NOT EXISTS imports (
@@ -104,6 +118,13 @@ class SQLiteObservationStore(ObservationStore):
                 json.dumps(
                     observation.dimensions, sort_keys=True, separators=(",", ":")
                 ),
+                observation.status,
+                observation.schema_version,
+                json.dumps(
+                    {**result.provenance, **observation.provenance},
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
             )
             for observation in result.observations
         ]
@@ -112,8 +133,9 @@ class SQLiteObservationStore(ObservationStore):
             """
             INSERT OR IGNORE INTO observations (
                 source_id, metric, observation_date, value, unit, geography,
-                publication_date, dimensions_json
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                publication_date, dimensions_json, status, schema_version,
+                provenance_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             rows,
         )

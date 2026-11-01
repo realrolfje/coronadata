@@ -232,21 +232,21 @@ provenance:
   transformer_version: 1
 ```
 
-- [ ] Define metric names, units, geography, null handling, and date semantics.
-- [ ] Distinguish reported, revised, imputed, and calculated values.
-- [ ] Add source and transformation provenance.
-- [ ] Version the normalized schema.
-- [ ] Write an adapter that reads the existing `daily-stats.json` format.
-- [ ] Convert historical data into the new model without replacing the original.
-- [ ] Compare old and new graph inputs metric by metric.
-- [ ] Switch consumers only after parity is demonstrated.
-- [ ] Document intentional differences.
+- [x] Define metric names, units, geography, null handling, and date semantics.
+- [x] Distinguish reported, revised, imputed, and calculated values. The schema supports all four; the legacy conversion emits reported and calculated values and does not invent revision or imputation history.
+- [x] Add source and transformation provenance.
+- [x] Version the normalized schema.
+- [x] Write an adapter that reads the existing `daily-stats.json` format.
+- [x] Convert historical data into the new model without replacing the original.
+- [x] Compare old and new graph inputs metric by metric. All 43 converted metrics have matching counts and SHA-256 digests.
+- [x] Switch consumers only after parity is demonstrated. No consumer is switched in this phase; the compatibility file remains authoritative while the parity evidence is reviewed.
+- [x] Document intentional differences.
 
 ### Phase 4 completion criteria
 
-- [ ] New and historical observations share a documented, versioned model.
-- [ ] Original files remain preserved.
-- [ ] Every value used by the site can be traced to a source or calculation.
+- [x] New and historical observations share the documented schema v1 observation model and storage interface.
+- [x] Original files remain preserved; `daily-stats.json` is neither replaced nor rewritten by the conversion.
+- [x] Every converted numeric graph value is traceable to a registry source or `derived_coronadata` calculation plus its legacy field and transformer version.
 
 ## Phase 5: refactor safely
 
@@ -371,3 +371,4 @@ Add short dated entries rather than relying only on checked boxes.
 | 2026-11-01 | Completed the wastewater SQLite pilot | 158,423 observations matched the in-memory graph query; re-import was idempotent |
 | 2026-11-01 | Implemented validated active-source ingestion | Current wastewater, variants, and ARI feeds pass validation and have immutable raw snapshots |
 | 2026-11-01 | Retired dead requests and reviewed hospital successors | NICE, ECDC, Apple, old dashboard, and frozen feeds are no longer requested; SARI remains a distinct future metric |
+| 2026-11-01 | Added normalized schema v1 in parallel | 69,205 observations across 43 metrics match the compatibility model exactly; no graph consumer switched |
