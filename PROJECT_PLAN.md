@@ -108,26 +108,26 @@ build and must not overwrite the baseline.
 - [x] Add a render-only command that skips downloads, source processing, calculations, and writes to `data/daily-stats.json`.
 - [x] Generate the graphs and pages from the existing `data/daily-stats.json` and other preserved inputs required only for rendering.
 - [x] Identify any graph that still depends on cache data not represented in `daily-stats.json`, and either preserve that input or move the required metadata into a tracked render fixture. The 365-day age heatmap and test graph currently retain their existing output when their historical source window is unavailable.
-- [ ] Record representative numerical graph inputs and date ranges as the primary regression baseline.
-- [ ] Compare rendered graph output where it is deterministic; otherwise compare the data supplied to the renderer.
-- [ ] Add regression tests for important historical totals, known dates, and series end dates.
+- [x] Record representative numerical graph inputs and date ranges as the primary regression baseline.
+- [x] Compare rendered graph output where it is deterministic; otherwise compare the data supplied to the renderer. The baseline fixture verifies the processed-data digest, graph date range, and latest observations for representative series.
+- [x] Add regression tests for important historical totals, known dates, and series end dates.
 - [x] Make the render-only baseline leave `data/daily-stats.json` unchanged; verification uses its SHA-256 checksum.
 - [x] Document that full historical source re-import is not reproducible unless the original server cache is recovered.
 
 ### 1.3 Make publishing safe
 
-- [ ] Stop timestamp-only changes from producing commits.
-- [ ] Do not publish when an active source fails validation.
-- [ ] Replace `git pull -X theirs` with an explicit synchronization step, preferably `git pull --ff-only`, that stops when local and remote history have diverged. `-X theirs` can silently choose the remote side of conflicting hunks and hide a real data or code conflict.
-- [ ] Separate fetch/build from commit/push.
-- [ ] Produce a build and source-health report before publishing.
+- [x] Stop timestamp-only changes from producing commits.
+- [ ] Do not publish when an active source fails validation. Download/open failures now block publication; schema and content-freshness validation will be added with the source registry in Phase 2.
+- [x] Replace `git pull -X theirs` with an explicit synchronization step, preferably `git pull --ff-only`, that stops when local and remote history have diverged. `-X theirs` can silently choose the remote side of conflicting hunks and hide a real data or code conflict.
+- [x] Separate fetch/build from commit/push.
+- [x] Produce a build and source-health report before publishing.
 
 ### Phase 1 completion criteria
 
 - [x] The raw cache has a verified, restorable archive.
-- [ ] The historical site can be rendered from preserved processed data without network access or source re-import.
-- [ ] Historical regression checks pass.
-- [ ] A failed or unchanged run does not create a misleading publication commit.
+- [x] The historical site can be rendered from preserved processed data without network access or source re-import.
+- [x] Historical regression checks pass.
+- [x] A failed or unchanged run does not create a misleading publication commit.
 
 ## Phase 2: create a source registry and health report
 
@@ -345,12 +345,12 @@ Record decisions here as the work progresses.
 
 These are the recommended first work items:
 
-1. [ ] Create and verify the external ZIP archive described in Phase 1.1.
+1. [x] Create and verify the external ZIP archive described in Phase 1.1.
 2. [ ] Build a read-only inventory tool for `cache/` and `data/`.
 3. [ ] Generate a source/date/schema/checksum report without modifying data.
-4. [ ] Add an offline build command and capture its current failures.
-5. [ ] Add a small historical regression test suite.
-6. [ ] Change publishing so timestamp-only and failed runs do not commit.
+4. [x] Add an offline build command and capture its current failures.
+5. [x] Add a small historical regression test suite.
+6. [x] Change publishing so timestamp-only and failed runs do not commit.
 7. [ ] Create the source registry from the inventory table.
 8. [ ] Repair wastewater first as the pilot source adapter.
 
@@ -364,3 +364,5 @@ Add short dated entries rather than relying only on checked boxes.
 | 2026-11-01 | Archived `cache/` and `data/` outside the repository | ZIP integrity verified; SHA-256 recorded in Phase 1.1 |
 | 2026-11-01 | Added initial render-only path | Historical JSON remained unchanged; full render verification still required |
 | 2026-11-01 | Verified the offline render | Completed with exit code 0 using the non-GUI backend; historical JSON checksum unchanged |
+| 2026-11-01 | Added historical regression tests | Seven tests cover the baseline and build-health classification |
+| 2026-11-01 | Separated update and publication | Update builds and reports health; publication is explicit and limited to generated data |

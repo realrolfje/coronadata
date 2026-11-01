@@ -180,6 +180,40 @@ python3 -m ensurepip --default-pip
 pip3 install -r requirements.txt
 ```
 
+## Historische build en publiceren
+
+Maak voor lokaal werk bij voorkeur een virtual environment:
+
+```shell
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+Een offline render gebruikt de bestaande verwerkte data en doet geen downloads of historische
+herberekeningen:
+
+```shell
+./render.sh
+```
+
+De historische regressietests kunnen apart worden uitgevoerd:
+
+```shell
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+De update- en publicatiestappen zijn bewust gescheiden. `update.sh` vereist een schone checkout,
+fast-forwardt de branch, bouwt de uitvoer en maakt een health report, maar commit of pusht niet.
+Controleer de wijzigingen en publiceer ze daarna expliciet:
+
+```shell
+./update.sh
+./publish.sh
+```
+
+`publish.sh` weigert te publiceren bij blokkerende bronfouten of wijzigingen buiten `data/` en
+`docs/`. Als er geen gegenereerde wijzigingen zijn, wordt er geen lege commit gemaakt.
+
 ## Certificaat probleem oplossen.
 
 Mochten de scripts op macOS SSL certificaat errors opleveren dan zijn de default

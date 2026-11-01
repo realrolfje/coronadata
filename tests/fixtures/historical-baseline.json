@@ -1,0 +1,42 @@
+{
+  "sha256": "05cf9c934abf469e873ee670f73e1468a0be42cd3c1e6b3888014478854153ed",
+  "record_count": 1642,
+  "first_date": "2020-02-27",
+  "last_date": "2024-09-23",
+  "graph_date_range": {
+    "first_date": "2020-03-01",
+    "last_date": "2024-09-29"
+  },
+  "latest_observations": [
+    {
+      "field": "positief",
+      "date": "2023-04-04",
+      "value": 7496
+    },
+    {
+      "field": "Rt_avg",
+      "date": "2023-06-27",
+      "value": "0.90"
+    },
+    {
+      "field": "rivm_infectieradar_perc",
+      "date": "2023-10-31",
+      "value": 5.54
+    },
+    {
+      "field": "nu_op_ic",
+      "date": "2024-01-01",
+      "value": 52
+    },
+    {
+      "field": "nu_opgenomen",
+      "date": "2024-01-01",
+      "value": 1006
+    },
+    {
+      "field": "RNA.RNA_per_100k_avg",
+      "date": "2024-08-20",
+      "value": 61363312132970.7
+    }
+  ]
+}
