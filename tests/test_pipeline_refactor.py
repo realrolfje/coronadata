@@ -117,6 +117,14 @@ class PipelineRefactorTest(unittest.TestCase):
         selected = select_test_date_range(daily, 365)
         self.assertEqual("2023-03-17", selected[-1].strftime("%Y-%m-%d"))
 
+    def test_full_test_chart_ends_at_last_test_observation(self):
+        daily = {
+            "2023-03-17": {"rivm_totaal_tests": 100},
+            "2025-01-01": {"rivm_totaal_tests": None},
+        }
+        selected = select_test_date_range(daily, 0)
+        self.assertEqual("2023-03-17", selected[-1].strftime("%Y-%m-%d"))
+
     def test_short_age_chart_ends_at_last_age_observation(self):
         daily = {
             "2023-04-04": {"besmettingleeftijd": {"65": 3}},
@@ -124,6 +132,14 @@ class PipelineRefactorTest(unittest.TestCase):
             "2025-01-01": {"besmettingleeftijd": {}},
         }
         selected = select_age_date_range(daily, 365)
+        self.assertEqual("2023-04-04", selected[-1].strftime("%Y-%m-%d"))
+
+    def test_full_age_chart_ends_at_last_age_observation(self):
+        daily = {
+            "2023-04-04": {"besmettingleeftijd": {"65": 3}},
+            "2025-01-01": {"besmettingleeftijd": {}},
+        }
+        selected = select_age_date_range(daily, 0)
         self.assertEqual("2023-04-04", selected[-1].strftime("%Y-%m-%d"))
 
 

@@ -364,7 +364,7 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 | Formaat bronnenregister | YAML / JSON / Python | JSON: geen nieuwe runtime-dependency | Besloten: JSON |
 | Genormaliseerde opslag | JSON Lines / CSV / Parquet / SQLite | SQLite achter interface; JSON blijft basis | Besloten: SQLite |
 | Historische grafiekcompatibiliteit | Pixelgelijk / datagelijk / gedocumenteerde verschillen | Datagelijk | Open |
-| Actuele ziekenhuismetriek | Compatibele opvolger / afzonderlijke nieuwe metriek / alleen historisch | Geen incompatibele definities koppelen | Open |
+| Actuele ziekenhuismetriek | Compatibele opvolger / afzonderlijke nieuwe metriek / alleen historisch | LCPS-bezetting t/m 31 mei 2024 als historische aanvulling; daarna geen compatibele openbare landelijke bron | Besloten: historie aanvullen, actueel niet fabriceren |
 | Bron variantentaxonomie | RIVM / versiegebonden Pango / lokale mapping | Vastgezette Pango-versie met kleine beoordeelde RIVM-overrides | Besloten: Pango + lokale regels |
 | Automatiseringsplatform | Bestaande host / GitHub Actions / handmatig | Beslissen nu offline bouw betrouwbaar is | Open |
 
@@ -390,6 +390,8 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 6. [x] Timestamp-only en mislukte runs niet meer laten publiceren.
 7. [x] Bronnenregister uit inventaris maken.
 8. [x] Rioolwaterpilot voor parser/opslag uitvoeren.
+9. [ ] Officiële LCPS-datafeed gecontroleerd importeren om ziekenhuis- en IC-bezetting tot en met
+   31 mei 2024 aan te vullen; bronovergang zichtbaar documenteren.
 
 ## Voortgangslogboek
 

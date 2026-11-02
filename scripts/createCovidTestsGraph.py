@@ -23,10 +23,8 @@ def main():
 
 
 def select_test_date_range(metenisweten, last_days):
-    """Anchor the short graph to the final reported testing observation."""
+    """Anchor the graph to the final reported testing observation."""
     dates = brondata.getDateRange(metenisweten)
-    if last_days <= 0:
-        return dates
     fields = (
         "rivm_totaal_tests", "rivm_totaal_tests_positief",
         "rivm_totaal_personen_getest", "rivm_totaal_personen_positief",
@@ -40,7 +38,7 @@ def select_test_date_range(metenisweten, last_days):
     ]
     if test_dates:
         dates = [date for date in dates if date <= test_dates[-1]]
-    return dates[-last_days:]
+    return dates[-last_days:] if last_days > 0 else dates
 
 
 def createCovidTestsGraph(metenisweten, events):

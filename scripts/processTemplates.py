@@ -8,8 +8,9 @@ from string import Template
 from os import listdir
 from os.path import isfile, join, basename
 import csv
+import hashlib
 from modules.datautil import runIfNewData
-from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, PROJECT_ROOT, TEMPLATES_DIR
+from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, GRAPHS_DIR, PROJECT_ROOT, TEMPLATES_DIR
 from modules.buildtime import reference_datetime
 
 runIfNewData(__file__)
@@ -18,6 +19,12 @@ templatedir = TEMPLATES_DIR
 outputdir = DOCS_DIR
 
 metenisweten = brondata.readjson(DAILY_STATS)
+
+variant_graph_hash = hashlib.sha256()
+for variant_graph in (GRAPHS_DIR / "variants.svg", GRAPHS_DIR / "variants-365.svg"):
+    if variant_graph.exists():
+        variant_graph_hash.update(variant_graph.read_bytes())
+variant_graph_version = variant_graph_hash.hexdigest()[:12]
 
 dates=[]
 
@@ -274,6 +281,7 @@ substitutes = {
     'gegenereerd_op'      : gegenereerd_op,
     'gegenereerd_op_datum': gegenereerd_datum,
     'gegenereerd_op_tijd' : gegenereerd_tijd,
+    'variant_graph_version': variant_graph_version,
 
     'python_lines': decimalstring(python_lines),
     'cache_size'  : decimalstring(cache_size),

@@ -22,10 +22,8 @@ def main():
 
 
 def select_age_date_range(metenisweten, last_days):
-    """Anchor the short heatmap to the final case/age observation."""
+    """Anchor the heatmap to the final case/age observation."""
     dates = brondata.getDateRange(metenisweten)
-    if last_days <= 0:
-        return dates
     age_dates = [
         date for date in dates
         if any(
@@ -36,7 +34,7 @@ def select_age_date_range(metenisweten, last_days):
     ]
     if age_dates:
         dates = [date for date in dates if date <= age_dates[-1]]
-    return dates[-last_days:]
+    return dates[-last_days:] if last_days > 0 else dates
 
 
 def createHeatmap(metenisweten, events):
