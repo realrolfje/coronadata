@@ -226,10 +226,12 @@ def createVariantenGraph(metenisweten, varianten):
 
         # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
-        # print("Variant onbekend gap : %.2f" % gap)
+        # A positive remainder is expected when the RIVM sample contains sequences
+        # that are not represented by one of the published variant categories. It is
+        # plotted as "Onbekend" and is not a taxonomy/build warning. Negative
+        # residuals, unresolved parents and totals above the sample size are already
+        # rejected and logged while constructing the exclusive weeks above.
         varianten_totaal['onbekend'].append(gap)
-        if gap > 1000.0:
-            logError('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
 
     date_range = brondata.getDateRange(metenisweten)
     lastDays = arguments.lastDays()

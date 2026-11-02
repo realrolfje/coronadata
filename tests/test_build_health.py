@@ -27,12 +27,14 @@ class BuildHealthTest(unittest.TestCase):
         self.assertEqual([], blocking)
         self.assertEqual([error], warnings)
 
-    def test_historical_data_warning_does_not_block(self):
-        warning = "Percentages niet compleet voor 2020-12-14"
+    def test_invalid_variant_week_is_visible_but_does_not_block_other_graphs(self):
+        warning = (
+            "Variantenweek 2026-10-19 overgeslagen door onopgeloste "
+            "variantouders: XFG->JQ.1"
+        )
         blocking, warnings = classify([warning])
         self.assertEqual([], blocking)
         self.assertEqual([warning], warnings)
-
 
 if __name__ == "__main__":
     unittest.main()
