@@ -6,6 +6,7 @@ set -eu
 
 "$PYTHON_BIN" scripts/checkBuildHealth.py
 "$PYTHON_BIN" -m unittest discover -s tests
+"$PYTHON_BIN" scripts/validateVariantTaxonomy.py
 "$PYTHON_BIN" scripts/buildNormalizedData.py
 "$PYTHON_BIN" scripts/checkNormalizedParity.py
 "$PYTHON_BIN" scripts/checkPublishTree.py

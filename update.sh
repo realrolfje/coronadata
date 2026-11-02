@@ -15,6 +15,7 @@ git pull --ff-only
 "$PYTHON_BIN" scripts/buildNormalizedData.py
 "$PYTHON_BIN" scripts/checkNormalizedParity.py
 PYTHON_BIN="$PYTHON_BIN" ./creategraphs.sh
+"$PYTHON_BIN" scripts/validateVariantTaxonomy.py
 "$PYTHON_BIN" scripts/checkBuildHealth.py
 
 echo "Build completed without blocking source errors."

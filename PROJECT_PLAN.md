@@ -1,222 +1,219 @@
-# Coronadata restoration and modernization plan
+# Plan voor herstel en modernisering van Coronadata
 
-Status: active
-Created: 2026-11-01  
-Purpose: preserve the historical COVID-19 dataset, restore the parts of the pipeline that can still be updated, and make the project maintainable without silently changing historical results.
+Status: actief<br>
+Aangemaakt: 2026-11-01<br>
+Doel: de historische COVID-19-dataset bewaren, de nog bruikbare delen van de gegevensketen
+herstellen en het project onderhoudbaar maken zonder historische uitkomsten stilzwijgend te
+veranderen.
 
-## Goals
+## Doelen
 
-- Preserve the original downloaded and derived data.
-- Make the historical site reproducible without depending on retired services.
-- Identify which sources are active, frozen, retired, or broken.
-- Update indicators for which an authoritative and compatible source still exists.
-- Clearly mark series that have legitimately ended.
-- Refactor the code only after its current behavior is protected by tests.
-- Publish only meaningful, validated updates.
+- De oorspronkelijke gedownloade en afgeleide gegevens bewaren.
+- De historische site reproduceerbaar maken zonder afhankelijkheid van beëindigde diensten.
+- Vastleggen welke bronnen actief, bevroren, beëindigd of defect zijn.
+- Indicatoren bijwerken wanneer nog een gezaghebbende en inhoudelijk compatibele bron bestaat.
+- Reeksen die terecht zijn geëindigd duidelijk als historisch markeren.
+- Pas refactoren nadat tests het bestaande gedrag beschermen.
+- Alleen betekenisvolle en gevalideerde wijzigingen publiceren.
 
-## Non-goals
+## Geen doelen
 
-- Do not manufacture continuity by joining datasets with incompatible definitions.
-- Do not rewrite historical observations merely because a source changed its schema.
-- Do not delete old data after migrating to a new representation.
-- Do not perform a broad rewrite before an offline baseline can be reproduced.
-- Do not treat an HTTP success response as proof that a dataset is current or valid.
+- Geen kunstmatige continuïteit maken door datasets met verschillende definities samen te voegen.
+- Geen historische waarnemingen herschrijven omdat een bron zijn schema heeft gewijzigd.
+- Geen oude gegevens verwijderen na migratie naar een nieuw formaat.
+- Geen brede herschrijving uitvoeren voordat een offline referentiebouw reproduceerbaar is.
+- Een geslaagd HTTP-verzoek niet behandelen als bewijs dat een dataset actueel of geldig is.
 
-## Working principles
+## Uitgangspunten
 
-1. Preserve first, repair second, refactor third.
-2. Raw source data is immutable once archived.
-3. Every normalized value should have source and transformation provenance.
-4. Active, frozen, retired, and broken sources are different states and should be handled differently.
-5. Historical and current surveillance can coexist without pretending they are the same series.
-6. Generated files are outputs, not the source of truth.
-7. Each phase should leave the project in a usable state.
+1. Eerst bewaren, dan herstellen, daarna refactoren.
+2. Gearchiveerde ruwe brondata is onveranderlijk.
+3. Iedere genormaliseerde waarde moet herleidbaar zijn tot bron en transformatie.
+4. Actieve, bevroren, beëindigde en defecte bronnen vereisen verschillend gedrag.
+5. Historische en actuele surveillance kunnen naast elkaar bestaan zonder te doen alsof ze één
+   doorlopende reeks zijn.
+6. Gegenereerde bestanden zijn uitvoer, niet de bron van waarheid.
+7. Iedere fase laat het project in een bruikbare toestand achter.
 
-## Current situation
+## Beginsituatie
 
-- `cache/` contains about 3.3 GB of ignored raw or cached source data.
-- `data/` contains about 128 MB of tracked data, including `data/daily-stats.json` and dated snapshots.
-- The pipeline combines downloads, transformations, calculations, graph generation, page generation, Git operations, and publishing.
-- The currently logged hard failures are the three removed Stichting NICE JSON endpoints.
-- Several other sources return old but valid files and can therefore appear healthy while no longer updating.
-- `update.sh` currently pulls, builds, appends a timestamp, commits everything, and pushes even when no epidemiological source changed.
+- `cache/` bevat ongeveer 3,3 GB genegeerde ruwe of gecachete brondata.
+- `data/` bevat ongeveer 128 MB bijgehouden data, waaronder `data/daily-stats.json` en snapshots.
+- De oude keten combineerde downloaden, transformeren, berekenen, grafieken, pagina's, Git en
+  publiceren.
+- De drie Stichting NICE-JSON-endpoints waren verwijderd.
+- Andere endpoints leverden oude maar geldige bestanden en konden daardoor ten onrechte gezond
+  lijken.
+- Het oude `update.sh` publiceerde ook zonder epidemiologische wijziging.
 
-## Source inventory
+## Bronneninventaris
 
-This table is backed by `sources.json` and the generated `SOURCE_STATUS.md`. Compatibility with a
-replacement must still be confirmed before changing a historical series.
+Deze tabel wordt ondersteund door `sources.json` en het gegenereerde `SOURCE_STATUS.md`.
+Compatibiliteit moet zijn bewezen voordat een vervangende bron aan een historische reeks wordt
+gekoppeld.
 
-| Source or metric | Current endpoint/module | Initial status | Proposed treatment | Verified |
+| Bron of metriek | Endpoint/module | Beginsituatie | Behandeling | Gecontroleerd |
 |---|---|---|---|---|
-| RIVM wastewater measurements | `download_rioolwaterdata.py` | Active | Keep; evaluate the national aggregate feed where appropriate | [x] |
-| RIVM variants | `download_varianten.py` | Active | Keep; add schema and freshness validation | [x] |
-| Infectieradar symptoms | Old `COVID-19_Infectieradar...` URL in `brondata.py` | Frozen | Research migration to active `ARI_Infectieradar...`; keep old history unchanged | [x] |
-| RIVM reproduction number | `download_Rt.py` | Frozen | Preserve and show an explicit end date | [x] |
-| RIVM national cases | `download_casus_landelijk.py` | Frozen or retired | Preserve and show an explicit end date | [x] |
-| RIVM tests | `brondata.py` and CoronaWatchNL | Frozen | Preserve; do not imply current testing coverage | [x] |
-| RIVM prevalence estimate | `brondata.py` | Frozen | Preserve and label as historical estimate | [x] |
-| RIVM vaccination coverage | `brondata.py` | Frozen | Preserve and show an explicit end date | [x] |
-| LCPS hospital and IC data | `download_lcps_ziekenhuisopnames.py` and `brondata.py` | Ended in 2024 | Preserve final series; investigate only definition-compatible successors | [x] |
-| Stichting NICE hospital and IC data | `download_Zkh.py` | Endpoints removed | Stop live requests; retain cached historical data | [x] |
-| Government dashboard JSON | `brondata.py` | Unknown | Verify endpoint, schema, freshness, and whether it is still used | [x] |
-| Apple mobility | `brondata.py` | Frozen in 2022 | Treat as a completed historical series | [x] |
-| ECDC map | Disabled in `brondata.py` | Retired | Remove from active pipeline; retain historical artifact | [x] |
-| CoronaWatchNL test data | `brondata.py` | Unknown/frozen | Verify repository status and keep only if historically necessary | [x] |
-| Page-hit counter | `updatePageHits.py` | Non-epidemiological | Separate from the data pipeline | [x] |
+| RIVM-rioolwater | `download_rioolwaterdata.py` | Actief | Behouden en valideren | [x] |
+| RIVM-varianten | `download_varianten.py` | Actief | Behouden; schema en actualiteit valideren | [x] |
+| Infectieradar-klachten | Oude `COVID-19_Infectieradar...` | Bevroren | Actieve ARI-bron als afzonderlijke metriek; historie ongewijzigd | [x] |
+| RIVM-reproductiegetal | `download_Rt.py` | Bevroren | Bewaren met expliciete einddatum | [x] |
+| RIVM-casusdata | `download_casus_landelijk.py` | Bevroren/beëindigd | Bewaren met expliciete einddatum | [x] |
+| RIVM-tests | `brondata.py` en CoronaWatchNL | Bevroren | Bewaren; niet als actuele testdekking tonen | [x] |
+| RIVM-prevalentieschatting | `brondata.py` | Bevroren | Als historische schatting bewaren | [x] |
+| RIVM-vaccinatiegraad | `brondata.py` | Bevroren | Bewaren met expliciete einddatum | [x] |
+| LCPS-ziekenhuis en IC | `download_lcps_ziekenhuisopnames.py` | Geëindigd in 2024 | Eindstand bewaren; alleen definitiecompatibele opvolgers overwegen | [x] |
+| Stichting NICE | `download_Zkh.py` | Endpoints verwijderd | Live verzoeken stoppen; cachehistorie bewaren | [x] |
+| Coronadashboard-JSON | `brondata.py` | Onbekend | Endpoint, schema, actualiteit en gebruik controleren | [x] |
+| Apple Mobility | `brondata.py` | Bevroren in 2022 | Als afgeronde historische reeks behandelen | [x] |
+| ECDC-kaart | uitgeschakeld | Beëindigd | Uit actieve keten; historisch artefact bewaren | [x] |
+| CoronaWatchNL-tests | `brondata.py` | Onbekend/bevroren | Alleen historisch behouden waar nodig | [x] |
+| Paginateller | `updatePageHits.py` | Niet-epidemiologisch | Buiten de epidemiologische keten houden | [x] |
 
-Useful official references:
+Nuttige officiële verwijzingen:
 
-- [RIVM COVID-19 datasets](https://data.rivm.nl/covid-19/)
-- [LCPS datafeed](https://lcps.nu/datafeed/)
+- [RIVM COVID-19-datasets](https://data.rivm.nl/covid-19/)
+- [LCPS-datafeed](https://lcps.nu/datafeed/)
 - [Stichting NICE](https://www.stichting-nice.nl/)
 
-## Phase 1: preserve and establish a baseline
+## Fase 1: bewaren en een referentie vastleggen
 
-### 1.1 Archive the current data
+### 1.1 Huidige data archiveren
 
-Keep this deliberately simple. The archive is a manual safety copy, not a new storage system.
+Dit blijft bewust eenvoudig: een handmatige veiligheidskopie, geen nieuw opslagsysteem.
 
-- [x] Stop the update process while creating the archive so files cannot change halfway through.
-- [x] Create a dated ZIP archive containing `cache/` and `data/`, for example `coronadata-data-2026-11-01.zip`.
-- [x] Store the ZIP outside the Git repository directory.
-- [x] Test the completed archive with `unzip -t`.
-- [x] Create a SHA-256 checksum file next to the ZIP.
-- [x] Record the archive filename, checksum, creation date, and restore command in this document.
+- [x] Updateproces tijdens archivering stilzetten.
+- [x] Gedateerd ZIP-archief met `cache/` en `data/` maken.
+- [x] ZIP buiten de Git-repository bewaren.
+- [x] Archief met `unzip -t` controleren.
+- [x] SHA-256-bestand naast de ZIP maken.
+- [x] Bestandsnaam, checksum, datum en herstelcommando vastleggen.
 
-Restore procedure:
+Herstelprocedure:
 
 ```shell
-cd /path/to/coronadata
-unzip /path/outside/repository/coronadata-data-YYYY-MM-DD.zip
+cd /pad/naar/coronadata
+unzip /pad/buiten/repository/coronadata-data-YYYY-MM-DD.zip
 ```
 
-Archive record (complete this after creating it):
-
-| Field | Value |
+| Veld | Waarde |
 |---|---|
-| Archive | `/Users/rolf/github/coronadata-data-2026-11-01.zip` (101 MB) |
-| Created | 2026-11-01 |
+| Archief | `/Users/rolf/github/coronadata-data-2026-11-01.zip` (101 MB) |
+| Aangemaakt | 2026-11-01 |
 | SHA-256 | `6dbe5218e6aeb84e7228b8507b1461f050a19a51e8b534c402bab5d52feb91a4` |
-| Contents | `cache/`, `data/` |
+| Inhoud | `cache/`, `data/` |
 
-### 1.2 Establish an offline reference build
+### 1.2 Offline referentiebouw
 
-Treat the tracked `data/daily-stats.json` as the complete historical baseline. The cache on this
-laptop may not contain every original source file because the production importer ran on another
-server. Re-importing all historical source data is therefore not a requirement for the reference
-build and must not overwrite the baseline.
+`data/daily-stats.json` geldt als volledige historische basis. De laptopcache bevat mogelijk niet
+alle oorspronkelijke bronbestanden van de oude productieserver. Een volledige historische
+herimport is daarom geen eis en mag de basis niet overschrijven.
 
-- [x] Add a render-only command that skips downloads, source processing, calculations, and writes to `data/daily-stats.json`.
-- [x] Generate the graphs and pages from the existing `data/daily-stats.json` and other preserved inputs required only for rendering.
-- [x] Identify any graph that still depends on cache data not represented in `daily-stats.json`, and either preserve that input or move the required metadata into a tracked render fixture. The 365-day age heatmap and test graph currently retain their existing output when their historical source window is unavailable.
-- [x] Record representative numerical graph inputs and date ranges as the primary regression baseline.
-- [x] Compare rendered graph output where it is deterministic; otherwise compare the data supplied to the renderer. The baseline fixture verifies the processed-data digest, graph date range, and latest observations for representative series.
-- [x] Add regression tests for important historical totals, known dates, and series end dates.
-- [x] Make the render-only baseline leave `data/daily-stats.json` unchanged; verification uses its SHA-256 checksum.
-- [x] Document that full historical source re-import is not reproducible unless the original server cache is recovered.
+- [x] Rendercommando zonder downloads, bronverwerking, berekeningen of writes naar
+  `daily-stats.json` toevoegen.
+- [x] Grafieken en pagina's uit bewaarde invoer genereren.
+- [x] Ontbrekende renderinvoer identificeren en bewaren of als fixture vastleggen.
+- [x] Representatieve grafiekwaarden en datumbereiken als regressiebasis vastleggen.
+- [x] Deterministische uitvoer of invoer van de renderer vergelijken.
+- [x] Regressietests voor belangrijke totalen, datums en einddatums toevoegen.
+- [x] Met SHA-256 bewijzen dat de offline bouw `daily-stats.json` niet wijzigt.
+- [x] Documenteren dat volledige herimport zonder oorspronkelijke servercache niet reproduceerbaar
+  is.
 
-### 1.3 Make publishing safe
+### 1.3 Veilig publiceren
 
-- [x] Stop timestamp-only changes from producing commits.
-- [x] Do not publish when an active source fails validation. Required active sources now undergo schema and content-freshness validation through the registry health check.
-- [x] Replace `git pull -X theirs` with an explicit synchronization step, preferably `git pull --ff-only`, that stops when local and remote history have diverged. `-X theirs` can silently choose the remote side of conflicting hunks and hide a real data or code conflict.
-- [x] Separate fetch/build from commit/push.
-- [x] Produce a build and source-health report before publishing.
+- [x] Voorkomen dat alleen een nieuwe timestamp een commit veroorzaakt.
+- [x] Publicatie blokkeren wanneer een verplichte actieve bron faalt.
+- [x] `git pull -X theirs` vervangen door expliciete `git pull --ff-only`.
+- [x] Ophalen/bouwen scheiden van committen/pushen.
+- [x] Voor publicatie een bouw- en brongezondheidsrapport maken.
 
-### Phase 1 completion criteria
+### Voltooiingscriteria fase 1
 
-- [x] The raw cache has a verified, restorable archive.
-- [x] The historical site can be rendered from preserved processed data without network access or source re-import.
-- [x] Historical regression checks pass.
-- [x] A failed or unchanged run does not create a misleading publication commit.
+- [x] Er is een gecontroleerd en herstelbaar extern archief.
+- [x] De historische site rendert offline zonder bronherimport.
+- [x] Historische regressietests slagen.
+- [x] Een mislukte of ongewijzigde run veroorzaakt geen misleidende publicatiecommit.
 
-## Phase 2: create a source registry and health report
+## Fase 2: bronnenregister en gezondheidsrapport
 
-Sources differ enough in format and meaning that each source should have its own small downloader
-and parser. Each parser produces a documented intermediate result through a common storage
-interface. This keeps source-specific parsing separate from cross-source calculations and graph
-generation.
+Iedere bron krijgt een kleine eigen downloader en parser. Parsers leveren via een algemene
+opslaginterface een gedocumenteerd tussenresultaat; berekeningen en grafieken blijven daarbuiten.
+SQLite is na een pilot gekozen als herbouwbare tussenopslag, terwijl de bewaarde JSON de
+historische basis blijft.
 
-SQLite is the preferred option to evaluate for the intermediate store because it supports typed
-tables, joins, views, constraints, and reproducible queries without requiring a database server.
-It is not mandatory: first implement a small pilot with one source and compare it with a simpler
-file-based representation. Parsers should not contain calculation or graphing logic, and should
-not depend directly on SQLite-specific details beyond the shared storage interface.
+- [x] Machineleesbaar register `sources.json` toevoegen.
+- [x] Iedere bron een stabiele identifier geven, onafhankelijk van URL.
+- [x] Leverancier, URL, formaat, verwacht interval en levenscyclus opslaan.
+- [x] Velden, eenheden, geografie en datumsemantiek vastleggen.
+- [x] Afnemende metrieken en grafieken registreren.
+- [x] Cachebewijs, publicatiedatum en nieuwste waarneming registreren.
+- [x] Aanwezigheid, inhoud, schema, publicatiedatum en nieuwste waarneming valideren.
+- [x] `active`, `frozen`, `retired`, `broken` en `unknown` onderscheiden.
+- [x] Leesbaar brongezondheidsrapport genereren.
+- [x] Alle regels uit de bronneninventaris controleren.
+- [x] Gemeenschappelijk parserresultaat met bron-ID, waarnemingen, datums, herkomst en waarschuwingen
+  definiëren.
+- [x] Iedere actieve epidemiologische bron een parser en gevalideerde downloader geven.
+- [x] Parsing scheiden van berekeningen, correlaties, grafieken en publicatie.
+- [x] Opslaginterface voor schrijven en later uitlezen definiëren.
+- [x] SQLite-pilot uitvoeren met idempotente import en een bestaande grafiekquery.
+- [x] Opslagkeuze op basis van de pilot documenteren.
+- [x] SQLite herbouwbaar houden; historische JSON niet vervangen.
 
-- [x] Add a machine-readable registry such as `sources.yaml` or `sources.json`.
-- [x] Give every source a stable identifier independent of its URL.
-- [x] Store provider, URL, format, expected update interval, and lifecycle status.
-- [x] Store expected fields, units, geography, and date semantics.
-- [x] Record which normalized metrics and graphs consume each source.
-- [x] Record local-cache evidence, source publication date, and newest observation where the source provides them. A future downloader will record an authoritative successful-download timestamp.
-- [x] Validate local file presence, non-empty content, schema, publication date, and newest observation. HTTP status, content type, and configured byte-size bounds belong to the Phase 3 download step.
-- [x] Distinguish `active`, `frozen`, `retired`, `broken`, and `unknown`.
-- [x] Generate a human-readable source-health report from the registry.
-- [x] Confirm every row in the source inventory above.
-- [x] Define a small common parser result containing source ID, observations, source dates, provenance, and warnings.
-- [x] Give each active epidemiological source its own parser and a source-configured validated downloader; frozen and retired sources are deliberately not downloaded.
-- [x] Keep source parsing separate from calculations, correlations, graphing, and publication for new adapters; migrate legacy parsing source by source in Phase 3.
-- [x] Define a storage interface that supports inserting source observations and reading them for later calculations.
-- [x] Pilot SQLite with one active source, including schema creation, idempotent imports, and a query used by an existing graph.
-- [x] Decide between SQLite and a file-based intermediate store based on the pilot; record the decision before migrating other sources.
-- [x] If SQLite is selected, keep the preserved JSON as the historical baseline and make the database rebuildable from preserved inputs and imports.
+### Voltooiingscriteria fase 2
 
-### Phase 2 completion criteria
+- [x] Iedere externe invoer heeft eigenaar, levenscyclus en verwachte actualiteit.
+- [x] Een downloadbaar maar oud bestand wordt als verouderd gemeld.
+- [x] Register koppelt bronnen aan metrieken en grafieken en verklaart fouten.
+- [x] Parsing en bronoverstijgende berekeningen zijn gescheiden.
+- [x] Opslagkeuze is door een pilot onderbouwd.
 
-- [x] Every external input has an owner, lifecycle state, and expected freshness (or an explicit null cadence for ended sources).
-- [x] A stale but downloadable file is reported as stale, primarily from the newest observation or publication date in its contents; HTTP headers and local file times are secondary evidence.
-- [x] The registry maps sources to metrics and graph consumers, and the health report explains source-level update failures.
-- [x] Source parsing and cross-source calculations are separate processing stages for active sources; remaining legacy historical transformations read preserved caches only.
-- [x] The intermediate-storage choice is documented by a completed pilot rather than assumed in advance.
+## Fase 3: actieve bronnen herstellen
 
-## Phase 3: repair active sources
+- [x] Per bron een Markdown-document maken.
+- [x] Eigenaar, doel, URL-geschiedenis, schema, eenheden, interval, datumbereik,
+  levenscyclus, parser, afnemers, hiaten en vervangingsbesluit documenteren.
+- [x] Brondocumentatie vanuit register en index linken.
 
-Implement and validate one source at a time.
+### 3.1 Standaard innamestroom
 
-- [x] Create one Markdown document per source, including frozen, retired, and broken sources where enough information is available.
-- [x] For each source, document its owner, purpose, known URL history, schema, units, update cadence, observed date range, lifecycle status, parser, consumers, known gaps, and replacement decision.
-- [x] Link source documents from the registry and from a source-documentation index.
+- [x] Naar tijdelijk bestand downloaden.
+- [x] HTTP-status, contenttype, omvang en schema valideren.
+- [x] Publicatiedatum en nieuwste waarneming valideren.
+- [x] Gewijzigde inhoud als gedateerde onveranderlijke snapshot bewaren.
+- [x] Via bronspecifieke adapter transformeren.
+- [x] Velden, eenheden, bereiken, dubbelen, volgorde en continuïteit valideren.
+- [x] Fatale fouten van waarschuwingen onderscheiden.
+- [x] Ontbrekende bronwaarnemingen als hiaten bewaren; niet stilzwijgend interpoleren.
+- [x] Bronspecifiek beleid voor dagelijkse, wekelijkse en onregelmatige bronnen toestaan.
+- [x] Via SQLite samenvoegen zonder ongerelateerde historische waarden te wijzigen.
+- [x] Datums, SHA-256, bronpad en recordaantal als herkomst vastleggen.
+- [x] Imports idempotent maken.
+- [x] Tests met kleine rioolwater-, varianten- en ARI-fixtures toevoegen.
+- [x] Gezondheid en transformatieresultaten rapporteren.
 
-### 3.1 Standard ingestion flow
+### 3.2 Uitgevoerde volgorde
 
-For every active source:
+- [x] Rioolwaterinname herstellen en valideren.
+- [x] Varianteninname herstellen en valideren.
+- [x] Actieve ARI/Infectieradar als afzonderlijke metriek toevoegen.
+- [x] Actuele ziekenhuis- en luchtwegbronnen onderzoeken.
+- [x] Alleen definitiecompatibele ziekenhuisbronnen toestaan; SARI niet aan historische
+  COVID-bezetting koppelen.
+- [x] Herhaalde NICE-verzoeken uitschakelen.
+- [x] ECDC, Apple Mobility en oud dashboard uit actieve uitvoering verwijderen.
 
-- [x] Download to a temporary file.
-- [x] Validate response status, content type, size, and schema.
-- [x] Validate the source publication date and newest observation.
-- [x] When downloaded content changes, save a dated immutable raw snapshot outside the normalized store.
-- [x] Transform through a source-specific adapter.
-- [x] Validate required fields, units, ranges, duplicate keys, date ordering, and expected date continuity as appropriate for each active source.
-- [x] Classify validation results as fatal errors or warnings. Invalid structure, incompatible schema, or unsafe values are fatal; ordinary missing dates are normally warnings.
-- [x] Preserve missing observations as gaps in reported source data. The 15 missing ARI values in the current feed are reported rather than interpolated.
-- [x] Allow source-specific gap policies because daily, weekly, and irregularly sampled sources have different continuity expectations.
-- [x] Merge through the common SQLite storage interface without changing unrelated historical observations; the legacy graph model preserves its baseline through 2024-09-23.
-- [x] Record source dates, raw SHA-256, source path, and record count as provenance.
-- [x] Make imports idempotent so processing the same raw snapshot twice produces no duplicate observations or unrelated changes.
-- [x] Test with small committed wastewater, variant, and ARI fixtures.
-- [x] Report source health and transformation results.
+### Voltooiingscriteria fase 3
 
-### 3.2 Suggested implementation order
+- [x] Actieve rioolwater-, varianten- en ARI-indicatoren komen uit gezaghebbende RIVM-bronnen.
+- [x] Bevroren/beëindigde indicatoren blijven ongewijzigd en hebben een einddatum.
+- [x] Bron- of schemafouten stoppen publicatie met bruikbare foutmelding.
 
-- [x] Repair and validate wastewater ingestion.
-- [x] Repair and validate variant ingestion.
-- [x] Evaluate and implement the active ARI/Infectieradar feed as a distinct ARI metric.
-- [x] Research current official hospital or respiratory-surveillance feeds.
-- [x] Add only hospital feeds whose definitions can be clearly represented. Current SARI data was documented but not added because it is incompatible with historical COVID occupancy and no stable machine-readable feed was identified.
-- [x] Disable repeated NICE requests after preserved history is verified.
-- [x] Retire unused ECDC, Apple mobility, and old dashboard download paths from active execution.
+## Fase 4: versiegebonden datamodel
 
-### Phase 3 completion criteria
-
-- [x] Active wastewater, variants, and ARI indicators update from authoritative RIVM sources.
-- [x] Frozen and retired indicators remain unchanged; their final observation dates are recorded where available.
-- [x] Source or schema failures stop publication and produce actionable errors.
-
-## Phase 4: introduce a versioned data model
-
-The current wide daily record combines metrics with different sources, units, date ranges, and lifecycles. Introduce a normalized representation without immediately deleting or rewriting the existing format.
-
-Candidate observation shape:
+Het brede dagrecord combineert uiteenlopende bronnen, eenheden, bereiken en levenscycli. Het nieuwe
+genormaliseerde observatiemodel draait ernaast en vervangt de historische basis niet.
 
 ```yaml
 date: 2026-10-28
@@ -232,152 +229,182 @@ provenance:
   transformer_version: 1
 ```
 
-- [x] Define metric names, units, geography, null handling, and date semantics.
-- [x] Distinguish reported, revised, imputed, and calculated values. The schema supports all four; the legacy conversion emits reported and calculated values and does not invent revision or imputation history.
-- [x] Add source and transformation provenance.
-- [x] Version the normalized schema.
-- [x] Write an adapter that reads the existing `daily-stats.json` format.
-- [x] Convert historical data into the new model without replacing the original.
-- [x] Compare old and new graph inputs metric by metric. All 43 converted metrics have matching counts and SHA-256 digests.
-- [x] Switch consumers only after parity is demonstrated. No consumer is switched in this phase; the compatibility file remains authoritative while the parity evidence is reviewed.
-- [x] Document intentional differences.
+- [x] Namen, eenheden, geografie, null-beleid en datumsemantiek definiëren.
+- [x] Gerapporteerde, herziene, geïmputeerde en berekende waarden onderscheiden.
+- [x] Bron- en transformatieherkomst toevoegen.
+- [x] Schema van een versie voorzien.
+- [x] Adapter voor bestaand `daily-stats.json` schrijven.
+- [x] Historische data converteren zonder origineel te vervangen.
+- [x] Oude en nieuwe grafiekinvoer per metriek vergelijken: alle 43 metrieken hebben gelijke
+  aantallen en SHA-256-digests.
+- [x] Afnemers pas omschakelen na bewezen gelijkheid; compatibiliteitsbestand blijft voorlopig
+  leidend.
+- [x] Bewuste verschillen documenteren.
 
-### Phase 4 completion criteria
+### Voltooiingscriteria fase 4
 
-- [x] New and historical observations share the documented schema v1 observation model and storage interface.
-- [x] Original files remain preserved; `daily-stats.json` is neither replaced nor rewritten by the conversion.
-- [x] Every converted numeric graph value is traceable to a registry source or `derived_coronadata` calculation plus its legacy field and transformer version.
+- [x] Nieuwe en historische observaties delen schema v1 en opslaginterface.
+- [x] Originele bestanden blijven bewaard; conversie schrijft `daily-stats.json` niet.
+- [x] Iedere numerieke grafiekwaarde is herleidbaar tot bron of berekening, oud veld en transformer.
 
-## Phase 5: refactor safely
+## Fase 5: veilig refactoren
 
-- [x] Separate download, validation, transformation, storage, charting, and publishing. `pipeline/stages.py` exposes the data stages; chart and publish scripts remain downstream consumers.
-- [x] Replace the large `brondata.py` workflow with explicit pipeline stages. The module is now a small compatibility facade.
-- [x] Remove duplicate source downloads and transformations. The chart build runs the source pipeline once and reuses its prepared data.
-- [x] Replace working-directory-relative paths with project-root-based paths in the pipeline and chart build.
-- [x] Define typed inputs and outputs for source adapters and stage reports.
-- [x] Add unit tests for date parsing, merging, and source transforms.
-- [x] Add fixture-based tests using small preserved-format source samples.
-- [x] Make chart generation deterministic where practical: headless backend, fixed SVG hash salt, hash seed, and source-date epoch. Existing visible “generated at” footers intentionally still reflect build time.
-- [x] Pin dependencies and document Python 3.11 as the supported version.
-- [x] Add a single documented local development command: `./dev.sh`.
-- [x] Remove dead code only after coverage proves it is unused. No broad deletion was attempted; ended-source transforms remain explicitly preserved.
+- [x] Downloaden, valideren, transformeren, opslaan, grafieken en publiceren scheiden.
+- [x] Grote `brondata.py`-workflow vervangen door expliciete stappen; module is compatibiliteitslaag.
+- [x] Dubbele downloads en transformaties verwijderen.
+- [x] Werkmapafhankelijke paden vervangen door projectrootpaden.
+- [x] Getypeerde in- en uitvoer voor adapters en stappen definiëren.
+- [x] Tests voor datumparsing, samenvoegen en brontransformaties toevoegen.
+- [x] Fixturetests met kleine bewaarde bronformaten toevoegen.
+- [x] Grafieken waar praktisch deterministisch maken.
+- [x] Dependencies vastzetten en Python 3.11 documenteren.
+- [x] Eén ontwikkelcommando toevoegen: `./dev.sh`.
+- [x] Dode code pas na dekking verwijderen; historische transformaties behouden.
 
-### Phase 5 completion criteria
+### Voltooiingscriteria fase 5
 
-- [x] The pipeline stages can be run and tested independently.
-- [x] Source-specific changes are isolated behind the adapter registry and do not require editing unrelated graph code.
-- [x] Historical regression tests still pass.
+- [x] Ketenstappen zijn afzonderlijk uitvoerbaar en testbaar.
+- [x] Bronspecifieke wijzigingen vereisen geen wijziging in ongerelateerde grafiekcode.
+- [x] Historische regressietests slagen.
 
-## Phase 6: update the site and automation
+## Fase 6: site en automatisering
 
-- [x] Organize the site into current surveillance and historical COVID-19 archive sections without truncating the existing full-history charts.
-- [x] Keep the existing generated SVG charts as the reliable archive, no-JavaScript fallback, and visual regression reference.
-- [x] Prototype one interactive, zoomable current-surveillance chart backed by generated static JSON. The wastewater prototype supports date-range zooming, panning, exact-value tooltips, and toggling reported and calculated series.
-- [x] Limit migration to the evaluated technical prototype; unrelated units, update schedules, and ended series remain separate. Further migration requires a later usability decision.
-- [x] Show the source and latest observation date on every chart presented by the main and full-archive pages.
-- [x] Show an explicit final date for ended series.
-- [x] Label calculated or experimental metrics separately from reported data.
-- [x] Add generated HTML and JSON source-health/status pages.
-- [x] Publish only when validated data or site content meaningfully changes. Renders now use the newest observation as their reproducible reference date.
-- [x] Run tests, normalized parity, and source validation before generating a publication commit.
-- [x] Keep page-hit collection outside the epidemiological build in `update-pagehits.sh`.
-- [x] Document manual recovery and rollback procedures in `docs/operations.md`.
+- [x] Historische volledige grafieken behouden en actuele surveillance daarvan inhoudelijk
+  onderscheiden, zonder de vertrouwde dashboardvormgeving te vervangen.
+- [x] Bestaande SVG's als betrouwbaar archief, JavaScriptloze fallback en regressiereferentie
+  behouden.
+- [x] Eén interactieve, zoombare rioolwatergrafiek op basis van statische JSON maken, met pannen,
+  tooltips, reeksselectie en afzonderlijke y-assen.
+- [x] Verdere migratie pas na een gebruiksbesluit uitvoeren; ongerelateerde eenheden en reeksen niet
+  in één grafiek stoppen.
+- [x] Bronnen en einddatums via grafiekbijschriften, bronstatus en historische weergave duidelijk
+  maken.
+- [x] Berekende/experimentele waarden van gerapporteerde waarden onderscheiden.
+- [x] HTML- en JSON-bronstatus genereren.
+- [x] Alleen gevalideerde, betekenisvolle wijzigingen publiceren; renders gebruiken de nieuwste
+  waarneming als reproduceerbare referentiedatum.
+- [x] Tests, parity en bronvalidatie vóór publicatie uitvoeren.
+- [x] Paginateller in `update-pagehits.sh` buiten epidemiologische bouw houden.
+- [x] Herstel en rollback in `docs/operations.md` documenteren.
 
-### Phase 6 completion criteria
+### Voltooiingscriteria fase 6
 
-- [x] Readers can tell which charts are current and which are historical.
-- [x] Full historical timelines remain available, including when an interactive view defaults to a recent period.
-- [x] The interactive prototype works as a progressive enhancement: its underlying data is generated by the validated pipeline and the corresponding SVG remains usable without JavaScript.
-- [x] A publication identifies its source dates and pipeline health.
-- [x] Automation cannot silently publish stale or malformed data as current.
+- [x] Actuele en historische status is voor lezers controleerbaar zonder historische tijdlijnen te
+  verliezen.
+- [x] Interactieve grafiek is progressieve uitbreiding en behoudt een SVG-fallback.
+- [x] Publicatie vermeldt brondatums en ketengezondheid.
+- [x] Automatisering kan verouderde of ongeldige data niet stilzwijgend als actueel publiceren.
 
-## Proposed milestones
+## Mijlpalen
 
-### Milestone A: protected history
+### Mijlpaal A: beschermde historie
 
-- [ ] External cache archive and committed manifest exist.
-- [ ] Offline baseline build works.
-- [ ] Unsafe automatic publishing is disabled.
+- [x] Extern cache/data-archief en vastgelegde checksum/manifest bestaan.
+- [x] Offline referentiebouw werkt.
+- [x] Onveilig automatisch publiceren is uitgeschakeld.
 
-### Milestone B: observable pipeline
+### Mijlpaal B: zichtbare keten
 
-- [x] Source registry exists.
-- [x] Source-health report identifies active, stale, retired, and broken inputs.
-- [x] Historical regression tests run automatically before update and publication.
+- [x] Bronnenregister bestaat.
+- [x] Gezondheidsrapport onderscheidt actieve, verouderde, beëindigde en defecte invoer.
+- [x] Historische regressietests draaien vóór update en publicatie.
 
-### Milestone C: useful current data
+### Mijlpaal C: bruikbare actuele data
 
-- [x] Wastewater updates reliably.
-- [x] Variants update reliably.
-- [x] Current Infectieradar/ARI data is represented without rewriting old data.
+- [x] Rioolwater werkt betrouwbaar bij.
+- [x] Varianten werken betrouwbaar bij.
+- [x] Actuele Infectieradar/ARI is opgenomen zonder oude reeks te herschrijven.
 
-### Milestone D: maintainable architecture
+### Mijlpaal D: onderhoudbare architectuur
 
-- [x] Versioned observation model exists.
-- [x] Source adapters have fixtures and tests.
-- [x] Pipeline stages are separated.
+- [x] Versiegebonden observatiemodel bestaat.
+- [x] Bronadapters hebben fixtures en tests.
+- [x] Ketenstappen zijn gescheiden.
 
-### Milestone E: trustworthy publication
+### Mijlpaal E: betrouwbare publicatie
 
-- [x] Current and historical sections communicate source lifecycle and observation dates.
-- [x] Publication is gated by tests, parity, source health, and meaningful output changes.
-- [x] Recovery and rollback are documented.
+- [x] Site maakt levenscyclus en waarnemingsdatums controleerbaar.
+- [x] Tests, parity, brongezondheid en betekenisvolle uitvoer bewaken publicatie.
+- [x] Herstel en rollback zijn gedocumenteerd.
 
-- [x] Site distinguishes current and historical series.
-- [x] Publication is conditional on successful validation.
-- [x] Source status and last observation dates are visible.
+## Afgerond na de refactoring: variantentaxonomie
 
-## Decisions to make
+De RIVM-variantenfeed bevat overlappende ouder- en kindcategorieën. Nieuwere lineages zoals
+`LP.8.1` kunnen een lege `Is_subvariant_of` hebben terwijl dezelfde monsters ook in een bredere
+lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 
-Record decisions here as the work progresses.
+- [x] Kleine ruwe fixtures bewaren voor correcte en problematische weken, waaronder 2025-02-17 en
+  2025-03-10.
+- [x] Gezaghebbende, versiegebonden bron voor lineagerelaties kiezen en herkomst en geldigheidsdatum
+  vastleggen; geen permanente relatie alleen uit een naam afleiden.
+- [x] Taxonomiemodel definiëren met lineagecode, uitgebreide lineage, ouder, bewijsbron en
+  geldigheidsperiode.
+- [x] Overlappende ouder-/kindaantallen één keer naar wederzijds uitsluitende restcategorieën
+  omzetten; onbekend/onopgelost expliciet bewaren.
+- [x] Valideren dat restaantallen niet negatief zijn, steekproefomvang niet overschrijden en per week
+  maximaal 100% vormen.
+- [x] Ongeldige totalen niet naar 100% normaliseren; onopgeloste overlap bewaren en verklaren.
+- [x] Hardcoded `BA.2+S:L452X`-uitzondering vervangen door taxonomietransformatie.
+- [x] Fixturetests voor gewijzigde hiërarchie, ontbrekende ouders, aliassen, recombinanten en correcte
+  historische weken toevoegen.
+- [x] Alle 306 bewaarde weken controleren; verschillen op probleemweken zijn de bedoelde verwijdering
+  van dubbeltellingen en staan in `docs/architecture/variant-taxonomy.md`.
 
-| Decision | Options | Current preference | Status |
+### Voltooiingscriteria variantentaxonomie
+
+- [x] Iedere wekelijkse grafiekcategorie is wederzijds uitsluitend of expliciet onopgelost.
+- [x] Totalen boven 100% leveren een zichtbare sitewaarschuwing op en slaan alleen de ongeldige
+  variantenweek over; andere grafieken blijven bouwen.
+- [x] Iedere externe lineagerelatie is herleidbaar tot taxonomieversie en bron.
+
+## Nog te nemen besluiten
+
+| Besluit | Opties | Huidige voorkeur | Status |
 |---|---|---|---|
-| Source registry format | YAML / JSON / Python | JSON avoids a new runtime dependency and is machine-readable | Decided: JSON |
-| Normalized storage | JSON Lines / CSV / Parquet / SQLite | SQLite behind a storage interface; preserved JSON remains the historical baseline | Decided: SQLite |
-| Historical graph compatibility | Pixel-identical / data-identical / documented differences | Data-identical | Open |
-| Current hospital metric | Find compatible successor / introduce a distinctly named new metric / historical only | Do not join incompatible definitions | Open |
-| Automation platform | Existing host / GitHub Actions / manual | Decide after the offline build is reliable | Open |
+| Formaat bronnenregister | YAML / JSON / Python | JSON: geen nieuwe runtime-dependency | Besloten: JSON |
+| Genormaliseerde opslag | JSON Lines / CSV / Parquet / SQLite | SQLite achter interface; JSON blijft basis | Besloten: SQLite |
+| Historische grafiekcompatibiliteit | Pixelgelijk / datagelijk / gedocumenteerde verschillen | Datagelijk | Open |
+| Actuele ziekenhuismetriek | Compatibele opvolger / afzonderlijke nieuwe metriek / alleen historisch | Geen incompatibele definities koppelen | Open |
+| Bron variantentaxonomie | RIVM / versiegebonden Pango / lokale mapping | Vastgezette Pango-versie met kleine beoordeelde RIVM-overrides | Besloten: Pango + lokale regels |
+| Automatiseringsplatform | Bestaande host / GitHub Actions / handmatig | Beslissen nu offline bouw betrouwbaar is | Open |
 
-## Risks
+## Risico's
 
-| Risk | Mitigation |
+| Risico | Maatregel |
 |---|---|
-| Refactoring changes historical numbers | Establish fixtures and regression tests first |
-| A live-looking endpoint serves frozen data | Validate newest observation and expected cadence |
-| Replacement source uses a different definition | Create a new metric instead of splicing the series |
-| Raw cache is lost because it is ignored by Git | Keep the verified ZIP and SHA-256 file outside the repository |
-| Provider revises old records | Preserve dated raw snapshots and record revisions explicitly |
-| Generated output creates enormous diffs | Separate generated artifacts from source and meaningful data changes |
-| Automation publishes partial results | Validate all required active sources before publication |
+| Refactoring verandert historische cijfers | Eerst fixtures en regressietests |
+| Werkend endpoint levert bevroren data | Nieuwste waarneming en interval valideren |
+| Vervangende bron gebruikt andere definitie | Nieuwe metriek maken, niet aan oude reeks plakken |
+| Genegeerde cache raakt verloren | Gecontroleerde ZIP en SHA-256 buiten repository bewaren |
+| Leverancier herziet oude records | Gedateerde snapshots en revisies expliciet bewaren |
+| Gegenereerde uitvoer veroorzaakt enorme diffs | Artefacten scheiden van bron en betekenisvolle wijzigingen |
+| Automatisering publiceert gedeeltelijke resultaten | Alle verplichte actieve bronnen vooraf valideren |
 
-## Immediate next actions
+## Eerstvolgende acties
 
-These are the recommended first work items:
+1. [x] Extern ZIP-archief uit fase 1.1 maken en controleren.
+2. [x] Alleen-lezen inventaris voor externe invoer bouwen.
+3. [x] Gezondheidsrapporten voor datum en schema maken zonder brondata te wijzigen.
+4. [x] Offline bouw toevoegen en aanvankelijke fouten vastleggen.
+5. [x] Kleine historische regressiesuite toevoegen.
+6. [x] Timestamp-only en mislukte runs niet meer laten publiceren.
+7. [x] Bronnenregister uit inventaris maken.
+8. [x] Rioolwaterpilot voor parser/opslag uitvoeren.
 
-1. [x] Create and verify the external ZIP archive described in Phase 1.1.
-2. [x] Build a read-only inventory tool for the registered external inputs.
-3. [x] Generate source/date/schema health reports without modifying source data.
-4. [x] Add an offline build command and capture its current failures.
-5. [x] Add a small historical regression test suite.
-6. [x] Change publishing so timestamp-only and failed runs do not commit.
-7. [x] Create the source registry from the inventory table.
-8. [x] Use wastewater as the parser/storage pilot; downloading current data remains Phase 3.
+## Voortgangslogboek
 
-## Progress log
-
-Add short dated entries rather than relying only on checked boxes.
-
-| Date | Change | Result / follow-up |
+| Datum | Wijziging | Resultaat / vervolg |
 |---|---|---|
-| 2026-11-01 | Initial restoration plan created | Begin with the read-only data inventory |
-| 2026-11-01 | Archived `cache/` and `data/` outside the repository | ZIP integrity verified; SHA-256 recorded in Phase 1.1 |
-| 2026-11-01 | Added initial render-only path | Historical JSON remained unchanged; full render verification still required |
-| 2026-11-01 | Verified the offline render | Completed with exit code 0 using the non-GUI backend; historical JSON checksum unchanged |
-| 2026-11-01 | Added historical regression tests | Seven tests cover the baseline and build-health classification |
-| 2026-11-01 | Separated update and publication | Update builds and reports health; publication is explicit and limited to generated data |
-| 2026-11-01 | Added the source registry and health report | Required active caches are correctly reported stale and block publication |
-| 2026-11-01 | Completed the wastewater SQLite pilot | 158,423 observations matched the in-memory graph query; re-import was idempotent |
-| 2026-11-01 | Implemented validated active-source ingestion | Current wastewater, variants, and ARI feeds pass validation and have immutable raw snapshots |
-| 2026-11-01 | Retired dead requests and reviewed hospital successors | NICE, ECDC, Apple, old dashboard, and frozen feeds are no longer requested; SARI remains a distinct future metric |
-| 2026-11-01 | Added normalized schema v1 in parallel | 69,205 observations across 43 metrics match the compatibility model exactly; no graph consumer switched |
+| 2026-11-01 | Eerste herstelplan | Start met alleen-lezen inventaris |
+| 2026-11-01 | `cache/` en `data/` extern gearchiveerd | ZIP en SHA-256 gecontroleerd |
+| 2026-11-01 | Eerste offline renderpad | Historische JSON bleef ongewijzigd |
+| 2026-11-01 | Offline render gecontroleerd | Exitcode 0, geen netwerk, checksum gelijk |
+| 2026-11-01 | Historische regressietests | Zeven eerste tests dekten basis en bouwgezondheid |
+| 2026-11-01 | Update en publicatie gescheiden | Publicatie expliciet en beperkt tot gegenereerde data |
+| 2026-11-01 | Bronnenregister en gezondheidsrapport | Verouderde verplichte bronnen blokkeren publicatie |
+| 2026-11-01 | SQLite-rioolwaterpilot | 158.423 observaties gelijk; herimport idempotent |
+| 2026-11-01 | Gevalideerde actieve inname | Rioolwater, varianten en ARI met onveranderlijke snapshots |
+| 2026-11-01 | Dode verzoeken beëindigd | NICE, ECDC, Apple en oud dashboard niet meer actief; SARI apart |
+| 2026-11-01 | Genormaliseerd schema v1 | 69.205 observaties en 43 metrieken exact gelijk |
+| 2026-11-02 | Historische korte grafieken hersteld | 365-dagenvensters eindigen bij laatste eigen waarneming |
+| 2026-11-02 | Versiegebonden variantentaxonomie | 306 weken exclusief gevalideerd; ongeldige weken worden zichtbaar overgeslagen |

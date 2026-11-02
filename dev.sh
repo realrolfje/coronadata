@@ -6,6 +6,7 @@ cd "$project_dir"
 : "${PYTHON_BIN:=.venv/bin/python}"
 
 "$PYTHON_BIN" -m unittest discover -s tests
+"$PYTHON_BIN" scripts/validateVariantTaxonomy.py
 "$PYTHON_BIN" scripts/buildNormalizedData.py
 "$PYTHON_BIN" scripts/checkNormalizedParity.py
 

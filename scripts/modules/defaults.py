@@ -14,6 +14,7 @@ DOCS_DIR = PROJECT_ROOT / "docs"
 GRAPHS_DIR = DOCS_DIR / "graphs"
 TEMPLATES_DIR = DOCS_DIR / "templates"
 DAILY_STATS = DATA_DIR / "daily-stats.json"
+VARIANT_TAXONOMY = DATA_DIR / "variant-taxonomy-v1.json"
 
 # Compatibility aliases for modules not migrated to pathlib yet.
 datadir = str(DATA_DIR)

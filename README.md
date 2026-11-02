@@ -221,6 +221,23 @@ De historische regressietests kunnen apart worden uitgevoerd:
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
+De variantenfeed bevat overlappende ouder- en kindcategorieën. De versiegebonden
+[variantentaxonomie](docs/architecture/variant-taxonomy.md) zet die om naar wederzijds uitsluitende
+weekaantallen. Controleer de volledige lokale feed en vernieuw het auditrapport met:
+
+```shell
+.venv/bin/python scripts/validateVariantTaxonomy.py
+```
+
+Een negatief restaantal, een onopgeloste ouderrelatie of een totaal boven de steekproefomvang wordt
+als waarschuwing in de site-status opgenomen. Alleen de ongeldige variantenweek wordt overgeslagen;
+de overige grafieken blijven werken. Deze controle draait ook via `dev.sh`, `update.sh` en
+`publish.sh`.
+
+De grafiek toont een steekproefgewogen voortschrijdend venster van vier kalenderweken. Vensters met
+minder dan twintig monsters worden niet getekend. Dominantie vereist meer dan 50% in twee
+opeenvolgende geldige vensters; dit voorkomt schijnbare omslagen door één of twee monsters.
+
 De update- en publicatiestappen zijn bewust gescheiden. `update.sh` vereist een schone checkout,
 fast-forwardt de branch, bouwt de uitvoer en maakt een health report, maar commit of pusht niet.
 Controleer de wijzigingen en publiceer ze daarna expliciet:
