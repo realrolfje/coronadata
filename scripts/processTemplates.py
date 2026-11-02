@@ -20,6 +20,20 @@ outputdir = DOCS_DIR
 
 metenisweten = brondata.readjson(DAILY_STATS)
 
+# Weekly surveillance can legitimately trail the build date by more than seven
+# days. Two reporting weeks separates current values from ended historical data.
+FRESHNESS_DAYS = 14
+build_reference_date = reference_datetime(metenisweten).date()
+
+
+def freshness_color(color, observation_date):
+    """Keep the signal color only while the underlying metric is recent."""
+    try:
+        age = (build_reference_date - datetime.date.fromisoformat(observation_date)).days
+    except (TypeError, ValueError):
+        return "stale"
+    return color if age <= FRESHNESS_DAYS else "stale"
+
 variant_graph_hash = hashlib.sha256()
 for variant_graph in (GRAPHS_DIR / "variants.svg", GRAPHS_DIR / "variants-365.svg"):
     if variant_graph.exists():
@@ -229,18 +243,27 @@ substitutes = {
     'ziekverhouding_rna_color': 'green' if eenopXziekRNA > 1000 else 'yellow' if eenopXziekRNA > 500 else 'red',
 
     'ziekverhouding_rolf'      : str(eenopXziekRolf),
-    'ziekverhouding_rolf_color': 'green' if eenopXziekRolf > 1000 else 'yellow' if eenopXziekRolf > 500 else 'red',
+    'ziekverhouding_rolf_color': freshness_color(
+        'green' if eenopXziekRolf > 1000 else 'yellow' if eenopXziekRolf > 500 else 'red',
+        geschat_ziek_nu_rolf_datum,
+    ),
 
     'nu_opgenomen'      : decimalstring(nu_opgenomen),
     'nu_opgenomen_num'  : nu_opgenomen,
     'nu_opgenomen_datum': nu_opgenomen_datum,
-    'nu_opgenomen_color': 'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',
+    'nu_opgenomen_color': freshness_color(
+        'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',
+        nu_opgenomen_datum,
+    ),
     'nu_opgenomen_record_sinds' : nu_opgenomen_record_sinds,
 
     'nu_op_ic'      : decimalstring(nu_op_ic),
     'nu_op_ic_num'  : nu_op_ic,
     'nu_op_ic_datum': nu_op_ic_datum,
-    'nu_op_ic_color': 'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
+    'nu_op_ic_color': freshness_color(
+        'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
+        nu_op_ic_datum,
+    ),
     'nu_op_ic_record_sinds': nu_op_ic_record_sinds,
 
     'nu_in_ziekenhuis'     : decimalstring(nu_opgenomen + nu_op_ic),
@@ -253,14 +276,17 @@ substitutes = {
     'Rt'      : decimalstring(Rt),
     'Rt_num'  : Rt,
     'Rt_datum': Rt_datum,
-    'Rt_color': 'green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red',
+    'Rt_color': freshness_color('green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red', Rt_datum),
 
     'vandaag_getest'                   : decimalstring(vandaag_getest),
     'vandaag_getest_datum'             : vandaag_getest_datum,
     'positief_getest'                  : decimalstring(positief_getest),
     'positief_percentage'              : decimalstring(round(positief_percentage,1))+'%',
     'positief_percentage_num'          : round(positief_percentage,1),
-    'positief_percentage_color'        : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+    'positief_percentage_color'        : freshness_color(
+        'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+        vandaag_getest_datum,
+    ),
     'positief_percentage_record_sinds' : positief_percentage_record_sinds,
 
     'prikken_gezet'      : decimalstring(prikken_gezet),
@@ -276,7 +302,8 @@ substitutes = {
     'prikken_gezet_geschat_color'   : 'green' if mensen_gevaccineerd_geschat_perc > 60 else 'yellow' if mensen_gevaccineerd_geschat_perc > 40 else 'red',
     'vaccingeboortejaar'            : vaccingeboortejaar, 
 
-    'positief_leeftijd' : str(gemiddeldeleeftijdweek),
+    'positief_leeftijd'       : str(gemiddeldeleeftijdweek),
+    'positief_leeftijd_color' : freshness_color('blue', casus_datum),
 
     'gegenereerd_op'      : gegenereerd_op,
     'gegenereerd_op_datum': gegenereerd_datum,

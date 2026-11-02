@@ -9,7 +9,7 @@
 - URL history: only the current or final known URL is recorded; earlier URLs are not known unless noted below
 - Format: `csv`
 - Update cadence: Ended or not established
-- Observed date range: Through 2024-06-01 (start not recorded in the registry)
+- Observed date range: Through 2024-05-31 (start not recorded in the registry)
 - Observation date field: `datum`
 - Publication date field: `Not available`
 - Required fields: `datum`, `IC_bezetting_covid`, `kliniek_bezetting_covid`

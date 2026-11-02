@@ -15,8 +15,8 @@ Decision:
 - retain the final LCPS and NICE COVID observations unchanged;
 - do not call their retired endpoints;
 - do not append SARI observations to COVID occupancy metrics; and
-- consider SARI later as a separately named metric when an authoritative machine-readable feed and
-  stable schema are available.
+- publish SARI as a separately named weekly ICU-admissions metric using the authoritative RIVM
+  open-data feed and keep its source observations separate from COVID occupancy.
 
 Reviewed official references:
 

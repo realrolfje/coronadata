@@ -13,7 +13,9 @@ from modules.buildtime import reference_datetime
 from pipeline.calculations import calculate_cumulative_totals
 from pipeline.legacy_transform import transform_prevalence, transform_rivm_tests
 from pipeline.site_export import build_surveillance_export
-from createZiekGraph import select_date_range
+from createZiekGraph import merge_lcps_history, select_date_range
+from pipeline.sari import observation_date
+from pipeline.weekly_trend import parser as weekly_trend_parser
 from createRtGraph import select_rt_date_range
 from createCovidTestsGraph import select_test_date_range
 from createHeatmap import select_age_date_range
@@ -141,6 +143,45 @@ class PipelineRefactorTest(unittest.TestCase):
         }
         selected = select_age_date_range(daily, 0)
         self.assertEqual("2023-04-04", selected[-1].strftime("%Y-%m-%d"))
+
+    def test_lcps_extension_does_not_modify_original_daily_data(self):
+        import tempfile
+        from pathlib import Path
+
+        daily = {"2024-01-01": {"nu_opgenomen": 1006, "nu_op_ic": 52}}
+        csv_text = (
+            "datum,IC_bezetting_covid,kliniek_bezetting_covid\n"
+            "02-01-2024,47,672\n"
+            "31-05-2024,5,52\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "lcps.csv"
+            path.write_text(csv_text)
+            merged = merge_lcps_history(daily, path)
+        self.assertNotIn("2024-01-02", daily)
+        self.assertEqual(672, merged["2024-01-02"]["nu_opgenomen"])
+        self.assertEqual(5, merged["2024-05-31"]["nu_op_ic"])
+
+    def test_sari_season_week_becomes_iso_monday(self):
+        self.assertEqual("2025-09-29", observation_date("2025/2026", "40").isoformat())
+        self.assertEqual("2026-01-05", observation_date("2025/2026", "2").isoformat())
+
+    def test_weekly_trend_parser_keeps_missing_values_missing(self):
+        import tempfile
+        from pathlib import Path
+
+        parse = weekly_trend_parser("trend", "trend_value", "percent")
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "trend.csv"
+            path.write_text(
+                '"week";"season";"value"\n'
+                '40;"2026/2027";4.18\n'
+                '41;"2026/2027";\n'
+            )
+            result = parse(path)
+        self.assertEqual(1, len(result.observations))
+        self.assertEqual("2026-09-28", result.newest_observation)
+        self.assertEqual(["1 weeks have no reported value"], result.warnings)
 
 
 if __name__ == "__main__":

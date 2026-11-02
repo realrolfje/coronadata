@@ -12,7 +12,31 @@ from modules.brondata import decimalstring, dateCache
 from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
 from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData, anotate
+import csv
+from pathlib import Path
 import sys
+
+
+LCPS_HANDOFF_DATE = datetime.date(2024, 1, 2)
+
+
+def merge_lcps_history(metenisweten, filename=None):
+    """Return a graph-only copy extended with LCPS occupancy after NICE ended."""
+    filename = Path(filename or (Path(__file__).resolve().parents[1] / "cache/covid-19-datafeed.csv"))
+    merged = dict(metenisweten)
+    if not filename.exists():
+        return merged
+    with filename.open(newline="", encoding="utf-8-sig") as source_file:
+        for row in csv.DictReader(source_file):
+            date = datetime.datetime.strptime(row["datum"], "%d-%m-%Y").date()
+            if date < LCPS_HANDOFF_DATE or date > datetime.date(2024, 5, 31):
+                continue
+            key = date.isoformat()
+            record = dict(merged.get(key, {}))
+            record["nu_op_ic"] = int(row["IC_bezetting_covid"])
+            record["nu_opgenomen"] = int(row["kliniek_bezetting_covid"])
+            merged[key] = record
+    return dict(sorted(merged.items()))
 
 def main():
     runIfNewData(__file__)
@@ -24,8 +48,6 @@ def main():
 def select_date_range(metenisweten, last_days):
     """Keep the short hospital chart anchored to its final reported observation."""
     dates = brondata.getDateRange(metenisweten)
-    if last_days <= 0:
-        return dates
     hospital_dates = [
         d for d in dates
         if metenisweten.get(d.strftime("%Y-%m-%d"), {}).get("nu_opgenomen")
@@ -34,12 +56,13 @@ def select_date_range(metenisweten, last_days):
     if hospital_dates:
         final_hospital_date = hospital_dates[-1]
         dates = [date for date in dates if date <= final_hospital_date]
-    return dates[-last_days:]
+    return dates[-last_days:] if last_days > 0 else dates
 
 def createZiekGraph(metenisweten, events):
     graphname="zieken"
 
     print("Calculating "+graphname+" graph...")
+    metenisweten = merge_lcps_history(metenisweten)
 
     opgenomen = {
         'x': [],
@@ -194,24 +217,9 @@ def createZiekGraph(metenisweten, events):
     fig, ax1 = plt.subplots(figsize=(10, 5))
     fig.subplots_adjust(top=0.92, bottom=0.13, left=0.09, right=0.91)
 
-    ax2 = plt.twinx()
-
-    for event in events:
-        if graphname in event \
-            and dateCache.parse(event[graphname][0]) > date_range[0]\
-            and (len(event[graphname]) <= 2 or len(date_range) <= event[graphname][2]):
-            anotate(
-                ax2, 
-                geschat_ziek_rna['x'], geschat_ziek_rna['y'],
-                event['date'], event['event'], 
-                event[graphname][0], 
-                event[graphname][1]
-            )
-
-    #plt.figure(figsize =(10,5))
+    # The archived chart is deliberately limited to hospital occupancy. The old
+    # prevalence estimate and measure annotations describe a different metric.
     ax1.grid(which='both', axis='both', linestyle='-.',
-            color='gray', linewidth=1, alpha=0.3)
-    ax2.grid(which='both', axis='both', linestyle='-.',
             color='gray', linewidth=1, alpha=0.3)
 
 
@@ -225,16 +233,6 @@ def createZiekGraph(metenisweten, events):
         nu_op_ic = ic['y'][-1]
         ax1.plot(ic['x'], ic['y'], color='red', label='aantal op IC (laatste: '+decimalstring(nu_op_ic)+')')
         ax1.plot(ic_voorspeld['x'], ic_voorspeld['y'], color='red', linestyle=':')
-
-    # Plot ziek based on RNA
-    ax2.plot(geschat_ziek_rna['x'], geschat_ziek_rna['y'], color='steelblue',
-            linestyle=':', 
-            label='Schatting totaal ziek (nu: '+decimalstring(round(geschat_ziek_rna_nu))+')\n'
-                    +'→ 1 op '+str(round(17500000/geschat_ziek_rna_nu))+' mensen is ziek/besmettelijk')
-    ax2.fill_between(
-        geschat_ziek_rna['x'][:len(geschat_ziek_rna['min'])], 
-        geschat_ziek_rna['min'], geschat_ziek_rna['max'],
-        facecolor='steelblue', alpha=0.1, interpolate=True)
 
     # Mark the final day represented by this chart. For an ended historical series this is
     # deliberately not the wall-clock date.
@@ -258,30 +256,30 @@ def createZiekGraph(metenisweten, events):
 
     ax1.set_xlabel("Datum")
     ax1.set_ylabel("Aantal op verpleegafdeling / op IC")
-    ax2.set_ylabel("Geschat ziek")
 
     ax1.set_ylim([0, 3000])
-    ax2.set_ylim([0, 1200000])
-
-    ax2.set_yticks      ([200000, 400000, 600000, 800000, 1000000, 1200000])
-    ax2.set_yticklabels([ '200k', '400k', '600k', '800k', '1000k',     '☠'])
 
     plt.gca().set_xlim([date_range[0], date_range[-1]])
+    if date_range[0].date() <= LCPS_HANDOFF_DATE <= date_range[-1].date():
+        ax1.axvline(LCPS_HANDOFF_DATE, color="gray", linewidth=0.8, linestyle="--")
+        ax1.text(
+            LCPS_HANDOFF_DATE, 2875, "vanaf hier LCPS", rotation=90,
+            va="top", ha="right", fontsize=7, color="gray"
+        )
 
     gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
-    available_dates = opgenomen['x'] + ic['x'] + geschat_ziek_rna['x']
+    available_dates = opgenomen['x'] + ic['x']
     data_tot=max(available_dates).strftime("%Y-%m-%d")
 
-    plt.title('COVID-19 gerelateerd zieken')
+    plt.title('Historische COVID-19-bezetting in ziekenhuis en IC')
 
     footerleft="Gegenereerd op "+gegenereerd_op+", o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
-    footerright="Publicatiedatum RIVM "+filedate+".\nBronnen: https://data.rivm.nl/covid-19, https://www.stichting-nice.nl/covid-19/"
+    footerright="Historische reeks beëindigd op 31-05-2024.\nBronnen: RIVM/NICE; vanaf 02-01-2024 LCPS-datafeed."
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
     ax1.legend(loc="upper left")
-    ax2.legend(loc="upper right")
 
     if (lastDays > 0):
         plt.savefig(GRAPHS_DIR / (graphname+"-"+str(lastDays)+".svg"), format="svg")

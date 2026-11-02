@@ -56,7 +56,7 @@
     </div>
     <div class="container center">
         <!-- o.b.v. RIVM:
-        <a class="buttonlink" href="#zieken">
+        <a class="buttonlink" href="history.html#zieken">
             <div class="button ${ziekverhouding_color}"
                 title="Het door RIVM geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding} mensen is nu mogelijk besmettelijk of ziek.">
                 <div class="nametext">mensen ziek</div>
@@ -70,9 +70,9 @@
                 <div class="valuetext">1:${ziekverhouding_rna}</div>
             </div>
         </a> -->
-        <a class="buttonlink" href="#zieken">
+        <a class="buttonlink" href="#rioolwater">
             <div class="button ${ziekverhouding_rolf_color}"
-                title="Het op basis van COVID Tests en rioolwatergegevens geschat aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rolf} mensen is nu mogelijk besmettelijk of ziek.">
+                title="Het op basis van actuele rioolwatermetingen en de variantensteekproef geschatte aantal zieke mensen ten opzichte van het totaal aantal inwoners in Nederland. 1 op ${ziekverhouding_rolf} mensen is mogelijk besmettelijk of ziek.">
                 <div class="nametext">mensen ziek</div>
                 <div class="valuetext">1:${ziekverhouding_rolf}</div>
             </div>
@@ -84,29 +84,22 @@
                 <div class="valuetext">${positief_percentage}</div>
             </div>
         </a>
-        <a class="buttonlink" href="#zieken">
+        <a class="buttonlink" href="history.html#zieken">
             <div class="button ${nu_opgenomen_color}"
-                title="Het aantal mensen dat op dit moment is opgenomen in het ziekenuis met, of als gevolg van, COVID-19.">
+                title="Laatste gerapporteerde historische COVID-19-bezetting; zie het archief.">
                 <div class="nametext">opgenomen</div>
                 <div class="valuetext">${nu_opgenomen}</div>
             </div>
         </a>
-        <a class="buttonlink" href="#zieken">
+        <a class="buttonlink" href="history.html#zieken">
             <div class="button ${nu_op_ic_color}"
-                title="Het aantal mensen dat op dit moment op intensive care ligt met, of als gevolg van, COVID-19.">
+                title="Laatste gerapporteerde historische COVID-19-IC-bezetting; zie het archief.">
                 <div class="nametext">intensive care</div>
                 <div class="valuetext">${nu_op_ic}</div>
             </div>
         </a>
-        <a class="buttonlink" href="#reproductiegetal">
-            <div class="button ${Rt_color}"
-                title="Het berekende reproductiegetal Rt over de afgelopen periode, met vertraging.">
-                <div class="nametext">reproductiegetal</div>
-                <div class="valuetext">${Rt}</div>
-            </div>
-        </a>
         <a class="buttonlink" href="#besmetleeftijd">
-            <div class="button blue" title="Gemiddelde leeftijd van positief geteste mensen.">
+            <div class="button ${positief_leeftijd_color}" title="Gemiddelde leeftijd van positief geteste mensen.">
                 <div class="nametext">leeftijd positief</div>
                 <div class="valuetext">${positief_leeftijd}</div>
             </div>
@@ -134,10 +127,9 @@
     </div>
     <div class="container center">
         <div class="graphcontainer">
-            <a href="zieken.html" title="klik voor uitleg"><img id="zieken" src="graphs/zieken.svg" width="100%" /></a>
+            <a href="sari.html" title="klik voor uitleg"><img id="sari" src="graphs/sari.svg" width="100%" /></a>
             <a href="rna-in-rioolwater.html" title="klik voor uitleg"><img id="rioolwater"
                     src="graphs/rna-in-rioolwater.svg" width="100%" /></a>
-            <img id="reproductiegetal" src="graphs/reproductiegetal.svg" width="100%" />
         </div>
         <div class="graphcontainer">
             <img id="varianten" src="graphs/variants.svg?v=${variant_graph_version}" width="100%" />

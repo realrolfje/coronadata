@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.registry import inspect_source, load_registry, validate_registry
+from pipeline.registry import inspect_csv, inspect_source, load_registry, validate_registry
 
 
 class SourceRegistryTest(unittest.TestCase):
@@ -53,6 +53,24 @@ class SourceRegistryTest(unittest.TestCase):
             self.assertEqual(healthy["health"], "healthy")
             self.assertEqual(stale["health"], "stale")
             self.assertTrue(stale["blocking"])
+
+    def test_future_empty_season_weeks_are_not_observations(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "trend.csv"
+            path.write_text(
+                "season;week;value\n"
+                "2026/2027;43;1.2\n"
+                "2026/2027;39;\n"
+            )
+            source = self._source()
+            source.update({
+                "format": "csv",
+                "required_fields": ["season", "week", "value"],
+                "observation_date_field": "season/week",
+                "publication_date_field": None,
+            })
+            details = inspect_csv(path, source)
+        self.assertEqual(datetime.date(2026, 10, 19), details["newest_observation"])
 
     @staticmethod
     def _source():

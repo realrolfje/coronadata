@@ -16,7 +16,11 @@ Overall status: **healthy**
 | CoronaWatchNL historical RIVM tests | frozen | frozen | 2021-01-31 | — | `cache/J535D165-RIVM_NL_test_latest.csv` |
 | RIVM estimated infectious population | frozen | frozen | 2021-07-04 | — | `cache/COVID-19_prevalentie.json` |
 | RIVM vaccination coverage by municipality, week and age | frozen | frozen | 2023-09-18 | — | `cache/COVID-19_vaccinatiegraad_per_gemeente_per_week_leeftijd.json` |
-| LCPS hospital and ICU COVID datafeed | frozen | frozen | 2024-06-01 | — | `cache/covid-19-datafeed.csv` |
+| RIVM/NICE weekly SARI ICU admissions | active | healthy | 2026-10-19 | — | `cache/rivm-nice-sari-weekly-admissions.csv` |
+| RIVM weekly national SARS-CoV-2 wastewater trend | active | healthy | 2026-10-19 | — | `cache/rivm-sars-cov-2-wastewater-weekly.csv` |
+| RIVM Infectieradar weekly SARS-CoV-2 positive percentage | active | healthy | 2026-10-19 | — | `cache/rivm-infectieradar-sars-cov-2-positive-weekly.csv` |
+| RIVM Virological Weekly Reports SARS-CoV-2 positive percentage | active | healthy | 2026-10-19 | — | `cache/rivm-laboratory-sars-cov-2-positive-weekly.csv` |
+| LCPS hospital and ICU COVID datafeed | frozen | frozen | 2024-05-31 | — | `cache/covid-19-datafeed.csv` |
 | LCPS legacy hospital CSV | frozen | frozen | 2021-07-26 | — | `cache/lcps-covid-19.csv` |
 | NICE current ICU COVID occupancy | retired | retired | 2023-11-01 | — | `cache/NICE-intake-count.json` |
 | NICE cumulative ICU COVID intake | retired | missing | — | — | `cache/NICE-intake-cumulative.json` |

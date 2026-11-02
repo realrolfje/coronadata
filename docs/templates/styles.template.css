@@ -127,6 +127,14 @@ img {
     border-style: solid;
 }
 
+.stale {
+    background-color: rgb(225, 225, 225);
+    border-color: rgb(145, 145, 145);
+    border-width: 2px;
+    border-style: solid;
+    color: rgb(75, 75, 75);
+}
+
 blink, .blink {
     -webkit-animation: blink 1s step-end infinite;
     -moz-animation: blink 1s step-end infinite;

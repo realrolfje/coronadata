@@ -19,10 +19,8 @@ def main():
 
 
 def select_rt_date_range(metenisweten, last_days):
-    """Anchor the short chart to the final reported Rt observation."""
+    """Anchor the chart to the final reported Rt observation."""
     dates = brondata.getDateRange(metenisweten)
-    if last_days <= 0:
-        return dates
     rt_dates = [
         date for date in dates
         if any(
@@ -32,7 +30,7 @@ def select_rt_date_range(metenisweten, last_days):
     ]
     if rt_dates:
         dates = [date for date in dates if date <= rt_dates[-1]]
-    return dates[-last_days:]
+    return dates[-last_days:] if last_days > 0 else dates
 
 
 def createRtraph(metenisweten):

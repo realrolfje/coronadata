@@ -117,7 +117,15 @@ def inspect_csv(path, source):
         records = list(reader)
 
     field = source["observation_date_field"]
-    dates = [parse_date(record.get(field)) for record in records] if field else []
+    if field == "season/week":
+        from .sari import observation_date
+        dates = [
+            observation_date(record["season"], record["week"])
+            for record in records
+            if record.get("value", "").strip()
+        ]
+    else:
+        dates = [parse_date(record.get(field)) for record in records] if field else []
     dates = [date for date in dates if date is not None]
     return {
         "record_count": len(records),

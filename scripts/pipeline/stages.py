@@ -32,6 +32,12 @@ ACTIVE_STORES = {
     "rivm_wastewater": store_wastewater,
     "rivm_variants": store_variants,
     "rivm_infectieradar_ari": store_ari,
+    # The SARI graph consumes the validated CSV directly; it is deliberately
+    # not folded into the legacy COVID daily model.
+    "rivm_nice_sari": lambda path: False,
+    "rivm_sars_cov_2_wastewater_weekly": lambda path: False,
+    "rivm_infectieradar_sars_cov_2_positive": lambda path: False,
+    "rivm_laboratory_sars_cov_2_positive": lambda path: False,
 }
 
 

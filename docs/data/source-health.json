@@ -134,6 +134,58 @@
       "blocking": false
     },
     {
+      "id": "rivm_nice_sari",
+      "name": "RIVM/NICE weekly SARI ICU admissions",
+      "provider": "RIVM/NICE",
+      "lifecycle": "active",
+      "required_for_publish": false,
+      "record_count": 212,
+      "publication_date": null,
+      "newest_observation": "2026-10-19",
+      "health": "healthy",
+      "messages": [],
+      "blocking": false
+    },
+    {
+      "id": "rivm_sars_cov_2_wastewater_weekly",
+      "name": "RIVM weekly national SARS-CoV-2 wastewater trend",
+      "provider": "RIVM",
+      "lifecycle": "active",
+      "required_for_publish": false,
+      "record_count": 212,
+      "publication_date": null,
+      "newest_observation": "2026-10-19",
+      "health": "healthy",
+      "messages": [],
+      "blocking": false
+    },
+    {
+      "id": "rivm_infectieradar_sars_cov_2_positive",
+      "name": "RIVM Infectieradar weekly SARS-CoV-2 positive percentage",
+      "provider": "RIVM",
+      "lifecycle": "active",
+      "required_for_publish": false,
+      "record_count": 260,
+      "publication_date": null,
+      "newest_observation": "2026-10-19",
+      "health": "healthy",
+      "messages": [],
+      "blocking": false
+    },
+    {
+      "id": "rivm_laboratory_sars_cov_2_positive",
+      "name": "RIVM Virological Weekly Reports SARS-CoV-2 positive percentage",
+      "provider": "RIVM",
+      "lifecycle": "active",
+      "required_for_publish": false,
+      "record_count": 160,
+      "publication_date": null,
+      "newest_observation": "2026-10-19",
+      "health": "healthy",
+      "messages": [],
+      "blocking": false
+    },
+    {
       "id": "lcps_datafeed",
       "name": "LCPS hospital and ICU COVID datafeed",
       "provider": "LCPS/LNAZ",
@@ -141,7 +193,7 @@
       "required_for_publish": false,
       "record_count": null,
       "publication_date": null,
-      "newest_observation": "2024-06-01",
+      "newest_observation": "2024-05-31",
       "health": "frozen",
       "messages": [],
       "blocking": false

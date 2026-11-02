@@ -12,6 +12,10 @@ Generated from `sources.json`.
 - [CoronaWatchNL historical RIVM tests](coronawatch_tests.md) — `frozen`
 - [RIVM estimated infectious population](rivm_prevalence.md) — `frozen`
 - [RIVM vaccination coverage by municipality, week and age](rivm_vaccination_coverage.md) — `frozen`
+- [RIVM/NICE weekly SARI ICU admissions](rivm_nice_sari.md) — `active`
+- [RIVM weekly national SARS-CoV-2 wastewater trend](rivm_sars_cov_2_wastewater_weekly.md) — `active`
+- [RIVM Infectieradar weekly SARS-CoV-2 positive percentage](rivm_infectieradar_sars_cov_2_positive.md) — `active`
+- [RIVM Virological Weekly Reports SARS-CoV-2 positive percentage](rivm_laboratory_sars_cov_2_positive.md) — `active`
 - [LCPS hospital and ICU COVID datafeed](lcps_datafeed.md) — `frozen`
 - [LCPS legacy hospital CSV](lcps_legacy_feed.md) — `frozen`
 - [NICE current ICU COVID occupancy](nice_intake_count.md) — `retired`

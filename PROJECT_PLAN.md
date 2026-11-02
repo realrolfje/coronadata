@@ -390,8 +390,13 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 6. [x] Timestamp-only en mislukte runs niet meer laten publiceren.
 7. [x] Bronnenregister uit inventaris maken.
 8. [x] Rioolwaterpilot voor parser/opslag uitvoeren.
-9. [ ] Officiële LCPS-datafeed gecontroleerd importeren om ziekenhuis- en IC-bezetting tot en met
-   31 mei 2024 aan te vullen; bronovergang zichtbaar documenteren.
+9. [x] Officiële LCPS-datafeed gecontroleerd gebruiken om ziekenhuis- en IC-bezetting tot en met
+   31 mei 2024 aan te vullen; bronovergang zichtbaar documenteren zonder de historische basis te wijzigen.
+10. [x] Afgesloten COVID-19-bezetting naar het archief verplaatsen en op de hoofdpagina vervangen
+    door wekelijkse Nederlandse RIVM/NICE-SARI-IC-opnames als afzonderlijke actuele metriek.
+11. [x] Het beëindigde officiële reproductiegetal naar het archief verplaatsen en actuele wekelijkse
+    rioolwater-, Infectieradar- en laboratoriumtrends afzonderlijk valideren en opslaan, zonder ze als
+    een nieuw reproductiegetal te presenteren.
 
 ## Voortgangslogboek
 
@@ -410,3 +415,5 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 | 2026-11-01 | Genormaliseerd schema v1 | 69.205 observaties en 43 metrieken exact gelijk |
 | 2026-11-02 | Historische korte grafieken hersteld | 365-dagenvensters eindigen bij laatste eigen waarneming |
 | 2026-11-02 | Versiegebonden variantentaxonomie | 306 weken exclusief gevalideerd; ongeldige weken worden zichtbaar overgeslagen |
+| 2026-11-02 | Ziekenhuisgrafieken gescheiden | COVID-bezetting t/m 31 mei 2024 in archief; actuele Nederlandse SARI-IC-opnames op hoofdpagina |
+| 2026-11-02 | Reproductiegetal gearchiveerd | Drie actuele RIVM-trendfeeds afzonderlijk opgeslagen als basis voor een latere trendindicator |

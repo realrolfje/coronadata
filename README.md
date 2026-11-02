@@ -273,7 +273,7 @@ bronnen blokkeren publiceren; een beëindigde historische bron doet dat niet.
 De website publiceert hetzelfde overzicht als [`docs/source-status.html`](docs/source-status.html)
 en de machineleesbare versie als `docs/data/source-health.json`.
 
-Werk de drie actieve epidemiologische bronnen handmatig bij met:
+Werk alle actieve epidemiologische bronnen handmatig bij met:
 
 ```shell
 .venv/bin/python scripts/updateActiveSources.py
@@ -283,6 +283,18 @@ Elke download gaat eerst naar een tijdelijk bestand. Na HTTP-, content-type-, om
 schemavalidatie wordt gewijzigde inhoud atomair geïnstalleerd en als alleen-lezen snapshot onder
 `cache/raw/` bewaard. De genormaliseerde observaties worden idempotent in de lokale SQLite-opslag
 geschreven. Ontbrekende ARI-waarnemingen blijven ontbrekend; ze worden niet geïnterpoleerd.
+
+De hoofdpagina gebruikt voor de actuele ziekenhuiscontext de wekelijkse Nederlandse
+RIVM/NICE-SARI-opnames. Dit zijn nieuwe IC-opnames met een ernstige luchtweginfectie, geen
+bedbezetting. De oude COVID-19-bezettingsgrafiek staat in het archief en wordt alleen tijdens het
+tekenen met de bevroren LCPS-datafeed aangevuld tot en met 31 mei 2024; `daily-stats.json` blijft
+daarbij ongewijzigd.
+
+De updater bewaart daarnaast afzonderlijke wekelijkse SARS-CoV-2-trendreeksen voor nationaal
+rioolwater, positieve Infectieradar-tests en positieve laboratoriummonsters. Deze gevalideerde
+observaties zijn alvast beschikbaar voor een toekomstige trendindicator, maar worden nadrukkelijk
+niet als reproductiegetal geïnterpreteerd. Het officiële RIVM-reproductiegetal staat met zijn
+einddatum op de archiefpagina.
 
 De documentatie per bron staat in [`docs/sources/`](docs/sources/README.md), inclusief de beslissing
 om actuele SARI-ziekenhuisgegevens niet aan de historische COVID-bezettingsreeks te plakken.
