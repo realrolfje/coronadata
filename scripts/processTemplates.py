@@ -12,6 +12,7 @@ import hashlib
 from modules.datautil import runIfNewData
 from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, GRAPHS_DIR, PROJECT_ROOT, TEMPLATES_DIR
 from modules.buildtime import reference_datetime
+from createLaboratoriumGraph import parse_percentage
 
 runIfNewData(__file__)
 
@@ -218,6 +219,12 @@ with open(filename, 'r') as csv_file:
         if row[0] == 'cache_size':
             cache_size = int(row[1])*1000
 
+laboratorium = max(
+    parse_percentage(CACHE_DIR / 'rivm-laboratory-sars-cov-2-positive-weekly.csv').observations,
+    key=lambda item: item.date,
+)
+laboratorium_positief = round(laboratorium.value, 1)
+
 substitutes = {
     'varianten_datum'     : varianten_datum,
     'ziekenhuis_datum'    : ziekenhuis_datum,
@@ -288,6 +295,13 @@ substitutes = {
         vandaag_getest_datum,
     ),
     'positief_percentage_record_sinds' : positief_percentage_record_sinds,
+
+    'laboratorium_positief'       : decimalstring(laboratorium_positief)+'%',
+    'laboratorium_positief_datum' : laboratorium.date,
+    'laboratorium_positief_color' : freshness_color(
+        'green' if laboratorium_positief < 5 else 'yellow' if laboratorium_positief < 20 else 'red',
+        laboratorium.date,
+    ),
 
     'prikken_gezet'      : decimalstring(prikken_gezet),
     'prikken_gezet_datum': prikken_gezet_datum,
