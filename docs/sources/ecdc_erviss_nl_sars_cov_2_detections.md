@@ -21,6 +21,6 @@
 
 ## Known gaps and decision
 
-Dutch non-sentinel SARS-CoV-2 detections as reported to ECDC. The counts differ from the RIVM laboratory series and are shown as a separate line, not merged.
+This series counts the Dutch non-sentinel SARS-CoV-2 detections as reported to ECDC. The counts differ from the RIVM laboratory series and are shown as a separate line, not merged.
 
 Replacement decision: Keep and validate before installation.

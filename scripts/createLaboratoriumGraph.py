@@ -14,7 +14,7 @@ from pipeline.weekly_trend import parser as weekly_trend_parser
 from createSariGraph import nice_maximum
 
 
-# First week shown in the full chart.
+# This is the first week shown in the full chart.
 START_DATE = date(2023, 3, 13)
 
 parse_detections = weekly_trend_parser(

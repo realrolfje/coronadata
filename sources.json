@@ -370,7 +370,7 @@
       "geography": "Netherlands (file covers all reporting countries)",
       "metrics": ["erviss_sars_cov_2_detections_weekly"],
       "consumers": ["scripts/createLaboratoriumGraph.py"],
-      "notes": "Dutch non-sentinel SARS-CoV-2 detections as reported to ECDC. The counts differ from the RIVM laboratory series and are shown as a separate line, not merged."
+      "notes": "This series counts the Dutch non-sentinel SARS-CoV-2 detections as reported to ECDC. The counts differ from the RIVM laboratory series and are shown as a separate line, not merged."
     },
     {
       "id": "lcps_datafeed",
