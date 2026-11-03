@@ -194,8 +194,10 @@
       "record_count": null,
       "publication_date": null,
       "newest_observation": "2024-05-31",
-      "health": "frozen",
-      "messages": [],
+      "health": "missing",
+      "messages": [
+        "Local cache file is missing."
+      ],
       "blocking": false
     },
     {
@@ -233,10 +235,8 @@
       "record_count": null,
       "publication_date": null,
       "newest_observation": null,
-      "health": "missing",
-      "messages": [
-        "Local cache file is missing."
-      ],
+      "health": "retired",
+      "messages": [],
       "blocking": false
     },
     {
