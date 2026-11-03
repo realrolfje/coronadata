@@ -5,6 +5,7 @@ from typing import Callable
 import urllib.request
 
 from .download import DownloadResult, fetch_csv_source, fetch_json_source
+from .erviss import parse as parse_erviss
 from .infectieradar_ari import parse as parse_ari
 from .models import ParserResult
 from .sari import parse as parse_sari
@@ -51,6 +52,15 @@ ADAPTERS = {
                 "percent_of_tested_samples",
             ), 1_000,
         ),
+        ActiveSourceAdapter(
+            "rivm_laboratory_sars_cov_2_detections",
+            weekly_trend_parser(
+                "rivm_laboratory_sars_cov_2_detections",
+                "laboratory_sars_cov_2_detections_weekly",
+                "positive_samples_per_week",
+            ), 1_000,
+        ),
+        ActiveSourceAdapter("ecdc_erviss_nl_sars_cov_2_detections", parse_erviss, 1_000_000),
     )
 }
 
@@ -70,7 +80,7 @@ def download_source(project_root: Path, source_id: str) -> DownloadResult:
         raise ValueError(f"unknown active source: {source_id}")
     source = sources[source_id]
     adapter = ADAPTERS[source_id]
-    fetcher = fetch_json_source
+    fetcher = fetch_csv_source if source["format"] == "csv" else fetch_json_source
     url = source["url"]
     if source.get("resource_name"):
         request = urllib.request.Request(url, headers={"User-Agent": "coronadata-source-updater/1"})
@@ -81,7 +91,6 @@ def download_source(project_root: Path, source_id: str) -> DownloadResult:
             if item["name"] == source["resource_name"]
         )
         url = resource["url"]
-        fetcher = fetch_csv_source
     return fetcher(
         source_id=source_id,
         url=url,

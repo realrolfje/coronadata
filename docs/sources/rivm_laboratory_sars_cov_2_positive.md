@@ -17,10 +17,10 @@
 - Geography: Netherlands
 - Parser: `scripts/pipeline/weekly_trend.py`
 - Normalized metrics: `laboratory_sars_cov_2_positive_percentage`
-- Consumers: Not available
+- Consumers: `scripts/createLaboratoriumGraph.py`
 
 ## Known gaps and decision
 
-Stored as an input for a future current trend indicator; not interpreted as a reproduction number.
+This series is the weekly percentage of positive SARS-CoV-2 samples in the laboratory chart.
 
 Replacement decision: Keep and validate before installation.

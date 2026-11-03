@@ -16,6 +16,8 @@ Generated from `sources.json`.
 - [RIVM weekly national SARS-CoV-2 wastewater trend](rivm_sars_cov_2_wastewater_weekly.md) — `active`
 - [RIVM Infectieradar weekly SARS-CoV-2 positive percentage](rivm_infectieradar_sars_cov_2_positive.md) — `active`
 - [RIVM Virological Weekly Reports SARS-CoV-2 positive percentage](rivm_laboratory_sars_cov_2_positive.md) — `active`
+- [RIVM Virological Weekly Reports SARS-CoV-2 positive samples](rivm_laboratory_sars_cov_2_detections.md) — `active`
+- [ECDC ERVISS Dutch non-sentinel SARS-CoV-2 detections](ecdc_erviss_nl_sars_cov_2_detections.md) — `active`
 - [LCPS hospital and ICU COVID datafeed](lcps_datafeed.md) — `frozen`
 - [LCPS legacy hospital CSV](lcps_legacy_feed.md) — `frozen`
 - [NICE current ICU COVID occupancy](nice_intake_count.md) — `retired`

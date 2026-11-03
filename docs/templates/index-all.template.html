@@ -77,9 +77,9 @@
                 <div class="valuetext">1:${ziekverhouding_rolf}</div>
             </div>
         </a>
-        <a class="buttonlink" href="#covidtests">
+        <a class="buttonlink" href="history.html#covidtests">
             <div class="button ${positief_percentage_color}"
-                title="Tests met een positieve uitslag ten opzichte van het totaal afgenomen tests, dagelijks, met vertraging.">
+                title="Laatste gerapporteerde percentage positieve tests uit de landelijke testcijfers; zie het archief.">
                 <div class="nametext">positief getest</div>
                 <div class="valuetext">${positief_percentage}</div>
             </div>
@@ -128,12 +128,13 @@
     <div class="container center">
         <div class="graphcontainer">
             <a href="sari.html" title="klik voor uitleg"><img id="sari" src="graphs/sari.svg" width="100%" /></a>
+            <a href="laboratorium.html" title="klik voor uitleg"><img id="laboratorium"
+                    src="graphs/laboratorium.svg" width="100%" /></a>
             <a href="rna-in-rioolwater.html" title="klik voor uitleg"><img id="rioolwater"
                     src="graphs/rna-in-rioolwater.svg" width="100%" /></a>
         </div>
         <div class="graphcontainer">
             <img id="varianten" src="graphs/variants.svg?v=${variant_graph_version}" width="100%" />
-            <img id="covidtests" src="graphs/covidtests.svg" width="100%" />
             <img id="besmetleeftijd" src="graphs/besmettingen-leeftijd.svg" width="100%" />
             <!-- <img id="mobiliteit" src="graphs/mobiliteit.svg" width="100%" /> -->
         </div>

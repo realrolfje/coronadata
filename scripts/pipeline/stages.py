@@ -38,6 +38,8 @@ ACTIVE_STORES = {
     "rivm_sars_cov_2_wastewater_weekly": lambda path: False,
     "rivm_infectieradar_sars_cov_2_positive": lambda path: False,
     "rivm_laboratory_sars_cov_2_positive": lambda path: False,
+    "rivm_laboratory_sars_cov_2_detections": lambda path: False,
+    "ecdc_erviss_nl_sars_cov_2_detections": lambda path: False,
 }
 
 

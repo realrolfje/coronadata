@@ -20,6 +20,8 @@ Overall status: **healthy**
 | RIVM weekly national SARS-CoV-2 wastewater trend | active | healthy | 2026-10-19 | — | `cache/rivm-sars-cov-2-wastewater-weekly.csv` |
 | RIVM Infectieradar weekly SARS-CoV-2 positive percentage | active | healthy | 2026-10-19 | — | `cache/rivm-infectieradar-sars-cov-2-positive-weekly.csv` |
 | RIVM Virological Weekly Reports SARS-CoV-2 positive percentage | active | healthy | 2026-10-19 | — | `cache/rivm-laboratory-sars-cov-2-positive-weekly.csv` |
+| RIVM Virological Weekly Reports SARS-CoV-2 positive samples | active | healthy | 2026-10-19 | — | `cache/rivm-laboratory-sars-cov-2-detections-weekly.csv` |
+| ECDC ERVISS Dutch non-sentinel SARS-CoV-2 detections | active | healthy | 2026-10-19 | — | `cache/ecdc-erviss-non-sentinel-tests-detections.csv` |
 | LCPS hospital and ICU COVID datafeed | frozen | frozen | 2024-05-31 | — | `cache/covid-19-datafeed.csv` |
 | LCPS legacy hospital CSV | frozen | frozen | 2021-07-26 | — | `cache/lcps-covid-19.csv` |
 | NICE current ICU COVID occupancy | retired | retired | 2023-11-01 | — | `cache/NICE-intake-count.json` |

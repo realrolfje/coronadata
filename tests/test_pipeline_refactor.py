@@ -16,6 +16,7 @@ from pipeline.site_export import build_surveillance_export
 from createZiekGraph import merge_lcps_history, select_date_range
 from pipeline.sari import observation_date
 from pipeline.weekly_trend import parser as weekly_trend_parser
+from pipeline.erviss import parse as parse_erviss
 from createRtGraph import select_rt_date_range
 from createCovidTestsGraph import select_test_date_range
 from createHeatmap import select_age_date_range
@@ -182,6 +183,25 @@ class PipelineRefactorTest(unittest.TestCase):
         self.assertEqual(1, len(result.observations))
         self.assertEqual("2026-09-28", result.newest_observation)
         self.assertEqual(["1 weeks have no reported value"], result.warnings)
+
+    def test_erviss_parser_keeps_only_dutch_sars_cov_2_detection_totals(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "erviss.csv"
+            path.write_text(
+                "survtype,countryname,yearweek,pathogen,pathogentype,pathogensubtype,indicator,age,value\n"
+                "non-sentinel,Netherlands,2026-W42,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,111\n"
+                "non-sentinel,Netherlands,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,116\n"
+                "non-sentinel,Netherlands,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,65+,40\n"
+                "non-sentinel,Netherlands,2023-W40,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,tests,total,9000\n"
+                "non-sentinel,Netherlands,2026-W43,Influenza,Influenza,total,detections,total,12\n"
+                "non-sentinel,Austria,2026-W43,SARS-CoV-2,SARS-CoV-2,SARS-CoV-2,detections,total,300\n"
+            )
+            result = parse_erviss(path)
+        self.assertEqual(
+            [("2026-10-12", 111.0), ("2026-10-19", 116.0)],
+            [(item.date, item.value) for item in result.observations],
+        )
+        self.assertEqual("2026-10-19", result.newest_observation)
 
 
 if __name__ == "__main__":

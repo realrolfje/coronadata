@@ -303,6 +303,12 @@ observaties zijn alvast beschikbaar voor een toekomstige trendindicator, maar wo
 niet als reproductiegetal geïnterpreteerd. Het officiële RIVM-reproductiegetal staat met zijn
 einddatum op de archiefpagina.
 
+De hoofdpagina toont de positieve laboratoriummonsters per week. De staven en het percentage komen
+uit de virologische weekstaten van het RIVM. Een aparte lijn toont de Nederlandse cijfers uit ECDC
+ERVISS. Die lijn vult de periode van maart tot oktober 2023. De twee bronnen tellen niet dezelfde
+monsters, dus de reeksen zijn niet samengevoegd. De oude testgrafiek eindigt op 17 maart 2023. Die
+grafiek staat op de archiefpagina.
+
 De documentatie per bron staat in [`docs/sources/`](docs/sources/README.md), inclusief de beslissing
 om actuele SARI-ziekenhuisgegevens niet aan de historische COVID-bezettingsreeks te plakken.
 

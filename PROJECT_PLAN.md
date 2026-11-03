@@ -418,3 +418,4 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 | 2026-11-02 | Ziekenhuisgrafieken gescheiden | COVID-bezetting t/m 31 mei 2024 in archief; actuele Nederlandse SARI-IC-opnames op hoofdpagina |
 | 2026-11-02 | Reproductiegetal gearchiveerd | Drie actuele RIVM-trendfeeds afzonderlijk opgeslagen als basis voor een latere trendindicator |
 | 2026-11-03 | `install.sh` en Python 3.12–3.15 | Alle scripts installeren ontbrekende of gewijzigde dependencies zelf; numpy 2.5.4 en scipy 1.18.1 |
+| 2026-11-03 | Testgrafiek gearchiveerd | Nieuwe weekgrafiek met positieve laboratoriummonsters van RIVM en een aparte ERVISS-lijn |

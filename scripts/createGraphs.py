@@ -24,6 +24,7 @@ from createZiekenhuisTotaalGraph   import createZiekenhuisTotaalGraph
 from createSchattingAfwijkingGraph import createSchattingAfwijkingGraph
 from createTestGraph               import createTestGraph
 from createSariGraph               import createSariGraph
+from createLaboratoriumGraph       import createLaboratoriumGraph
 
 
 def main():
@@ -52,6 +53,9 @@ def main():
 
     print("Creating SARI graph")
     createSariGraph()
+
+    print("Creating laboratorium graph")
+    createLaboratoriumGraph()
 
     print("Creating Testgraph")
     createCovidTestsGraph(metenisweten, events)
