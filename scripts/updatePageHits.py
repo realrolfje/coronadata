@@ -38,7 +38,7 @@ try:
 
     with urllib.request.urlopen(req) as response:
         body = str(response.read())
-        counter=re.search('>[\.,0-9]+</', body).group(0)[1:-2]
+        counter=re.search(r'>[\.,0-9]+</', body).group(0)[1:-2]
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         print("https://realrolfje.github.io/coronadata/ has "+counter+" total pagehits.")
 

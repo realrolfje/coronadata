@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 
 from pipeline.active_sources import ADAPTERS, download_source
+from pipeline.registry import inspect_source, load_registry
 from pipeline.storage import SQLiteObservationStore
 
 
@@ -19,11 +20,24 @@ def main():
         "source_ids", nargs="*", metavar="SOURCE_ID",
         help="Update selected sources; defaults to all configured active sources.",
     )
+    argument_parser.add_argument(
+        "--outdated", action="store_true",
+        help="Update only sources whose cache file is missing, invalid or too old.",
+    )
     arguments = argument_parser.parse_args()
     unknown = set(arguments.source_ids) - ADAPTERS.keys()
     if unknown:
         argument_parser.error(f"unknown source ID(s): {', '.join(sorted(unknown))}")
     wanted = list(arguments.source_ids or ADAPTERS)
+    if arguments.outdated:
+        registry = load_registry(PROJECT_ROOT / "sources.json")
+        sources = {source["id"]: source for source in registry["sources"]}
+        wanted = [
+            source_id for source_id in wanted
+            if inspect_source(PROJECT_ROOT, sources[source_id])["health"] != "healthy"
+        ]
+        if not wanted:
+            return 0
     failures = []
 
     with SQLiteObservationStore(PROJECT_ROOT / "cache" / "observations.sqlite") as store:

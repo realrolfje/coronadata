@@ -2,7 +2,11 @@
 
 set -eu
 
-: "${PYTHON_BIN:=python3}"
+project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$project_dir"
+"$project_dir/install.sh"
+: "${PYTHON_BIN:=$project_dir/.venv/bin/python}"
+export PYTHON_BIN
 
 "$PYTHON_BIN" scripts/checkBuildHealth.py
 "$PYTHON_BIN" -m unittest discover -s tests

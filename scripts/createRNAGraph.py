@@ -10,7 +10,7 @@ import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth, dateCache
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
 from modules.buildtime import reference_date, reference_datetime
-from scipy.ndimage.filters import uniform_filter1d
+from scipy.ndimage import uniform_filter1d
 from modules.datautil import runIfNewData
 import sys
 

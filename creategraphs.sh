@@ -2,8 +2,10 @@
 
 set -eu
 
-: "${PYTHON_BIN:=python3}"
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+"$project_dir/install.sh"
+: "${PYTHON_BIN:=$project_dir/.venv/bin/python}"
+export PYTHON_BIN
 
 export MPLBACKEND=Agg
 export MATPLOTLIBRC="$project_dir/matplotlibrc"

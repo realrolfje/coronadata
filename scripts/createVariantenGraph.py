@@ -328,6 +328,13 @@ def createVariantenGraph(metenisweten, varianten):
     # for k in totals.keys(): top_variants.append(k)
     # top_variants=top_variants[-3:]
 
+    if not visible_indices:
+        raise ValueError(
+            "No variant data between %s and %s; newest variant week is %s. "
+            "Run scripts/updateActiveSources.py rivm_variants."
+            % (date_range[0].date(), date_range[-1].date(), varianten_totaal['x'][-1].date())
+        )
+
     # Add the five largest variants at the end of the visible period.
     latest_visible_index = visible_indices[-1]
     for code in variantcodes:

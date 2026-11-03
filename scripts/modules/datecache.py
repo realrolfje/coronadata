@@ -26,7 +26,7 @@ class DateCache:
             self.cacheMisses += 1
 
             # Turn dd-mm-yyyy into yyyy-mm-dd if needed
-            if re.search('-\d{4}$', dateString):
+            if re.search(r'-\d{4}$', dateString):
                 dateString = datetime.datetime.strptime(dateString, "%d-%m-%Y").strftime("%Y-%m-%d")
 
             parseddate = parser.parse(dateString)

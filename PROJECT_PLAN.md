@@ -257,7 +257,7 @@ provenance:
 - [x] Tests voor datumparsing, samenvoegen en brontransformaties toevoegen.
 - [x] Fixturetests met kleine bewaarde bronformaten toevoegen.
 - [x] Grafieken waar praktisch deterministisch maken.
-- [x] Dependencies vastzetten en Python 3.11 documenteren.
+- [x] Dependencies vastzetten en Python 3.12 tot en met 3.15 documenteren.
 - [x] Eén ontwikkelcommando toevoegen: `./dev.sh`.
 - [x] Dode code pas na dekking verwijderen; historische transformaties behouden.
 
@@ -417,3 +417,4 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 | 2026-11-02 | Versiegebonden variantentaxonomie | 306 weken exclusief gevalideerd; ongeldige weken worden zichtbaar overgeslagen |
 | 2026-11-02 | Ziekenhuisgrafieken gescheiden | COVID-bezetting t/m 31 mei 2024 in archief; actuele Nederlandse SARI-IC-opnames op hoofdpagina |
 | 2026-11-02 | Reproductiegetal gearchiveerd | Drie actuele RIVM-trendfeeds afzonderlijk opgeslagen als basis voor een latere trendindicator |
+| 2026-11-03 | `install.sh` en Python 3.12–3.15 | Alle scripts installeren ontbrekende of gewijzigde dependencies zelf; numpy 2.5.4 en scipy 1.18.1 |

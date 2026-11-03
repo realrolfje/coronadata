@@ -176,7 +176,7 @@ De data in dit bestand ziet er als volgt uit:
 
 ## Installatie van vereiste python libraries op MacOS
 
-Python 3.11 is de ondersteunde versie. De directe dependencies zijn exact vastgezet in
+Python 3.12 tot en met 3.15 worden ondersteund. De directe dependencies zijn exact vastgezet in
 `requirements.txt`.
 
 ## Historische build en publiceren
@@ -184,9 +184,14 @@ Python 3.11 is de ondersteunde versie. De directe dependencies zijn exact vastge
 Maak voor lokaal werk bij voorkeur een virtual environment:
 
 ```shell
-python3.11 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+./install.sh
 ```
+
+Dit script maakt `.venv` aan met `python3` als dat een ondersteunde versie is. Anders zoekt het
+`python3.12` tot en met `python3.15`. Een `.venv` met een andere Python wordt opnieuw aangemaakt.
+Daarna installeert het `requirements.txt`. Het maakt ook de map `cache/` aan. Als `requirements.txt`
+niet is veranderd sinds de vorige installatie, doet het niets. Alle shellscripts starten eerst `install.sh` en gebruiken
+daarna `.venv/bin/python`. Zet `PYTHON_BIN` om een andere Python te gebruiken.
 
 Een offline render gebruikt de bestaande verwerkte data en doet geen downloads of historische
 herberekeningen:
@@ -201,7 +206,9 @@ Bekijk de website uit de huidige working tree—ook als de branch nog niet is ge
 ./preview.sh
 ```
 
-Dit rendert offline en start daarna een lokale webserver op `http://127.0.0.1:8000/`. Gebruik
+Dit script downloadt eerst de actieve bronnen met een probleem in `cache/`: het bestand ontbreekt,
+is ongeldig, of is ouder dan `max_age_days` in `sources.json`. Daarna rendert het
+de site offline. Daarna start het een lokale webserver op `http://127.0.0.1:8000/`. Gebruik
 `SKIP_RENDER=1 ./preview.sh` om een al gegenereerde site direct te serveren, of
 `PREVIEW_PORT=8080 ./preview.sh` voor een andere poort.
 
@@ -337,7 +344,7 @@ pip3 install --upgrade certifi
 Mocht dat niet helpen, dan is het volgende commando een volgende mogelijke oplossing:
 
 ```
-open /Applications/Python\ 3.11/Install\ Certificates.command
+open /Applications/Python\ 3.14/Install\ Certificates.command
 ```
 
 Voor meer informatie over dit probleem zie https://stackoverflow.com/a/62374703/3540161

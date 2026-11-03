@@ -4,15 +4,14 @@ set -eu
 
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$project_dir"
-
-if [ -z "${PYTHON_BIN:-}" ] && [ -x "$project_dir/.venv/bin/python" ]; then
-    PYTHON_BIN="$project_dir/.venv/bin/python"
-fi
-PYTHON_BIN=${PYTHON_BIN:-python3}
+"$project_dir/install.sh"
+: "${PYTHON_BIN:=$project_dir/.venv/bin/python}"
+export PYTHON_BIN
 PREVIEW_PORT=${PREVIEW_PORT:-8000}
 
 if [ "${SKIP_RENDER:-0}" != "1" ]; then
-    CORONADATA_RENDER_ONLY=1 PYTHON_BIN="$PYTHON_BIN" ./render.sh
+    "$PYTHON_BIN" scripts/updateActiveSources.py --outdated
+    CORONADATA_RENDER_ONLY=1 ./render.sh
 fi
 
 preview_url="http://127.0.0.1:$PREVIEW_PORT/"

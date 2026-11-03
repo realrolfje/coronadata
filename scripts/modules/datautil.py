@@ -3,7 +3,6 @@
 #
 
 from datetime import datetime, timedelta
-from sre_compile import isstring
 import os
 from . brondata import freshdata, isnewer, dateCache
 from . arguments import isForce
