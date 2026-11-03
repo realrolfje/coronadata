@@ -4,10 +4,10 @@ import math
 import sys
 
 from matplotlib import pyplot as plt
-from matplotlib.dates import DateFormatter, MonthLocator
 
 import modules.arguments as arguments
-from modules.defaults import CACHE_DIR, GRAPHS_DIR
+import modules.brondata as brondata
+from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
 from modules.buildtime import reference_datetime
 from pipeline.sari import parse
 
@@ -23,18 +23,20 @@ def nice_maximum(value):
     return 10 * magnitude
 
 
-def createSariGraph(filename=None):
+def createSariGraph(metenisweten, filename=None):
     filename = filename or (CACHE_DIR / "rivm-nice-sari-weekly-admissions.csv")
     result = parse(filename)
     observations = sorted(result.observations, key=lambda item: item.date)
     last_days = arguments.lastDays()
+    date_range = brondata.getDateRange(metenisweten)
     if last_days > 0:
-        final_date = observations[-1].date
-        from datetime import date, timedelta
-        cutoff = date.fromisoformat(final_date) - timedelta(days=last_days)
-        observations = [item for item in observations if date.fromisoformat(item.date) >= cutoff]
+        date_range = date_range[-last_days:]
 
     from datetime import date
+    observations = [
+        item for item in observations
+        if date_range[0].date() <= date.fromisoformat(item.date) <= date_range[-1].date()
+    ]
     dates = [date.fromisoformat(item.date) for item in observations]
     values = [item.value for item in observations]
     ymax = nice_maximum(max(values) * 1.08)
@@ -48,15 +50,13 @@ def createSariGraph(filename=None):
     ax.fill_between(dates, values, color="orange", alpha=0.18)
     ax.grid(which="both", axis="both", linestyle="-.", color="gray", linewidth=1, alpha=0.3)
     ax.set_ylim(0, ymax)
-    ax.set_xlim(dates[0], dates[-1])
+    ax.set_xlim(date_range[0], date_range[-1])
     ax.set_ylabel("Aantal nieuwe IC-opnames per week")
-    ax.set_xlabel("Week")
+    ax.set_xlabel("Datum")
     ax.set_title("Ernstige luchtweginfecties op de IC in Nederland")
-    ax.xaxis.set_major_locator(MonthLocator(interval=2 if last_days > 0 else 4))
-    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m"))
     ax.legend(loc="upper left")
 
-    generated = reference_datetime({dates[-1].isoformat(): {}}).strftime("%Y-%m-%d %H:%M")
+    generated = reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     fig.text(0.01, 0.025, f"Gegenereerd op {generated}, data t/m week van {dates[-1]}.\nSource code: http://github.com/realrolfje/coronadata",
              ha="left", fontsize=8, color="gray")
     fig.text(0.99, 0.025, "Dekking varieert; recente weken kunnen worden herzien.\nBron: RIVM/NICE SARI-surveillance",
@@ -68,5 +68,5 @@ def createSariGraph(filename=None):
 
 
 if __name__ == "__main__":
-    createSariGraph()
+    createSariGraph(brondata.readjson(DAILY_STATS))
     sys.exit(0)

@@ -7,7 +7,7 @@ import modules.arguments as arguments
 from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol, logError
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR, VARIANT_TAXONOMY
 from modules.buildtime import reference_datetime
-from modules.datautil import anotate, runIfNewData
+from modules.datautil import anotate, place_label, runIfNewData
 from pipeline.variant_taxonomy import (
     load_taxonomy,
     make_exclusive_week,
@@ -16,32 +16,6 @@ from pipeline.variant_taxonomy import (
 from pipeline.chart_scale import compact_number, confirmed_dominance, nice_axis_scale
 from datetime import datetime, date, timedelta
 import sys
-
-LABEL_ROWS = (0.88, 0.76, 0.64, 0.52, 0.40, 0.28, 0.16)
-
-
-def place_label(ax, renderer, plot_area, occupied, text, point, label_x, y_maximum):
-    """Annotates point with text that does not cover an occupied box. Returns the label box."""
-    for row in LABEL_ROWS:
-        probe = ax.text(label_x, y_maximum * row, text, fontsize=8, ha='center')
-        box = probe.get_window_extent(renderer).padded(6)
-        probe.remove()
-        inside = (
-            box.x0 >= plot_area.x0 and box.x1 <= plot_area.x1
-            and box.y0 >= plot_area.y0 and box.y1 <= plot_area.y1
-        )
-        if (inside and not any(box.overlaps(other) for other in occupied)) or row == LABEL_ROWS[-1]:
-            ax.annotate(
-                text,
-                xy=point,
-                xytext=(label_x, y_maximum * row),
-                fontsize=8,
-                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
-                ha='center',
-                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-            )
-            return box
-
 
 def main():
     # runIfNewData(__file__)

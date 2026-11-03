@@ -52,10 +52,10 @@ def main():
     createZiekGraph(metenisweten, events)
 
     print("Creating SARI graph")
-    createSariGraph()
+    createSariGraph(metenisweten)
 
     print("Creating laboratorium graph")
-    createLaboratoriumGraph(events)
+    createLaboratoriumGraph(metenisweten, events)
 
     print("Creating Testgraph")
     createCovidTestsGraph(metenisweten, events)

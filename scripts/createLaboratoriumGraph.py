@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 
-from datetime import date, datetime, timedelta
+from datetime import date
 import sys
 
 from matplotlib import pyplot as plt
-from matplotlib.dates import DateFormatter, MonthLocator
 
 import modules.arguments as arguments
 import modules.brondata as brondata
-from modules.defaults import CACHE_DIR, DATA_DIR, GRAPHS_DIR
+from modules.defaults import CACHE_DIR, DAILY_STATS, DATA_DIR, GRAPHS_DIR
 from modules.buildtime import reference_datetime
-from modules.datautil import anotate
+from modules.datautil import place_label
 from pipeline.erviss import parse as parse_erviss
 from pipeline.weekly_trend import parser as weekly_trend_parser
 from createSariGraph import nice_maximum
@@ -41,7 +40,7 @@ def weekly_series(result, cutoff):
 
 
 def createLaboratoriumGraph(
-    events, detections_file=None, percentage_file=None, erviss_file=None,
+    metenisweten, events, detections_file=None, percentage_file=None, erviss_file=None,
 ):
     detections_file = detections_file or (CACHE_DIR / "rivm-laboratory-sars-cov-2-detections-weekly.csv")
     percentage_file = percentage_file or (CACHE_DIR / "rivm-laboratory-sars-cov-2-positive-weekly.csv")
@@ -50,7 +49,10 @@ def createLaboratoriumGraph(
     detections = parse_detections(detections_file)
     final_date = date.fromisoformat(detections.newest_observation)
     last_days = arguments.lastDays()
-    cutoff = final_date - timedelta(days=last_days) if last_days > 0 else START_DATE
+    date_range = brondata.getDateRange(metenisweten)
+    if last_days > 0:
+        date_range = date_range[-last_days:]
+    cutoff = max(date_range[0].date(), START_DATE)
 
     rivm_dates, rivm_values = weekly_series(detections, cutoff)
     percentage_dates, percentage_values = weekly_series(parse_percentage(percentage_file), cutoff)
@@ -70,34 +72,31 @@ def createLaboratoriumGraph(
     ax1.grid(which="both", axis="both", linestyle="-.", color="gray", linewidth=1, alpha=0.3)
     ax1.set_ylim(0, nice_maximum(max(rivm_values + erviss_values) * 1.08))
     ax2.set_ylim(0, nice_maximum(max(percentage_values) * 1.08))
-    ax1.set_xlim(
-        min(rivm_dates[0], erviss_dates[0]) - timedelta(days=4),
-        final_date + timedelta(days=4),
-    )
+    ax1.set_xlim(date_range[0], date_range[-1])
     ax1.set_ylabel("Aantal positieve monsters per week")
     ax2.set_ylabel("Percentage positieve monsters")
-    ax1.set_xlabel("Week")
+    ax1.set_xlabel("Datum")
     ax1.set_title("Positieve laboratoriummonsters SARS-CoV-2 in Nederland")
-    ax1.xaxis.set_major_locator(MonthLocator(interval=2 if last_days > 0 else 4))
-    ax1.xaxis.set_major_formatter(DateFormatter("%Y-%m"))
-
-    erviss_datetimes = [datetime.combine(day, datetime.min.time()) for day in erviss_dates]
-    for event in events:
-        if 'laboratoriumloc' in event:
-            anotate(
-                ax1,
-                erviss_datetimes,
-                erviss_values,
-                event['date'], event['event'],
-                event['laboratoriumloc'][0],
-                event['laboratoriumloc'][1] * ax1.get_ylim()[1]
-            )
 
     handles1, labels1 = ax1.get_legend_handles_labels()
     handles2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper right", fontsize=8)
+    legend = ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper right", fontsize=8)
 
-    generated = reference_datetime({final_date.isoformat(): {}}).strftime("%Y-%m-%d %H:%M")
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    plot_area = ax1.get_window_extent(renderer)
+    occupied = [legend.get_window_extent(renderer)]
+    for event in events:
+        event_date = date.fromisoformat(event['date'])
+        if 'laboratorium' not in event or not erviss_dates[0] <= event_date <= erviss_dates[-1]:
+            continue
+        week = max(index for index, day in enumerate(erviss_dates) if day <= event_date)
+        occupied.append(place_label(
+            ax1, renderer, plot_area, occupied, event['event'],
+            (event_date, erviss_values[week]), event_date, ax1.get_ylim()[1],
+        ))
+
+    generated = reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     fig.text(0.01, 0.025, f"Gegenereerd op {generated}, data t/m week van {final_date}.\nSource code: http://github.com/realrolfje/coronadata",
              ha="left", fontsize=8, color="gray")
     fig.text(0.99, 0.025, "Bron: RIVM virologische weekstaten (NWKV) en ECDC ERVISS.",
@@ -109,5 +108,7 @@ def createLaboratoriumGraph(
 
 
 if __name__ == "__main__":
-    createLaboratoriumGraph(brondata.readjson(DATA_DIR / 'measures-events.json'))
+    createLaboratoriumGraph(
+        brondata.readjson(DAILY_STATS), brondata.readjson(DATA_DIR / 'measures-events.json')
+    )
     sys.exit(0)
