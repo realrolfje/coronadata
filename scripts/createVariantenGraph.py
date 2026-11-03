@@ -17,6 +17,32 @@ from pipeline.chart_scale import compact_number, confirmed_dominance, nice_axis_
 from datetime import datetime, date, timedelta
 import sys
 
+LABEL_ROWS = (0.88, 0.76, 0.64, 0.52, 0.40, 0.28, 0.16)
+
+
+def place_label(ax, renderer, plot_area, occupied, text, point, label_x, y_maximum):
+    """Annotates point with text that does not cover an occupied box. Returns the label box."""
+    for row in LABEL_ROWS:
+        probe = ax.text(label_x, y_maximum * row, text, fontsize=8, ha='center')
+        box = probe.get_window_extent(renderer).padded(6)
+        probe.remove()
+        inside = (
+            box.x0 >= plot_area.x0 and box.x1 <= plot_area.x1
+            and box.y0 >= plot_area.y0 and box.y1 <= plot_area.y1
+        )
+        if (inside and not any(box.overlaps(other) for other in occupied)) or row == LABEL_ROWS[-1]:
+            ax.annotate(
+                text,
+                xy=point,
+                xytext=(label_x, y_maximum * row),
+                fontsize=8,
+                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
+                ha='center',
+                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+            )
+            return box
+
+
 def main():
     # runIfNewData(__file__)
     metenisweten = brondata.readjson(DAILY_STATS)
@@ -459,19 +485,32 @@ def createVariantenGraph(metenisweten, varianten):
     #          label='Totaal per dag (nu: %s)' % totaal_prikken)
 
 
+    # Reverse sort the legend and place upper left
+    handles, labels = ax1.get_legend_handles_labels()   #get the handles
+    if lastDays > 0:
+        legends = [ax1.legend(reversed(handles), reversed(labels), loc="upper left")]
+    else:
+        legends = [ax1.legend(reversed(handles), reversed(labels), loc="upper left", ncol=2, fontsize=7)]
+
+    if opnamekans['kans']:
+        legends.append(ax2.legend(loc="upper right"))
+
+    ax1.set_xlim([date_range[0], date_range[-1]])
+    ax1.set_ylim([0, y_maximum])
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    plot_area = ax1.get_window_extent(renderer)
+    occupied = [legend.get_window_extent(renderer) for legend in legends]
+
     annotated_variants = set()
     first_visible_index = visible_indices[0]
     initial_dominant = (
         dominance[first_visible_index - 1] if first_visible_index > 0 else ''
     )
-    annotation_number = 0
     for i in visible_indices:
         dominant = dominance[i]
         if dominant and dominant not in annotated_variants:
             annotated_variants.add(dominant)
-            # Alternate two lanes to avoid stacking every label at the same height.
-            annotation_y = y_maximum - y_step * (0.45 + annotation_number % 2)
-            annotation_number += 1
             is_initial_dominant = dominant == initial_dominant
             annotation_x = varianten_totaal['x'][i]
             if is_initial_dominant:
@@ -487,15 +526,11 @@ def createVariantenGraph(metenisweten, varianten):
                     varianten_totaal['x'][i].strftime("%Y-%m-%d"),
                 )
 
-            ax1.annotate(
-                annotation_text,
-                xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
-                xytext=(annotation_x, annotation_y),
-                fontsize=8,
-                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
-                ha='center',
-                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-            )
+            occupied.append(place_label(
+                ax1, renderer, plot_area, occupied, annotation_text,
+                (varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
+                annotation_x, y_maximum,
+            ))
     
 
     # graphname='variants'
@@ -552,13 +587,6 @@ def createVariantenGraph(metenisweten, varianten):
         "Bron: https://data.rivm.nl/covid-19/COVID-19_varianten.json + besmettingdata"
     )
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
-
-    # Reverse sort the legend and place upper left
-    handles, labels = ax1.get_legend_handles_labels()   #get the handles
-    ax1.legend(reversed(handles), reversed(labels), loc="upper left")
-
-    if opnamekans['kans']:
-        ax2.legend(loc="upper right")
 
 
     if (lastDays > 0):

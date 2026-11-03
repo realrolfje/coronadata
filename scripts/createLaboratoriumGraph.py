@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import sys
 
 from matplotlib import pyplot as plt
 from matplotlib.dates import DateFormatter, MonthLocator
 
 import modules.arguments as arguments
-from modules.defaults import CACHE_DIR, GRAPHS_DIR
+import modules.brondata as brondata
+from modules.defaults import CACHE_DIR, DATA_DIR, GRAPHS_DIR
 from modules.buildtime import reference_datetime
+from modules.datautil import anotate
 from pipeline.erviss import parse as parse_erviss
 from pipeline.weekly_trend import parser as weekly_trend_parser
 from createSariGraph import nice_maximum
@@ -39,7 +41,7 @@ def weekly_series(result, cutoff):
 
 
 def createLaboratoriumGraph(
-    detections_file=None, percentage_file=None, erviss_file=None,
+    events, detections_file=None, percentage_file=None, erviss_file=None,
 ):
     detections_file = detections_file or (CACHE_DIR / "rivm-laboratory-sars-cov-2-detections-weekly.csv")
     percentage_file = percentage_file or (CACHE_DIR / "rivm-laboratory-sars-cov-2-positive-weekly.csv")
@@ -79,6 +81,18 @@ def createLaboratoriumGraph(
     ax1.xaxis.set_major_locator(MonthLocator(interval=2 if last_days > 0 else 4))
     ax1.xaxis.set_major_formatter(DateFormatter("%Y-%m"))
 
+    erviss_datetimes = [datetime.combine(day, datetime.min.time()) for day in erviss_dates]
+    for event in events:
+        if 'laboratoriumloc' in event:
+            anotate(
+                ax1,
+                erviss_datetimes,
+                erviss_values,
+                event['date'], event['event'],
+                event['laboratoriumloc'][0],
+                event['laboratoriumloc'][1] * ax1.get_ylim()[1]
+            )
+
     handles1, labels1 = ax1.get_legend_handles_labels()
     handles2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper right", fontsize=8)
@@ -86,7 +100,7 @@ def createLaboratoriumGraph(
     generated = reference_datetime({final_date.isoformat(): {}}).strftime("%Y-%m-%d %H:%M")
     fig.text(0.01, 0.025, f"Gegenereerd op {generated}, data t/m week van {final_date}.\nSource code: http://github.com/realrolfje/coronadata",
              ha="left", fontsize=8, color="gray")
-    fig.text(0.99, 0.025, "Bron: RIVM virologische weekstaten (NWKV) en ECDC ERVISS.\nDe twee reeksen hebben verschillende definities en zijn niet samengevoegd.",
+    fig.text(0.99, 0.025, "Bron: RIVM virologische weekstaten (NWKV) en ECDC ERVISS.",
              ha="right", fontsize=8, color="gray")
 
     suffix = f"-{last_days}" if last_days > 0 else ""
@@ -95,5 +109,5 @@ def createLaboratoriumGraph(
 
 
 if __name__ == "__main__":
-    createLaboratoriumGraph()
+    createLaboratoriumGraph(brondata.readjson(DATA_DIR / 'measures-events.json'))
     sys.exit(0)

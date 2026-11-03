@@ -55,7 +55,7 @@ def main():
     createSariGraph()
 
     print("Creating laboratorium graph")
-    createLaboratoriumGraph()
+    createLaboratoriumGraph(events)
 
     print("Creating Testgraph")
     createCovidTestsGraph(metenisweten, events)
