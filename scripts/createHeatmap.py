@@ -5,11 +5,10 @@
 from matplotlib import pyplot as plt
 from dateutil.relativedelta import relativedelta
 import datetime
-import json
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import dateCache
-from modules.defaults import CACHE_DIR, DAILY_STATS, DATA_DIR, GRAPHS_DIR
+from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
 from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData, anotate
 import sys
@@ -49,45 +48,18 @@ def createHeatmap(metenisweten, events):
 
     startdate = date_range[0]
 
-    weightsmap={}
-
-    # The heatmap data is already in metenisweten, we can optimze. Complete this:
-    # metenisweten = brondata.readjson('../data/daily-stats.json')
-    # print("Converting records to x/y data")
-    # for date_statistics in metenisweten:
-    #     if date_statistics > startdate:
-    #         for age in metenisweten[date_statistics]['besmettingleeftijd']:
-    #             datax = (date_statistics - startdate).days
-    #             datay = metenisweten[date_statistics]['besmettingleeftijd']
-
-    datelog = []
-
-    with (CACHE_DIR / 'COVID-19_casus_landelijk.json').open() as json_file:
-        data = json.load(json_file)
-        print("Converting records to x/y data")
-        for record in data:
-            date_statistics = dateCache.parse(record['Date_statistics'])
-            if startdate <= date_statistics <= date_range[-1]:
-                datelog.append(date_statistics)
-                try:
-                    datax = (date_statistics - startdate).days
-                    datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
-                    filedate = record['Date_file']
-                    x.append(datax)
-                    y.append(datay)
-
-                    # if datax not in weightsmap:
-                    #     weightsmap[datax] = 1
-                    # else:
-                    #     weightsmap[datax] = weightsmap[datax] + 1
-
-                except ValueError:
-                    # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
-                    pass
+    weights = []
+    for date_statistics in date_range:
+        ages = metenisweten.get(date_statistics.strftime("%Y-%m-%d"), {}).get('besmettingleeftijd') or {}
+        for age, count in ages.items():
+            if count:
+                x.append((date_statistics - startdate).days)
+                y.append(int(age))
+                weights.append(count)
 
     if not x:
         print(
-            "Skipping age heatmap: the preserved case cache has no records "
+            "Skipping age heatmap: daily-stats.json has no age groups "
             "for the requested date range. Existing output is left unchanged."
         )
         return False
@@ -129,8 +101,8 @@ def createHeatmap(metenisweten, events):
     try:
         heatmap.hist2d(
             x, y, 
-            bins=[120,10], range=[[0,x[-1]+7],[0,100]], 
-            cmin=1, cmap='Blues'
+            bins=[120,10], range=[[0,max(x)+7],[0,100]], 
+            cmin=1, cmap='Blues', weights=weights
         ) # inferno is also a good one
     except IndexError as e:
         print("Error bij maken heatmap: "+e)
@@ -166,14 +138,14 @@ def createHeatmap(metenisweten, events):
             )
 
     heatmap.set(
-        xlim=[x[0], x[-1]+7],
-        xbound=([x[0], x[-1]+7]),
+        xlim=[min(x), max(x)+7],
+        xbound=([min(x), max(x)+7]),
         ylim=[0, 100],
         autoscale_on=False
     )
     averages.set(
-        xlim=([x[0], x[-1]+7]),
-        xbound=([x[0], x[-1]+7]),
+        xlim=([min(x), max(x)+7]),
+        xbound=([min(x), max(x)+7]),
         ylim=[0, 100],
         autoscale_on=False
     )
@@ -219,6 +191,7 @@ def createHeatmap(metenisweten, events):
     # averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
 
     data_tot = gemiddeldeleeftijd['x'][-1].strftime("%Y-%m-%d")
+    filedate = metenisweten.get(data_tot, {}).get('rivm-datum') or data_tot
     footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 

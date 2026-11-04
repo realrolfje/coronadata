@@ -367,6 +367,7 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 | Actuele ziekenhuismetriek | Compatibele opvolger / afzonderlijke nieuwe metriek / alleen historisch | LCPS-bezetting t/m 31 mei 2024 als historische aanvulling; daarna geen compatibele openbare landelijke bron | Besloten: historie aanvullen, actueel niet fabriceren |
 | Bron variantentaxonomie | RIVM / versiegebonden Pango / lokale mapping | Vastgezette Pango-versie met kleine beoordeelde RIVM-overrides | Besloten: Pango + lokale regels |
 | Automatiseringsplatform | Bestaande host / GitHub Actions / handmatig | Beslissen nu offline bouw betrouwbaar is | Open |
+| Plaats van labels bij gebeurtenissen | Automatisch / hoogte per gebeurtenis in `measures-events.json` | Nu automatisch met `place_label`; later meer controle via een optionele hoogte | Open |
 
 ## Risico's
 
