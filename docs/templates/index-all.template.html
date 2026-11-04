@@ -16,6 +16,12 @@
     <meta name="twitter:image"
         content="https://realrolfje.github.io/coronadata/icons/apple-touch-icon.png?${prikken_gezet_geschat_num}">
     <meta name="twitter:image:alt" content="Rt=${Rt}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://realrolfje.github.io/coronadata/index-all.html">
+    <meta property="og:title" content="Corona data landelijk">
+    <meta property="og:description" content="Het meest complete en overzichtelijke coronadashboard van Nederland.">
+    <meta property="og:image" content="https://realrolfje.github.io/coronadata/icons/apple-touch-icon.png">
+    <meta property="og:image:alt" content="Logo van Corona data landelijk">
 
     <meta http-equiv="refresh" content="500">
     <link rel="stylesheet" href="styles.css">
@@ -91,13 +97,6 @@
                 <div class="valuetext">${sari_opnames}</div>
             </div>
         </a>
-        <a class="buttonlink" href="history.html#zieken">
-            <div class="button ${nu_op_ic_color}"
-                title="Laatste gerapporteerde historische COVID-19-IC-bezetting; zie het archief.">
-                <div class="nametext">intensive care</div>
-                <div class="valuetext">${nu_op_ic}</div>
-            </div>
-        </a>
         <a class="buttonlink" href="history.html#besmetleeftijd">
             <div class="button ${positief_leeftijd_color}" title="Laatste gerapporteerde gemiddelde leeftijd van positief geteste mensen; zie het archief.">
                 <div class="nametext">leeftijd positief</div>
@@ -139,15 +138,14 @@
         </div>
     </div>
     <div class="container center">
-        <a class="buttonlink" href="https://twitter.com/rolfje">
+        <a class="buttonlink" href="https://bsky.app/profile/rolfje.com">
             <!-- <a class="buttonlink" href="http://twitter.com/share?text=1%20op%20${ziekverhouding_rolf}%20mensen%20is%20nu%20ziek%2Fbesmettelijk%20%28geschat%29.%0ANu%20opgenomen%3A%20${nu_opgenomen}%20%28NICE%29.%0ANu%20op%20IC%3A%20${nu_op_ic}%20%28NICE%29.%0AGezette%20prikken%3A%20${prikken_gezet_geschat}%20%28geschat%29.%0A%23COVID19%20%23coronavirus%20%23blijfthuis%20%23ikwildieprik%0A&url=https://realrolfje.github.io/coronadata/"> -->
-            <div class="tweet">
-                <img src="icons/tweet-icon.svg" style="width:20px; float: right; padding-left:10px" title="@rolfje" />
+            <div class="socialpost">
+                <img src="icons/bluesky-icon.svg" style="width:20px; float: right; padding-left:10px" title="@rolfje.com" />
                 1 op ${ziekverhouding_rolf} mensen is nu ziek/besmettelijk (geschat).<br />
                 <!-- 1 op ${ziekverhouding_rna} mensen is nu ziek/besmettelijk (RWZI).<br /> -->
                 <!-- 1 op ${ziekverhouding} mensen is nu ziek/besmettelijk (RIVM).<br /> -->
-                Nu opgenomen: ${nu_opgenomen} (NICE).<br />
-                Nu op IC: ${nu_op_ic} (NICE).<br />
+                Nieuwe IC-opnames in de week van ${sari_opnames_datum}: ${sari_opnames} (SARI, RIVM/NICE).<br />
                 <!-- Gezette prikken: ${prikken_gezet} (${prikken_gezet_perc}).<br /> -->
                 <!-- Gezette prikken: ${prikken_gezet_geschat} (${prikken_gezet_geschat_perc}, geschat).<br /> -->
                 https://realrolfje.github.io/coronadata/<br />
