@@ -9,7 +9,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, smooth, dateCache
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
-from modules.buildtime import reference_date, reference_datetime
+from modules.buildtime import reference_date, reference_datetime, build_datetime
 from scipy.ndimage import uniform_filter1d
 from modules.datautil import runIfNewData
 import sys
@@ -123,7 +123,7 @@ def createRNAGraph(metenisweten):
             zorder=10)
 
     data_tot=RNA_per_100k_avg['x'][-1].strftime("%Y-%m-%d")
-    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     plt.title('Concentratie SARS-CoV-2 RNA in rioolwater per 100.000 inwoners')
 
     footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"

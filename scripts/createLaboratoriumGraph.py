@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.defaults import CACHE_DIR, DAILY_STATS, DATA_DIR, GRAPHS_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime
 from modules.datautil import place_label
 from pipeline.erviss import parse as parse_erviss
 from pipeline.weekly_trend import parser as weekly_trend_parser
@@ -96,7 +96,7 @@ def createLaboratoriumGraph(
             (event_date, erviss_values[week]), event_date, ax1.get_ylim()[1],
         ))
 
-    generated = reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    generated = build_datetime().strftime("%Y-%m-%d %H:%M")
     fig.text(0.01, 0.025, f"Gegenereerd op {generated}, data t/m week van {final_date}.\nSource code: http://github.com/realrolfje/coronadata",
              ha="left", fontsize=8, color="gray")
     fig.text(0.99, 0.025, "Bron: RIVM virologische weekstaten (NWKV) en ECDC ERVISS.",

@@ -9,7 +9,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import dateCache
 from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime
 from modules.datautil import runIfNewData, anotate
 import sys
 
@@ -84,7 +84,7 @@ def createHeatmap(metenisweten, events):
 
     gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 
-    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
 
     fig, heatmap = plt.subplots(figsize=(10, 4), constrained_layout=True, sharex='all', sharey='all')
     fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)

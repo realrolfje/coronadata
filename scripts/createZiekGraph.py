@@ -10,7 +10,7 @@ import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import decimalstring, dateCache
 from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime
 from modules.datautil import runIfNewData, anotate
 import csv
 from pathlib import Path
@@ -267,7 +267,7 @@ def createZiekGraph(metenisweten, events):
             va="top", ha="right", fontsize=7, color="gray"
         )
 
-    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     available_dates = opgenomen['x'] + ic['x']
     data_tot=max(available_dates).strftime("%Y-%m-%d")
 

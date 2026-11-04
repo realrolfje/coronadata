@@ -17,8 +17,21 @@ mkdir -p "$project_dir/cache"
 rm -f "$project_dir/cache/errors.log"
 
 if [ "${CORONADATA_RENDER_ONLY:-0}" != "1" ] && [ "${CORONADATA_DATA_READY:-0}" != "1" ]; then
-    "$PYTHON_BIN" "$project_dir/scripts/runPipeline.py" update
+    "$PYTHON_BIN" "$project_dir/scripts/runPipeline.py" update --report "$project_dir/cache/pipeline-report.json"
     export CORONADATA_DATA_READY=1
+
+    # Render only for new data or changed render inputs, so the build time in
+    # the output changes only when there is something new to publish.
+    render_inputs=$(cd "$project_dir" && git ls-files -s scripts docs/templates data/measures-events.json \
+        sources.json matplotlibrc requirements.txt creategraphs.sh | shasum | awk '{print $1}')
+    render_marker="$project_dir/cache/last-render-inputs"
+    data_changed=$("$PYTHON_BIN" -c 'import json, sys; print(json.load(open(sys.argv[1]))["changed"])' \
+        "$project_dir/cache/pipeline-report.json")
+    if [ "$data_changed" = "False" ] && [ "${CORONADATA_FORCE_RENDER:-0}" != "1" ] \
+        && [ -f "$render_marker" ] && [ "$(cat "$render_marker")" = "$render_inputs" ]; then
+        echo "No new data and no changed render inputs: skip rendering."
+        exit 0
+    fi
 fi
 
 # Workaround for strange download problem variants
@@ -47,3 +60,7 @@ fi
 "$PYTHON_BIN" ./processTemplates.py
 "$PYTHON_BIN" ./buildSiteData.py
 cd ..
+
+if [ -n "${render_inputs:-}" ]; then
+    echo "$render_inputs" > "$render_marker"
+fi

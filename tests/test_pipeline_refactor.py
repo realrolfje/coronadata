@@ -9,7 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 from modules.brondata import dateCache
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime, reference_datetime
 from pipeline.calculations import calculate_cumulative_totals
 from pipeline.legacy_transform import transform_prevalence, transform_rivm_tests
 from pipeline.site_export import build_surveillance_export
@@ -92,6 +92,11 @@ class PipelineRefactorTest(unittest.TestCase):
     def test_render_time_is_based_on_newest_observation(self):
         daily = {"2020-01-01": {}, "2024-05-06": {}}
         self.assertEqual("2024-05-06T12:00:00", reference_datetime(daily).isoformat())
+
+    def test_build_time_uses_override(self):
+        from unittest import mock
+        with mock.patch.dict("os.environ", {"CORONADATA_BUILD_DATE": "2026-11-04T09:02:00"}):
+            self.assertEqual("2026-11-04T09:02:00", build_datetime().isoformat())
 
     def test_short_hospital_chart_ends_at_last_hospital_observation(self):
         daily = {

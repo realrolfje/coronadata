@@ -256,6 +256,10 @@ Controleer de wijzigingen en publiceer ze daarna expliciet:
 
 `publish.sh` weigert te publiceren bij blokkerende bronfouten of wijzigingen buiten `data/` en
 `docs/`. Als er geen gegenereerde wijzigingen zijn, wordt er geen lege commit gemaakt.
+`creategraphs.sh` maakt de grafieken en pagina's alleen opnieuw als een bron nieuwe data heeft,
+of als de code, templates of gebeurtenissen zijn veranderd sinds de vorige keer. De grafieken tonen
+daardoor de echte tijd in "Gegenereerd op", zonder dat elke run een commit maakt. Gebruik
+`CORONADATA_FORCE_RENDER=1 ./update.sh` om toch alles opnieuw te maken.
 Tests, normalized-data parity en bronvalidatie worden vóór publicatie opnieuw gecontroleerd.
 Herstel- en rollbackprocedures staan in [`docs/operations.md`](docs/operations.md).
 

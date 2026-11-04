@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime
 from pipeline.sari import parse
 
 
@@ -56,7 +56,7 @@ def createSariGraph(metenisweten, filename=None):
     ax.set_title("Ernstige luchtweginfecties op de IC in Nederland")
     ax.legend(loc="upper left")
 
-    generated = reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    generated = build_datetime().strftime("%Y-%m-%d %H:%M")
     fig.text(0.01, 0.025, f"Gegenereerd op {generated}, data t/m week van {dates[-1]}.\nSource code: http://github.com/realrolfje/coronadata",
              ha="left", fontsize=8, color="gray")
     fig.text(0.99, 0.025, "Dekking varieert; recente weken kunnen worden herzien.\nBron: RIVM/NICE SARI-surveillance",

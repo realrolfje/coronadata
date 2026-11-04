@@ -11,7 +11,7 @@ import csv
 import hashlib
 from modules.datautil import runIfNewData
 from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, GRAPHS_DIR, PROJECT_ROOT, TEMPLATES_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime, reference_datetime
 from createLaboratoriumGraph import parse_percentage
 from pipeline.sari import parse as parse_sari
 
@@ -203,7 +203,7 @@ if errors == '':
 else:
     error_warning = 'met errors'
 
-build_time = reference_datetime(metenisweten)
+build_time = build_datetime()
 gegenereerd_op=build_time.strftime("%Y-%m-%d %H:%M")
 gegenereerd_datum=build_time.strftime("%Y-%m-%d")
 gegenereerd_tijd=build_time.strftime("%H:%M:%S")
@@ -334,6 +334,7 @@ substitutes = {
     'positief_leeftijd_color' : freshness_color('blue', casus_datum),
 
     'gegenereerd_op'      : gegenereerd_op,
+    'data_tot_datum'      : build_reference_date.isoformat(),
     'gegenereerd_op_datum': gegenereerd_datum,
     'gegenereerd_op_tijd' : gegenereerd_tijd,
     'variant_graph_version': variant_graph_version,

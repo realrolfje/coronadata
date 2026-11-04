@@ -9,7 +9,7 @@ import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
 from modules.defaults import DAILY_STATS, GRAPHS_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import build_datetime
 from modules.datautil import runIfNewData
 
 def main():
@@ -114,7 +114,7 @@ def createRtraph(metenisweten):
     axes.set_xlabel("Datum")
     axes.set_ylabel("Reproductiegetal")
 
-    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     plt.title('Reproductiegetal')
 
     if len(Rt_avg['x']) > 1:

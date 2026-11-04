@@ -10,7 +10,7 @@ import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
 from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
-from modules.buildtime import reference_datetime
+from modules.buildtime import reference_datetime, build_datetime
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 
@@ -223,7 +223,7 @@ def createCovidTestsGraph(metenisweten, events):
 
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     data_tot=positief['x'][-11].strftime("%Y-%m-%d")
 
     plt.title('Positieve COVID-19 tests')

@@ -6,7 +6,7 @@ import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol, logError
 from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR, VARIANT_TAXONOMY
-from modules.buildtime import reference_datetime
+from modules.buildtime import reference_datetime, build_datetime
 from modules.datautil import anotate, place_label, runIfNewData
 from pipeline.variant_taxonomy import (
     load_taxonomy,
@@ -543,7 +543,7 @@ def createVariantenGraph(metenisweten, varianten):
     ax2.set_yticks      ([ 0.5,    1,     1.5,    2,   ])
     ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%'])
 
-    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
     filedate=data_tot
 

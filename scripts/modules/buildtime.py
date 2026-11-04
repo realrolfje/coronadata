@@ -16,3 +16,11 @@ def reference_datetime(daily=None):
 
 def reference_date(daily=None):
     return reference_datetime(daily).date()
+
+
+def build_datetime():
+    """Return the time of this build, or the CORONADATA_BUILD_DATE override."""
+    override = os.environ.get("CORONADATA_BUILD_DATE")
+    if override:
+        return datetime.datetime.fromisoformat(override)
+    return datetime.datetime.now().replace(second=0, microsecond=0)
