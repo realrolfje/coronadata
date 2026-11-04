@@ -13,6 +13,7 @@ from modules.datautil import runIfNewData
 from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, GRAPHS_DIR, PROJECT_ROOT, TEMPLATES_DIR
 from modules.buildtime import reference_datetime
 from createLaboratoriumGraph import parse_percentage
+from pipeline.sari import parse as parse_sari
 
 runIfNewData(__file__)
 
@@ -225,6 +226,12 @@ laboratorium = max(
 )
 laboratorium_positief = round(laboratorium.value, 1)
 
+sari = max(
+    parse_sari(CACHE_DIR / 'rivm-nice-sari-weekly-admissions.csv').observations,
+    key=lambda item: item.date,
+)
+sari_opnames = int(sari.value)
+
 substitutes = {
     'varianten_datum'     : varianten_datum,
     'ziekenhuis_datum'    : ziekenhuis_datum,
@@ -298,6 +305,13 @@ substitutes = {
 
     'laboratorium_positief'       : decimalstring(laboratorium_positief)+'%',
     'laboratorium_positief_datum' : laboratorium.date,
+    'sari_opnames'       : str(sari_opnames),
+    'sari_opnames_datum' : sari.date,
+    'sari_opnames_color' : freshness_color(
+        'green' if sari_opnames < 75 else 'yellow' if sari_opnames < 150 else 'red',
+        sari.date,
+    ),
+
     'laboratorium_positief_color' : freshness_color(
         'green' if laboratorium_positief < 5 else 'yellow' if laboratorium_positief < 20 else 'red',
         laboratorium.date,
