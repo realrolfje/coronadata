@@ -145,6 +145,15 @@ class PipelineRefactorTest(unittest.TestCase):
         selected = select_age_date_range(daily, 0)
         self.assertEqual("2023-04-04", selected[-1].strftime("%Y-%m-%d"))
 
+    def test_full_age_chart_starts_at_first_age_observation(self):
+        daily = {
+            "2020-03-01": {"besmettingleeftijd": {}},
+            "2021-10-04": {"besmettingleeftijd": {"45": 2}},
+            "2023-04-04": {"besmettingleeftijd": {"65": 3}},
+        }
+        selected = select_age_date_range(daily, 0)
+        self.assertEqual("2021-10-04", selected[0].strftime("%Y-%m-%d"))
+
     def test_lcps_extension_does_not_modify_original_daily_data(self):
         import tempfile
         from pathlib import Path

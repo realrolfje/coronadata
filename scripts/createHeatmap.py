@@ -21,7 +21,7 @@ def main():
 
 
 def select_age_date_range(metenisweten, last_days):
-    """Anchor the heatmap to the final case/age observation."""
+    """Return the dates from the first to the last day with age groups."""
     dates = brondata.getDateRange(metenisweten)
     age_dates = [
         date for date in dates
@@ -32,7 +32,7 @@ def select_age_date_range(metenisweten, last_days):
         )
     ]
     if age_dates:
-        dates = [date for date in dates if date <= age_dates[-1]]
+        dates = [date for date in dates if age_dates[0] <= date <= age_dates[-1]]
     return dates[-last_days:] if last_days > 0 else dates
 
 

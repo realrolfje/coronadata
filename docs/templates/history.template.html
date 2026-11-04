@@ -18,6 +18,28 @@
     </p>
 
     <div class="container center">
+        <div class="textblock" id="zieken">
+            <h1>2024-06-01: Einde landelijke COVID-19-bezettingscijfers</h1>
+            <p>
+                Deze grafiek toont de historische ziekenhuis- en IC-bezetting door COVID-19.
+                De oorspronkelijke reeks van RIVM/NICE is vanaf 2 januari 2024 aangevuld met de
+                officiële LCPS-datafeed. LCPS stopte per 1 juni 2024 met het publiceren van deze
+                landelijke dagcijfers; daarom eindigt de grafiek op 31 mei 2024.
+            </p>
+            <p>
+                De bronovergang is in de grafiek gemarkeerd. De definities liggen dicht bij elkaar,
+                maar een verschil rond de overgang kan ook door de wisseling van bron komen.
+                De oorspronkelijke gegevens in <code>daily-stats.json</code> zijn niet overschreven.
+            </p>
+            <div class="graphcontainer">
+                <a href="zieken.html" title="Uitleg over de oorspronkelijke berekening">
+                    <img id="zieken-grafiek" src="graphs/zieken.svg" width="100%" />
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container center">
         <div class="textblock" id="reproductiegetal">
             <h1>2023-07-11: Einde van het officiële reproductiegetal</h1>
             <p>
@@ -37,23 +59,20 @@
     </div>
 
     <div class="container center">
-        <div class="textblock" id="zieken">
-            <h1>2024-06-01: Einde landelijke COVID-19-bezettingscijfers</h1>
+        <div class="textblock" id="besmetleeftijd">
+            <h1>2023-04-04: Einde van de positieve tests per leeftijdsgroep</h1>
             <p>
-                Deze grafiek toont de historische ziekenhuis- en IC-bezetting door COVID-19.
-                De oorspronkelijke reeks van RIVM/NICE is vanaf 2 januari 2024 aangevuld met de
-                officiële LCPS-datafeed. LCPS stopte per 1 juni 2024 met het publiceren van deze
-                landelijke dagcijfers; daarom eindigt de grafiek op 31 mei 2024.
+                Deze grafiek toont hoeveel mensen in elke leeftijdsgroep positief testten.
+                Hoe donkerder het vak, hoe meer positieve tests. De rode lijn toont de gemiddelde
+                leeftijd. De cijfers komen uit de casusdata van het RIVM. Die data loopt tot en met
+                4 april 2023. Daarom eindigt de grafiek op die dag.
             </p>
             <p>
-                De bronovergang is in de grafiek gemarkeerd. De definities liggen dicht bij elkaar,
-                maar een verschil rond de overgang kan ook door de wisseling van bron komen.
-                De oorspronkelijke gegevens in <code>daily-stats.json</code> zijn niet overschreven.
+                De actuele bronnen op deze site hebben geen leeftijdsgroepen. Dat geldt voor de
+                laboratoriumcijfers van het RIVM en voor ECDC ERVISS.
             </p>
             <div class="graphcontainer">
-                <a href="zieken.html" title="Uitleg over de oorspronkelijke berekening">
-                    <img id="zieken-grafiek" src="graphs/zieken.svg" width="100%" />
-                </a>
+                <img id="besmetleeftijd-grafiek" src="graphs/besmettingen-leeftijd.svg" width="100%" />
             </div>
         </div>
     </div>

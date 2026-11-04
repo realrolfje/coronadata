@@ -308,6 +308,8 @@ uit de virologische weekstaten van het RIVM. Een aparte lijn toont de Nederlands
 ERVISS. Die lijn vult de periode van maart tot oktober 2023. De twee bronnen tellen niet dezelfde
 monsters, dus de reeksen zijn niet samengevoegd. De oude testgrafiek eindigt op 17 maart 2023. Die
 grafiek staat op de archiefpagina.
+De grafiek met positieve tests per leeftijdsgroep eindigt op 4 april 2023 en staat ook op de
+archiefpagina. De actuele bronnen hebben geen leeftijdsgroepen.
 
 De documentatie per bron staat in [`docs/sources/`](docs/sources/README.md), inclusief de beslissing
 om actuele SARI-ziekenhuisgegevens niet aan de historische COVID-bezettingsreeks te plakken.

@@ -420,3 +420,4 @@ lineage meetellen. De oude correctie kan daardoor boven 100% uitkomen.
 | 2026-11-02 | Reproductiegetal gearchiveerd | Drie actuele RIVM-trendfeeds afzonderlijk opgeslagen als basis voor een latere trendindicator |
 | 2026-11-03 | `install.sh` en Python 3.12–3.15 | Alle scripts installeren ontbrekende of gewijzigde dependencies zelf; numpy 2.5.4 en scipy 1.18.1 |
 | 2026-11-03 | Testgrafiek gearchiveerd | Nieuwe weekgrafiek met positieve laboratoriummonsters van RIVM en een aparte ERVISS-lijn |
+| 2026-11-04 | Leeftijdsgrafiek gearchiveerd | Heatmap leest `daily-stats.json` tot 4 april 2023; geen actuele bron met leeftijdsgroepen gevonden |
