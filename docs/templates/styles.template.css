@@ -49,7 +49,7 @@ img {
     text-align: center;
 }
 
-.tweet {
+.socialpost {
     display: inline-block;
     background-color: #C0EDFF;
     text-align: left;
@@ -127,6 +127,14 @@ img {
     border-style: solid;
 }
 
+.stale {
+    background-color: rgb(225, 225, 225);
+    border-color: rgb(145, 145, 145);
+    border-width: 2px;
+    border-style: solid;
+    color: rgb(75, 75, 75);
+}
+
 blink, .blink {
     -webkit-animation: blink 1s step-end infinite;
     -moz-animation: blink 1s step-end infinite;
@@ -149,3 +157,23 @@ blink, .blink {
   @keyframes blink {
     67% { opacity: 0 }
   }
+
+/* Progressive enhancement for the rioolwater explanation page. */
+.interactive-chart { width: 100%; }
+.interactive-chart canvas { display: none; width: 100%; touch-action: none; cursor: crosshair; }
+.interactive-chart.chart-ready canvas { display: block; }
+.chart-controls { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.chart-toggles { display: flex; flex-wrap: wrap; gap: 12px; margin: 6px; }
+.chart-toggles label { cursor: pointer; }
+.chart-tooltip, .chart-message { min-height: 1.2em; color: gray; font-size: smaller; text-align: left; }
+.chart-controls button { background: white; border: 1px solid gray; border-radius: 4px; padding: 4px 8px; }
+
+/* Source-status page; these rules do not alter the dashboard. */
+.site-header { text-align: center; background: yellow; padding: 8px; }
+.page { max-width: 1100px; margin: auto; padding: 8px; }
+.table-scroll { overflow-x: auto; }
+.status-table { width: 100%; border-collapse: collapse; }
+.status-table th, .status-table td { text-align: left; border-bottom: 1px solid lightgray; padding: 7px; vertical-align: top; }
+.status { display: inline-block; padding: 2px 6px; border-radius: 10px; background: #eee; }
+.status-healthy { background: lightgreen; }
+.status-stale, .status-invalid, .status-missing { background: rgb(255, 198, 191); }

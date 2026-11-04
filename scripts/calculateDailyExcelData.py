@@ -8,12 +8,13 @@
 import sys
 from datetime import datetime
 import modules.brondata as brondata
+from modules.defaults import CACHE_DIR, DAILY_STATS, DATA_DIR
 from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    testpunten = brondata.readjson('../cache/testlocaties.json')
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    testpunten = brondata.readjson(CACHE_DIR / 'testlocaties.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     calculateDailyExcelData(testpunten, metenisweten)
 
 def calculateDailyExcelData(testpunten, metenisweten):
@@ -21,8 +22,8 @@ def calculateDailyExcelData(testpunten, metenisweten):
 
     # ----------------------- Generate CSV output -----------------------------
 
-    filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.csv"
-    print('Writing '+filename)
+    filename=DATA_DIR / (datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.csv")
+    print(f'Writing {filename}')
     with open(filename,'w') as file: 
         file.write('"Datum"\t"Positief getest werkelijk"\t"Opgenomen (geweest) in ziekenhuis"\t"Overleden"\t"Opgenomen (geweest) op IC"\t"Op dit moment op IC"\n')
         totaal_positief = 0
@@ -42,7 +43,7 @@ def calculateDailyExcelData(testpunten, metenisweten):
             totaal_opgenomen = max(totaal_opgenomen, metenisweten[datum]['totaal_opgenomen'])
             totaal_overleden = max(totaal_overleden, metenisweten[datum]['totaal_overleden'])
 
-    with open('../data/runs.csv','a') as file:
+    with (DATA_DIR / 'runs.csv').open('a') as file:
         file.write(
             datetime.now().strftime('%Y-%m-%d') + '\t' +
             str(totaal_positief) + '\t' +
@@ -52,8 +53,8 @@ def calculateDailyExcelData(testpunten, metenisweten):
 
     # --------------------- Generate markdown versions
 
-    filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.md"
-    print('Writing '+filename)
+    filename=DATA_DIR / (datetime.now().strftime('%Y-%m-%d')+"-RIVM-NICE.md")
+    print(f'Writing {filename}')
     with open(filename,'w') as file: 
         file.write('| Datum | Positief getest werkelijk | Opgenomen (geweest) in ziekenhuis | Overleden | Opgenomen (geweest) op IC | Op dit moment op IC |\n')
         file.write('|-------|--------------------------:|----------------------------------:|----------:|--------------------------:|--------------------:|\n')
@@ -67,8 +68,8 @@ def calculateDailyExcelData(testpunten, metenisweten):
                 str(metenisweten[datum]['nu_op_ic']) + ' |\n'
             )
 
-    filename='../data/'+datetime.now().strftime('%Y-%m-%d')+"-testlocaties.md"
-    print('Writing '+filename)
+    filename=DATA_DIR / (datetime.now().strftime('%Y-%m-%d')+"-testlocaties.md")
+    print(f'Writing {filename}')
     with open(filename,'w') as file: 
         file.write('| Locatie | Positieve tests |\n')
         file.write('|---------|----------------:|\n')

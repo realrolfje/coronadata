@@ -5,14 +5,22 @@ from matplotlib import pyplot as plt
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, printDict, intOrZero, dateCache, smooth, double_savgol, logError
-from modules.datautil import anotate, runIfNewData
+from modules.defaults import CACHE_DIR, DAILY_STATS, GRAPHS_DIR, VARIANT_TAXONOMY
+from modules.buildtime import reference_datetime
+from modules.datautil import anotate, place_label, runIfNewData
+from pipeline.variant_taxonomy import (
+    load_taxonomy,
+    make_exclusive_week,
+    pool_exclusive_weeks,
+)
+from pipeline.chart_scale import compact_number, confirmed_dominance, nice_axis_scale
 from datetime import datetime, date, timedelta
 import sys
 
 def main():
     # runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    varianten = brondata.readjson('../cache/COVID-19_varianten.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    varianten = brondata.readjson(CACHE_DIR / 'COVID-19_varianten.json')
     createVariantenGraph(metenisweten, varianten)
 
 def createVariantenGraph(metenisweten, varianten):
@@ -24,6 +32,8 @@ def createVariantenGraph(metenisweten, varianten):
         #     }
         # }
     }
+    week_records = {}
+    invalid_weeks = set()
 
     varianten_totaal = {
         'x': [],
@@ -48,10 +58,16 @@ def createVariantenGraph(metenisweten, varianten):
     for record in varianten:
         if record['Variant_code'] not in variantcodes:
             varianten_totaal[record['Variant_code']] = []
-            if record['Variant_name'] == '':
+            if record['Variant_code'] == 'Recombinants':
+                variantcodes[record['Variant_code']] = "Overige recombinanten"
+            elif record['Variant_name'] == '':
                 variantcodes[record['Variant_code']] = record['Variant_code']
             elif record['Variant_name'] in namefix:
-                variantcodes[record['Variant_code']] = "%s (%s)" % (namefix[record['Variant_name']], record['Variant_code'])
+                variantcodes[record['Variant_code']] = "%s (%s)" % (
+                    namefix[record['Variant_name']], record['Variant_code']
+                )
+            elif record['Variant_name'] == record['Variant_code']:
+                variantcodes[record['Variant_code']] = record['Variant_code']
             else:
                 variantcodes[record['Variant_code']] = "%s (%s)" % (record['Variant_name'], record['Variant_code'])
             print('Variant: %s' % variantcodes[record['Variant_code']])
@@ -66,6 +82,7 @@ def createVariantenGraph(metenisweten, varianten):
 
         d = record['Date_of_statistics_week_start']
         c = record['Variant_code']
+        week_records.setdefault(d, []).append(record)
 
         if d not in varianten_map:
             varianten_map[d] = {}
@@ -83,8 +100,12 @@ def createVariantenGraph(metenisweten, varianten):
         #     print('%s, %s prevalence %.2f (is variant of : %s) samples:%d cases:%d' %(d, c, varianten_map[d][c]['prevalence'], record['Is_subvariant_of'], varianten_map[d][c]['size'], varianten_map[d][c]['cases']))
 
         if varianten_map[d][c]['cases'] > varianten_map[d][c]['size']:
-            logError(f"Variant has more cases than samplesize. Cases: {varianten_map[d][c]['cases']} Size: {varianten_map[d][c]['size']} Record: {record}")
-            sys.exit(1)
+            logError(
+                f"Variantenweek {d} overgeslagen: variant {c} heeft "
+                f"{varianten_map[d][c]['cases']} gevallen bij een steekproef "
+                f"van {varianten_map[d][c]['size']}."
+            )
+            invalid_weeks.add(d)
     
     print(f"Last week date with varianten: {d}")
     
@@ -93,63 +114,60 @@ def createVariantenGraph(metenisweten, varianten):
     # print("-----")
 
 
-    # Correct the prevalence by subtracting subtypes
-    for d, varianten in varianten_map.items():
-        # print(d)
-        # print('--------------------------')
-        # printDict(varianten)
-        # print('--------------------------')
+    taxonomy = load_taxonomy(VARIANT_TAXONOMY)
+    exclusive_weeks = []
+    for d, variants_for_week in varianten_map.items():
+        if d in invalid_weeks:
+            continue
+        try:
+            exclusive = make_exclusive_week(week_records[d], taxonomy)
+        except ValueError as error:
+            logError(f"Variantenweek {d} overgeslagen: {error}")
+            invalid_weeks.add(d)
+            continue
+        if exclusive.unresolved_parents:
+            logError(
+                f"Variantenweek {d} overgeslagen door onopgeloste variantouders: "
+                + ", ".join(exclusive.unresolved_parents)
+            )
+            invalid_weeks.add(d)
+            continue
+        exclusive_weeks.append(exclusive)
 
-        # Correct prevalentie voor code c, record r
-        def correctPrevalence(c):
-            # Trek alle subvarianten af van de totale prevalentie van de parent
-            for v in varianten:
-                if varianten[v]['sub_of'] == c:
-                    if varianten[v]['cases'] > varianten[c]['cases']:
-                        print(f'More cases for subtype {v} than in {c}')
-                    else:
-                        # Correct prevalence
-                        varianten[c]['cases'] = varianten[c]['cases'] - varianten[v]['cases']
-                    # Recurse
-                    correctPrevalence(v)
+    for d in invalid_weeks:
+        varianten_map.pop(d, None)
 
-        print("Remove overlapping variant, don't know why this variant suddenly counts double cases.")
-        varianten['BA.2+S:L452X']['cases'] = 0
-        varianten['BA.2+S:L452X']['prevalence'] = 0
+    pooled_weeks = {
+        week.date: week
+        for week in pool_exclusive_weeks(
+            exclusive_weeks, window_weeks=4, minimum_samples=20
+        )
+    }
+    rolling_samples = {}
+    for d in list(varianten_map):
+        pooled = pooled_weeks.get(d)
+        if pooled is None:
+            varianten_map.pop(d)
+            continue
+        rolling_samples[d] = pooled.sample_size
+        for code, variant in varianten_map[d].items():
+            variant['cases'] = pooled.counts.get(code, 0)
+            variant['size'] = pooled.sample_size
+            variant['prevalence'] = variant['cases'] / pooled.sample_size
 
-        for code in varianten:
-            # Voor alle parents
-            if len(varianten[code]['sub_of']) == 0:
-                correctPrevalence(code)
-        
-        totalcases=0
-        for code in varianten:
-            totalcases += varianten[code]['cases']
-            varianten[code]['prevalence'] = varianten[code]['cases'] / varianten[code]['size']
-
-            if totalcases > varianten[code]['size']:
-                print(f"More cases than samples on {d}")
-
-        # printDict(varianten)
-        # print('--------------------------')
-
-        total = 0
-        for code in varianten:
-            variant = varianten[code]
-            total += variant['prevalence']
-            # print(code, variant['prevalence'])
-
-        if total > 1.10:
-            logError('Error, prevalence incorrect: %s - %.3f' % (d, total))
-
-    print(f"Laatst gecorriceerde variant datum: {d}")
+    print(
+        f"Variantpercentages exclusief gemaakt met {taxonomy.version} en "
+        f"gewogen over vier weken (minimaal 20 monsters); "
+        f"laatste venster: {max(pooled_weeks)}, n={rolling_samples[max(pooled_weeks)]}"
+    )
 
     # print("-----")
     # printDict(varianten_map['2023-02-13'])
     # print("-----")    
 
     # Take al variant percentages and multiply them with the actual number of sick people on that day
-    for key in varianten_map:
+    previous_variant_date = None
+    for key in sorted(varianten_map):
         # For each variant, determine the number of sick people (variant percentage times estimate)
         if metenisweten.get(key, None) is None:
             print("Geen data over besmettelijkheid %s" % key)
@@ -161,8 +179,20 @@ def createVariantenGraph(metenisweten, varianten):
             print("Niks geschat ziek op %s" % key)
             continue
 
+        current_variant_date = dateCache.parse(key)
+        if (
+            previous_variant_date is not None
+            and current_variant_date - previous_variant_date > timedelta(days=8)
+        ):
+            # A NaN observation prevents matplotlib from drawing a straight line
+            # across periods with fewer than twenty pooled samples.
+            varianten_totaal['x'].append(previous_variant_date + timedelta(days=7))
+            for variantcode in variantcodes:
+                varianten_totaal[variantcode].append(float('nan'))
+        previous_variant_date = current_variant_date
+
         # Add following data to the graph.
-        varianten_totaal['x'].append(dateCache.parse(key))
+        varianten_totaal['x'].append(current_variant_date)
 
         totaal_percentage = 0
         for variantcode in variantcodes.keys():
@@ -182,16 +212,26 @@ def createVariantenGraph(metenisweten, varianten):
             varianten_totaal[variantcode].append(percentage * geschat_ziek)
 
 
-        if totaal_percentage > 1.15:
-            logError("Totaal percentage varianten op %s: %.2f" % (key,totaal_percentage))
+        if totaal_percentage > 1.000001:
+            logError(
+                "Variantenweek %s overgeslagen: exclusief totaal is %.2f%%."
+                % (key, totaal_percentage * 100)
+            )
+            varianten_totaal['x'].pop()
+            for variantcode in variantcodes.keys():
+                if variantcode != 'onbekend':
+                    varianten_totaal[variantcode].pop()
+            continue
 
 
         # If percentage does not add up to 1 (100%), add this as "onbekend" (unknown)    
         gap = max(0,(1 - totaal_percentage) * geschat_ziek)
-        # print("Variant onbekend gap : %.2f" % gap)
+        # A positive remainder is expected when the RIVM sample contains sequences
+        # that are not represented by one of the published variant categories. It is
+        # plotted as "Onbekend" and is not a taxonomy/build warning. Negative
+        # residuals, unresolved parents and totals above the sample size are already
+        # rejected and logged while constructing the exclusive weeks above.
         varianten_totaal['onbekend'].append(gap)
-        if gap > 1000.0:
-            logError('Percentages niet compleet voor %s, onbekend: %d (%.2f%%)' % (key, gap, (1 - totaal_percentage)*100))
 
     date_range = brondata.getDateRange(metenisweten)
     lastDays = arguments.lastDays()
@@ -235,22 +275,46 @@ def createVariantenGraph(metenisweten, varianten):
         opnamekans['kans'].append(kans)
 
 
-    # Find when a variant becomes dominant
-    dominance = []
+    # Find candidates above 50%; dominance is only confirmed after two
+    # consecutive qualifying pooled windows.
+    dominance_candidates = []
     for i in range(len(varianten_totaal['x'])):
         n = 0
         dominant = ''
+        total = sum(
+            varianten_totaal[code][i]
+            for code in variantcodes
+            if varianten_totaal[code][i] == varianten_totaal[code][i]
+        )
         for code in variantcodes.keys():
+            if code == 'onbekend':
+                continue
             # print("%s %d" %(code, varianten_totaal[code][i]))
             if varianten_totaal[code][i] > n:
                 n = varianten_totaal[code][i]
                 dominant = code
-        print('%s dominant: %s (%d)' % (varianten_totaal['x'][i], dominant, n))        
-        dominance.append(dominant)
+        if total <= 0 or n / total <= 0.5:
+            dominant = ''
+        dominance_candidates.append(dominant)
+    dominance = confirmed_dominance(dominance_candidates)
 
 
-    # Dominant variants:
-    top_variants = set(dominance)
+    visible_indices = [
+        index
+        for index, observation_date in enumerate(varianten_totaal['x'])
+        if date_range[0] <= observation_date <= date_range[-1]
+    ]
+    visible_dominance = [
+        dominance[index] for index in visible_indices if dominance[index]
+    ]
+
+    # Only retain variants that matter in the visible graph. Previously the
+    # 365-day graph included every variant that had ever been dominant.
+    top_variants = set(visible_dominance)
+    if any(
+        varianten_totaal['onbekend'][index] > 0 for index in visible_indices
+    ):
+        top_variants.add('onbekend')
 
     print("Variants which became dominant: %s" % top_variants)
 
@@ -264,11 +328,19 @@ def createVariantenGraph(metenisweten, varianten):
     # for k in totals.keys(): top_variants.append(k)
     # top_variants=top_variants[-3:]
 
-    # Top add 3 today to the variants which became dominant at some point
+    if not visible_indices:
+        raise ValueError(
+            "No variant data between %s and %s; newest variant week is %s. "
+            "Run scripts/updateActiveSources.py rivm_variants."
+            % (date_range[0].date(), date_range[-1].date(), varianten_totaal['x'][-1].date())
+        )
+
+    # Add the five largest variants at the end of the visible period.
+    latest_visible_index = visible_indices[-1]
     for code in variantcodes:
-        totals[code] = varianten_totaal[code][-1]
+        totals[code] = varianten_totaal[code][latest_visible_index]
     totals=dict(sorted(totals.items(),key=lambda x:x[1]))
-    top_variants.update(list(totals.keys())[-3:])
+    top_variants.update(list(totals.keys())[-5:])
 
     print("Top variants including dominants are: %s" % top_variants)
     varianten_totaal['overig'] = [0] * len(varianten_totaal['x'])
@@ -278,6 +350,24 @@ def createVariantenGraph(metenisweten, varianten):
         if key not in top_variants and key != 'x' and key != 'totaal':
             varianten_totaal['overig'] = [ x + y for x,y in zip(varianten_totaal['overig'], varianten_totaal[key])]
             varianten_totaal.pop(key, None)
+
+    visible_values = [
+        value
+        for observation_date, value in zip(
+            varianten_totaal['x'], varianten_totaal['totaal']
+        )
+        if date_range[0] <= observation_date <= date_range[-1]
+    ]
+    visible_values.extend(
+        value
+        for observation_date, value in zip(totaal_ziek['x'], totaal_ziek['y'])
+        if date_range[0] <= observation_date <= date_range[-1]
+    )
+    y_maximum, y_step = nice_axis_scale(visible_values)
+    y_ticks = [
+        index * y_step
+        for index in range(int(round(y_maximum / y_step)) + 1)
+    ]
 
     # record['Variant_code'],
     # record['Variant_name'],
@@ -350,14 +440,14 @@ def createVariantenGraph(metenisweten, varianten):
 
     # smoothkans = opnamekans['kans']
     # smoothkans = smooth(opnamekans['kans'])
-    smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
-
-    ax2.plot(opnamekans['x'], 
-            smoothkans, 
-            color='darkblue',
-            linestyle='--', 
-            label='Opnamekans bij besmetting (nu: %s%%)' % decimalstring(round(smoothkans[-1],1)),
-            alpha=0.7)
+    if opnamekans['kans']:
+        smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
+        ax2.plot(opnamekans['x'],
+                smoothkans,
+                color='darkblue',
+                linestyle='--',
+                label='Opnamekans bij besmetting (nu: %s%%)' % decimalstring(round(smoothkans[-1],1)),
+                alpha=0.7)
 
 
     # print('reversed %s' % ax1.legend().legendHandles)
@@ -369,18 +459,52 @@ def createVariantenGraph(metenisweten, varianten):
     #          label='Totaal per dag (nu: %s)' % totaal_prikken)
 
 
-    for i in range(len(dominance)):
-        if i == 0 or dominance[i] != dominance[i-1]:
+    # Reverse sort the legend and place upper left
+    handles, labels = ax1.get_legend_handles_labels()   #get the handles
+    if lastDays > 0:
+        legends = [ax1.legend(reversed(handles), reversed(labels), loc="upper left")]
+    else:
+        legends = [ax1.legend(reversed(handles), reversed(labels), loc="upper left", ncol=2, fontsize=7)]
 
-            ax1.annotate(
-                "%s\nDominant:\n%s" % (varianten_totaal['x'][i].strftime("%Y-%m-%d"), variantcodes.get(dominance[i], dominance[i])),
-                xy=(varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
-                xytext=(varianten_totaal['x'][i], varianten_totaal['totaal'][i] + 200000),
-                fontsize=8,
-                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
-                ha='center',
-                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
-            )
+    if opnamekans['kans']:
+        legends.append(ax2.legend(loc="upper right"))
+
+    ax1.set_xlim([date_range[0], date_range[-1]])
+    ax1.set_ylim([0, y_maximum])
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    plot_area = ax1.get_window_extent(renderer)
+    occupied = [legend.get_window_extent(renderer) for legend in legends]
+
+    annotated_variants = set()
+    first_visible_index = visible_indices[0]
+    initial_dominant = (
+        dominance[first_visible_index - 1] if first_visible_index > 0 else ''
+    )
+    for i in visible_indices:
+        dominant = dominance[i]
+        if dominant and dominant not in annotated_variants:
+            annotated_variants.add(dominant)
+            is_initial_dominant = dominant == initial_dominant
+            annotation_x = varianten_totaal['x'][i]
+            if is_initial_dominant:
+                annotation_x = min(
+                    annotation_x + timedelta(days=120), date_range[-1]
+                )
+                annotation_text = "%s al dominant\nbij begin periode" % (
+                    variantcodes.get(dominant, dominant)
+                )
+            else:
+                annotation_text = "%s dominant\n%s" % (
+                    variantcodes.get(dominant, dominant),
+                    varianten_totaal['x'][i].strftime("%Y-%m-%d"),
+                )
+
+            occupied.append(place_label(
+                ax1, renderer, plot_area, occupied, annotation_text,
+                (varianten_totaal['x'][i], varianten_totaal['totaal'][i]),
+                annotation_x, y_maximum,
+            ))
     
 
     # graphname='variants'
@@ -400,7 +524,7 @@ def createVariantenGraph(metenisweten, varianten):
     plt.text(
         x=dateCache.today(),
         y=0,
-        s=datetime.now().strftime("%d"), 
+        s=reference_datetime(metenisweten).strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -411,15 +535,15 @@ def createVariantenGraph(metenisweten, varianten):
     plt.axvline(dateCache.today(), color='red', linewidth=0.5)
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-    ax1.set_ylim([0, 1600000])
-    ax1.set_yticks      ([ 200000, 400000, 600000, 800000, 1000000, 1200000,1400000,1600000])
-    ax1.set_yticklabels([  '200k', '400k', '600k', '800k',  '1.0M',  '1.2M', '1.4M', '1.6M'])
+    ax1.set_ylim([0, y_maximum])
+    ax1.set_yticks(y_ticks)
+    ax1.set_yticklabels([compact_number(value) for value in y_ticks])
 
     ax2.set_ylim([0, 2.0])
     ax2.set_yticks      ([ 0.5,    1,     1.5,    2,   ])
     ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%'])
 
-    gegenereerd_op=datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
     filedate=data_tot
 
@@ -429,20 +553,20 @@ def createVariantenGraph(metenisweten, varianten):
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 
-    footerright="Publicatiedatum RIVM "+filedate+".\nBron: https://data.rivm.nl/covid-19/COVID-19_varianten.json + besmettingdata"
+    latest_sample_size = rolling_samples[data_tot]
+    footerright=(
+        "Publicatiedatum RIVM " + filedate + ". "
+        "Variantverdeling: gewogen over 4 weken (n="
+        + str(latest_sample_size) + ").\n"
+        "Bron: https://data.rivm.nl/covid-19/COVID-19_varianten.json + besmettingdata"
+    )
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
-
-    # Reverse sort the legend and place upper left
-    handles, labels = ax1.get_legend_handles_labels()   #get the handles
-    ax1.legend(reversed(handles), reversed(labels), loc="upper left")
-
-    ax2.legend(loc="upper right")
 
 
     if (lastDays > 0):
-        filename = "../docs/graphs/variants-"+str(lastDays)+".svg"
+        filename = GRAPHS_DIR / ("variants-"+str(lastDays)+".svg")
     else:
-        filename = "../docs/graphs/variants.svg"
+        filename = GRAPHS_DIR / "variants.svg"
     
     print(f"Saving to {filename}")
     plt.savefig(filename, format="svg")

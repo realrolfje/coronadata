@@ -9,11 +9,13 @@ import sys
 import modules.brondata as brondata
 from math import log
 from modules.brondata import decimalstring
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createSchattingAfwijkingGraph(metenisweten)
 
 def createSchattingAfwijkingGraph(metenisweten):
@@ -33,6 +35,10 @@ def createSchattingAfwijkingGraph(metenisweten):
     teta = {
         'x' : [],
         'y' : []
+    }
+    ari = {
+        'x': [],
+        'y': []
     }
 
     gamma = {
@@ -85,6 +91,10 @@ def createSchattingAfwijkingGraph(metenisweten):
             teta['x'].append(parser.parse(datum))
             teta['y'].append(metenisweten[datum]['rivm_infectieradar_perc'] * tetascale)
 
+        if metenisweten[datum].get('rivm_infectieradar_ari_perc') is not None:
+            ari['x'].append(parser.parse(datum))
+            ari['y'].append(metenisweten[datum]['rivm_infectieradar_ari_perc'] * tetascale)
+
             
     if debug:
         beta['y'] = brondata.smooth(beta['y'])
@@ -119,6 +129,7 @@ def createSchattingAfwijkingGraph(metenisweten):
         facecolor='blue', alpha=0.1, interpolate=True)
 
     ax1.plot(teta['x'], teta['y'], color='cyan', label='Infectieradar COVID-19 klachten (percentage x'+decimalstring(tetascale)+')')
+    ax1.plot(ari['x'], ari['y'], color='darkcyan', label='Infectieradar acute luchtwegklachten (percentage x'+decimalstring(tetascale)+')')
 
     ax2.plot(gamma['x'], gamma['y'], color='lightgreen', label='Afwijking @rolfje t.o.v. RIVM schatting in %')
 
@@ -127,12 +138,12 @@ def createSchattingAfwijkingGraph(metenisweten):
 
     ax1.set_xlabel("Datum")
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     plt.title('Afwijking schatting @rolfje t.o.v. RIVM schatting, '+gegenereerd_op)
 
     ax1.legend(loc="upper left")
     ax2.legend(loc="upper right")
-    plt.savefig("../docs/graphs/schattingafwijking.svg", format="svg")
+    plt.savefig(GRAPHS_DIR / "schattingafwijking.svg", format="svg")
     #plt.show()
 
 if __name__ == '__main__':

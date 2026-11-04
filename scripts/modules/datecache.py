@@ -26,7 +26,7 @@ class DateCache:
             self.cacheMisses += 1
 
             # Turn dd-mm-yyyy into yyyy-mm-dd if needed
-            if re.search('-\d{4}$', dateString):
+            if re.search(r'-\d{4}$', dateString):
                 dateString = datetime.datetime.strptime(dateString, "%d-%m-%Y").strftime("%Y-%m-%d")
 
             parseddate = parser.parse(dateString)
@@ -35,7 +35,7 @@ class DateCache:
 
 
     def sanitizeDate(self, dateString:str) -> str:
-        self.parse(dateString).strftime("%Y-%m-%d")        
+        return self.parse(dateString).strftime("%Y-%m-%d")
 
 
     def isvaliddate(self, datestring: str, filename:str=None) -> bool:
@@ -58,7 +58,7 @@ class DateCache:
             return True
         except Exception as ex:
             if filename:
-                print('Ignoring invalid date '+datestring+' in '+filename+'.')
+                print(f'Ignoring invalid date {datestring!r} in {filename}.')
             return False
 
 

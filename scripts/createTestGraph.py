@@ -5,12 +5,13 @@
 from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
 import sys 
 from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createTestGraph(metenisweten)
 
 def createTestGraph(metenisweten):
@@ -96,7 +97,7 @@ def createTestGraph(metenisweten):
 
     ax1.legend(loc="upper left")
     #ax2.legend(loc="upper right")
-    plt.savefig("../docs/graphs/testplot.svg", format="svg")
+    plt.savefig(GRAPHS_DIR / "testplot.svg", format="svg")
     # plt.savefig("../docs/graphs/testplot.png", format="png", dpi=180/2)
     # plt.show()
 

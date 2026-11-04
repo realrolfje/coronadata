@@ -1,0 +1,313 @@
+{
+  "all_metrics_match": true,
+  "intentional_differences": [
+    "Null legacy fields are omitted rather than stored as observations.",
+    "Legacy date strings and display metadata are not observations.",
+    "Nested age groups and variants become dimensions instead of dynamic columns."
+  ],
+  "metric_count": 43,
+  "metrics": {
+    "covid_case_mean_age": {
+      "legacy_count": 548,
+      "legacy_sha256": "eb9b2611baf67eefbb26802161334dfc3c7ca7ad0b942dd6b56d696409fd7934",
+      "matches": true,
+      "normalized_count": 548,
+      "normalized_sha256": "eb9b2611baf67eefbb26802161334dfc3c7ca7ad0b942dd6b56d696409fd7934"
+    },
+    "covid_cases_by_age_group": {
+      "legacy_count": 5470,
+      "legacy_sha256": "6d8383c96f37cd0a28ca5ad3f4c67dca9d7bc218a35583682ad158997217fdfe",
+      "matches": true,
+      "normalized_count": 5470,
+      "normalized_sha256": "6d8383c96f37cd0a28ca5ad3f4c67dca9d7bc218a35583682ad158997217fdfe"
+    },
+    "covid_cases_cumulative": {
+      "legacy_count": 2406,
+      "legacy_sha256": "ed1d6440d927c1990c1ae9f5e27a06109614545259d8cfe4070979c5a6e8b0c2",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "ed1d6440d927c1990c1ae9f5e27a06109614545259d8cfe4070979c5a6e8b0c2"
+    },
+    "covid_cases_daily": {
+      "legacy_count": 2406,
+      "legacy_sha256": "1fe23e1ab534f5324b5fb58f75b52e9ae4da3b99542a4690bdc5c942f5779633",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "1fe23e1ab534f5324b5fb58f75b52e9ae4da3b99542a4690bdc5c942f5779633"
+    },
+    "covid_deaths_cumulative": {
+      "legacy_count": 2406,
+      "legacy_sha256": "832cce7ed92903dc324d08859523bf2e8470e289e95bd7e05e26b0db6c18aafd",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "832cce7ed92903dc324d08859523bf2e8470e289e95bd7e05e26b0db6c18aafd"
+    },
+    "covid_deaths_daily": {
+      "legacy_count": 2406,
+      "legacy_sha256": "cbeb109ae85fb154d9b4bf11f0140d40b17301f24c0f1a05436683e7ab60b62f",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "cbeb109ae85fb154d9b4bf11f0140d40b17301f24c0f1a05436683e7ab60b62f"
+    },
+    "covid_hospital_admissions_cumulative": {
+      "legacy_count": 2406,
+      "legacy_sha256": "480f01fb7550f0117f635449eebec7d442b9db1e85a14c9394cd115a097ad959",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "480f01fb7550f0117f635449eebec7d442b9db1e85a14c9394cd115a097ad959"
+    },
+    "covid_hospital_admissions_daily": {
+      "legacy_count": 2406,
+      "legacy_sha256": "7fb18f07c014fd3f589b20d09e24b850ce3d90a8f6a83f1fff48ce33bfab7737",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "7fb18f07c014fd3f589b20d09e24b850ce3d90a8f6a83f1fff48ce33bfab7737"
+    },
+    "covid_icu_intake_cumulative": {
+      "legacy_count": 2406,
+      "legacy_sha256": "d9917eabf0baf873cbd2b95cd07173c8a33e906be5760f1ef9458224ee4546d2",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "d9917eabf0baf873cbd2b95cd07173c8a33e906be5760f1ef9458224ee4546d2"
+    },
+    "covid_icu_occupancy": {
+      "legacy_count": 1405,
+      "legacy_sha256": "42da57c4c29d53970d93152694f17631cf483c1cee9bfe00d6972909715d40c6",
+      "matches": true,
+      "normalized_count": 1405,
+      "normalized_sha256": "42da57c4c29d53970d93152694f17631cf483c1cee9bfe00d6972909715d40c6"
+    },
+    "covid_icu_occupancy_lcps": {
+      "legacy_count": 514,
+      "legacy_sha256": "8c0207d4ec8bcc146481239362de1cc2b9436099afca649f14365850dfa17830",
+      "matches": true,
+      "normalized_count": 514,
+      "normalized_sha256": "8c0207d4ec8bcc146481239362de1cc2b9436099afca649f14365850dfa17830"
+    },
+    "covid_persons_positive_weekly": {
+      "legacy_count": 329,
+      "legacy_sha256": "79bad8a46ff761a950ffb28de474b9f0eb05ed989d1f6785f854d67902308f3b",
+      "matches": true,
+      "normalized_count": 329,
+      "normalized_sha256": "79bad8a46ff761a950ffb28de474b9f0eb05ed989d1f6785f854d67902308f3b"
+    },
+    "covid_persons_tested_weekly": {
+      "legacy_count": 329,
+      "legacy_sha256": "3d8999805077435faefa2b640f2b5fbd3c3ef5b3d4f546bd3057078516145008",
+      "matches": true,
+      "normalized_count": 329,
+      "normalized_sha256": "3d8999805077435faefa2b640f2b5fbd3c3ef5b3d4f546bd3057078516145008"
+    },
+    "covid_positive_tests_daily": {
+      "legacy_count": 530,
+      "legacy_sha256": "e87b2c64fcda59331f12edf1d20527950f2f5d239c3157646df292ceeff41f65",
+      "matches": true,
+      "normalized_count": 530,
+      "normalized_sha256": "e87b2c64fcda59331f12edf1d20527950f2f5d239c3157646df292ceeff41f65"
+    },
+    "covid_reporting_test_labs": {
+      "legacy_count": 329,
+      "legacy_sha256": "c5584e46c66d982ccc7eaca5586bdfba2a7325cba19d05138314ec77b5963fb3",
+      "matches": true,
+      "normalized_count": 329,
+      "normalized_sha256": "c5584e46c66d982ccc7eaca5586bdfba2a7325cba19d05138314ec77b5963fb3"
+    },
+    "covid_reproduction_number": {
+      "legacy_count": 632,
+      "legacy_sha256": "336bdab9212dcb2e293ea0bd4804210e47c2383d38f90d4815ee28d550b238eb",
+      "matches": true,
+      "normalized_count": 632,
+      "normalized_sha256": "336bdab9212dcb2e293ea0bd4804210e47c2383d38f90d4815ee28d550b238eb"
+    },
+    "covid_reproduction_number_high": {
+      "legacy_count": 644,
+      "legacy_sha256": "79045bb56e4ed2370705b9d6a726301cdafb26d593e67b528e08b9cd4f30acb9",
+      "matches": true,
+      "normalized_count": 644,
+      "normalized_sha256": "79045bb56e4ed2370705b9d6a726301cdafb26d593e67b528e08b9cd4f30acb9"
+    },
+    "covid_reproduction_number_low": {
+      "legacy_count": 644,
+      "legacy_sha256": "7978ff2bcd8e4acecd725a232005ba1bb0b7f5281c11b84170a8241475282238",
+      "matches": true,
+      "normalized_count": 644,
+      "normalized_sha256": "7978ff2bcd8e4acecd725a232005ba1bb0b7f5281c11b84170a8241475282238"
+    },
+    "covid_tests_daily": {
+      "legacy_count": 530,
+      "legacy_sha256": "d4fc666e7e530afd47214476ec50baa9264557cf77e2b4fcdf3e23ef649874d9",
+      "matches": true,
+      "normalized_count": 530,
+      "normalized_sha256": "d4fc666e7e530afd47214476ec50baa9264557cf77e2b4fcdf3e23ef649874d9"
+    },
+    "covid_ward_occupancy": {
+      "legacy_count": 2406,
+      "legacy_sha256": "44ab1039aad0110fb906a977a8cd6978f331670b2309f0d1a9b49448a76eff1d",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "44ab1039aad0110fb906a977a8cd6978f331670b2309f0d1a9b49448a76eff1d"
+    },
+    "covid_ward_occupancy_lcps": {
+      "legacy_count": 514,
+      "legacy_sha256": "d0a4c097a56952cecc52e5cac2955c1d96ced799503eaf40bbf79176af4978ff",
+      "matches": true,
+      "normalized_count": 514,
+      "normalized_sha256": "d0a4c097a56952cecc52e5cac2955c1d96ced799503eaf40bbf79176af4978ff"
+    },
+    "estimated_infectious_coronadata": {
+      "legacy_count": 754,
+      "legacy_sha256": "921af6497214ba4dd0c931025d604b9f0b7a8cf06e1dac36c78fc1a6b487d4a4",
+      "matches": true,
+      "normalized_count": 754,
+      "normalized_sha256": "921af6497214ba4dd0c931025d604b9f0b7a8cf06e1dac36c78fc1a6b487d4a4"
+    },
+    "estimated_infectious_from_wastewater": {
+      "legacy_count": 1923,
+      "legacy_sha256": "e9584014032c7da375197403721cf98245bb738302641288e7a3bbce1253e8e2",
+      "matches": true,
+      "normalized_count": 1923,
+      "normalized_sha256": "e9584014032c7da375197403721cf98245bb738302641288e7a3bbce1253e8e2"
+    },
+    "infectieradar_ari_symptoms_percentage": {
+      "legacy_count": 761,
+      "legacy_sha256": "6a7e7a4db9a0d1c47d7f185f50f118cd39d2a3622598121b53d0bb3a469cc1d4",
+      "matches": true,
+      "normalized_count": 761,
+      "normalized_sha256": "6a7e7a4db9a0d1c47d7f185f50f118cd39d2a3622598121b53d0bb3a469cc1d4"
+    },
+    "infectieradar_covid_symptoms_percentage": {
+      "legacy_count": 1083,
+      "legacy_sha256": "de34599adc3b000b0a9b5792f0235932912bf2f6b8f0d782ad334dcc108fd740",
+      "matches": true,
+      "normalized_count": 1083,
+      "normalized_sha256": "de34599adc3b000b0a9b5792f0235932912bf2f6b8f0d782ad334dcc108fd740"
+    },
+    "noncovid_icu_occupancy_lcps": {
+      "legacy_count": 463,
+      "legacy_sha256": "2c46f4f2409108e4e7cdaceca163fb8ee718c3c6266c422e26e01387fecf2921",
+      "matches": true,
+      "normalized_count": 463,
+      "normalized_sha256": "2c46f4f2409108e4e7cdaceca163fb8ee718c3c6266c422e26e01387fecf2921"
+    },
+    "rivm_estimated_infectious": {
+      "legacy_count": 488,
+      "legacy_sha256": "c17720fc7e5331a0ea7de2a6a2543c4028ca517b3e13c275157581f0e0e32096",
+      "matches": true,
+      "normalized_count": 488,
+      "normalized_sha256": "c17720fc7e5331a0ea7de2a6a2543c4028ca517b3e13c275157581f0e0e32096"
+    },
+    "rivm_estimated_infectious_high": {
+      "legacy_count": 494,
+      "legacy_sha256": "af3225c274f9f0244a63465b86703cc4e751f007b2c13675fef1391a7e20754a",
+      "matches": true,
+      "normalized_count": 494,
+      "normalized_sha256": "af3225c274f9f0244a63465b86703cc4e751f007b2c13675fef1391a7e20754a"
+    },
+    "rivm_estimated_infectious_low": {
+      "legacy_count": 494,
+      "legacy_sha256": "cd03ed37e0104dfbd82be3e48c1887f46ef30b0161c7a65f9a4cb67dc0cab2f4",
+      "matches": true,
+      "normalized_count": 494,
+      "normalized_sha256": "cd03ed37e0104dfbd82be3e48c1887f46ef30b0161c7a65f9a4cb67dc0cab2f4"
+    },
+    "sars_cov_2_variant_cases": {
+      "legacy_count": 11746,
+      "legacy_sha256": "4346d1657d60f5fe71f9dc0da567396d404af2e172edd35a2a523df166e76835",
+      "matches": true,
+      "normalized_count": 11746,
+      "normalized_sha256": "4346d1657d60f5fe71f9dc0da567396d404af2e172edd35a2a523df166e76835"
+    },
+    "sars_cov_2_variant_sample_size": {
+      "legacy_count": 11746,
+      "legacy_sha256": "e52f635c7c227cbac777b46dcac357c3b3257702a8d20dca38a92d4811c60860",
+      "matches": true,
+      "normalized_count": 11746,
+      "normalized_sha256": "e52f635c7c227cbac777b46dcac357c3b3257702a8d20dca38a92d4811c60860"
+    },
+    "vaccinations_astra_zeneca": {
+      "legacy_count": 73,
+      "legacy_sha256": "64cb44097511a18f609dcc19d36cbb19fe36c27e78ff8383847e15cfc68e372a",
+      "matches": true,
+      "normalized_count": 73,
+      "normalized_sha256": "64cb44097511a18f609dcc19d36cbb19fe36c27e78ff8383847e15cfc68e372a"
+    },
+    "vaccinations_cure_vac": {
+      "legacy_count": 1,
+      "legacy_sha256": "16631d7b013cabb852c12f46a2a171faa2e4734ca50cea3cdcd5967c774ac7b9",
+      "matches": true,
+      "normalized_count": 1,
+      "normalized_sha256": "16631d7b013cabb852c12f46a2a171faa2e4734ca50cea3cdcd5967c774ac7b9"
+    },
+    "vaccinations_janssen": {
+      "legacy_count": 73,
+      "legacy_sha256": "d491220873a1fd3397a7e56ca16a593b5a459dcafed447b4a3935e8301562fbe",
+      "matches": true,
+      "normalized_count": 73,
+      "normalized_sha256": "d491220873a1fd3397a7e56ca16a593b5a459dcafed447b4a3935e8301562fbe"
+    },
+    "vaccinations_moderna": {
+      "legacy_count": 73,
+      "legacy_sha256": "9ecd56059ac8526985c69263eb4f15459592428ac4da65a252cbdbe3b6f10d43",
+      "matches": true,
+      "normalized_count": 73,
+      "normalized_sha256": "9ecd56059ac8526985c69263eb4f15459592428ac4da65a252cbdbe3b6f10d43"
+    },
+    "vaccinations_pfizer": {
+      "legacy_count": 73,
+      "legacy_sha256": "89086b7a2ef5438b19ad0dbc73ed259a779433a4bd2b1e82de65bb4cd83df63f",
+      "matches": true,
+      "normalized_count": 73,
+      "normalized_sha256": "89086b7a2ef5438b19ad0dbc73ed259a779433a4bd2b1e82de65bb4cd83df63f"
+    },
+    "vaccinations_sanofi": {
+      "legacy_count": 1,
+      "legacy_sha256": "16631d7b013cabb852c12f46a2a171faa2e4734ca50cea3cdcd5967c774ac7b9",
+      "matches": true,
+      "normalized_count": 1,
+      "normalized_sha256": "16631d7b013cabb852c12f46a2a171faa2e4734ca50cea3cdcd5967c774ac7b9"
+    },
+    "vaccinations_totaal": {
+      "legacy_count": 73,
+      "legacy_sha256": "a7d732e9ccea7a5e8207bdfe7e5497aac599cbf597334b8f0cf9cc819c0b7078",
+      "matches": true,
+      "normalized_count": 73,
+      "normalized_sha256": "a7d732e9ccea7a5e8207bdfe7e5497aac599cbf597334b8f0cf9cc819c0b7078"
+    },
+    "vaccinations_totaal_geschat": {
+      "legacy_count": 1,
+      "legacy_sha256": "7309afca7e2dae530289bdcbcc9fd64f0ae472673c5af9b45d05b832e1f43d0c",
+      "matches": true,
+      "normalized_count": 1,
+      "normalized_sha256": "7309afca7e2dae530289bdcbcc9fd64f0ae472673c5af9b45d05b832e1f43d0c"
+    },
+    "vaccinations_totaal_mensen_geschat": {
+      "legacy_count": 1,
+      "legacy_sha256": "06d08d7f3f182687dba55d730d529e62fb368504e7b99d329b032f9e138daf19",
+      "matches": true,
+      "normalized_count": 1,
+      "normalized_sha256": "06d08d7f3f182687dba55d730d529e62fb368504e7b99d329b032f9e138daf19"
+    },
+    "wastewater_measurement_count": {
+      "legacy_count": 2406,
+      "legacy_sha256": "4f7730d2612fcff2f2ebbde453339440d3879045b2e28f20b1e3c0c410610471",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "4f7730d2612fcff2f2ebbde453339440d3879045b2e28f20b1e3c0c410610471"
+    },
+    "wastewater_rna_flow_average": {
+      "legacy_count": 2406,
+      "legacy_sha256": "9013ce8f24dac55438c9d9fc22bfadba3a7e108d2a007705fbc95b8963e5a05d",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "9013ce8f24dac55438c9d9fc22bfadba3a7e108d2a007705fbc95b8963e5a05d"
+    },
+    "wastewater_rna_flow_sum": {
+      "legacy_count": 2406,
+      "legacy_sha256": "c41b380a05d3ff087af6d98de2b0cb640375296aa54f64d794b4bc189a24921a",
+      "matches": true,
+      "normalized_count": 2406,
+      "normalized_sha256": "c41b380a05d3ff087af6d98de2b0cb640375296aa54f64d794b4bc189a24921a"
+    }
+  },
+  "schema_version": 1
+}

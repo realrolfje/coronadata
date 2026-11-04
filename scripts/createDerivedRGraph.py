@@ -5,12 +5,13 @@
 from matplotlib import pyplot as plt
 from dateutil import dateCache
 import modules.brondata as brondata
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
 from modules.datautil import runIfNewData
 from modules.brondata import dateCache
 
 runIfNewData(__file__)
 
-metenisweten = brondata.readjson('../data/daily-stats.json')
+metenisweten = brondata.readjson(DAILY_STATS)
 
 alpha = {
     'x': [],
@@ -112,7 +113,7 @@ plt.title('Test RNA berekening')
 
 ax1.legend(loc="upper left")
 ax2.legend(loc="upper right")
-plt.savefig("../docs/graphs/derivedRgraph.svg", format="svg")
+plt.savefig(GRAPHS_DIR / "derivedRgraph.svg", format="svg")
 # plt.savefig("../docs/graphs/testplot.png", format="png", dpi=180/2)
 # plt.show()
 

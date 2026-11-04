@@ -3,9 +3,36 @@
 #
 
 from datetime import datetime, timedelta
-from sre_compile import isstring
+import os
 from . brondata import freshdata, isnewer, dateCache
 from . arguments import isForce
+from .defaults import DAILY_STATS
+
+LABEL_ROWS = (0.88, 0.76, 0.64, 0.52, 0.40, 0.28, 0.16)
+
+
+def place_label(ax, renderer, plot_area, occupied, text, point, label_x, y_maximum):
+    """Annotates point with text that does not cover an occupied box. Returns the label box."""
+    for row in LABEL_ROWS:
+        probe = ax.text(label_x, y_maximum * row, text, fontsize=8, ha='center')
+        box = probe.get_window_extent(renderer).padded(6)
+        probe.remove()
+        inside = (
+            box.x0 >= plot_area.x0 and box.x1 <= plot_area.x1
+            and box.y0 >= plot_area.y0 and box.y1 <= plot_area.y1
+        )
+        if (inside and not any(box.overlaps(other) for other in occupied)) or row == LABEL_ROWS[-1]:
+            ax.annotate(
+                text,
+                xy=point,
+                xytext=(label_x, y_maximum * row),
+                fontsize=8,
+                bbox=dict(boxstyle='round,pad=0.4', fc='ivory', alpha=0.7),
+                ha='center',
+                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.1')
+            )
+            return box
+
 
 def anotate(plt, xdata, ydata, datum, tekst, x, y):
     if isinstance(datum, str):
@@ -66,9 +93,13 @@ def anotate(plt, xdata, ydata, datum, tekst, x, y):
 
 def runIfNewData(filename):
     print("------------ %s ------------" % filename)
-    if freshdata():
+    if os.environ.get('CORONADATA_RENDER_ONLY') == '1':
+        print("Render-only mode: use existing processed data without downloading or rebuilding it.")
+    elif os.environ.get('CORONADATA_DATA_READY') == '1':
+        print("Pipeline stages already completed; render the prepared data.")
+    elif freshdata():
         print("New data, regenerate output.")
-    elif isnewer(filename, '../data/daily-stats.json'):
+    elif isnewer(filename, DAILY_STATS):
         print("Script newer than the data, regenerate output.")
     elif isForce():
         print("Force, regenerate output.")

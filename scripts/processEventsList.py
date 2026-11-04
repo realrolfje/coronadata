@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 #
 import modules.brondata as brondata
+from modules.defaults import DATA_DIR, DOCS_DIR
 from string import Template
 from modules.datautil import runIfNewData
 import sys
 
 def main():
     runIfNewData(__file__)
-    events = brondata.readjson('../data/measures-events.json')
+    events = brondata.readjson(DATA_DIR / 'measures-events.json')
     processEventsList(events)
 
 def processEventsList(events):
-    outputfilename = '../docs/events.html'
+    outputfilename = DOCS_DIR / 'events.html'
     with open(outputfilename, 'w') as outputfile:
         outputfile.write("""<html>
     <head>

@@ -8,16 +8,66 @@ from string import Template
 from os import listdir
 from os.path import isfile, join, basename
 import csv
+import hashlib
 from modules.datautil import runIfNewData
+from modules.defaults import CACHE_DIR, DAILY_STATS, DOCS_DIR, GRAPHS_DIR, PROJECT_ROOT, TEMPLATES_DIR
+from modules.buildtime import reference_datetime
+from createLaboratoriumGraph import parse_percentage
+from pipeline.sari import parse as parse_sari
 
 runIfNewData(__file__)
 
-templatedir = '../docs/templates'
-outputdir = '../docs'
+templatedir = TEMPLATES_DIR
+outputdir = DOCS_DIR
 
-metenisweten = brondata.readjson('../data/daily-stats.json')
+metenisweten = brondata.readjson(DAILY_STATS)
+
+# Weekly surveillance can legitimately trail the build date by more than seven
+# days. Two reporting weeks separates current values from ended historical data.
+FRESHNESS_DAYS = 14
+build_reference_date = reference_datetime(metenisweten).date()
+
+
+def freshness_color(color, observation_date):
+    """Keep the signal color only while the underlying metric is recent."""
+    try:
+        age = (build_reference_date - datetime.date.fromisoformat(observation_date)).days
+    except (TypeError, ValueError):
+        return "stale"
+    return color if age <= FRESHNESS_DAYS else "stale"
+
+variant_graph_hash = hashlib.sha256()
+for variant_graph in (GRAPHS_DIR / "variants.svg", GRAPHS_DIR / "variants-365.svg"):
+    if variant_graph.exists():
+        variant_graph_hash.update(variant_graph.read_bytes())
+variant_graph_version = variant_graph_hash.hexdigest()[:12]
 
 dates=[]
+
+def latest_date(predicate):
+    matching = [date for date, record in metenisweten.items() if predicate(record)]
+    return max(matching) if matching else "onbekend"
+
+
+varianten_datum = latest_date(
+    lambda record: any(
+        (variant.get('sample_size') or variant.get('cases'))
+        for variant in record.get('varianten', {}).values()
+    )
+)
+ziekenhuis_datum = latest_date(
+    lambda record: bool(record.get('nu_opgenomen')) or bool(record.get('nu_op_ic'))
+)
+ari_datum = latest_date(
+    lambda record: record.get('rivm_infectieradar_ari_perc') is not None
+)
+tests_datum = latest_date(
+    lambda record: record.get('rivm_totaal_tests') is not None
+    or record.get('rivm_totaal_personen_getest') is not None
+)
+casus_datum = latest_date(
+    lambda record: any(record.get('besmettingleeftijd', {}).values())
+)
 
 gemiddeldeleeftijdarray=[]
 # Assumes last records are newest
@@ -129,8 +179,8 @@ for date in dates[::-1]:
 
 # read errors, if there are any
 errors = ''
-if isfile('../cache/errors.log'):
-    with open('../cache/errors.log', 'r') as file:
+if (CACHE_DIR / 'errors.log').is_file():
+    with (CACHE_DIR / 'errors.log').open() as file:
         errors = '<p class="highlight">Errors during processing:<br/>'
         for error in file.readlines():
             errors = '%s%s<br/>' % (errors, error)
@@ -153,14 +203,15 @@ if errors == '':
 else:
     error_warning = 'met errors'
 
-gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-gegenereerd_datum=datetime.datetime.now().strftime("%Y-%m-%d")
-gegenereerd_tijd=datetime.datetime.now().strftime("%H:%M:ss")
+build_time = reference_datetime(metenisweten)
+gegenereerd_op=build_time.strftime("%Y-%m-%d %H:%M")
+gegenereerd_datum=build_time.strftime("%Y-%m-%d")
+gegenereerd_tijd=build_time.strftime("%H:%M:%S")
 
-with open('prikafspraak/geboortejaar.txt') as f:
+with (PROJECT_ROOT / 'scripts/prikafspraak/geboortejaar.txt').open() as f:
     vaccingeboortejaar=f.read().rstrip()
 
-filename ='../cache/stats.csv'
+filename = CACHE_DIR / 'stats.csv'
 with open(filename, 'r') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     for row in csv_reader:
@@ -169,7 +220,24 @@ with open(filename, 'r') as csv_file:
         if row[0] == 'cache_size':
             cache_size = int(row[1])*1000
 
+laboratorium = max(
+    parse_percentage(CACHE_DIR / 'rivm-laboratory-sars-cov-2-positive-weekly.csv').observations,
+    key=lambda item: item.date,
+)
+laboratorium_positief = round(laboratorium.value, 1)
+
+sari = max(
+    parse_sari(CACHE_DIR / 'rivm-nice-sari-weekly-admissions.csv').observations,
+    key=lambda item: item.date,
+)
+sari_opnames = int(sari.value)
+
 substitutes = {
+    'varianten_datum'     : varianten_datum,
+    'ziekenhuis_datum'    : ziekenhuis_datum,
+    'ari_datum'            : ari_datum,
+    'tests_datum'         : tests_datum,
+    'casus_datum'         : casus_datum,
     'totaal_positief'      : decimalstring(totaal_positief),
     'totaal_positief_num'  : totaal_positief,
     'totaal_positief_datum': totaal_positief_datum,
@@ -189,18 +257,27 @@ substitutes = {
     'ziekverhouding_rna_color': 'green' if eenopXziekRNA > 1000 else 'yellow' if eenopXziekRNA > 500 else 'red',
 
     'ziekverhouding_rolf'      : str(eenopXziekRolf),
-    'ziekverhouding_rolf_color': 'green' if eenopXziekRolf > 1000 else 'yellow' if eenopXziekRolf > 500 else 'red',
+    'ziekverhouding_rolf_color': freshness_color(
+        'green' if eenopXziekRolf > 1000 else 'yellow' if eenopXziekRolf > 500 else 'red',
+        geschat_ziek_nu_rolf_datum,
+    ),
 
     'nu_opgenomen'      : decimalstring(nu_opgenomen),
     'nu_opgenomen_num'  : nu_opgenomen,
     'nu_opgenomen_datum': nu_opgenomen_datum,
-    'nu_opgenomen_color': 'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',
+    'nu_opgenomen_color': freshness_color(
+        'green' if nu_opgenomen < 500 else 'yellow' if nu_opgenomen < 1500 else 'red',
+        nu_opgenomen_datum,
+    ),
     'nu_opgenomen_record_sinds' : nu_opgenomen_record_sinds,
 
     'nu_op_ic'      : decimalstring(nu_op_ic),
     'nu_op_ic_num'  : nu_op_ic,
     'nu_op_ic_datum': nu_op_ic_datum,
-    'nu_op_ic_color': 'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
+    'nu_op_ic_color': freshness_color(
+        'green' if nu_op_ic < 50 else 'yellow' if nu_op_ic < 150 else 'red',
+        nu_op_ic_datum,
+    ),
     'nu_op_ic_record_sinds': nu_op_ic_record_sinds,
 
     'nu_in_ziekenhuis'     : decimalstring(nu_opgenomen + nu_op_ic),
@@ -213,15 +290,32 @@ substitutes = {
     'Rt'      : decimalstring(Rt),
     'Rt_num'  : Rt,
     'Rt_datum': Rt_datum,
-    'Rt_color': 'green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red',
+    'Rt_color': freshness_color('green' if Rt < 0.9 else 'yellow' if Rt < 1 else 'red', Rt_datum),
 
     'vandaag_getest'                   : decimalstring(vandaag_getest),
     'vandaag_getest_datum'             : vandaag_getest_datum,
     'positief_getest'                  : decimalstring(positief_getest),
     'positief_percentage'              : decimalstring(round(positief_percentage,1))+'%',
     'positief_percentage_num'          : round(positief_percentage,1),
-    'positief_percentage_color'        : 'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+    'positief_percentage_color'        : freshness_color(
+        'green' if positief_percentage < 5 else 'yellow' if positief_percentage < 20 else 'red',
+        vandaag_getest_datum,
+    ),
     'positief_percentage_record_sinds' : positief_percentage_record_sinds,
+
+    'laboratorium_positief'       : decimalstring(laboratorium_positief)+'%',
+    'laboratorium_positief_datum' : laboratorium.date,
+    'sari_opnames'       : str(sari_opnames),
+    'sari_opnames_datum' : sari.date,
+    'sari_opnames_color' : freshness_color(
+        'green' if sari_opnames < 75 else 'yellow' if sari_opnames < 150 else 'red',
+        sari.date,
+    ),
+
+    'laboratorium_positief_color' : freshness_color(
+        'green' if laboratorium_positief < 5 else 'yellow' if laboratorium_positief < 20 else 'red',
+        laboratorium.date,
+    ),
 
     'prikken_gezet'      : decimalstring(prikken_gezet),
     'prikken_gezet_datum': prikken_gezet_datum,
@@ -236,11 +330,13 @@ substitutes = {
     'prikken_gezet_geschat_color'   : 'green' if mensen_gevaccineerd_geschat_perc > 60 else 'yellow' if mensen_gevaccineerd_geschat_perc > 40 else 'red',
     'vaccingeboortejaar'            : vaccingeboortejaar, 
 
-    'positief_leeftijd' : str(gemiddeldeleeftijdweek),
+    'positief_leeftijd'       : str(gemiddeldeleeftijdweek),
+    'positief_leeftijd_color' : freshness_color('blue', casus_datum),
 
     'gegenereerd_op'      : gegenereerd_op,
     'gegenereerd_op_datum': gegenereerd_datum,
     'gegenereerd_op_tijd' : gegenereerd_tijd,
+    'variant_graph_version': variant_graph_version,
 
     'python_lines': decimalstring(python_lines),
     'cache_size'  : decimalstring(cache_size),
@@ -257,7 +353,7 @@ def getTemplates(templatedir):
 
 for tin in getTemplates(templatedir):
     tout = join(outputdir, basename(tin.replace('.template.','.')))
-    print(tin + ' -> ' + tout)
+    print(f'{tin} -> {tout}')
 
     with open(tin, 'r') as templatefile:
         template = templatefile.read()

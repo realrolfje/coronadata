@@ -6,13 +6,14 @@ from matplotlib import pyplot as plt
 from dateutil import parser
 import modules.brondata as brondata
 from modules.brondata import decimalstring, dateCache
+from modules.defaults import DAILY_STATS, DOCS_DIR
 from modules.datautil import runIfNewData
 import sys
 
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createLiveIcon(metenisweten)
 
 
@@ -94,8 +95,8 @@ def createLiveIcon(metenisweten):
 
     plt.setp(ax1.spines.values(), color='white')
 
-    plt.savefig("../docs/icons/apple-touch-icon.svg", format="svg")
-    plt.savefig("../docs/icons/apple-touch-icon.png", format="png", dpi=180/2)
+    plt.savefig(DOCS_DIR / "icons" / "apple-touch-icon.svg", format="svg")
+    plt.savefig(DOCS_DIR / "icons" / "apple-touch-icon.png", format="png", dpi=180/2)
 
     dateCache.cacheReport()
 

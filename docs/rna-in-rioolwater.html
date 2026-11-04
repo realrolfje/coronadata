@@ -21,11 +21,19 @@
     <div class="container center">
         <div class="textblock">
             <h1>Uitleg bij RNA-in-rioolwater grafiek</h1>
+            <div class="graphcontainer interactive-chart" data-surveillance-chart>
+                <div class="chart-controls">
+                    <div class="chart-toggles" aria-label="Zichtbare reeksen"></div>
+                    <button type="button" data-reset-zoom>Hele periode</button>
+                </div>
+                <p class="chart-message">Interactieve grafiek laden…</p>
+                <canvas aria-label="Interactieve rioolwatergrafiek. Zoom met het muiswiel en sleep horizontaal."></canvas>
+                <p class="chart-tooltip" aria-live="polite"></p>
+                <div class="chart-fallback">
+                    <img src="graphs/rna-in-rioolwater.svg" width="100%" alt="Statische rioolwatergrafiek" />
+                </div>
+            </div>
             <p>
-                <a href="index.html">
-                    <img id="zieken" src="graphs/rna-in-rioolwater.svg" width="60%"
-                        style="float: right; max-width: 500px;" />
-                </a>
                 Eén van de manieren om de verspreiding van het coronavirus SARS-CoV-2 te volgen is door virusdeeltjes in
                 het rioolwater te meten. Dit onderzoek begon kleinschalig in 2020 toen het virus voor het eerst opdook
                 in Nederland. Inmiddels wordt gemeten bij meer dan 300 rioolwaterzuiveringsinstallaties (RWZI’s) in heel
@@ -46,7 +54,7 @@
             <p>
                 De y-as van de grafiek gaat over het aantal virusdeeltjes per 100.000 inwoners. Dat kunnen er al snel
                 erg veel zijn, daarom bevat de y-as de letter 'T' van "Tera". Tera betekent 10<sup>12</sup>, ofwel een
-                getal met 12 nullen. Op 2024-08-20 werden er 61.363.312.132.971 virusdeeltjes per 100.000
+                getal met 12 nullen. Op 2026-10-25 werden er 44.089.942.625.455 virusdeeltjes per 100.000
                 inwoners gemeten.
             </p>
         </div>
@@ -59,4 +67,5 @@
             </p>
         </div>
     </div>
+    <script src="surveillance-chart.js" defer></script>
 </body>

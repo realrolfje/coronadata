@@ -10,9 +10,10 @@ Alle grafieken zien? Ga naar http://realrolfje.github.io/coronadata
 Data in deze grafieken is afkomstig van het 
 [RIVM (Rijksinstituut voor Volksgezondheid en Millieu)](https://www.rivm.nl/) en 
 [NICE (Stichting Nationale Intensive Care Evaluatie)](https://www.stichting-nice.nl/index.jsp).
-Deze gegevens worden gedownload en lokaal gecached door [brondata.py](scripts/modules/brondata.py).
-Het downloaden van nieuwe gegevens, genereren van alle grafieken en bestanden en publiceren van 
-deze gegevens in deze repository wordt geregeld door het [update.sh](update.sh) bash script.
+De bronadapters en expliciete download-, transformatie-, berekenings- en opslagstappen staan in
+[`scripts/pipeline`](scripts/pipeline). `brondata.py` is alleen nog een compatibiliteitslaag voor
+de bestaande grafieken. Het downloaden, genereren en publiceren wordt geregeld door
+het [update.sh](update.sh) script.
 
 Zie de [Covid dataset](https://data.rivm.nl/covid-19/) 
 
@@ -175,9 +176,168 @@ De data in dit bestand ziet er als volgt uit:
 
 ## Installatie van vereiste python libraries op MacOS
 
+Python 3.12 tot en met 3.15 worden ondersteund. De directe dependencies zijn exact vastgezet in
+`requirements.txt`.
+
+## Historische build en publiceren
+
+Maak voor lokaal werk bij voorkeur een virtual environment:
+
+```shell
+./install.sh
 ```
-python3 -m ensurepip --default-pip
-pip3 install -r requirements.txt
+
+Dit script maakt `.venv` aan met `python3` als dat een ondersteunde versie is. Anders zoekt het
+`python3.12` tot en met `python3.15`. Een `.venv` met een andere Python wordt opnieuw aangemaakt.
+Daarna installeert het `requirements.txt`. Het maakt ook de map `cache/` aan. Als `requirements.txt`
+niet is veranderd sinds de vorige installatie, doet het niets. Alle shellscripts starten eerst `install.sh` en gebruiken
+daarna `.venv/bin/python`. Zet `PYTHON_BIN` om een andere Python te gebruiken.
+
+Een offline render gebruikt de bestaande verwerkte data en doet geen downloads of historische
+herberekeningen:
+
+```shell
+./render.sh
+```
+
+Bekijk de website uit de huidige working tree—ook als de branch nog niet is gepusht—via:
+
+```shell
+./preview.sh
+```
+
+Dit script downloadt eerst de actieve bronnen met een probleem in `cache/`: het bestand ontbreekt,
+is ongeldig, of is ouder dan `max_age_days` in `sources.json`. Daarna rendert het
+de site offline. Daarna start het een lokale webserver op `http://127.0.0.1:8000/`. Gebruik
+`SKIP_RENDER=1 ./preview.sh` om een al gegenereerde site direct te serveren, of
+`PREVIEW_PORT=8080 ./preview.sh` voor een andere poort.
+
+Voer alle tests plus de historische/normalized parity-controles uit met één commando:
+
+```shell
+./dev.sh
+```
+
+De datastappen zijn afzonderlijk beschikbaar via `scripts/runPipeline.py`. De `update`-opdracht
+downloadt iedere actieve bron eenmaal, valideert die, transformeert gewijzigde bronnen, voert
+afgeleide berekeningen uit en schrijft daarna pas `daily-stats.json`.
+
+De historische regressietests kunnen apart worden uitgevoerd:
+
+```shell
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+De variantenfeed bevat overlappende ouder- en kindcategorieën. De versiegebonden
+[variantentaxonomie](docs/architecture/variant-taxonomy.md) zet die om naar wederzijds uitsluitende
+weekaantallen. Controleer de volledige lokale feed en vernieuw het auditrapport met:
+
+```shell
+.venv/bin/python scripts/validateVariantTaxonomy.py
+```
+
+Een negatief restaantal, een onopgeloste ouderrelatie of een totaal boven de steekproefomvang wordt
+als waarschuwing in de site-status opgenomen. Alleen de ongeldige variantenweek wordt overgeslagen;
+de overige grafieken blijven werken. Deze controle draait ook via `dev.sh`, `update.sh` en
+`publish.sh`.
+
+De grafiek toont een steekproefgewogen voortschrijdend venster van vier kalenderweken. Vensters met
+minder dan twintig monsters worden niet getekend. Dominantie vereist meer dan 50% in twee
+opeenvolgende geldige vensters; dit voorkomt schijnbare omslagen door één of twee monsters.
+
+De update- en publicatiestappen zijn bewust gescheiden. `update.sh` vereist een schone checkout,
+fast-forwardt de branch, bouwt de uitvoer en maakt een health report, maar commit of pusht niet.
+Controleer de wijzigingen en publiceer ze daarna expliciet:
+
+```shell
+./update.sh
+./publish.sh
+```
+
+`publish.sh` weigert te publiceren bij blokkerende bronfouten of wijzigingen buiten `data/` en
+`docs/`. Als er geen gegenereerde wijzigingen zijn, wordt er geen lege commit gemaakt.
+Tests, normalized-data parity en bronvalidatie worden vóór publicatie opnieuw gecontroleerd.
+Herstel- en rollbackprocedures staan in [`docs/operations.md`](docs/operations.md).
+
+Page-hitverzameling staat bewust buiten de epidemiologische build. Werk die desgewenst afzonderlijk
+bij met `./update-pagehits.sh`.
+
+## Bronnenregister en bronstatus
+
+[`sources.json`](sources.json) is het machineleesbare register van externe bronnen. Het legt onder
+meer eigenaar, URL, formaat, levenscyclus, verwachte actualiteit, velden, eenheden en afnemende
+grafieken vast. De levenscyclus maakt onderscheid tussen actieve, bevroren, beëindigde, defecte en
+nog onbekende bronnen.
+
+Maak het leesbare statusrapport opnieuw met:
+
+```shell
+.venv/bin/python scripts/sourceInventory.py
+```
+
+Het resultaat staat in [`SOURCE_STATUS.md`](SOURCE_STATUS.md). Verouderde verplichte actieve
+bronnen blokkeren publiceren; een beëindigde historische bron doet dat niet.
+De website publiceert hetzelfde overzicht als [`docs/source-status.html`](docs/source-status.html)
+en de machineleesbare versie als `docs/data/source-health.json`.
+
+Werk alle actieve epidemiologische bronnen handmatig bij met:
+
+```shell
+.venv/bin/python scripts/updateActiveSources.py
+```
+
+Elke download gaat eerst naar een tijdelijk bestand. Na HTTP-, content-type-, omvang- en
+schemavalidatie wordt gewijzigde inhoud atomair geïnstalleerd en als alleen-lezen snapshot onder
+`cache/raw/` bewaard. De genormaliseerde observaties worden idempotent in de lokale SQLite-opslag
+geschreven. Ontbrekende ARI-waarnemingen blijven ontbrekend; ze worden niet geïnterpoleerd.
+
+De hoofdpagina gebruikt voor de actuele ziekenhuiscontext de wekelijkse Nederlandse
+RIVM/NICE-SARI-opnames. Dit zijn nieuwe IC-opnames met een ernstige luchtweginfectie, geen
+bedbezetting. De oude COVID-19-bezettingsgrafiek staat in het archief en wordt alleen tijdens het
+tekenen met de bevroren LCPS-datafeed aangevuld tot en met 31 mei 2024; `daily-stats.json` blijft
+daarbij ongewijzigd.
+
+De updater bewaart daarnaast afzonderlijke wekelijkse SARS-CoV-2-trendreeksen voor nationaal
+rioolwater, positieve Infectieradar-tests en positieve laboratoriummonsters. Deze gevalideerde
+observaties zijn alvast beschikbaar voor een toekomstige trendindicator, maar worden nadrukkelijk
+niet als reproductiegetal geïnterpreteerd. Het officiële RIVM-reproductiegetal staat met zijn
+einddatum op de archiefpagina.
+
+De hoofdpagina toont de positieve laboratoriummonsters per week. De staven en het percentage komen
+uit de virologische weekstaten van het RIVM. Een aparte lijn toont de Nederlandse cijfers uit ECDC
+ERVISS. Die lijn vult de periode van maart tot oktober 2023. De twee bronnen tellen niet dezelfde
+monsters, dus de reeksen zijn niet samengevoegd. De oude testgrafiek eindigt op 17 maart 2023. Die
+grafiek staat op de archiefpagina.
+De grafiek met positieve tests per leeftijdsgroep eindigt op 4 april 2023 en staat ook op de
+archiefpagina. De actuele bronnen hebben geen leeftijdsgroepen.
+
+De documentatie per bron staat in [`docs/sources/`](docs/sources/README.md), inclusief de beslissing
+om actuele SARI-ziekenhuisgegevens niet aan de historische COVID-bezettingsreeks te plakken.
+
+## Genormaliseerd datamodel
+
+Het versie-1 observatiemodel draait voorlopig naast `data/daily-stats.json`. Het oude bestand blijft
+de invoer voor de website en wordt door deze conversie niet aangepast. Bouw de lokale SQLite-versie
+en controleer de gelijkheid per metriek met:
+
+```shell
+.venv/bin/python scripts/buildNormalizedData.py
+.venv/bin/python scripts/checkNormalizedParity.py
+```
+
+De database `cache/normalized-v1.sqlite` is een genegeerd, herbouwbaar artefact. De bijgehouden
+manifest- en parityrapporten staan onder `data/`. De velden, null-regels, statussen en datumsemantiek
+zijn beschreven in
+[`docs/architecture/normalized-schema-v1.md`](docs/architecture/normalized-schema-v1.md).
+
+Voor nieuwe bronadapters is SQLite gekozen als herbouwbare tussenopslag achter een algemene
+storage-interface. De oorspronkelijke downloads en `data/daily-stats.json` blijven de historische
+basis. De onderbouwing en het reproduceerbare rioolwaterexperiment staan in
+[`docs/architecture/storage-decision.md`](docs/architecture/storage-decision.md). Voer de pilot uit
+met:
+
+```shell
+.venv/bin/python scripts/pilotWastewaterSqlite.py
 ```
 
 ## Certificaat probleem oplossen.
@@ -192,7 +352,7 @@ pip3 install --upgrade certifi
 Mocht dat niet helpen, dan is het volgende commando een volgende mogelijke oplossing:
 
 ```
-open /Applications/Python\ 3.11/Install\ Certificates.command
+open /Applications/Python\ 3.14/Install\ Certificates.command
 ```
 
 Voor meer informatie over dit probleem zie https://stackoverflow.com/a/62374703/3540161

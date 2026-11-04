@@ -1,7 +1,7 @@
 import os
 
-from defaults import datadir
-from utilities import readjson, writejson, sortDictOnKey
+from .defaults import datadir
+from .utilities import readjson, writejson, sortDictOnKey
 
 metenisweten_file = os.path.join(datadir,'daily-stats.json')
 metenisweten = readjson(metenisweten_file)
@@ -60,6 +60,7 @@ def initrecord(date):
             'rivm_totaal_personen_positief': None,
             'rivm_aantal_testlabs': None,
             'rivm_infectieradar_perc': None,
+            'rivm_infectieradar_ari_perc': None,
             'rivm_schatting_besmettelijk': {
                 'min': None,  # Minimaal personen besmettelijk
                 'value': None,  # Geschat personen besmettelijk

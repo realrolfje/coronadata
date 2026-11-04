@@ -1,0 +1,34 @@
+{
+  "2024-01-01": {
+    "positief": 3,
+    "totaal_positief": 10,
+    "Rt_avg": null,
+    "RNA": {
+      "totaal_RNA_per_100k": 300,
+      "totaal_RNA_metingen": 2,
+      "RNA_per_100k_avg": 150,
+      "besmettelijk": null,
+      "besmettelijk_error": null,
+      "populatie_dekking": null
+    },
+    "besmettingleeftijd": {"20-29": 2},
+    "varianten": {
+      "XBB": {"name": "Omikron", "cases": 4, "sample_size": 10}
+    }
+  },
+  "2024-01-02": {
+    "positief": 0,
+    "totaal_positief": 10,
+    "Rt_avg": "0.90",
+    "RNA": {
+      "totaal_RNA_per_100k": 0,
+      "totaal_RNA_metingen": 0,
+      "RNA_per_100k_avg": 0,
+      "besmettelijk": null,
+      "besmettelijk_error": null,
+      "populatie_dekking": null
+    },
+    "besmettingleeftijd": {},
+    "varianten": {}
+  }
+}

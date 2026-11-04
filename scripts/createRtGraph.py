@@ -8,19 +8,35 @@ import datetime
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
+from modules.defaults import DAILY_STATS, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
     createRtraph(metenisweten)
 
-def createRtraph(metenisweten):
-    date_range = brondata.getDateRange(metenisweten)
 
+def select_rt_date_range(metenisweten, last_days):
+    """Anchor the chart to the final reported Rt observation."""
+    dates = brondata.getDateRange(metenisweten)
+    rt_dates = [
+        date for date in dates
+        if any(
+            metenisweten.get(date.strftime("%Y-%m-%d"), {}).get(field) is not None
+            for field in ("Rt_avg", "Rt_low", "Rt_up")
+        )
+    ]
+    if rt_dates:
+        dates = [date for date in dates if date <= rt_dates[-1]]
+    return dates[-last_days:] if last_days > 0 else dates
+
+
+def createRtraph(metenisweten):
     lastDays = arguments.lastDays()
-    if (lastDays>0):
-        date_range = date_range[-lastDays:]
+    date_range = select_rt_date_range(metenisweten, lastDays)
+
 
     print('Generating Rt graph...')
 
@@ -64,11 +80,12 @@ def createRtraph(metenisweten):
     plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=high, facecolor='red', alpha=0.3, interpolate=True)
     plt.fill_between(Rt_avg['x'], 1, Rt_avg['y'], where=low, facecolor='green',  alpha=0.3, interpolate=True)
 
-    # Put vertical line at current day
+    # Mark the final day represented by the ended Rt series.
+    chart_end = date_range[-1]
     plt.text(
-        x=dateCache.today(),
+        x=chart_end,
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=chart_end.strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -76,10 +93,10 @@ def createRtraph(metenisweten):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    plt.axvline(dateCache.today(), color='red', linewidth=0.5)
+    plt.axvline(chart_end, color='red', linewidth=0.5)
 
-    # Laat afkappunt R zien (is twee weken geleden)
-    plt.axvline(dateCache.today() - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
+    # Laat het toenmalige afkappunt R zien (twee weken voor de laatste publicatiedatum).
+    plt.axvline(chart_end - datetime.timedelta(days=14), color='blue', linestyle='--', linewidth=0.5)
 
     if len(Rt_avg['y']) > 1 and len(Rt_avg['x']) > 1:
         plt.annotate(
@@ -97,7 +114,7 @@ def createRtraph(metenisweten):
     axes.set_xlabel("Datum")
     axes.set_ylabel("Reproductiegetal")
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     plt.title('Reproductiegetal')
 
     if len(Rt_avg['x']) > 1:
@@ -111,9 +128,9 @@ def createRtraph(metenisweten):
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
     if (lastDays > 0):
-        filename = "../docs/graphs/reproductiegetal-"+str(lastDays)+".svg"
+        filename = GRAPHS_DIR / ("reproductiegetal-"+str(lastDays)+".svg")
     else:
-        filename = "../docs/graphs/reproductiegetal.svg"
+        filename = GRAPHS_DIR / "reproductiegetal.svg"
 
     print(f"Saving {filename}")
     plt.savefig(filename, format="svg")

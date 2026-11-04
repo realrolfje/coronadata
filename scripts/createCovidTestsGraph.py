@@ -9,15 +9,37 @@ import sys
 import modules.brondata as brondata
 import modules.arguments as arguments
 from modules.brondata import decimalstring, dateCache
+from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import anotate
 from modules.datautil import runIfNewData
 
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    events = brondata.readjson('../data/measures-events.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createCovidTestsGraph(metenisweten, events)
+
+
+def select_test_date_range(metenisweten, last_days):
+    """Anchor the graph to the final reported testing observation."""
+    dates = brondata.getDateRange(metenisweten)
+    fields = (
+        "rivm_totaal_tests", "rivm_totaal_tests_positief",
+        "rivm_totaal_personen_getest", "rivm_totaal_personen_positief",
+    )
+    test_dates = [
+        date for date in dates
+        if any(
+            metenisweten.get(date.strftime("%Y-%m-%d"), {}).get(field) is not None
+            for field in fields
+        )
+    ]
+    if test_dates:
+        dates = [date for date in dates if date <= test_dates[-1]]
+    return dates[-last_days:] if last_days > 0 else dates
+
 
 def createCovidTestsGraph(metenisweten, events):
     print("Calculating predictions...")
@@ -49,11 +71,8 @@ def createCovidTestsGraph(metenisweten, events):
         'y': []
     }
 
-    date_range = brondata.getDateRange(metenisweten)
-
     lastDays = arguments.lastDays()
-    if (lastDays>0):
-        date_range = date_range[-lastDays:]
+    date_range = select_test_date_range(metenisweten, lastDays)
 
 
     for d in date_range:
@@ -99,7 +118,7 @@ def createCovidTestsGraph(metenisweten, events):
 
         # ---------------------- Voorspelling positief getst obv gemiddelde richtingscoefficient positief getest.
         if datum in metenisweten and len(positief['y']) > positief_voorspeld['avgsize'] \
-            and dateCache.parse(datum) < (datetime.datetime.now() - datetime.timedelta(days=positief_voorspeld['avgsize'])):
+            and dateCache.parse(datum) < (reference_datetime(metenisweten) - datetime.timedelta(days=positief_voorspeld['avgsize'])):
             # Voorspel morgen op basis van metingen
             rc = (positief['y'][-1]-positief['y'][-positief_voorspeld['avgsize']]) / positief_voorspeld['avgsize']
             positief_voorspeld['x'].append(dateCache.parse(datum) + datetime.timedelta(days=1))
@@ -116,6 +135,13 @@ def createCovidTestsGraph(metenisweten, events):
         # else:
         #     print('no data to calculate RC')
 
+
+    if not totaaltests['y'] or not positief['y'] or not positief_percentage['y']:
+        print(
+            "Skipping COVID test graph: the processed baseline has no test "
+            "observations for the requested date range. Existing output is left unchanged."
+        )
+        return False
 
     print('Generating daily positive tests graph...')
 
@@ -159,11 +185,12 @@ def createCovidTestsGraph(metenisweten, events):
             % ( huidigpercentage)
     )
 
-    # Put vertical line at current day
+    # Mark the final day represented by this ended historical series.
+    chart_end = date_range[-1]
     plt.text(
-        x=dateCache.today(),
+        x=chart_end,
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=chart_end.strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -171,7 +198,7 @@ def createCovidTestsGraph(metenisweten, events):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    plt.axvline(dateCache.today(), color='red', linewidth=0.5)
+    plt.axvline(chart_end, color='red', linewidth=0.5)
 
     for event in events:
         if 'testsloc' in event and dateCache.parse(event['testsloc'][0]) > date_range[0]:
@@ -196,7 +223,7 @@ def createCovidTestsGraph(metenisweten, events):
 
     plt.gca().set_xlim([date_range[0], date_range[-1]])
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
     data_tot=positief['x'][-11].strftime("%Y-%m-%d")
 
     plt.title('Positieve COVID-19 tests')
@@ -212,9 +239,9 @@ def createCovidTestsGraph(metenisweten, events):
     ax2.legend(loc="upper right")
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/covidtests-"+str(lastDays)+".svg", format="svg")
+        plt.savefig(GRAPHS_DIR / ("covidtests-"+str(lastDays)+".svg"), format="svg")
     else:
-        plt.savefig("../docs/graphs/covidtests.svg", format="svg")
+        plt.savefig(GRAPHS_DIR / "covidtests.svg", format="svg")
 
     dateCache.cacheReport()
 

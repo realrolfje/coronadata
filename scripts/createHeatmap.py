@@ -5,18 +5,36 @@
 from matplotlib import pyplot as plt
 from dateutil.relativedelta import relativedelta
 import datetime
-import json
 import modules.arguments as arguments
 import modules.brondata as brondata
 from modules.brondata import dateCache
+from modules.defaults import DAILY_STATS, DATA_DIR, GRAPHS_DIR
+from modules.buildtime import reference_datetime
 from modules.datautil import runIfNewData, anotate
 import sys
 
 def main():
     runIfNewData(__file__)
-    metenisweten = brondata.readjson('../data/daily-stats.json')
-    events = brondata.readjson('../data/measures-events.json')
+    metenisweten = brondata.readjson(DAILY_STATS)
+    events = brondata.readjson(DATA_DIR / 'measures-events.json')
     createHeatmap(metenisweten, events)
+
+
+def select_age_date_range(metenisweten, last_days):
+    """Return the dates from the first to the last day with age groups."""
+    dates = brondata.getDateRange(metenisweten)
+    age_dates = [
+        date for date in dates
+        if any(
+            metenisweten.get(date.strftime("%Y-%m-%d"), {})
+            .get("besmettingleeftijd", {})
+            .values()
+        )
+    ]
+    if age_dates:
+        dates = [date for date in dates if age_dates[0] <= date <= age_dates[-1]]
+    return dates[-last_days:] if last_days > 0 else dates
+
 
 def createHeatmap(metenisweten, events):
     print("Generating date/age heatmap.")
@@ -25,48 +43,26 @@ def createHeatmap(metenisweten, events):
     x = []
     y = []
 
-    date_range = brondata.getDateRange(metenisweten)
     lastDays = arguments.lastDays()
-    if (lastDays>0):
-        date_range = date_range[-lastDays:]
+    date_range = select_age_date_range(metenisweten, lastDays)
 
     startdate = date_range[0]
 
-    weightsmap={}
+    weights = []
+    for date_statistics in date_range:
+        ages = metenisweten.get(date_statistics.strftime("%Y-%m-%d"), {}).get('besmettingleeftijd') or {}
+        for age, count in ages.items():
+            if count:
+                x.append((date_statistics - startdate).days)
+                y.append(int(age))
+                weights.append(count)
 
-    # The heatmap data is already in metenisweten, we can optimze. Complete this:
-    # metenisweten = brondata.readjson('../data/daily-stats.json')
-    # print("Converting records to x/y data")
-    # for date_statistics in metenisweten:
-    #     if date_statistics > startdate:
-    #         for age in metenisweten[date_statistics]['besmettingleeftijd']:
-    #             datax = (date_statistics - startdate).days
-    #             datay = metenisweten[date_statistics]['besmettingleeftijd']
-
-    datelog = []
-
-    with open('../cache/COVID-19_casus_landelijk.json', 'r') as json_file:
-        data = json.load(json_file)
-        print("Converting records to x/y data")
-        for record in data:
-            date_statistics = dateCache.parse(record['Date_statistics'])
-            if date_statistics >= startdate:
-                datelog.append(date_statistics)
-                try:
-                    datax = (date_statistics - startdate).days
-                    datay = int(record['Agegroup'].split('-')[0].split('+')[0])+5
-                    filedate = record['Date_file']
-                    x.append(datax)
-                    y.append(datay)
-
-                    # if datax not in weightsmap:
-                    #     weightsmap[datax] = 1
-                    # else:
-                    #     weightsmap[datax] = weightsmap[datax] + 1
-
-                except ValueError:
-                    # print('ERROR '+record['Date_statistics'] + ' | ' + record['Agegroup'])
-                    pass
+    if not x:
+        print(
+            "Skipping age heatmap: daily-stats.json has no age groups "
+            "for the requested date range. Existing output is left unchanged."
+        )
+        return False
 
     # print("Calculating weights.")
     # weights=[]
@@ -88,7 +84,7 @@ def createHeatmap(metenisweten, events):
 
     gemiddeldlaatsteweek = int(round(sum(gemiddeldeleeftijd['y'][-7:])/7))
 
-    gegenereerd_op=datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gegenereerd_op=reference_datetime(metenisweten).strftime("%Y-%m-%d %H:%M")
 
     fig, heatmap = plt.subplots(figsize=(10, 4), constrained_layout=True, sharex='all', sharey='all')
     fig.subplots_adjust(top=0.92, bottom=0.17, left=0.09, right=0.91)
@@ -105,8 +101,8 @@ def createHeatmap(metenisweten, events):
     try:
         heatmap.hist2d(
             x, y, 
-            bins=[120,10], range=[[0,x[-1]+7],[0,100]], 
-            cmin=1, cmap='Blues'
+            bins=[120,10], range=[[0,max(x)+7],[0,100]], 
+            cmin=1, cmap='Blues', weights=weights
         ) # inferno is also a good one
     except IndexError as e:
         print("Error bij maken heatmap: "+e)
@@ -142,14 +138,14 @@ def createHeatmap(metenisweten, events):
             )
 
     heatmap.set(
-        xlim=[x[0], x[-1]+7],
-        xbound=([x[0], x[-1]+7]),
+        xlim=[min(x), max(x)+7],
+        xbound=([min(x), max(x)+7]),
         ylim=[0, 100],
         autoscale_on=False
     )
     averages.set(
-        xlim=([x[0], x[-1]+7]),
-        xbound=([x[0], x[-1]+7]),
+        xlim=([min(x), max(x)+7]),
+        xbound=([min(x), max(x)+7]),
         ylim=[0, 100],
         autoscale_on=False
     )
@@ -177,11 +173,12 @@ def createHeatmap(metenisweten, events):
     heatmap.set_xlabel("Datum")
     heatmap.set_ylabel("Leeftijd")
 
-    # Put vertical line at current day
+    # Mark the final day represented by this ended historical series.
+    chart_end = date_range[-1]
     plt.text(
-        x=(datetime.date.today() - startdate.date()).days,
+        x=(chart_end.date() - startdate.date()).days,
         y=0,
-        s=datetime.datetime.now().strftime("%d"), 
+        s=chart_end.strftime("%d"),
         color="white",
         fontsize=8,
         ha="center",
@@ -189,11 +186,12 @@ def createHeatmap(metenisweten, events):
         bbox=dict(boxstyle='round,pad=0.1', facecolor='red', alpha=1, edgecolor='red'),
         zorder=10
     )
-    averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
+    averages.axvline((chart_end.date() - startdate.date()).days, color='red', linewidth=0.5)
 
     # averages.axvline((datetime.date.today() - startdate.date()).days, color='red', linewidth=0.5)
 
     data_tot = gemiddeldeleeftijd['x'][-1].strftime("%Y-%m-%d")
+    filedate = metenisweten.get(data_tot, {}).get('rivm-datum') or data_tot
     footerleft="Gegenereerd op "+gegenereerd_op+" o.b.v. data tot "+data_tot+".\nSource code: http://github.com/realrolfje/coronadata"
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
@@ -204,9 +202,9 @@ def createHeatmap(metenisweten, events):
                 color='gray', linewidth=1, alpha=0.3)
 
     if (lastDays > 0):
-        plt.savefig("../docs/graphs/besmettingen-leeftijd-"+str(lastDays)+".svg", format="svg")
+        plt.savefig(GRAPHS_DIR / ("besmettingen-leeftijd-"+str(lastDays)+".svg"), format="svg")
     else:
-        plt.savefig("../docs/graphs/besmettingen-leeftijd.svg", format="svg")
+        plt.savefig(GRAPHS_DIR / "besmettingen-leeftijd.svg", format="svg")
 
     dateCache.cacheReport()
 

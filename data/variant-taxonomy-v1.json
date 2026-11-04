@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "taxonomy_version": "pango-designation@ac2096989d03dd34dbe44bc0929acf52d7f615d0",
+  "snapshot_date": "2026-10-28",
+  "sources": [
+    {
+      "url": "https://github.com/cov-lineages/pango-designation/blob/ac2096989d03dd34dbe44bc0929acf52d7f615d0/pango_designation/alias_key.json",
+      "sha256": "ba7444c77c5e773d395c3d4d393e56e566448144c31116ec7eb89d31608936ac"
+    },
+    {
+      "url": "https://github.com/cov-lineages/pango-designation/blob/ac2096989d03dd34dbe44bc0929acf52d7f615d0/lineage_notes.txt",
+      "sha256": "76a0a3a0d800d97c247d2d90d84c174d6db805063a80f8a902d4d9b59b77000f"
+    }
+  ],
+  "rules": {
+    "LP.8.1": {
+      "parent": "JN.1",
+      "valid_from": null,
+      "valid_until": null,
+      "expanded_lineage": "B.1.1.529.2.86.1.1.11.1.1.1.3.8.1",
+      "evidence": "Pango alias expansion; nearest lineage represented in the RIVM feed is JN.1"
+    },
+    "NB.1.8.1": {
+      "parent": "Recombinants",
+      "valid_from": null,
+      "valid_until": null,
+      "expanded_lineage": "XDV.1.5.1.1.8.1",
+      "evidence": "Pango alias expansion; XDV is recombinant and RIVM supplies Recombinants as its aggregate"
+    },
+    "BA.2.12.1": {
+      "parent": "BA.2",
+      "valid_from": null,
+      "valid_until": null,
+      "expanded_lineage": "B.1.1.529.2.12.1",
+      "evidence": "Pango alias expansion; bypasses the overlapping RIVM mutation bucket BA.2+S:L452X"
+    },
+    "BA.2+S:L452X": {
+      "exclude": true,
+      "valid_from": null,
+      "valid_until": null,
+      "evidence": "RIVM mutation bucket overlaps BA.2 descendants and is not a Pango lineage"
+    }
+  }
+}

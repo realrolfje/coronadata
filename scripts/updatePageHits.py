@@ -5,6 +5,7 @@ from urllib.error import URLError, HTTPError
 import re 
 from datetime import datetime
 from modules.brondata import logError
+from modules.defaults import DATA_DIR
 
 
 # The source of the hit counter at pythonanywhere and blakedrumm is:
@@ -37,11 +38,11 @@ try:
 
     with urllib.request.urlopen(req) as response:
         body = str(response.read())
-        counter=re.search('>[\.,0-9]+</', body).group(0)[1:-2]
+        counter=re.search(r'>[\.,0-9]+</', body).group(0)[1:-2]
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         print("https://realrolfje.github.io/coronadata/ has "+counter+" total pagehits.")
 
-    filename="../data/pagehits.csv"
+    filename = DATA_DIR / "pagehits.csv"
     with open(filename, "a") as file_object:
         file_object.write(date+';'+counter+'\n')
 
