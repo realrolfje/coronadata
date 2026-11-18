@@ -49,6 +49,14 @@ def latest_date(predicate):
     return max(matching) if matching else "onbekend"
 
 
+def previous_at_least_date(observations):
+    """Return the latest earlier date whose value is at least the current value."""
+    ordered = sorted(observations, key=lambda item: item[0])
+    current_date, current_value = ordered[-1]
+    matching = [date for date, value in ordered[:-1] if value >= current_value]
+    return max(matching) if matching else "nooit"
+
+
 varianten_datum = latest_date(
     lambda record: any(
         (variant.get('sample_size') or variant.get('cases'))
@@ -232,6 +240,20 @@ sari = max(
 )
 sari_opnames = int(sari.value)
 
+geschat_ziek_rolf_vorige_datum = previous_at_least_date([
+    (date, record['rolf_besmettelijk'])
+    for date, record in metenisweten.items()
+    if record.get('rolf_besmettelijk')
+])
+sari_opnames_vorige_datum = previous_at_least_date([
+    (item.date, item.value)
+    for item in parse_sari(CACHE_DIR / 'rivm-nice-sari-weekly-admissions.csv').observations
+])
+laboratorium_positief_vorige_datum = previous_at_least_date([
+    (item.date, item.value)
+    for item in parse_percentage(CACHE_DIR / 'rivm-laboratory-sars-cov-2-positive-weekly.csv').observations
+])
+
 substitutes = {
     'varianten_datum'     : varianten_datum,
     'ziekenhuis_datum'    : ziekenhuis_datum,
@@ -249,6 +271,7 @@ substitutes = {
     'geschat_ziek_rolf'             : decimalstring(round(geschat_ziek_nu_rolf)),
     'geschat_ziek_nu_rolf_datum'    : geschat_ziek_nu_rolf_datum,
     'geschat_ziek_rolf_record_sinds': geschat_ziek_rolf_record_sinds,
+    'geschat_ziek_rolf_vorige_datum': geschat_ziek_rolf_vorige_datum,
 
     'ziekverhouding'      : str(eenopXziek),
     'ziekverhouding_color': 'green' if eenopXziek > 1000 else 'yellow' if eenopXziek > 500 else 'red',
@@ -305,8 +328,10 @@ substitutes = {
 
     'laboratorium_positief'       : decimalstring(laboratorium_positief)+'%',
     'laboratorium_positief_datum' : laboratorium.date,
+    'laboratorium_positief_vorige_datum': laboratorium_positief_vorige_datum,
     'sari_opnames'       : str(sari_opnames),
     'sari_opnames_datum' : sari.date,
+    'sari_opnames_vorige_datum': sari_opnames_vorige_datum,
     'sari_opnames_color' : freshness_color(
         'green' if sari_opnames < 75 else 'yellow' if sari_opnames < 150 else 'red',
         sari.date,
