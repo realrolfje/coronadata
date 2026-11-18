@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "healthy",
-  "newest_source_date": "2026-10-28",
+  "newest_source_date": "2026-11-18",
   "sources": [
     {
       "id": "rivm_wastewater",
@@ -9,9 +9,9 @@
       "provider": "RIVM",
       "lifecycle": "active",
       "required_for_publish": true,
-      "record_count": 181790,
-      "publication_date": "2026-10-28",
-      "newest_observation": "2026-10-25",
+      "record_count": 182181,
+      "publication_date": "2026-11-18",
+      "newest_observation": "2026-11-12",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -35,9 +35,9 @@
       "provider": "RIVM",
       "lifecycle": "active",
       "required_for_publish": true,
-      "record_count": 2187,
-      "publication_date": "2026-10-28",
-      "newest_observation": "2026-10-27",
+      "record_count": 2208,
+      "publication_date": "2026-11-18",
+      "newest_observation": "2026-11-17",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -139,9 +139,9 @@
       "provider": "RIVM/NICE",
       "lifecycle": "active",
       "required_for_publish": false,
-      "record_count": 212,
+      "record_count": 215,
       "publication_date": null,
-      "newest_observation": "2026-10-19",
+      "newest_observation": "2026-11-09",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -152,9 +152,9 @@
       "provider": "RIVM",
       "lifecycle": "active",
       "required_for_publish": false,
-      "record_count": 212,
+      "record_count": 215,
       "publication_date": null,
-      "newest_observation": "2026-10-19",
+      "newest_observation": "2026-11-09",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -167,7 +167,7 @@
       "required_for_publish": false,
       "record_count": 260,
       "publication_date": null,
-      "newest_observation": "2026-10-19",
+      "newest_observation": "2026-11-09",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -178,9 +178,9 @@
       "provider": "RIVM",
       "lifecycle": "active",
       "required_for_publish": false,
-      "record_count": 160,
+      "record_count": 163,
       "publication_date": null,
-      "newest_observation": "2026-10-19",
+      "newest_observation": "2026-11-09",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -193,7 +193,7 @@
       "required_for_publish": false,
       "record_count": 208,
       "publication_date": null,
-      "newest_observation": "2026-10-19",
+      "newest_observation": "2026-11-09",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -204,9 +204,9 @@
       "provider": "ECDC",
       "lifecycle": "active",
       "required_for_publish": false,
-      "record_count": 105660,
+      "record_count": 106578,
       "publication_date": null,
-      "newest_observation": "2026-10-19",
+      "newest_observation": "2026-11-02",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -220,10 +220,8 @@
       "record_count": null,
       "publication_date": null,
       "newest_observation": "2024-05-31",
-      "health": "missing",
-      "messages": [
-        "Local cache file is missing."
-      ],
+      "health": "frozen",
+      "messages": [],
       "blocking": false
     },
     {
@@ -261,8 +259,10 @@
       "record_count": null,
       "publication_date": null,
       "newest_observation": null,
-      "health": "retired",
-      "messages": [],
+      "health": "missing",
+      "messages": [
+        "Local cache file is missing."
+      ],
       "blocking": false
     },
     {
