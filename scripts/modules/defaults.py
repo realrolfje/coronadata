@@ -8,6 +8,7 @@ from pathlib import Path
 timezone = pytz.timezone("Europe/Amsterdam")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PRESERVED_HISTORY_END = "2024-09-23"
 DATA_DIR = PROJECT_ROOT / "data"
 CACHE_DIR = PROJECT_ROOT / "cache"
 DOCS_DIR = PROJECT_ROOT / "docs"

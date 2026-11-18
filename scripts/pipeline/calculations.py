@@ -4,6 +4,8 @@ from statistics import mean
 
 from scipy.signal import savgol_filter
 
+from modules.defaults import PRESERVED_HISTORY_END
+
 
 @dataclass(frozen=True)
 class CalculationReport:
@@ -38,6 +40,8 @@ def calculate_wastewater_estimate(daily: dict) -> CalculationReport:
         )
     scale = mean(ratios)
     for index, date in enumerate(dates):
+        if date <= PRESERVED_HISTORY_END:
+            continue
         daily[date]["RNA"]["besmettelijk"] = max(1, rna[index] * scale)
     return CalculationReport("wastewater_estimate", len(dates))
 
@@ -88,6 +92,8 @@ def calculate_coronadata_estimate(daily: dict) -> CalculationReport:
         )
     values = smooth(values)
     for date, value in zip(dates, values):
+        if date <= PRESERVED_HISTORY_END:
+            continue
         daily[date]["rolf_besmettelijk"] = value
     return CalculationReport("coronadata_estimate", len(dates))
 

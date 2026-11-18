@@ -10,7 +10,12 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 from modules.brondata import dateCache
 from modules.buildtime import build_datetime, reference_datetime
-from pipeline.calculations import calculate_cumulative_totals
+from modules.defaults import PRESERVED_HISTORY_END
+from pipeline.calculations import (
+    calculate_coronadata_estimate,
+    calculate_cumulative_totals,
+    calculate_wastewater_estimate,
+)
 from pipeline.legacy_transform import transform_prevalence, transform_rivm_tests
 from pipeline.site_export import build_surveillance_export
 from createZiekGraph import merge_lcps_history, select_date_range
@@ -70,6 +75,42 @@ class PipelineRefactorTest(unittest.TestCase):
         calculate_cumulative_totals(second)
         self.assertEqual(first, second)
         self.assertEqual(5, first["2020-03-02"]["totaal_positief"])
+
+    def test_derived_estimates_do_not_rewrite_preserved_history(self):
+        daily = {
+            PRESERVED_HISTORY_END: {
+                "RNA": {
+                    "totaal_RNA_per_100k": 10_000,
+                    "totaal_RNA_metingen": 31,
+                    "RNA_per_100k_avg": 10_000,
+                    "besmettelijk": 123,
+                },
+                "rivm_schatting_besmettelijk": {"value": 10_000},
+                "rivm_totaal_tests": 10,
+                "rivm_totaal_tests_positief": 2,
+                "varianten": {},
+                "rolf_besmettelijk": 456,
+            },
+            "2024-09-24": {
+                "RNA": {
+                    "totaal_RNA_per_100k": 20_000,
+                    "totaal_RNA_metingen": 31,
+                    "RNA_per_100k_avg": 20_000,
+                    "besmettelijk": None,
+                },
+                "rivm_schatting_besmettelijk": {"value": 20_000},
+                "rivm_totaal_tests": 10,
+                "rivm_totaal_tests_positief": 2,
+                "varianten": {},
+                "rolf_besmettelijk": None,
+            },
+        }
+        calculate_wastewater_estimate(daily)
+        calculate_coronadata_estimate(daily)
+        self.assertEqual(123, daily[PRESERVED_HISTORY_END]["RNA"]["besmettelijk"])
+        self.assertEqual(456, daily[PRESERVED_HISTORY_END]["rolf_besmettelijk"])
+        self.assertIsNotNone(daily["2024-09-24"]["RNA"]["besmettelijk"])
+        self.assertIsNotNone(daily["2024-09-24"]["rolf_besmettelijk"])
 
     def test_project_paths_do_not_depend_on_current_directory(self):
         from modules.defaults import DAILY_STATS

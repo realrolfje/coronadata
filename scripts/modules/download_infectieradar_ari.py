@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 
-from .defaults import cachedir
+from .defaults import PRESERVED_HISTORY_END, cachedir
 from .metenisweten import initrecord
 from pipeline.download import fetch_json_source
 from pipeline.infectieradar_ari import parse
@@ -34,6 +34,8 @@ def store(filename):
         return False
     result = parse(filename)
     for observation in result.observations:
+        if observation.date <= PRESERVED_HISTORY_END:
+            continue
         initrecord(observation.date)["rivm_infectieradar_ari_perc"] = observation.value
     print(
         "Newest ARI Infectieradar data: "

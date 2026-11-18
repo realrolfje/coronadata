@@ -7,15 +7,12 @@
 #
 import os
 from .utilities import readjson
-from .defaults import cachedir
+from .defaults import PRESERVED_HISTORY_END, cachedir
 from .metenisweten import initrecord
 from .datecache import dateCache
 from pathlib import Path
 from pipeline.download import fetch_json_source
 from pipeline.variants import parse as parse_variants
-
-
-PRESERVED_HISTORY_END = "2024-09-23"
 
 
 def download(force=False) -> str:
