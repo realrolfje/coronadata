@@ -25,7 +25,7 @@ def status_page(report):
         )
     return f"""<!doctype html>
 <html lang=\"nl\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-<title>Bronstatus · Coronadata</title><link rel=\"stylesheet\" href=\"styles.css\"></head>
+<title>Bronstatus · Coronadata</title><link rel=\"stylesheet\" href=\"styles.css\"><link rel=\"icon\" type=\"image/svg+xml\" href=\"icons/favicon.svg\"></head>
 <body><header class=\"site-header\"><a href=\"index.html\">← Coronadata</a><h1>Bronstatus</h1></header>
 <main class=\"page\"><p>Pipeline-status: <strong>{html.escape(report['status'])}</strong>. Dit overzicht is gegenereerd uit het bronnenregister en de lokaal gevalideerde bronbestanden.</p>
 <div class=\"table-scroll\"><table class=\"status-table\"><thead><tr><th>Bron</th><th>Status</th><th>Levenscyclus</th><th>Laatste waarneming</th><th>Publicatie</th><th>Toelichting</th></tr></thead>

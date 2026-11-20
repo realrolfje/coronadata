@@ -19,6 +19,7 @@ def processEventsList(events):
         <title>Corona data landelijk</title>
         <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1">
         <link rel="stylesheet" href="styles.css">
+        <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
         <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     </head>
     <body>
