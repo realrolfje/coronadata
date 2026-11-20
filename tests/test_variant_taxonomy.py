@@ -106,8 +106,24 @@ class VariantTaxonomyTest(unittest.TestCase):
         pooled = pool_exclusive_weeks(weeks, minimum_samples=20)
         self.assertEqual(1, len(pooled))
         self.assertEqual(20, pooled[0].sample_size)
+        self.assertEqual(4, pooled[0].window_weeks)
         self.assertEqual(8, pooled[0].counts["XFG"])
         self.assertEqual(12, pooled[0].counts["JN.1"])
+
+    def test_sparse_samples_expand_window_until_minimum_is_reached(self):
+        weeks = [
+            ExclusiveVariantWeek("2026-01-05", 5, {"XFG": 5}),
+            ExclusiveVariantWeek("2026-01-12", 5, {"XFG": 5}),
+            ExclusiveVariantWeek("2026-01-19", 5, {"JN.1": 5}),
+            ExclusiveVariantWeek("2026-01-26", 1, {"JN.1": 1}),
+            ExclusiveVariantWeek("2026-02-02", 4, {"JN.1": 4}),
+        ]
+        pooled = pool_exclusive_weeks(
+            weeks, window_weeks=4, max_window_weeks=5, minimum_samples=20
+        )
+        self.assertEqual("2026-02-02", pooled[-1].date)
+        self.assertEqual(20, pooled[-1].sample_size)
+        self.assertEqual(5, pooled[-1].window_weeks)
 
 
 if __name__ == "__main__":

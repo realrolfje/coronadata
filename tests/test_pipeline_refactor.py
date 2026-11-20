@@ -25,6 +25,7 @@ from pipeline.erviss import parse as parse_erviss
 from createRtGraph import select_rt_date_range
 from createCovidTestsGraph import select_test_date_range
 from createHeatmap import select_age_date_range
+from createVariantenGraph import estimate_on_date
 
 
 def record():
@@ -111,6 +112,16 @@ class PipelineRefactorTest(unittest.TestCase):
         self.assertEqual(456, daily[PRESERVED_HISTORY_END]["rolf_besmettelijk"])
         self.assertIsNotNone(daily["2024-09-24"]["RNA"]["besmettelijk"])
         self.assertIsNotNone(daily["2024-09-24"]["rolf_besmettelijk"])
+
+    def test_variant_estimate_interpolates_only_bounded_gaps(self):
+        daily = {
+            "2024-08-19": {"rolf_besmettelijk": 80_000},
+            "2024-09-30": {"rolf_besmettelijk": 62_000},
+        }
+        self.assertEqual(71_000, estimate_on_date(daily, "2024-09-09"))
+        self.assertIsNone(
+            estimate_on_date(daily, "2024-09-09", max_gap_days=28)
+        )
 
     def test_project_paths_do_not_depend_on_current_directory(self):
         from modules.defaults import DAILY_STATS

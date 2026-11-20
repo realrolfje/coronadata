@@ -17,6 +17,30 @@ from pipeline.chart_scale import compact_number, confirmed_dominance, nice_axis_
 from datetime import datetime, date, timedelta
 import sys
 
+
+def estimate_on_date(metenisweten, target_date, max_gap_days=56):
+    """Return the estimate on a date, interpolating only across bounded gaps."""
+    direct = metenisweten.get(target_date, {}).get('rolf_besmettelijk')
+    if direct is not None:
+        return direct
+    target = date.fromisoformat(target_date)
+    known = sorted(
+        (date.fromisoformat(day), record.get('rolf_besmettelijk'))
+        for day, record in metenisweten.items()
+        if record.get('rolf_besmettelijk') is not None
+    )
+    before = [(day, value) for day, value in known if day < target]
+    after = [(day, value) for day, value in known if day > target]
+    if not before or not after:
+        return None
+    left_date, left_value = before[-1]
+    right_date, right_value = after[0]
+    distance = (right_date - left_date).days
+    if distance > max_gap_days:
+        return None
+    fraction = (target - left_date).days / distance
+    return left_value + fraction * (right_value - left_value)
+
 def main():
     # runIfNewData(__file__)
     metenisweten = brondata.readjson(DAILY_STATS)
@@ -140,16 +164,21 @@ def createVariantenGraph(metenisweten, varianten):
     pooled_weeks = {
         week.date: week
         for week in pool_exclusive_weeks(
-            exclusive_weeks, window_weeks=4, minimum_samples=20
+            exclusive_weeks,
+            window_weeks=4,
+            max_window_weeks=12,
+            minimum_samples=20,
         )
     }
     rolling_samples = {}
+    rolling_windows = {}
     for d in list(varianten_map):
         pooled = pooled_weeks.get(d)
         if pooled is None:
             varianten_map.pop(d)
             continue
         rolling_samples[d] = pooled.sample_size
+        rolling_windows[d] = pooled.window_weeks
         for code, variant in varianten_map[d].items():
             variant['cases'] = pooled.counts.get(code, 0)
             variant['size'] = pooled.sample_size
@@ -157,8 +186,10 @@ def createVariantenGraph(metenisweten, varianten):
 
     print(
         f"Variantpercentages exclusief gemaakt met {taxonomy.version} en "
-        f"gewogen over vier weken (minimaal 20 monsters); "
-        f"laatste venster: {max(pooled_weeks)}, n={rolling_samples[max(pooled_weeks)]}"
+        f"gewogen over vier tot twaalf weken (minimaal 20 monsters); "
+        f"laatste venster: {max(pooled_weeks)}, "
+        f"{rolling_windows[max(pooled_weeks)]} weken, "
+        f"n={rolling_samples[max(pooled_weeks)]}"
     )
 
     # print("-----")
@@ -169,11 +200,7 @@ def createVariantenGraph(metenisweten, varianten):
     previous_variant_date = None
     for key in sorted(varianten_map):
         # For each variant, determine the number of sick people (variant percentage times estimate)
-        if metenisweten.get(key, None) is None:
-            print("Geen data over besmettelijkheid %s" % key)
-            continue
-
-        geschat_ziek = metenisweten[key]['rolf_besmettelijk']
+        geschat_ziek = estimate_on_date(metenisweten, key)
 
         if geschat_ziek is None:
             print("Niks geschat ziek op %s" % key)
@@ -182,10 +209,10 @@ def createVariantenGraph(metenisweten, varianten):
         current_variant_date = dateCache.parse(key)
         if (
             previous_variant_date is not None
-            and current_variant_date - previous_variant_date > timedelta(days=8)
+            and current_variant_date - previous_variant_date > timedelta(days=15)
         ):
             # A NaN observation prevents matplotlib from drawing a straight line
-            # across periods with fewer than twenty pooled samples.
+            # across periods that remain unusable even after adaptive pooling.
             varianten_totaal['x'].append(previous_variant_date + timedelta(days=7))
             for variantcode in variantcodes:
                 varianten_totaal[variantcode].append(float('nan'))
@@ -545,7 +572,6 @@ def createVariantenGraph(metenisweten, varianten):
 
     gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
-    filedate=data_tot
 
     plt.title('Besmettelijke personen per COVID-19 variant')
 
@@ -553,13 +579,7 @@ def createVariantenGraph(metenisweten, varianten):
     plt.figtext(0.01, 0.01, footerleft, ha="left", fontsize=8, color="gray")
 
 
-    latest_sample_size = rolling_samples[data_tot]
-    footerright=(
-        "Publicatiedatum RIVM " + filedate + ". "
-        "Variantverdeling: gewogen over 4 weken (n="
-        + str(latest_sample_size) + ").\n"
-        "Bron: https://data.rivm.nl/covid-19/COVID-19_varianten.json + besmettingdata"
-    )
+    footerright = "Bron: RIVM variantensteekproef en besmettingdata"
     plt.figtext(0.99, 0.01, footerright, ha="right", fontsize=8, color="gray")
 
 

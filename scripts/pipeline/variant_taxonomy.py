@@ -47,6 +47,7 @@ class PooledVariantWeek:
     date: str
     sample_size: int
     counts: dict[str, int]
+    window_weeks: int
 
     @property
     def proportions(self):
@@ -56,25 +57,39 @@ class PooledVariantWeek:
         }
 
 
-def pool_exclusive_weeks(weeks, window_weeks=4, minimum_samples=20):
-    """Pool independent weekly samples into trailing calendar-week windows."""
+def pool_exclusive_weeks(
+    weeks, window_weeks=4, minimum_samples=20, max_window_weeks=None
+):
+    """Pool samples, expanding sparse trailing windows up to a safe maximum."""
     ordered = sorted(weeks, key=lambda week: week.date)
+    max_window_weeks = max_window_weeks or window_weeks
+    if max_window_weeks < window_weeks:
+        raise ValueError("max_window_weeks cannot be smaller than window_weeks")
     pooled = []
     for current in ordered:
         current_date = date_type.fromisoformat(current.date)
-        first_date = current_date - timedelta(weeks=window_weeks - 1)
-        window = [
-            week for week in ordered
-            if first_date <= date_type.fromisoformat(week.date) <= current_date
-        ]
-        sample_size = sum(week.sample_size for week in window)
-        if sample_size < minimum_samples:
+        window = []
+        sample_size = 0
+        used_window_weeks = window_weeks
+        for candidate_weeks in range(window_weeks, max_window_weeks + 1):
+            first_date = current_date - timedelta(weeks=candidate_weeks - 1)
+            window = [
+                week for week in ordered
+                if first_date <= date_type.fromisoformat(week.date) <= current_date
+            ]
+            sample_size = sum(week.sample_size for week in window)
+            used_window_weeks = candidate_weeks
+            if sample_size >= minimum_samples:
+                break
+        else:
             continue
         counts = {}
         for week in window:
             for code, count in week.counts.items():
                 counts[code] = counts.get(code, 0) + count
-        pooled.append(PooledVariantWeek(current.date, sample_size, counts))
+        pooled.append(PooledVariantWeek(
+            current.date, sample_size, counts, used_window_weeks
+        ))
     return pooled
 
 
