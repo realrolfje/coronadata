@@ -1,6 +1,16 @@
 import math
 
 
+def _nice_step(rough_step):
+    magnitude = 10 ** math.floor(math.log10(rough_step))
+    normalized = rough_step / magnitude
+    multiplier = next(
+        candidate for candidate in (1, 2, 2.5, 5, 10)
+        if normalized <= candidate
+    )
+    return multiplier * magnitude
+
+
 def nice_axis_scale(values, target_intervals=6, padding=1.05):
     """Return a rounded zero-based maximum and tick step for positive values."""
     finite_values = [
@@ -11,15 +21,25 @@ def nice_axis_scale(values, target_intervals=6, padding=1.05):
         return 1.0, 0.2
 
     rough_step = maximum * padding / target_intervals
-    magnitude = 10 ** math.floor(math.log10(rough_step))
-    normalized = rough_step / magnitude
-    multiplier = next(
-        candidate for candidate in (1, 2, 2.5, 5, 10)
-        if normalized <= candidate
-    )
-    step = multiplier * magnitude
+    step = _nice_step(rough_step)
     axis_maximum = math.ceil(maximum * padding / step) * step
     return axis_maximum, step
+
+
+def nice_aligned_axis_scale(values, interval_count, padding=1.05):
+    """Return a rounded scale with exactly the requested number of intervals."""
+    if interval_count <= 0:
+        raise ValueError("interval_count must be positive")
+    finite_values = [
+        max(0.0, float(value))
+        for value in values
+        if math.isfinite(float(value))
+    ]
+    maximum = max(finite_values, default=0.0)
+    if maximum <= 0:
+        return float(interval_count), 1.0
+    step = _nice_step(maximum * padding / interval_count)
+    return step * interval_count, step
 
 
 def compact_number(value):

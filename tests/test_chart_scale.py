@@ -6,7 +6,12 @@ import unittest
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
-from pipeline.chart_scale import compact_number, confirmed_dominance, nice_axis_scale
+from pipeline.chart_scale import (
+    compact_number,
+    confirmed_dominance,
+    nice_aligned_axis_scale,
+    nice_axis_scale,
+)
 
 
 class ChartScaleTest(unittest.TestCase):
@@ -22,6 +27,12 @@ class ChartScaleTest(unittest.TestCase):
 
     def test_empty_series_has_safe_scale(self):
         self.assertEqual((1.0, 0.2), nice_axis_scale([]))
+
+    def test_secondary_scale_aligns_with_primary_intervals(self):
+        maximum, step = nice_aligned_axis_scale([2.8], interval_count=6)
+        self.assertEqual(3, maximum)
+        self.assertEqual(0.5, step)
+        self.assertEqual(6, maximum / step)
 
     def test_compact_labels_use_dutch_decimal_separator(self):
         self.assertEqual("200k", compact_number(200_000))

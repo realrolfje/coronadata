@@ -13,9 +13,20 @@ from pipeline.variant_taxonomy import (
     make_exclusive_week,
     pool_exclusive_weeks,
 )
-from pipeline.chart_scale import compact_number, confirmed_dominance, nice_axis_scale
+from pipeline.chart_scale import (
+    compact_number,
+    confirmed_dominance,
+    nice_aligned_axis_scale,
+    nice_axis_scale,
+)
 from datetime import datetime, date, timedelta
 import sys
+
+
+# The coronadata infectious estimate starts with a 13-observation smoothing
+# window. Its first twelve weekly values do not have a complete window and are
+# therefore unsuitable as the denominator of the indicative admission chance.
+HOSPITAL_RATIO_START = datetime(2021, 3, 1)
 
 
 def estimate_on_date(metenisweten, target_date, max_gap_days=56):
@@ -296,9 +307,17 @@ def createVariantenGraph(metenisweten, varianten):
             print("Geen besmettelijk berekening op {weeklater}")
             continue
 
-        # Calculate the number of infections against hospitalization
+        ratio_date = dateCache.parse(weeklater)
+        if ratio_date < HOSPITAL_RATIO_START:
+            continue
+
+        # Use hospital and IC occupancy relative to the estimated infectious
+        # population as an indicative admission chance. It is intentionally a
+        # trend indicator rather than a scientific probability estimate.
         kans = 100 * (weeklater_opgenomen + weeklater_op_ic) / weeklater_rolf_besmettelijk
-        opnamekans['x'].append(dateCache.parse(weeklater))
+        if not 0 <= kans <= 100:
+            continue
+        opnamekans['x'].append(ratio_date)
         opnamekans['kans'].append(kans)
 
 
@@ -468,7 +487,10 @@ def createVariantenGraph(metenisweten, varianten):
     # smoothkans = opnamekans['kans']
     # smoothkans = smooth(opnamekans['kans'])
     if opnamekans['kans']:
-        smoothkans = double_savgol(opnamekans['kans'], 2, 7, 1)
+        smoothkans = [
+            max(0, value)
+            for value in double_savgol(opnamekans['kans'], 2, 7, 1)
+        ]
         ax2.plot(opnamekans['x'],
                 smoothkans,
                 color='darkblue',
@@ -566,9 +588,19 @@ def createVariantenGraph(metenisweten, varianten):
     ax1.set_yticks(y_ticks)
     ax1.set_yticklabels([compact_number(value) for value in y_ticks])
 
-    ax2.set_ylim([0, 2.0])
-    ax2.set_yticks      ([ 0.5,    1,     1.5,    2,   ])
-    ax2.set_yticklabels([ '0.5%', '1.0%','1.5%', '2.0%'])
+    if opnamekans['kans']:
+        interval_count = len(y_ticks) - 1
+        chance_maximum, chance_step = nice_aligned_axis_scale(
+            smoothkans, interval_count
+        )
+        chance_ticks = [
+            index * chance_step for index in range(interval_count + 1)
+        ]
+        ax2.set_ylim([0, chance_maximum])
+        ax2.set_yticks(chance_ticks)
+        ax2.set_yticklabels([
+            decimalstring(round(value, 2)) + '%' for value in chance_ticks
+        ])
 
     gegenereerd_op=build_datetime().strftime("%Y-%m-%d %H:%M")
     data_tot=varianten_totaal['x'][-1].strftime("%Y-%m-%d")
