@@ -204,9 +204,9 @@
       "provider": "ECDC",
       "lifecycle": "active",
       "required_for_publish": false,
-      "record_count": 106578,
+      "record_count": 107218,
       "publication_date": null,
-      "newest_observation": "2026-11-02",
+      "newest_observation": "2026-11-09",
       "health": "healthy",
       "messages": [],
       "blocking": false
@@ -220,8 +220,10 @@
       "record_count": null,
       "publication_date": null,
       "newest_observation": "2024-05-31",
-      "health": "frozen",
-      "messages": [],
+      "health": "missing",
+      "messages": [
+        "Local cache file is missing."
+      ],
       "blocking": false
     },
     {
@@ -259,10 +261,8 @@
       "record_count": null,
       "publication_date": null,
       "newest_observation": null,
-      "health": "missing",
-      "messages": [
-        "Local cache file is missing."
-      ],
+      "health": "retired",
+      "messages": [],
       "blocking": false
     },
     {
